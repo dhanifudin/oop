@@ -45,14 +45,6 @@ jobs:
           python3 -m venv scripts/.venv
           scripts/.venv/bin/pip install --quiet --upgrade pip pygments pillow
 
-      - name: Verify toolchain
-        run: |
-          marp --version
-          pandoc --version
-          lualatex --version
-          plantuml -version
-          rsvg-convert --version
-
       - name: Build all slide and jobsheet PDFs
         run: ./scripts/render-all.sh
 
