@@ -8,16 +8,20 @@
 %
 % Font choice varies by machine, so fall back down a chain instead of
 % hardcoding one: Segoe UI Emoji (present on this dev machine) -> Symbola
-% (monochrome, installed via `brew install --cask font-symbola` on the
-% self-hosted macOS CI runner -- avoid Apple Color Emoji, its sbix color
-% glyphs render poorly under lualatex) -> DejaVu Sans as a last resort
-% (covers warning-sign ⚠ but not the checkmark ✅, which would tofu there).
+% (monochrome, present on machines that have it installed) -> Noto Color
+% Emoji (apt package `fonts-noto-color-emoji` on the GitHub Actions
+% `ubuntu-latest` CI runner that builds and publishes these PDFs to Pages
+% -- unlike Apple Color Emoji's sbix glyphs, Noto's COLR/CBDT-format glyphs
+% render fine under lualatex) -> DejaVu Sans as a last resort (covers
+% warning-sign ⚠ but not the checkmark ✅, which would tofu there).
 \usepackage{fontspec}
 \IfFontExistsTF{Segoe UI Emoji}
   {\newfontfamily{\emojifont}{Segoe UI Emoji}}
   {\IfFontExistsTF{Symbola}
     {\newfontfamily{\emojifont}{Symbola}}
-    {\newfontfamily{\emojifont}{DejaVu Sans}}}
+    {\IfFontExistsTF{Noto Color Emoji}
+      {\newfontfamily{\emojifont}{Noto Color Emoji}}
+      {\newfontfamily{\emojifont}{DejaVu Sans}}}}
 \usepackage{newunicodechar}
 \newunicodechar{✅}{{\emojifont ✅}}
 \newunicodechar{⚠}{{\emojifont ⚠}}

@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -31,16 +31,14 @@ jobs:
       - name: Install marp-cli
         run: npm install -g @marp-team/marp-cli@4.5.0
 
-      - name: Install Homebrew packages (pandoc, PlantUML, librsvg)
-        run: brew install pandoc plantuml librsvg
-
-      - name: Install TeX Live (mactex-no-gui, provides lualatex)
+      - name: Install pandoc, PlantUML, librsvg, TeX Live, and emoji/DejaVu fonts
         run: |
-          brew install --cask mactex-no-gui
-          echo "/Library/TeX/texbin" >> "$GITHUB_PATH"
-
-      - name: Install fonts used by jobsheet PDFs (DejaVu Sans, Symbola emoji fallback)
-        run: brew install --cask font-dejavu font-symbola
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pandoc plantuml librsvg2-bin \
+            fonts-dejavu fonts-dejavu-extra fonts-noto-color-emoji fonts-noto-emoji \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-luatex texlive-plain-generic
 
       - name: Set up the Python venv used by the rendering scripts
         run: |
