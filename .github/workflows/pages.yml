@@ -50,7 +50,7 @@ jobs:
           marp --version
           pandoc --version
           lualatex --version
-          plantuml --version
+          plantuml -version
           rsvg-convert --version
 
       - name: Build all slide and jobsheet PDFs
