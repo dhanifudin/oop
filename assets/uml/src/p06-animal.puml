@@ -1,0 +1,30 @@
+@startuml p06-animal
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Animal {
+  - name : String
+  --
+  + Animal(name : String)
+  + getName() : String
+  + makeSound() : String
+}
+
+class Dog {
+  --
+  + Dog(name : String)
+  + makeSound() : String
+}
+
+class Cat {
+  --
+  + Cat(name : String)
+  + makeSound() : String
+}
+
+Animal <|-- Dog
+Animal <|-- Cat
+@enduml

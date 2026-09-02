@@ -1,0 +1,33 @@
+@startuml p11-ocp
+!include _common.iuml
+hide circle
+hide empty members
+
+interface DiscountPolicy {
+  + calculate(amount : int) : int
+}
+
+class RegularDiscountPolicy implements DiscountPolicy {
+  + calculate(amount : int) : int
+}
+class VipDiscountPolicy implements DiscountPolicy {
+  + calculate(amount : int) : int
+}
+class WholesaleDiscountPolicy implements DiscountPolicy {
+  + calculate(amount : int) : int
+}
+
+note bottom of WholesaleDiscountPolicy
+  New customer type = new class only.
+  DiscountCalculator and OrderProcessor
+  stay untouched.
+end note
+
+class DiscountCalculator {
+  - policies : Map<String, DiscountPolicy>
+  + registerPolicy(type : String, policy : DiscountPolicy)
+  + calculate(customer, order) : int
+}
+
+DiscountCalculator "1" o-- "many" DiscountPolicy : policies
+@enduml

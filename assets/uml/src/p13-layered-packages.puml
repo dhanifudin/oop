@@ -1,0 +1,33 @@
+@startuml p13-layered-packages
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+package "id.ac.polinema.ui" {
+  class BankMiniFrame {
+    + loadAccounts() : void
+  }
+}
+
+package "id.ac.polinema (root)" {
+  class Bank {
+    + getAllAccounts() : Collection<Account>
+  }
+}
+
+package "id.ac.polinema.repository" {
+  interface AccountRepository
+  class InMemoryAccountRepository
+}
+
+package "id.ac.polinema.model" {
+  abstract class Account
+}
+
+BankMiniFrame --> Bank
+Bank --> AccountRepository
+AccountRepository <|.. InMemoryAccountRepository
+Bank ..> Account
+@enduml

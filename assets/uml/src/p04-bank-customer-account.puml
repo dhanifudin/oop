@@ -1,0 +1,38 @@
+@startuml p04-bank-customer-account
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Customer {
+  - name : String
+  - phone : String
+  --
+  + Customer(name : String, phone : String)
+  + getName() : String
+  + getPhone() : String
+}
+
+class Account {
+  - accountNumber : String
+  - owner : Customer
+  - balance : double
+  --
+  + getOwner() : Customer
+  + deposit(amount : double) : boolean
+  + withdraw(amount : double) : boolean
+}
+
+class Bank {
+  - accounts : Account[]
+  - count : int
+  --
+  + addAccount(account : Account) : boolean
+  + findAccount(accountNumber : String) : Account
+  + printAllAccounts() : void
+}
+
+Account --> Customer : association
+Bank o-- Account : aggregation
+@enduml

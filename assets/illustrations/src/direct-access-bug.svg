@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#dc2626" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <!-- caller -->
+  <rect x="40" y="130" width="160" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="120" y="155" text-anchor="middle" font-size="17.6" fill="#64748b">other code</text>
+  <text x="120" y="175" text-anchor="middle" font-size="17.6" fill="#991b1b" font-weight="700">t.temperature = -50;</text>
+
+  <!-- broken shell, no gate -->
+  <rect x="280" y="60" width="260" height="220" rx="30" fill="#fef2f2" stroke="#dc2626" stroke-width="3" stroke-dasharray="10,8"/>
+  <text x="410" y="90" text-anchor="middle" font-size="18.9" font-weight="700" fill="#dc2626">public field, no gate</text>
+
+  <!-- the field, exposed -->
+  <rect x="350" y="150" width="120" height="60" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="410" y="172" text-anchor="middle" font-size="14.9" fill="#64748b">temperature</text>
+  <text x="410" y="192" text-anchor="middle" font-size="18.9" fill="#dc2626" font-weight="700">-50</text>
+
+  <!-- direct arrow straight through the broken wall -->
+  <path d="M200,168 C240,168 300,175 348,178" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowRed)"/>
+
+  <!-- danger badge -->
+  <g filter="url(#softShadow)">
+    <circle cx="410" cy="240" r="4" fill="none"/>
+  </g>
+  <path d="M395,225 L425,225 L440,255 L380,255 Z" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="410" y="248" text-anchor="middle" font-size="21.6" fill="#dc2626" font-weight="700">!</text>
+
+  <!-- downstream consequence -->
+  <rect x="600" y="140" width="170" height="80" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="685" y="170" text-anchor="middle" font-size="17.6" fill="#991b1b">no validation ran,</text>
+  <text x="685" y="188" text-anchor="middle" font-size="17.6" fill="#991b1b">an unsafe value is</text>
+  <text x="685" y="206" text-anchor="middle" font-size="17.6" fill="#991b1b">accepted silently</text>
+
+  <path d="M475,180 L595,180" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+
+  <text x="410" y="315" text-anchor="middle" font-size="18.9" fill="#dc2626" font-weight="600">a public field lets any code skip validation entirely</text>
+</svg>

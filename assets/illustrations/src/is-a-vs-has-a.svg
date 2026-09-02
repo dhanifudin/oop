@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect x="330" y="20" width="140" height="50" rx="12" fill="#1d4ed8"/>
+  <text x="400" y="52" text-anchor="middle" font-size="20.2" font-weight="700" fill="#ffffff">new relation?</text>
+
+  <path d="M370,70 C310,100 250,110 210,130" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M430,70 C490,100 550,110 590,130" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+
+  <!-- IS-A branch -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="130" width="300" height="180" rx="16" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="210" y="165" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">is it an "is-a"?</text>
+  <text x="210" y="195" text-anchor="middle" font-size="17.6" fill="#475569">"a Dog IS-A Animal"</text>
+  <text x="210" y="215" text-anchor="middle" font-size="17.6" fill="#475569">reads naturally, true</text>
+  <rect x="80" y="240" width="260" height="50" rx="10" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="210" y="270" text-anchor="middle" font-size="16" fill="#1d4ed8" font-weight="700">use inheritance (extends)</text>
+
+  <!-- HAS-A branch -->
+  <g filter="url(#softShadow)">
+    <rect x="440" y="130" width="300" height="180" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  </g>
+  <text x="590" y="165" text-anchor="middle" font-size="21.6" font-weight="700" fill="#16a34a">is it a "has-a"?</text>
+  <text x="590" y="195" text-anchor="middle" font-size="17.6" fill="#475569">"a Car HAS-A Engine"</text>
+  <text x="590" y="215" text-anchor="middle" font-size="17.6" fill="#475569">reads naturally, true</text>
+  <rect x="460" y="240" width="260" height="50" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="590" y="270" text-anchor="middle" font-size="16" fill="#16a34a" font-weight="700">use a relation (attribute)</text>
+
+  <text x="400" y="330" text-anchor="middle" font-size="17.6" fill="#64748b">a quick test: try reading the relation out loud both ways before choosing</text>
+</svg>

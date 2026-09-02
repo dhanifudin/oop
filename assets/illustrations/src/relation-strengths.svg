@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 340" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <!-- association -->
+  <g filter="url(#softShadow)">
+    <rect x="40" y="40" width="230" height="260" rx="18" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="155" y="75" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">association</text>
+
+  <rect x="70" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="105" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Driver</text>
+  <line x1="140" y1="143" x2="200" y2="143" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="200" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="235" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Car</text>
+
+  <text x="155" y="230" text-anchor="middle" font-size="16.2" fill="#64748b">weakest link:</text>
+  <text x="155" y="248" text-anchor="middle" font-size="16.2" fill="#64748b">both exist</text>
+  <text x="155" y="264" text-anchor="middle" font-size="16.2" fill="#64748b">independently</text>
+
+  <!-- aggregation -->
+  <g filter="url(#softShadow)">
+    <rect x="305" y="40" width="230" height="260" rx="18" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="420" y="75" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">aggregation</text>
+
+  <rect x="335" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="370" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Library</text>
+  <path d="M405,143 L465,143" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M405,143 l14,-8 14,8 -14,8 z" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="465" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="500" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Book</text>
+
+  <text x="420" y="230" text-anchor="middle" font-size="16.2" fill="#64748b">whole holds part,</text>
+  <text x="420" y="248" text-anchor="middle" font-size="16.2" fill="#64748b">but part can</text>
+  <text x="420" y="264" text-anchor="middle" font-size="16.2" fill="#64748b">outlive the whole</text>
+
+  <!-- composition -->
+  <g filter="url(#softShadow)">
+    <rect x="570" y="40" width="230" height="260" rx="18" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="685" y="75" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">composition</text>
+
+  <rect x="600" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="635" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Car</text>
+  <path d="M670,143 L730,143" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M670,143 l14,-8 14,8 -14,8 z" fill="#1d4ed8" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="730" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="765" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Engine</text>
+
+  <text x="685" y="230" text-anchor="middle" font-size="16.2" fill="#64748b">strongest link:</text>
+  <text x="685" y="248" text-anchor="middle" font-size="16.2" fill="#64748b">part's lifetime is</text>
+  <text x="685" y="264" text-anchor="middle" font-size="16.2" fill="#64748b">tied to the whole</text>
+
+  <text x="420" y="325" text-anchor="middle" font-size="18.9" fill="#1d4ed8" font-weight="600">three strengths of "has-a": association, aggregation, composition</text>
+</svg>

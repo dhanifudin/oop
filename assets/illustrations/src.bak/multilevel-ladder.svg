@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowHollow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <rect x="270" y="20" width="160" height="55" rx="10" fill="#94a3b8"/>
+  <text x="350" y="53" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Object</text>
+
+  <path d="M350,75 L350,110" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowHollow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="270" y="110" width="160" height="55" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="350" y="143" text-anchor="middle" font-size="15" font-weight="700" fill="#1d4ed8">Employee</text>
+
+  <path d="M350,165 L350,200" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowHollow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="270" y="200" width="160" height="55" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="350" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#1d4ed8">Manager</text>
+
+  <path d="M350,255 L350,290" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowHollow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="270" y="290" width="160" height="55" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="350" y="323" text-anchor="middle" font-size="15" font-weight="700" fill="#1d4ed8">Director</text>
+
+  <text x="480" y="53" font-size="12" fill="#64748b">root of every class</text>
+  <text x="480" y="143" font-size="12" fill="#64748b">extends Object (implicitly)</text>
+  <text x="480" y="233" font-size="12" fill="#64748b">extends Employee</text>
+  <text x="480" y="323" font-size="12" fill="#64748b">extends Manager</text>
+
+  <text x="350" y="375" text-anchor="middle" font-size="14" fill="#1d4ed8" font-weight="600">a Director IS-A Manager IS-A Employee IS-A Object</text>
+</svg>

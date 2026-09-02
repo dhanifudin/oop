@@ -1,0 +1,34 @@
+@startuml p04-car-engine-driver
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Car {
+  - plateNumber : String
+  - engine : Engine
+  --
+  + Car(plateNumber : String, horsePower : int)
+  + getPlateNumber() : String
+  + getEngine() : Engine
+}
+
+class Engine {
+  - horsePower : int
+  --
+  + Engine(horsePower : int)
+  + getHorsePower() : int
+}
+
+class Driver {
+  - name : String
+  - car : Car
+  --
+  + Driver(name : String, car : Car)
+  + describe() : String
+}
+
+Car *-- Engine : composition
+Driver --> Car : association
+@enduml

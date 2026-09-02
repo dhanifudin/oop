@@ -1,0 +1,23 @@
+@startuml p11-transaction
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+abstract class Account {
+  - accountNumber : String
+  - balance : double
+  --
+  + getHistory() : List<Transaction>
+  + deposit(amount : double) : boolean
+  + withdraw(amount : double) : void
+}
+
+class Transaction {
+  - type : String
+  - amount : double
+}
+
+Account "1" *-- "many" Transaction : history
+@enduml

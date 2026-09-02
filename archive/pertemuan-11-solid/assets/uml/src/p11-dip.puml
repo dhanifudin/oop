@@ -1,0 +1,26 @@
+@startuml p11-dip
+!include _common.iuml
+hide circle
+hide empty members
+
+class OrderProcessor {
+  + OrderProcessor(discountCalculator, orderRepository, receiptPrinter)
+}
+
+interface OrderRepository {
+  + save(customer, order, discount, total)
+  + findAll() : List<String>
+}
+
+class FileOrderRepository implements OrderRepository {
+  + save(customer, order, discount, total)
+  + findAll() : List<String>
+}
+
+class InMemoryOrderRepository implements OrderRepository {
+  + save(customer, order, discount, total)
+  + findAll() : List<String>
+}
+
+OrderProcessor --> OrderRepository : depends on abstraction
+@enduml

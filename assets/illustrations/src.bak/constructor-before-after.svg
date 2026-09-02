@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- before: half-baked -->
+  <g filter="url(#softShadow)">
+    <rect x="30" y="60" width="230" height="180" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2" stroke-dasharray="8,6"/>
+  </g>
+  <text x="145" y="95" text-anchor="middle" font-size="16" font-weight="700" fill="#dc2626">just after new</text>
+  <text x="60" y="135" font-size="15" fill="#94a3b8">width</text>
+  <text x="230" y="135" text-anchor="end" font-size="15" fill="#dc2626" font-weight="700">?</text>
+  <text x="60" y="165" font-size="15" fill="#94a3b8">height</text>
+  <text x="230" y="165" text-anchor="end" font-size="15" fill="#dc2626" font-weight="700">?</text>
+  <text x="145" y="210" text-anchor="middle" font-size="13" fill="#dc2626">"half-baked" object</text>
+
+  <!-- arrow with label -->
+  <line x1="275" y1="150" x2="480" y2="150" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  <text x="378" y="130" text-anchor="middle" font-size="15" font-weight="700" fill="#16a34a">constructor runs</text>
+
+  <!-- after: complete -->
+  <g filter="url(#softShadow)">
+    <rect x="500" y="60" width="250" height="180" rx="16" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="625" y="95" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4ed8">right after the constructor</text>
+  <text x="530" y="135" font-size="15" fill="#0f172a">width</text>
+  <text x="720" y="135" text-anchor="end" font-size="15" fill="#0f172a" font-weight="700">6</text>
+  <text x="530" y="165" font-size="15" fill="#0f172a">height</text>
+  <text x="720" y="165" text-anchor="end" font-size="15" fill="#0f172a" font-weight="700">4</text>
+  <text x="625" y="210" text-anchor="middle" font-size="13" fill="#16a34a" font-weight="600">complete, ready to use</text>
+
+  <text x="390" y="290" text-anchor="middle" font-size="14" fill="#94a3b8">the constructor closes the gap between "created" and "ready"</text>
+</svg>

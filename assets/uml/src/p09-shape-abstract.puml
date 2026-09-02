@@ -1,0 +1,32 @@
+@startuml p09-shape-abstract
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+abstract class Shape {
+  - label : String
+  --
+  + Shape(label : String)
+  + getLabel() : String
+  + {abstract} area() : double
+}
+
+class Circle {
+  - radius : double
+  --
+  + Circle(label : String, radius : double)
+  + area() : double
+}
+
+class Square {
+  - side : double
+  --
+  + Square(label : String, side : double)
+  + area() : double
+}
+
+Shape <|-- Circle
+Shape <|-- Square
+@enduml

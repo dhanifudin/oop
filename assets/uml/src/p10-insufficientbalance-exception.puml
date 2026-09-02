@@ -1,0 +1,20 @@
+@startuml p10-insufficientbalance-exception
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Exception {
+}
+
+class InsufficientBalanceException {
+}
+
+abstract class Account {
+  + withdraw(amount : double) : void
+}
+
+Exception <|-- InsufficientBalanceException
+Account ..> InsufficientBalanceException : throws
+@enduml

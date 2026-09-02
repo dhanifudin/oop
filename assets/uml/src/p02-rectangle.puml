@@ -1,0 +1,15 @@
+@startuml p02-rectangle
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Rectangle {
+  - width : int
+  - height : int
+  --
+  + Rectangle(width : int, height : int)
+  + area() : int
+  + perimeter() : int
+}
+@enduml

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <!-- Animal box -->
+  <g filter="url(#softShadow)">
+    <rect x="40" y="40" width="220" height="260" rx="16" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="150" y="72" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">Animal</text>
+  <rect x="65" y="95" width="170" height="34" rx="6" fill="#dbeafe"/>
+  <text x="150" y="117" text-anchor="middle" font-size="16.2" fill="#1d4ed8">- name : String</text>
+  <rect x="65" y="140" width="170" height="34" rx="6" fill="#dbeafe"/>
+  <text x="150" y="162" text-anchor="middle" font-size="16.2" fill="#1d4ed8">+ getName()</text>
+  <rect x="65" y="185" width="170" height="34" rx="6" fill="#dbeafe"/>
+  <text x="150" y="207" text-anchor="middle" font-size="16.2" fill="#1d4ed8">+ makeSound()</text>
+
+  <!-- Dog box, inherited members greyed, own member highlighted -->
+  <g filter="url(#softShadow)">
+    <rect x="480" y="40" width="260" height="300" rx="16" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="610" y="72" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">Dog</text>
+
+  <rect x="505" y="95" width="210" height="34" rx="6" fill="#f1f5f9"/>
+  <text x="610" y="117" text-anchor="middle" font-size="16.2" fill="#94a3b8">- name : String (inherited)</text>
+  <rect x="505" y="140" width="210" height="34" rx="6" fill="#f1f5f9"/>
+  <text x="610" y="162" text-anchor="middle" font-size="16.2" fill="#94a3b8">+ getName() (inherited)</text>
+  <rect x="505" y="185" width="210" height="34" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="610" y="207" text-anchor="middle" font-size="16.2" fill="#16a34a" font-weight="700">+ makeSound() (overridden)</text>
+  <rect x="505" y="230" width="210" height="34" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="610" y="252" text-anchor="middle" font-size="16.2" fill="#16a34a" font-weight="700">+ Dog(name) (own)</text>
+
+  <path d="M262,170 C340,170 400,170 478,170" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="370" y="155" text-anchor="middle" font-size="16.2" fill="#64748b">extends</text>
+
+  <text x="390" y="362" text-anchor="middle" font-size="18" fill="#1d4ed8" font-weight="600">a subclass automatically has every member of its parent,</text>
+  <text x="390" y="384" text-anchor="middle" font-size="18" fill="#1d4ed8" font-weight="600">plus whatever it adds or overrides</text>
+</svg>

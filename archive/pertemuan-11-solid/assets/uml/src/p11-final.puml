@@ -1,0 +1,50 @@
+@startuml p11-final
+!include _common.iuml
+hide circle
+hide empty members
+
+class OrderProcessor {
+  + processOrder(customer, order)
+}
+
+class DiscountCalculator {
+  + calculate(customer, order) : int
+}
+interface DiscountPolicy
+class RegularDiscountPolicy implements DiscountPolicy
+class VipDiscountPolicy implements DiscountPolicy
+class WholesaleDiscountPolicy implements DiscountPolicy
+
+interface OrderRepository
+class FileOrderRepository implements OrderRepository
+class InMemoryOrderRepository implements OrderRepository
+
+class ReceiptPrinter
+
+OrderProcessor --> DiscountCalculator
+OrderProcessor --> OrderRepository : abstraction (DIP)
+OrderProcessor --> ReceiptPrinter
+
+DiscountCalculator o-- DiscountPolicy : policies (OCP)
+
+interface Shippable
+class Order
+class PhysicalOrder extends Order implements Shippable
+class DigitalOrder extends Order
+
+interface InvoicePrintable
+interface EmailReceiptSendable
+interface ShippingLabelPrintable
+class InvoicePrinter implements InvoicePrintable
+
+ReceiptPrinter -[hidden]-> Shippable
+Shippable -[hidden]-> InvoicePrintable
+
+note bottom of OrderProcessor
+  SRP: split into 3 collaborators
+  OCP: DiscountPolicy plugged in, not if/else
+  LSP: Shippable separates the order hierarchy
+  ISP: 3 small notifier interfaces, not 1 fat one
+  DIP: depends on OrderRepository, not a file writer
+end note
+@enduml

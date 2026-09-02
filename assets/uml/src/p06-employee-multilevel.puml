@@ -1,0 +1,33 @@
+@startuml p06-employee-multilevel
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Employee {
+  # name : String
+  - baseSalary : double
+  --
+  + Employee(name : String, baseSalary : double)
+  + getSalary() : double
+  + {final} describe() : String
+}
+
+class Manager {
+  - bonus : double
+  --
+  + Manager(name : String, baseSalary : double, bonus : double)
+  + getSalary() : double
+}
+
+class Director {
+  - stipend : double
+  --
+  + Director(name : String, baseSalary : double, bonus : double, stipend : double)
+  + getSalary() : double
+}
+
+Employee <|-- Manager
+Manager <|-- Director
+@enduml

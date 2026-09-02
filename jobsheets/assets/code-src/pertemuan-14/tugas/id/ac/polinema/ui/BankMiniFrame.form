@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="int" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="int" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="int" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="int" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="accountScrollPane" pref="460" max="32767" attributes="0"/>
+                  <Component id="formPanel" pref="460" max="32767" attributes="0"/>
+                  <Component id="actionsPanel" pref="460" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace/>
+              <Component id="accountScrollPane" pref="220" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="formPanel" min="-2" pref="150" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="actionsPanel" min="-2" pref="50" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JScrollPane" name="accountScrollPane">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="accountTable">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="3" rowCount="0">
+                <Column editable="true" title="Account Number" type="java.lang.Object"/>
+                <Column editable="true" title="Owner" type="java.lang.Object"/>
+                <Column editable="true" title="Balance" type="java.lang.Object"/>
+              </Table>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="formPanel">
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <AuxValues>
+        <AuxValue name="autoSetLayout" type="boolean" value="false"/>
+      </AuxValues>
+      <Layout class="java.awt.GridLayout">
+        <Property name="rows" type="int" value="3"/>
+        <Property name="columns" type="int" value="4"/>
+        <Property name="hgap" type="int" value="6"/>
+        <Property name="vgap" type="int" value="6"/>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="accountNumberLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Account Number:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="accountNumberField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="ownerLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Owner:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="ownerField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="phoneLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Phone:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="phoneField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="typeLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Type:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="accountTypeCombo">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="Savings"/>
+                <StringItem index="1" value="Checking"/>
+              </StringArray>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="initialBalanceLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Initial Balance:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="initialBalanceField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="emptyFormLabel1">
+        </Component>
+        <Component class="javax.swing.JButton" name="addAccountButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Add Account"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addAccountButtonActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="actionsPanel">
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <AuxValues>
+        <AuxValue name="autoSetLayout" type="boolean" value="false"/>
+      </AuxValues>
+      <Layout class="java.awt.GridLayout">
+        <Property name="rows" type="int" value="1"/>
+        <Property name="columns" type="int" value="5"/>
+        <Property name="hgap" type="int" value="6"/>
+        <Property name="vgap" type="int" value="6"/>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="amountLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Amount:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="amountField">
+        </Component>
+        <Component class="javax.swing.JButton" name="depositButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Deposit"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="depositButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="withdrawButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Withdraw"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="withdrawButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="processMonthEndButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Process Month End"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="processMonthEndButtonActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="refreshButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Refresh"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshButtonActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>

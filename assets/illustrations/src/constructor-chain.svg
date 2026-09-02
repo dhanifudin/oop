@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 320" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <text x="430" y="30" text-anchor="middle" font-size="18.9" font-weight="700" fill="#1d4ed8">new Director(...) is called</text>
+
+  <!-- step 1: Director calls super -->
+  <g filter="url(#softShadow)">
+    <rect x="20" y="55" width="190" height="60" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <text x="115" y="80" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">1. Director</text>
+  <text x="115" y="98" text-anchor="middle" font-size="14.9" fill="#64748b">calls super(...)</text>
+
+  <path d="M210,85 L245,85" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- step 2: Manager calls super -->
+  <g filter="url(#softShadow)">
+    <rect x="250" y="55" width="190" height="60" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <text x="345" y="80" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">2. Manager</text>
+  <text x="345" y="98" text-anchor="middle" font-size="14.9" fill="#64748b">calls super(...)</text>
+
+  <path d="M440,85 L475,85" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- step 3: Employee constructor body -->
+  <g filter="url(#softShadow)">
+    <rect x="480" y="55" width="190" height="60" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <text x="575" y="80" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">3. Employee</text>
+  <text x="575" y="98" text-anchor="middle" font-size="14.9" fill="#64748b">has no more super</text>
+
+  <path d="M670,85 L705,85" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="710" y="55" width="130" height="60" rx="10" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <text x="775" y="80" text-anchor="middle" font-size="16.2" font-weight="700" fill="#1d4ed8">4. Employee</text>
+  <text x="775" y="98" text-anchor="middle" font-size="14.9" fill="#1d4ed8">body runs first</text>
+
+  <path d="M775,115 L775,150 L345,150 L345,175" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="250" y="180" width="190" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  </g>
+  <text x="345" y="205" text-anchor="middle" font-size="16.2" font-weight="700" fill="#166534">5. Manager</text>
+  <text x="345" y="223" text-anchor="middle" font-size="14.9" fill="#166534">body runs next</text>
+
+  <path d="M250,210 L115,210 L115,240" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="20" y="245" width="190" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  </g>
+  <text x="115" y="270" text-anchor="middle" font-size="16.2" font-weight="700" fill="#166534">6. Director</text>
+  <text x="115" y="288" text-anchor="middle" font-size="14.9" fill="#166534">body runs last</text>
+
+  <text x="640" y="270" text-anchor="middle" font-size="17.6" fill="#1d4ed8" font-weight="600">super(...) chains outward first,</text>
+  <text x="640" y="290" text-anchor="middle" font-size="17.6" fill="#1d4ed8" font-weight="600">constructor bodies then run back inward</text>
+</svg>

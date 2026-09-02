@@ -1,0 +1,26 @@
+@startuml p11-srp
+!include _common.iuml
+hide circle
+hide empty members
+
+class OrderProcessor {
+  + processOrder(customer, order)
+  - validate(customer, order) : boolean
+}
+
+class DiscountCalculator {
+  + calculate(customer, order) : int
+}
+
+class OrderRepository {
+  + save(customer, order, discount, total)
+}
+
+class ReceiptPrinter {
+  + print(customer, order, discount, total)
+}
+
+OrderProcessor "1" --> "1" DiscountCalculator
+OrderProcessor "1" --> "1" OrderRepository
+OrderProcessor "1" --> "1" ReceiptPrinter
+@enduml

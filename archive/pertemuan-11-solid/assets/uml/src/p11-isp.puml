@@ -1,0 +1,37 @@
+@startuml p11-isp
+!include _common.iuml
+hide circle
+hide empty members
+
+package "Before" {
+  interface OrderNotifier {
+    + printInvoice()
+    + sendEmailReceipt()
+    + printShippingLabel()
+  }
+  class "InvoicePrinter" as InvoicePrinterBefore implements OrderNotifier {
+    + printInvoice()
+    + sendEmailReceipt()
+    + printShippingLabel()
+  }
+  note bottom of InvoicePrinterBefore
+    sendEmailReceipt() and printShippingLabel()
+    only throw UnsupportedOperationException
+  end note
+}
+
+package "After" {
+  interface InvoicePrintable {
+    + printInvoice()
+  }
+  interface EmailReceiptSendable {
+    + sendEmailReceipt()
+  }
+  interface ShippingLabelPrintable {
+    + printShippingLabel()
+  }
+  class "InvoicePrinter" as InvoicePrinterAfter implements InvoicePrintable {
+    + printInvoice()
+  }
+}
+@enduml

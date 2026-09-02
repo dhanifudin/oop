@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowRed7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowGreen7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT: no validation -->
+  <g filter="url(#softShadow)">
+    <rect x="40" y="30" width="380" height="360" rx="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2.2"/>
+  </g>
+  <text x="230" y="66" text-anchor="middle" font-size="19.8" font-weight="700" fill="#991b1b">No Validation</text>
+
+  <rect x="70" y="90" width="320" height="46" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="85" y="119" font-size="16.9" fill="#0f172a">Amount: abc</text>
+
+  <path d="M230,140 L230,175" fill="none" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrowRed7)"/>
+  <text x="230" y="200" text-anchor="middle" font-size="15.4" fill="#991b1b">Double.parseDouble("abc")</text>
+
+  <path d="M230,215 L230,250" fill="none" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrowRed7)"/>
+  <rect x="80" y="255" width="300" height="70" rx="8" fill="#450a0a" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="230" y="280" text-anchor="middle" font-size="15.4" fill="#fecaca">NumberFormatException</text>
+  <text x="230" y="302" text-anchor="middle" font-size="14.1" fill="#fecaca">program stops, stack trace shown</text>
+
+  <text x="230" y="355" text-anchor="middle" font-size="15.4" fill="#991b1b">the user never sees a helpful message</text>
+
+  <!-- RIGHT: validated -->
+  <g filter="url(#softShadow)">
+    <rect x="480" y="30" width="380" height="360" rx="16" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.2"/>
+  </g>
+  <text x="670" y="66" text-anchor="middle" font-size="19.8" font-weight="700" fill="#166534">Validated at the Boundary</text>
+
+  <rect x="510" y="90" width="320" height="46" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6"/>
+  <text x="525" y="119" font-size="16.9" fill="#0f172a">Amount: abc</text>
+
+  <path d="M670,140 L670,175" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrowGreen7)"/>
+  <text x="670" y="200" text-anchor="middle" font-size="15.4" fill="#166534">try { parseDouble(...) }</text>
+  <text x="670" y="220" text-anchor="middle" font-size="15.4" fill="#166534">catch (NumberFormatException e)</text>
+
+  <path d="M670,232 L670,250" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrowGreen7)"/>
+  <rect x="520" y="255" width="300" height="70" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="670" y="280" text-anchor="middle" font-size="15.4" fill="#166534">"Amount must be a number."</text>
+  <text x="670" y="302" text-anchor="middle" font-size="14.1" fill="#166534">shown in a dialog, program keeps running</text>
+
+  <text x="670" y="355" text-anchor="middle" font-size="15.4" fill="#166534">the user can immediately fix the input</text>
+</svg>

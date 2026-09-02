@@ -1,0 +1,21 @@
+@startuml p03-account-encapsulated
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Account {
+  - accountNumber : String
+  - ownerName : String
+  - balance : double
+  --
+  + Account(accountNumber : String, ownerName : String)
+  + Account(accountNumber : String, ownerName : String, balance : double)
+  + getAccountNumber() : String
+  + getOwnerName() : String
+  + getBalance() : double
+  + deposit(amount : double) : boolean
+  + withdraw(amount : double) : boolean
+  + printInfo() : void
+}
+@enduml

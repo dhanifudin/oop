@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Stack region, tiny -->
+  <rect x="30" y="30" width="230" height="220" rx="18" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="145" y="65" text-anchor="middle" font-size="20" font-weight="700" fill="#1d4ed8">Stack</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="60" y="110" width="170" height="70" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2.5"/>
+  </g>
+  <text x="145" y="140" text-anchor="middle" font-size="15" fill="#64748b">variable</text>
+  <text x="145" y="162" text-anchor="middle" font-size="18" font-weight="700" fill="#64748b">null</text>
+
+  <!-- dead-end dashed arrow pointing at empty space -->
+  <path d="M270,145 C340,145 380,145 430,145" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7,6" marker-end="url(#arrowGray)"/>
+
+  <!-- empty space marker -->
+  <circle cx="470" cy="145" r="36" fill="none" stroke="#cbd5e1" stroke-width="2.5" stroke-dasharray="6,6"/>
+  <line x1="450" y1="125" x2="490" y2="165" stroke="#dc2626" stroke-width="3"/>
+  <line x1="490" y1="125" x2="450" y2="165" stroke="#dc2626" stroke-width="3"/>
+  <text x="470" y="210" text-anchor="middle" font-size="14" fill="#94a3b8">nothing here</text>
+
+  <text x="350" y="280" text-anchor="middle" font-size="15" fill="#1d4ed8" font-weight="600">null means "no object to point to, yet"</text>
+  <text x="350" y="300" text-anchor="middle" font-size="13" fill="#dc2626">calling a method on it always crashes</text>
+</svg>

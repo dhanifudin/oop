@@ -1,0 +1,15 @@
+@startuml p02-student
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Student {
+  - name : String
+  - studentId : String
+  - gpa : double
+  --
+  + Student(name : String, studentId : String, gpa : double)
+  + describe() : String
+}
+@enduml

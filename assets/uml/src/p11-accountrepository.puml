@@ -1,0 +1,24 @@
+@startuml p11-accountrepository
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Bank {
+  + addAccount(account : Account) : boolean
+  + findAccount(accountNumber : String) : Account
+}
+
+interface AccountRepository {
+  + save(account : Account) : void
+  + findByNumber(accountNumber : String) : Account
+  + findAll() : Collection<Account>
+}
+
+class InMemoryAccountRepository {
+}
+
+Bank --> AccountRepository
+AccountRepository <|.. InMemoryAccountRepository
+@enduml

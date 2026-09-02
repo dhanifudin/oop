@@ -1,0 +1,29 @@
+@startuml p11-lsp
+!include _common.iuml
+hide circle
+hide empty members
+
+class Order {
+  # description : String
+  # amount : int
+  --
+  + describe() : String
+}
+
+interface Shippable {
+  + ship() : String
+}
+
+class PhysicalOrder extends Order implements Shippable {
+  + ship() : String
+}
+
+class DigitalOrder extends Order {
+}
+
+note bottom of DigitalOrder
+  Does not implement Shippable:
+  digital orders simply have
+  no ship() to call.
+end note
+@enduml

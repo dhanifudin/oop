@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrowBlue2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <!-- 4 step boxes -->
+  <g filter="url(#softShadow)">
+    <rect x="20"  y="70" width="180" height="100" rx="16" fill="#1d4ed8"/>
+    <rect x="240" y="70" width="180" height="100" rx="16" fill="#2563eb"/>
+    <rect x="460" y="70" width="180" height="100" rx="16" fill="#1e40af"/>
+    <rect x="680" y="70" width="200" height="100" rx="16" fill="#1e3a8a"/>
+  </g>
+
+  <text x="110" y="110" text-anchor="middle" font-size="21.6" font-weight="700" fill="#ffffff">1</text>
+  <text x="110" y="135" text-anchor="middle" font-size="18.9" fill="#dbeafe">declare</text>
+  <text x="110" y="153" text-anchor="middle" font-size="18.9" fill="#dbeafe">variable</text>
+
+  <text x="330" y="110" text-anchor="middle" font-size="21.6" font-weight="700" fill="#ffffff">2</text>
+  <text x="330" y="135" text-anchor="middle" font-size="18.9" fill="#dbeafe">allocate</text>
+  <text x="330" y="153" text-anchor="middle" font-size="18.9" fill="#dbeafe">memory</text>
+
+  <text x="550" y="110" text-anchor="middle" font-size="21.6" font-weight="700" fill="#ffffff">3</text>
+  <text x="550" y="135" text-anchor="middle" font-size="18.9" fill="#dbeafe">constructor</text>
+  <text x="550" y="153" text-anchor="middle" font-size="18.9" fill="#dbeafe">runs</text>
+
+  <text x="780" y="110" text-anchor="middle" font-size="21.6" font-weight="700" fill="#ffffff">4</text>
+  <text x="780" y="135" text-anchor="middle" font-size="18.9" fill="#dbeafe">variable holds</text>
+  <text x="780" y="153" text-anchor="middle" font-size="18.9" fill="#dbeafe">the reference</text>
+
+  <!-- connecting arrows -->
+  <line x1="200" y1="120" x2="234" y2="120" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrowBlue2)"/>
+  <line x1="420" y1="120" x2="454" y2="120" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrowBlue2)"/>
+  <line x1="640" y1="120" x2="674" y2="120" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrowBlue2)"/>
+
+  <text x="450" y="220" text-anchor="middle" font-size="20.2" fill="#64748b">all four steps happen the instant you create a new object</text>
+</svg>

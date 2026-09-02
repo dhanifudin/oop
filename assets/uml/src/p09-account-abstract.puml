@@ -1,0 +1,39 @@
+@startuml p09-account-abstract
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+abstract class Account {
+  - accountNumber : String
+  - owner : Customer
+  - balance : double
+  --
+  + withdraw(amount : double) : boolean
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+  + {abstract} monthlyFee() : double
+}
+
+interface InterestBearing {
+  + applyInterest() : void
+}
+
+class SavingsAccount {
+  - interestRate : double
+  --
+  + monthlyFee() : double
+  + applyInterest() : void
+}
+
+class CheckingAccount {
+  - overdraftLimit : double
+  --
+  + monthlyFee() : double
+}
+
+Account <|-- SavingsAccount
+Account <|-- CheckingAccount
+InterestBearing <|.. SavingsAccount
+@enduml

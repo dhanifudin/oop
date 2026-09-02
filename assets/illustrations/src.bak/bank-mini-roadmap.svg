@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <line x1="70" y1="150" x2="830" y2="150" stroke="#bfdbfe" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- stop 1: single class -->
+  <g filter="url(#softShadow)">
+    <circle cx="120" cy="150" r="34" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <rect x="105" y="138" width="30" height="24" rx="3" fill="#1d4ed8"/>
+  <text x="120" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">Account</text>
+  <text x="120" y="222" text-anchor="middle" font-size="11" fill="#64748b">one class</text>
+
+  <path d="M158,150 L262,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- stop 2: hierarchy -->
+  <g filter="url(#softShadow)">
+    <circle cx="300" cy="150" r="34" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <rect x="286" y="132" width="28" height="16" rx="3" fill="#1d4ed8"/>
+  <rect x="272" y="156" width="24" height="14" rx="3" fill="#93c5fd"/>
+  <rect x="304" y="156" width="24" height="14" rx="3" fill="#93c5fd"/>
+  <text x="300" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">Savings /</text>
+  <text x="300" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">Checking</text>
+
+  <path d="M338,150 L442,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- stop 3: collection of transactions -->
+  <g filter="url(#softShadow)">
+    <circle cx="480" cy="150" r="34" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <rect x="463" y="136" width="34" height="10" rx="2" fill="#1d4ed8"/>
+  <rect x="463" y="150" width="34" height="10" rx="2" fill="#60a5fa"/>
+  <rect x="463" y="164" width="34" height="10" rx="2" fill="#93c5fd"/>
+  <text x="480" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">Bank +</text>
+  <text x="480" y="220" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">Transaction</text>
+
+  <path d="M518,150 L622,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- stop 4: GUI -->
+  <g filter="url(#softShadow)">
+    <circle cx="660" cy="150" r="34" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <rect x="640" y="135" width="40" height="30" rx="3" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="644" y="139" width="32" height="7" rx="1.5" fill="#93c5fd"/>
+  <text x="660" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">GUI App</text>
+
+  <path d="M698,150 L802,150" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- stop 5: database -->
+  <g filter="url(#softShadow)">
+    <circle cx="840" cy="150" r="34" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <ellipse cx="840" cy="137" rx="16" ry="6" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M824,137 v18 a16,6 0 0 0 32,0 v-18" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="840" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">+ Database</text>
+
+  <text x="450" y="270" text-anchor="middle" font-size="14" fill="#64748b">one project, growing from a single class into the full Bank Mini application</text>
+</svg>

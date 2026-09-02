@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <!-- table with 3 rows, row 1 highlighted -->
+  <g filter="url(#softShadow)">
+    <rect x="40" y="30" width="340" height="180" rx="10" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <rect x="40" y="30" width="340" height="40" fill="#eff6ff"/>
+  <text x="60" y="55" font-size="15.4" fill="#1d4ed8" font-weight="700">Account</text>
+  <text x="220" y="55" font-size="15.4" fill="#1d4ed8" font-weight="700">Owner</text>
+
+  <text x="60" y="95" font-size="15.4" fill="#0f172a">A001</text>
+  <text x="220" y="95" font-size="15.4" fill="#0f172a">Nadia</text>
+
+  <rect x="42" y="108" width="336" height="38" fill="#dbeafe"/>
+  <text x="60" y="132" font-size="15.4" fill="#1d4ed8" font-weight="700">A002</text>
+  <text x="220" y="132" font-size="15.4" fill="#1d4ed8" font-weight="700">Sari</text>
+
+  <text x="60" y="170" font-size="15.4" fill="#0f172a">A003</text>
+  <text x="220" y="170" font-size="15.4" fill="#0f172a">Rian</text>
+
+  <text x="210" y="235" text-anchor="middle" font-size="15.4" fill="#64748b">row 1 selected (highlighted)</text>
+
+  <path d="M385,127 L440,127" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue8)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="450" y="60" width="330" height="140" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.2"/>
+  </g>
+  <text x="615" y="92" text-anchor="middle" font-size="16.9" font-weight="700" fill="#166534">getSelectedRow()</text>
+  <text x="615" y="116" text-anchor="middle" font-size="15.4" fill="#166534">returns 1</text>
+  <text x="615" y="150" text-anchor="middle" font-size="16.9" font-weight="700" fill="#166534">getValueAt(1, 0)</text>
+  <text x="615" y="174" text-anchor="middle" font-size="15.4" fill="#166534">returns "A002"</text>
+
+  <text x="410" y="270" text-anchor="middle" font-size="16.9" fill="#94a3b8">the selected row's index tells the code</text>
+  <text x="410" y="294" text-anchor="middle" font-size="16.9" fill="#94a3b8">exactly which object the user means</text>
+</svg>

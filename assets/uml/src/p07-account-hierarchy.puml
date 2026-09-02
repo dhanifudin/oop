@@ -1,0 +1,34 @@
+@startuml p07-account-hierarchy
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Account {
+  - accountNumber : String
+  - owner : Customer
+  - balance : double
+  --
+  + withdraw(amount : double) : boolean
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+}
+
+class SavingsAccount {
+  - interestRate : double
+  --
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+}
+
+class CheckingAccount {
+  - overdraftLimit : double
+  --
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+}
+
+Account <|-- SavingsAccount
+Account <|-- CheckingAccount
+@enduml

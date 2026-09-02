@@ -1,0 +1,14 @@
+@startuml p02-circle
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Circle {
+  - radius : double
+  --
+  + Circle(radius : double)
+  + area() : double
+  + circumference() : double
+}
+@enduml

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <text x="410" y="35" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">heap</text>
+  <rect x="20" y="50" width="780" height="300" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,5"/>
+
+  <!-- Bank object -->
+  <g filter="url(#softShadow)">
+    <rect x="60" y="90" width="140" height="80" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="130" y="115" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">Bank</text>
+  <text x="130" y="135" text-anchor="middle" font-size="14.9" fill="#64748b">accounts</text>
+  <text x="130" y="150" text-anchor="middle" font-size="14.9" fill="#64748b">count = 2</text>
+
+  <!-- array object -->
+  <g filter="url(#softShadow)">
+    <rect x="280" y="90" width="150" height="80" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="355" y="112" text-anchor="middle" font-size="16.2" font-weight="700" fill="#1d4ed8">Account[]</text>
+  <rect x="295" y="125" width="55" height="24" rx="4" fill="#dbeafe"/>
+  <text x="322" y="141" text-anchor="middle" font-size="13.5" fill="#1d4ed8">[0]</text>
+  <rect x="360" y="125" width="55" height="24" rx="4" fill="#dbeafe"/>
+  <text x="387" y="141" text-anchor="middle" font-size="13.5" fill="#1d4ed8">[1]</text>
+
+  <path d="M200,120 L278,120" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- two Account objects -->
+  <g filter="url(#softShadow)">
+    <rect x="500" y="60" width="150" height="80" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="575" y="82" text-anchor="middle" font-size="16.2" font-weight="700" fill="#1d4ed8">Account A001</text>
+  <text x="575" y="102" text-anchor="middle" font-size="14.9" fill="#64748b">owner</text>
+  <text x="575" y="118" text-anchor="middle" font-size="14.9" fill="#64748b">balance = 350000</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="500" y="160" width="150" height="80" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="575" y="182" text-anchor="middle" font-size="16.2" font-weight="700" fill="#1d4ed8">Account A002</text>
+  <text x="575" y="202" text-anchor="middle" font-size="14.9" fill="#64748b">owner</text>
+  <text x="575" y="218" text-anchor="middle" font-size="14.9" fill="#64748b">balance = 200000</text>
+
+  <path d="M322,149 C322,190 420,95 498,95" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <path d="M387,149 C420,180 460,195 498,198" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- two Customer objects -->
+  <g filter="url(#softShadow)">
+    <rect x="690" y="60" width="110" height="60" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+  </g>
+  <text x="745" y="88" text-anchor="middle" font-size="16.2" font-weight="700" fill="#16a34a">Customer</text>
+  <text x="745" y="104" text-anchor="middle" font-size="13.5" fill="#64748b">Nadia</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="690" y="160" width="110" height="60" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2.5"/>
+  </g>
+  <text x="745" y="188" text-anchor="middle" font-size="16.2" font-weight="700" fill="#16a34a">Customer</text>
+  <text x="745" y="204" text-anchor="middle" font-size="13.5" fill="#64748b">Sari</text>
+
+  <path d="M650,90 L688,88" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <path d="M650,190 L688,190" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <text x="410" y="362" text-anchor="middle" font-size="17" fill="#1d4ed8" font-weight="600">Bank references an array, which references Account objects,</text>
+  <text x="410" y="384" text-anchor="middle" font-size="17" fill="#1d4ed8" font-weight="600">which reference Customer objects</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <!-- the blueprint -->
+  <g filter="url(#softShadow)">
+    <rect x="330" y="20" width="140" height="60" rx="12" fill="#1d4ed8"/>
+  </g>
+  <text x="400" y="46" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Rectangle</text>
+  <text x="400" y="65" text-anchor="middle" font-size="12" fill="#dbeafe">the class</text>
+
+  <!-- three arrows down, each landing on its card's top-center -->
+  <path d="M365,84 C280,115 200,150 148,193" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue3)"/>
+  <path d="M400,84 L400,193" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue3)"/>
+  <path d="M435,84 C520,115 600,150 652,193" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrowBlue3)"/>
+
+  <!-- three objects, an array, different sizes -->
+  <g filter="url(#softShadow)">
+    <rect x="70"  y="200" width="150" height="90"  rx="14" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+    <rect x="320" y="200" width="160" height="130" rx="14" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+    <rect x="575" y="200" width="150" height="70"  rx="14" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+
+  <!-- index tags -->
+  <rect x="70" y="180" width="46" height="26" rx="6" fill="#1e3a8a"/>
+  <text x="93" y="198" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">[0]</text>
+  <rect x="320" y="180" width="46" height="26" rx="6" fill="#1e3a8a"/>
+  <text x="343" y="198" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">[1]</text>
+  <rect x="575" y="180" width="46" height="26" rx="6" fill="#1e3a8a"/>
+  <text x="598" y="198" text-anchor="middle" font-size="14" fill="#ffffff" font-weight="700">[2]</text>
+
+  <text x="145" y="235" text-anchor="middle" font-size="14" fill="#64748b">width 6</text>
+  <text x="145" y="258" text-anchor="middle" font-size="14" fill="#64748b">height 4</text>
+  <text x="145" y="280" text-anchor="middle" font-size="12" fill="#94a3b8">area 24</text>
+
+  <text x="400" y="232" text-anchor="middle" font-size="14" fill="#64748b">width 3</text>
+  <text x="400" y="254" text-anchor="middle" font-size="14" fill="#64748b">height 3</text>
+  <text x="400" y="274" text-anchor="middle" font-size="12" fill="#94a3b8">area 9</text>
+  <text x="400" y="300" text-anchor="middle" font-size="12" fill="#94a3b8">a separate object,</text>
+  <text x="400" y="316" text-anchor="middle" font-size="12" fill="#94a3b8">its own data</text>
+
+  <text x="650" y="235" text-anchor="middle" font-size="14" fill="#64748b">width 8</text>
+  <text x="650" y="258" text-anchor="middle" font-size="14" fill="#64748b">height 2</text>
+
+  <text x="400" y="375" text-anchor="middle" font-size="14" fill="#94a3b8">one class, three independent objects, one array holding all three</text>
+</svg>

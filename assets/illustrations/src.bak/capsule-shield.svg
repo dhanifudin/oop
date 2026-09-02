@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- outer capsule shell -->
+  <g filter="url(#softShadow)">
+    <rect x="230" y="60" width="320" height="300" rx="60" fill="#eff6ff" stroke="#1d4ed8" stroke-width="3"/>
+  </g>
+
+  <!-- private data locked inside -->
+  <rect x="290" y="150" width="200" height="120" rx="14" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <path d="M370,175 h40 a10,10 0 0 1 10,10 v10 h-60 v-10 a10,10 0 0 1 10,-10 z" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+  <rect x="360" y="195" width="60" height="45" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="390" y="222" text-anchor="middle" font-size="11" fill="#1d4ed8" font-weight="700">private</text>
+  <text x="390" y="260" text-anchor="middle" font-size="12" fill="#64748b">the object's own data</text>
+
+  <!-- the only two doors: methods -->
+  <rect x="230" y="120" width="70" height="34" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="265" y="142" text-anchor="middle" font-size="12" fill="#16a34a" font-weight="700">method</text>
+
+  <rect x="480" y="120" width="70" height="34" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="515" y="142" text-anchor="middle" font-size="12" fill="#16a34a" font-weight="700">method</text>
+
+  <!-- outside caller reaching in only via the doors -->
+  <rect x="40" y="90" width="130" height="50" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="105" y="120" text-anchor="middle" font-size="13" fill="#64748b">other code</text>
+
+  <path d="M170,115 C200,120 220,125 240,135" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="610" y="90" width="130" height="50" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="675" y="120" text-anchor="middle" font-size="13" fill="#64748b">other code</text>
+
+  <path d="M610,115 C580,120 560,125 545,135" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- a blocked direct-access arrow at the bottom -->
+  <path d="M120,330 C220,300 320,290 355,265" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,5" marker-end="url(#arrowGray)"/>
+  <circle cx="200" cy="312" r="16" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <path d="M192,304 L208,320 M208,304 L192,320" stroke="#dc2626" stroke-width="2.5"/>
+
+  <text x="390" y="398" text-anchor="middle" font-size="14" fill="#1d4ed8" font-weight="600">data is only reachable through a method, there is no shortcut</text>
+</svg>

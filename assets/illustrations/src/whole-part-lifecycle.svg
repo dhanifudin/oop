@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 360" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <!-- composition side: Car / Engine -->
+  <g filter="url(#softShadow)">
+    <rect x="40" y="40" width="340" height="280" rx="20" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="210" y="72" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">composition</text>
+
+  <rect x="80" y="100" width="260" height="90" rx="14" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="210" y="128" text-anchor="middle" font-size="17.6" fill="#1d4ed8" font-weight="700">Car (alive)</text>
+  <rect x="120" y="145" width="180" height="30" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="210" y="165" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Engine (alive)</text>
+
+  <text x="210" y="225" text-anchor="middle" font-size="16.2" fill="#64748b">when the Car is discarded,</text>
+  <rect x="80" y="238" width="260" height="60" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,5"/>
+  <text x="210" y="262" text-anchor="middle" font-size="17.6" fill="#dc2626" font-weight="700">Car (gone)</text>
+  <text x="210" y="282" text-anchor="middle" font-size="16.2" fill="#dc2626">its Engine is gone too</text>
+
+  <!-- association side: Team / Player -->
+  <g filter="url(#softShadow)">
+    <rect x="440" y="40" width="340" height="280" rx="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  </g>
+  <text x="610" y="72" text-anchor="middle" font-size="21.6" font-weight="700" fill="#16a34a">association</text>
+
+  <rect x="480" y="100" width="260" height="60" rx="14" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <text x="610" y="135" text-anchor="middle" font-size="17.6" fill="#16a34a" font-weight="700">Team (alive)</text>
+
+  <rect x="480" y="180" width="120" height="50" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="540" y="210" text-anchor="middle" font-size="16.2" fill="#16a34a">Player</text>
+
+  <text x="610" y="255" text-anchor="middle" font-size="16.2" fill="#64748b">even if the Team disbands,</text>
+  <rect x="600" y="180" width="120" height="50" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="660" y="210" text-anchor="middle" font-size="16.2" fill="#16a34a">Player (still alive)</text>
+
+  <text x="610" y="280" text-anchor="middle" font-size="16.2" fill="#16a34a" font-weight="700">a Player can join another Team</text>
+
+  <text x="420" y="345" text-anchor="middle" font-size="18.9" fill="#1d4ed8" font-weight="600">how strongly a part's lifetime depends on the whole differs by relation</text>
+</svg>

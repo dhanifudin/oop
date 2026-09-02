@@ -1,0 +1,30 @@
+@startuml p11-before
+!include _common.iuml
+hide circle
+hide empty members
+
+class OrderProcessor {
+  + processOrder(customer, order)
+  - validate(customer, order) : boolean
+  - calculateDiscount(customer, order) : int
+  - saveToFile(customer, order, discount, total)
+  - printReceipt(customer, order, discount, total)
+}
+
+note right of OrderProcessor
+  Four responsibilities, one class:
+  validation, discount rules,
+  file storage, receipt formatting.
+end note
+
+OrderProcessor ..> Customer
+OrderProcessor ..> Order
+
+class Customer {
+  - type : String
+}
+
+class Order {
+  - description : String
+}
+@enduml
