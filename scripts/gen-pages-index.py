@@ -13,6 +13,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SLIDES_BUILD = REPO_ROOT / "slides/build"
 JOBSHEETS_BUILD = REPO_ROOT / "jobsheets/build"
+CHECKPOINT_ZIPS = REPO_ROOT / "code/bank-mini-zips"
 DOCS = REPO_ROOT / "docs-site"
 
 # id-pertemuan-01-pengantar-konsep-pbo.pdf -> lang="id", nn="01", slug="pengantar-konsep-pbo"
@@ -42,6 +43,7 @@ def main():
         shutil.rmtree(DOCS)
     (DOCS / "slides").mkdir(parents=True)
     (DOCS / "jobsheets").mkdir(parents=True)
+    (DOCS / "code").mkdir(parents=True)
 
     slides = collect(SLIDES_BUILD)
     jobsheets = collect(JOBSHEETS_BUILD)
@@ -67,6 +69,13 @@ def main():
                 dest = DOCS / "jobsheets" / src.name
                 shutil.copyfile(src, dest)
                 cells.append(f'<a href="jobsheets/{src.name}">Jobsheet ({label})</a>')
+
+        zip_src = CHECKPOINT_ZIPS / f"pertemuan-{nn}.zip"
+        if zip_src.exists():
+            zip_name = zip_src.name
+            shutil.copyfile(zip_src, DOCS / "code" / zip_name)
+            cells.append(f'<a href="code/{zip_name}">Code (ZIP)</a>')
+
         rows.append((nn, title, cells))
 
     links_html = "\n".join(

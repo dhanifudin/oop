@@ -283,7 +283,36 @@ mahasiswa yang memakai editor teks biasa.
   Pertemuan 2-11: struktur `src/id/ac/polinema/*.java` polos (javac/java).
   Pertemuan 13-16: proyek Maven (`pom.xml` dari `scripts/pom-template.xml`,
   `src/main/java/id/ac/polinema/{model,repository,ui}/`); Pertemuan 15
-  menambah dependency `org.xerial:sqlite-jdbc`.
+  menambah dependency `org.xerial:sqlite-jdbc`. `code/bank-mini-zips/
+  pertemuan-NN.zip`: checkpoint yang sama, dikemas jadi satu berkas zip
+  (folder teratas `bank-mini-pertemuan-NN/`) oleh
+  `scripts/gen-checkpoint-zips.py`, ditautkan dari situs GitHub Pages
+  (`scripts/gen-pages-index.py` + `.github/workflows/pages.yml`, lihat
+  `https://dhanifudin.com/oop/`) supaya mahasiswa yang tertinggal bisa
+  mengunduh langsung, tanpa git dan tanpa menunggu Dosen membagikan
+  berkas secara manual.
+  - **Gotcha nyata, ditemukan saat mengemas checkpoint 13-14 jadi zip
+    (jauh lebih terlihat begitu file dikemas untuk diunduh langsung
+    dibanding sekadar duduk di direktori lokal)**: reorganisasi paket
+    `model`/`repository`/`ui` di Pertemuan 13 (lihat "Cakupan kelas Bank
+    Mini" di atas) tidak pernah menghapus salinan LAMA di paket induk.
+    `build-checkpoints.py` menumpuk file lintas pertemuan dan hanya
+    membuang satu file kalau langkah yang menambahkannya menyertakan
+    manifest `.delete` (satu path relatif per baris, relatif terhadap
+    `id/ac/polinema/`; lihat docstring skrip itu) — langkah repackaging
+    Pertemuan 13 tidak pernah membuat `.delete`-nya, sehingga checkpoint
+    13 dan 14 diam-diam berisi SEMBILAN salinan basi (`Account.java`,
+    `AccountRepository.java`, `CheckingAccount.java`, `Customer.java`,
+    `InMemoryAccountRepository.java`, `InsufficientBalanceException.java`,
+    `InterestBearing.java`, `SavingsAccount.java`, `Transaction.java`) di
+    paket induk berdampingan dengan salinan benar di `model`/`repository`.
+    (`Bank.java`/`Main.java` BUKAN basi, keduanya memang seharusnya tetap
+    di paket induk.) Tetap berhasil dikompilasi (nama kelas berbeda paket,
+    tidak bentrok), jadi baru ketahuan setelah benar-benar mendaftar isi
+    checkpoint satu per satu, bukan dari galat compiler. Sudah diperbaiki
+    lewat `jobsheets/assets/code-src/pertemuan-13/langkah-01/.delete`;
+    kalau pertemuan mana pun ke depan memindahkan kelas antar paket,
+    selalu tambahkan manifest `.delete` yang sesuai di langkah yang sama.
 - `archive/pertemuan-11-solid/`: materi Pertemuan 11 versi lama (SOLID
   principles, domain pemrosesan pesanan), diarsipkan saat urutan lama
   (diturunkan dari PDF RPS) menempatkan Interface di minggu 11. Pemetaan
@@ -306,9 +335,26 @@ mahasiswa yang memakai editor teks biasa.
   ke `slides/`/`jobsheets/`), `build-checkpoints.py` (susun snapshot
   `code/bank-mini/pertemuan-NN/` dari `jobsheets/assets/code-src/`,
   termasuk berkas `.form` sejak Pertemuan 13),
+  `gen-checkpoint-zips.py` (kemas tiap checkpoint jadi
+  `code/bank-mini-zips/pertemuan-NN.zip`, hanya modul standar Python,
+  tidak perlu venv; secara sengaja mengecualikan `target/` dan metadata
+  IDE seperti `.classpath`/`.project`/`.settings` andai direktori
+  checkpoint pernah ikut ter-compile manual saat pengujian lokal),
   `pom-template.xml` (kerangka `pom.xml` untuk checkpoint Maven),
-  `render-all.sh` (jalankan semuanya lalu build seluruh PDF).
+  `gen-pages-index.py` (susun `docs-site/` berisi seluruh PDF slide/
+  jobsheet dan zip checkpoint plus `index.html` yang menautkannya, untuk
+  diunggah `.github/workflows/pages.yml` ke GitHub Pages),
+  `render-all.sh` (jalankan semuanya lalu build seluruh PDF; TIDAK
+  termasuk `gen-checkpoint-zips.py`/`gen-pages-index.py`, keduanya cuma
+  dipanggil dari alur CI Pages, lihat `make zips` untuk menjalankannya
+  manual).
 - `docs/`: dokumen RPS resmi (PDF), tidak diubah oleh materi ini.
+- Repo ini di-hosting di `github.com/dhanifudin/oop` (publik), dengan
+  GitHub Actions (`.github/workflows/pages.yml`, runner `ubuntu-latest`)
+  yang menjalankan seluruh pipeline lalu men-deploy ke GitHub Pages
+  (`https://dhanifudin.com/oop/`) setiap push ke `main`. Semua yang
+  di-gitignore di atas (checkpoint, gambar hasil render, PDF, zip) DIBUAT
+  ULANG oleh CI itu sendiri, bukan disalin dari commit manapun.
 
 ## Gaya slide (Marp)
 

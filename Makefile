@@ -8,12 +8,13 @@
 #   make diagrams   just re-render UML diagrams + SVG illustrations
 #   make images     just regenerate jobsheet code-snippet images
 #   make checkpoints  regenerate code/bank-mini/pertemuan-NN/ snapshots
+#   make zips       zip each checkpoint into code/bank-mini-zips/pertemuan-NN.zip
 #   make setup      create the Python venv used by the image-rendering scripts
 #   make clean      remove build/ output directories (source files untouched)
 #
 # See CLAUDE.md for the full asset pipeline and conventions.
 
-.PHONY: all pdf slides jobsheets diagrams images checkpoints setup clean
+.PHONY: all pdf slides jobsheets diagrams images checkpoints zips setup clean
 
 all: pdf
 
@@ -38,9 +39,12 @@ images: diagrams
 checkpoints:
 	./scripts/.venv/bin/python scripts/build-checkpoints.py
 
+zips: checkpoints
+	python3 scripts/gen-checkpoint-zips.py
+
 setup:
 	./scripts/setup.sh
 
 clean:
 	rm -rf slides/build jobsheets/build
-	rm -rf code/bank-mini
+	rm -rf code/bank-mini code/bank-mini-zips
