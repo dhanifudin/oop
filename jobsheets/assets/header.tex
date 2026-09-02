@@ -8,20 +8,21 @@
 %
 % Font choice varies by machine, so fall back down a chain instead of
 % hardcoding one: Segoe UI Emoji (present on this dev machine) -> Symbola
-% (monochrome, present on machines that have it installed) -> Noto Color
-% Emoji (apt package `fonts-noto-color-emoji` on the GitHub Actions
-% `ubuntu-latest` CI runner that builds and publishes these PDFs to Pages
-% -- unlike Apple Color Emoji's sbix glyphs, Noto's COLR/CBDT-format glyphs
-% render fine under lualatex) -> DejaVu Sans as a last resort (covers
-% warning-sign ⚠ but not the checkmark ✅, which would tofu there).
+% (monochrome; apt package `fonts-symbola` on the GitHub Actions
+% `ubuntu-latest` CI runner that builds and publishes these PDFs to Pages)
+% -> DejaVu Sans as a last resort (covers warning-sign ⚠ but not the
+% checkmark ✅, which would tofu there). Deliberately NOT using a color
+% emoji font (tried Noto Color Emoji here first): its bitmap/color glyph
+% tables aren't plain TrueType outlines, and lualatex's font loader
+% crashed trying to read it ("loca table not found") rather than falling
+% through gracefully, so \IfFontExistsTF alone can't protect against it --
+% only genuinely monochrome, outline-glyph fonts belong in this chain.
 \usepackage{fontspec}
 \IfFontExistsTF{Segoe UI Emoji}
   {\newfontfamily{\emojifont}{Segoe UI Emoji}}
   {\IfFontExistsTF{Symbola}
     {\newfontfamily{\emojifont}{Symbola}}
-    {\IfFontExistsTF{Noto Color Emoji}
-      {\newfontfamily{\emojifont}{Noto Color Emoji}}
-      {\newfontfamily{\emojifont}{DejaVu Sans}}}}
+    {\newfontfamily{\emojifont}{DejaVu Sans}}}
 \usepackage{newunicodechar}
 \newunicodechar{✅}{{\emojifont ✅}}
 \newunicodechar{⚠}{{\emojifont ⚠}}
