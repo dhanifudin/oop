@@ -1,0 +1,18 @@
+@startuml p02-account-transfer
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Account {
+  + ownerName : String
+  + balance : double
+  --
+  + deposit(amount : double) : void
+  + withdraw(amount : double) : void
+  + printInfo() : void
+  + formatBalance() : String
+  + isOverdrawn() : boolean
+  + transferTo(target : Account, amount : double) : void
+}
+@enduml

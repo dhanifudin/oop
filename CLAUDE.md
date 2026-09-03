@@ -86,10 +86,24 @@ mahasiswa yang memakai editor teks biasa.
   - **Pola "konsep dulu, baru studi kasus"**: tiap pertemuan memperkenalkan
     konsep baru lewat contoh generik kecil (toy example, satu kelas atau
     beberapa kelas kecil, TIDAK terkait Bank Mini) untuk paparan pertama,
-    baru menerapkannya ke Bank Mini. Slide konsep memakai toy untuk
-    ilustrasi utama dan menutup dengan diagram/contoh Bank Mini; jobsheet
-    praktikum memakai toy sebagai pemanasan singkat lalu menumbuhkan
-    proyek Bank Mini. Aturan ini berlaku untuk SELURUH bagian sebelum
+    baru menerapkannya ke Bank Mini. Toy generik ini HANYA muncul di slide
+    konsep (ilustrasi utama, ditutup dengan diagram/contoh Bank Mini);
+    **jobsheet praktikum sepenuhnya Bank-Mini-only, tidak lagi mengetik
+    kode toy generik apa pun ke dalam proyek**. Sebelumnya jobsheet
+    Pertemuan 2 sempat mengetik kelas `Rectangle` (dan tugas `Circle`)
+    langsung ke proyek `bank-mini`, sampai-sampai jobsheet Pertemuan 3
+    harus membuka dengan langkah menghapus `Rectangle.java`; ini sudah
+    diperbaiki (jobsheet Pertemuan 2 kini membangun `Account` langsung
+    dari Langkah 2, `Rectangle` tetap jadi contoh pengantar slide saja).
+    Bila sebuah langkah jobsheet butuh eksposur konsep yang belum tuntas
+    dibahas di kelas konsep, pakai kotak "Konsep Singkat" (lihat aturan
+    urutan di bawah), bukan menghidupkan kembali toy generik di kode.
+    Gambar memori stack/heap Pertemuan 2 (`p02-memory-new.png`,
+    `p02-memory-alias.png` di `jobsheets/assets/uml/`) adalah varian
+    berlabel `Account`, dirender dari `stack-heap-single-account.svg`/
+    `stack-heap-alias-account.svg`, terpisah dari SVG `Rectangle` generik
+    (`stack-heap-single.svg`/`stack-heap-alias.svg`) yang tetap dipakai
+    slide. Aturan generik-dulu di atas berlaku untuk SELURUH bagian sebelum
     "Menerapkan ke Bank Mini", bukan cuma ilustrasi pertama: pernah lolos
     tanpa disadari pada Pertemuan 3 dan 4, yang narasi pembukanya sudah
     langsung menyebut `Account`/`Bank`/`Customer` padahal ilustrasinya

@@ -2,13 +2,14 @@ package id.ac.polinema;
 
 public class Main {
     public static void main(String[] args) {
-        Rectangle original = new Rectangle(6, 4);
+        Account original = new Account();
+        original.ownerName = "Nadia";
+        original.deposit(500000);
 
-        System.out.println("Area: " + original.area());
+        Account copy = original;
+        copy.deposit(100000);
 
-        Rectangle copy = original;
-        copy.width = 10;
-        System.out.println("Via original: " + original.area());
-        System.out.println("Via copy: " + copy.area());
+        System.out.println("Via original: " + original.balance);
+        System.out.println("Via copy: " + copy.balance);
     }
 }

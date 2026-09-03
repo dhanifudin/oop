@@ -2,10 +2,9 @@ package id.ac.polinema;
 
 public class Main {
     public static void main(String[] args) {
-        Rectangle r = new Rectangle();
-        r.width = 6;
-        r.height = 4;
-
-        System.out.println("Rectangle " + r.width + "x" + r.height);
+        Account acc = new Account();
+        acc.ownerName = "Nadia";
+        acc.balance = 500000;
+        System.out.println(acc.ownerName + " - balance: " + acc.balance);
     }
 }

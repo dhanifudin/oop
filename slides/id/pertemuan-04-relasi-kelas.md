@@ -206,7 +206,7 @@ Objek-objek yang saling berelasi membentuk sebuah <b>graf objek</b> di heap: sat
 
 ## Bank Mengelola Banyak Account
 
-`Bank` menyimpan referensi ke banyak `Account` dalam sebuah array, mirip dengan array `Rectangle[]` pada Pertemuan 2, namun kali ini array tersebut menjadi atribut sebuah kelas, bukan variabel lokal di `main`.
+`Bank` menyimpan referensi ke banyak `Account` dalam sebuah array, mirip dengan array `Account[]` yang dibuat pada Pertemuan 2, namun kali ini array tersebut menjadi atribut sebuah kelas, bukan variabel lokal di `main`.
 
 <div class="term-box">
 Method <code>addAccount()</code> menambah anggota array, <code>findAccount()</code> mencari berdasarkan nomor rekening dan mengembalikan <code>null</code> bila tidak ditemukan, <code>printAllAccounts()</code> mencetak seluruh anggotanya satu per satu.

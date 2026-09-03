@@ -38,13 +38,11 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ## C. Langkah Kerja
 
-### Langkah 1: Melanjutkan Proyek, Membersihkan Rectangle
+### Langkah 1: Melanjutkan Proyek `bank-mini`
 
-Proyek `bank-mini` dari Pertemuan 2 dilanjutkan pada pertemuan ini. Kelas `Rectangle` hanya berperan sebagai contoh pengantar pada Pertemuan 2 dan tidak menjadi bagian dari Bank Mini, jadi hapus berkas `Rectangle.java` beserta baris pengujiannya (blok array `Rectangle[]`) di `Main.java`, dengan tetap mempertahankan bagian pengujian `Account`:
+Buka kembali proyek `bank-mini` dari Pertemuan 2 (atau lanjutkan dari checkpoint `code/bank-mini/pertemuan-02/` apabila tertinggal). Jalankan proyek untuk memastikan kondisinya masih sesuai kondisi akhir Pertemuan 2 sebelum `Account` diubah pada langkah berikutnya.
 
-![Main.java setelah blok pengujian Rectangle dihapus](../assets/code/pertemuan-03/p03-01-main.png){width=70%}
-
-> ✅ **Checkpoint:** program masih mengompilasi dan berjalan, menampilkan `Nadia - balance: 350000.0` seperti sebelumnya, tanpa berkas `Rectangle.java` di package `id.ac.polinema`.
+> ✅ **Checkpoint:** program masih mengompilasi dan berjalan, menampilkan tiga baris `- balance:` seperti pada akhir Pertemuan 2 (`Nadia`, `Budi`, `Sari`).
 
 ### Langkah 2: Menerapkan Encapsulation ke Account
 

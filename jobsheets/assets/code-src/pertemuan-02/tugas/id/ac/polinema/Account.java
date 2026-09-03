@@ -23,4 +23,9 @@ public class Account {
     public boolean isOverdrawn() {
         return balance < 0;
     }
+
+    public void transferTo(Account target, double amount) {
+        target.deposit(amount);
+        withdraw(amount);
+    }
 }

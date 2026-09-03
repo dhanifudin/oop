@@ -55,19 +55,17 @@ def rows_p01():
 
 def rows_p02():
     return [
-        (None, None, p02("langkah-02"), "Rectangle.java", "p02-02-rectangle"),
+        (None, None, p02("langkah-02"), "Account.java", "p02-02-account"),
         (p01("langkah-03"), "Main.java", p02("langkah-02"), "Main.java", "p02-02-main"),
-        (p02("langkah-02"), "Rectangle.java", p02("langkah-03"), "Rectangle.java", "p02-03-rectangle"),
+        (p02("langkah-02"), "Account.java", p02("langkah-03"), "Account.java", "p02-03-account"),
         (p02("langkah-02"), "Main.java", p02("langkah-03"), "Main.java", "p02-03-main"),
-        (p02("langkah-03"), "Rectangle.java", p02("langkah-04"), "Rectangle.java", "p02-04-rectangle"),
+        (p02("langkah-03"), "Account.java", p02("langkah-04"), "Account.java", "p02-04-account"),
         (p02("langkah-03"), "Main.java", p02("langkah-04"), "Main.java", "p02-04-main"),
         (p02("langkah-04"), "Main.java", p02("langkah-05-bug"), "Main.java", "p02-05-bug-main"),
         (p02("langkah-05-bug"), "Main.java", p02("langkah-05-fix"), "Main.java", "p02-05-fix-main"),
-        (None, None, p02("langkah-06"), "Account.java", "p02-06-account"),
         (p02("langkah-05-fix"), "Main.java", p02("langkah-06"), "Main.java", "p02-06-main"),
-        (p02("langkah-06"), "Main.java", p02("langkah-07"), "Main.java", "p02-07-main"),
-        (None, None, p02("tugas"), "Circle.java", "p02-tugas-circle"),
-        (p02("langkah-07"), "Main.java", p02("tugas"), "Main.java", "p02-tugas-main"),
+        (p02("langkah-04"), "Account.java", p02("tugas"), "Account.java", "p02-tugas-account"),
+        (p02("langkah-06"), "Main.java", p02("tugas"), "Main.java", "p02-tugas-main"),
     ]
 
 
@@ -77,9 +75,8 @@ def p03(step):
 
 def rows_p03():
     return [
-        (p02("langkah-07"), "Main.java", p03("langkah-01"), "Main.java", "p03-01-main"),
-        (p02("langkah-06"), "Account.java", p03("langkah-02"), "Account.java", "p03-02-account"),
-        (p03("langkah-01"), "Main.java", p03("langkah-02"), "Main.java", "p03-02-main"),
+        (p02("langkah-04"), "Account.java", p03("langkah-02"), "Account.java", "p03-02-account"),
+        (p02("langkah-06"), "Main.java", p03("langkah-02"), "Main.java", "p03-02-main"),
         (p03("langkah-02"), "Account.java", p03("tugas"), "Account.java", "p03-tugas-account"),
         (None, None, p03("tugas"), "Main.java", "p03-tugas-main"),
     ]
