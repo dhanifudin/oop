@@ -1,0 +1,29 @@
+@startuml p15-accountrepository-jdbc
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Bank {
+  + saveAccount(account : Account) : void
+}
+
+interface AccountRepository {
+  + save(account : Account) : void
+  + findByNumber(accountNumber : String) : Account
+  + findAll() : Collection<Account>
+}
+
+class JdbcAccountRepository {
+}
+
+note right of JdbcAccountRepository
+  Menggantikan InMemoryAccountRepository
+  (Pertemuan 11): data kini tersimpan
+  di berkas SQLite, bukan di memori.
+end note
+
+Bank --> AccountRepository
+AccountRepository <|.. JdbcAccountRepository
+@enduml

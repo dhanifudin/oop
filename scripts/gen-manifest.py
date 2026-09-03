@@ -245,6 +245,43 @@ def rows_p14():
     ]
 
 
+def p15(step):
+    return pw("15", step)
+
+
+def rows_p15():
+    return [
+        (None, None, p15("langkah-01"), "repository/JdbcAccountRepository.java",
+         "p15-01-jdbcaccountrepository-save", [(1, 3), (17, 64)]),
+        (None, None, p15("langkah-01"), "repository/JdbcAccountRepository.java",
+         "p15-01-jdbcaccountrepository-find", [(1, 3), (66, 106)]),
+        (p14("langkah-02"), "Bank.java", p15("langkah-01"), "Bank.java",
+         "p15-01-bank-saveaccount", [(1, 10), (28, 34)]),
+        (p14("langkah-02"), "Bank.java", p15("langkah-01"), "Bank.java",
+         "p15-01-bank-processmonthend", [(1, 3), (48, 57)]),
+        (p14("langkah-02"), "ui/BankMiniFrame.java", p15("langkah-01"), "ui/BankMiniFrame.java",
+         "p15-01-bankminiframe-constructor", [(1, 9), (18, 34)]),
+        (p14("langkah-02"), "ui/BankMiniFrame.java", p15("langkah-01"), "ui/BankMiniFrame.java",
+         "p15-01-bankminiframe-savecalls", [(1, 3), (240, 294)]),
+        (None, None, p15("langkah-02"), "PasswordHasher.java", "p15-02-passwordhasher"),
+        (None, None, p15("langkah-02"), "repository/InMemoryUserRepository.java",
+         "p15-02-inmemoryuserrepository"),
+        (None, None, p15("langkah-02"), "repository/JdbcUserRepository.java",
+         "p15-02-jdbcuserrepository-seed", [(1, 3), (13, 39)]),
+        (None, None, p15("langkah-02"), "repository/JdbcUserRepository.java",
+         "p15-02-jdbcuserrepository-find", [(1, 3), (41, 69)]),
+        (None, None, p15("langkah-02"), "ui/LoginFrame.java", "p15-02-loginhandler",
+         [(1, 6), (73, 88)]),
+        (p14("langkah-02"), "Main.java", p15("langkah-02"), "Main.java", "p15-02-main"),
+        (p15("langkah-01"), "ui/BankMiniFrame.java", p15("tugas"), "ui/BankMiniFrame.java",
+         "p15-tugas-bankminiframe-constructor", [(1, 9), (18, 24)]),
+        (p15("langkah-02"), "ui/LoginFrame.java", p15("tugas"), "ui/LoginFrame.java",
+         "p15-tugas-loginhandler", [(1, 6), (73, 88)]),
+        (p15("langkah-02"), "repository/JdbcUserRepository.java", p15("tugas"),
+         "repository/JdbcUserRepository.java", "p15-tugas-seconduser", [(1, 3), (34, 40)]),
+    ]
+
+
 # Registry of per-meeting row builders. Add new entries here as new
 # meetings' code-src steps are authored; each function returns a list of
 # (prev_dir_or_None, prev_filename, curr_dir, curr_filename, out_name) rows.
@@ -260,6 +297,7 @@ MEETINGS = {
     "11": rows_p11,
     "13": rows_p13,
     "14": rows_p14,
+    "15": rows_p15,
 }
 
 

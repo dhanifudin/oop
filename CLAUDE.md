@@ -115,7 +115,29 @@ mahasiswa yang memakai editor teks biasa.
     `BusinessAccount` (tugas mandiri), `Bank`, `Transaction`,
     `InsufficientBalanceException`, interface `InterestBearing`,
     `Auditable`, dan `AccountRepository`, kelas GUI/JDBC `BankMiniFrame`
-    dan `JdbcAccountRepository`. Paket `id.ac.polinema`; subpaket
+    dan `JdbcAccountRepository`. Pertemuan 15 menambah cakupan ini dengan
+    mekanisme autentikasi sederhana (permintaan eksplisit pengguna,
+    bukan penambahan tak terarah): `User` (model, `username` +
+    `passwordHash`), interface `UserRepository`,
+    `InMemoryUserRepository` (preview, mengikuti pola
+    `AccountRepository` dari Pertemuan 11), `JdbcUserRepository`, kelas
+    utilitas `PasswordHasher` (SHA-256 lewat `java.security.MessageDigest`,
+    TANPA dependency eksternal; jobsheet/slide WAJIB memberi warn-box
+    eksplisit bahwa sistem produksi memakai hashing bergaram dan
+    berulang seperti bcrypt/Argon2/PBKDF2, SHA-256 polos di sini murni
+    penyederhanaan pengajaran, bukan contoh siap produksi), dan
+    `LoginFrame` (GUI, memakai `JPasswordField` bukan `JTextField` biasa
+    untuk kolom sandi). Alasan penempatan di Pertemuan 15, bukan 13-14:
+    autentikasi sungguhan butuh kredensial yang tersimpan dan diperiksa
+    dari data persisten, bukan `if` yang di-hardcode di kode Java,
+    sehingga baru masuk akal setelah database (JDBC) diperkenalkan;
+    Pertemuan 14 menutup dengan catatan singkat yang secara eksplisit
+    menyebut celah ini dan menunjuk ke Pertemuan 15
+    (`jobsheets/id/pertemuan-14-gui-netbeans-matisse.md`, bagian D).
+    `PasswordHasher` diletakkan di paket induk `id.ac.polinema` (bukan
+    subpaket baru), mengikuti pola `Bank`/`Main`: kelas yang tidak cocok
+    masuk `model`/`repository`/`ui` tetap di paket induk, bukan dalih
+    untuk menambah subpaket keempat. Paket `id.ac.polinema`; subpaket
     `model`/`repository`/`ui` baru dipakai mulai Pertemuan 13
     (fase Maven/GUI). Evolusi kelas per pertemuan praktikum (state SETELAH
     pertemuan tsb, mengikuti pemetaan topik resmi di atas): Pertemuan 2
@@ -140,8 +162,20 @@ mahasiswa yang memakai editor teks biasa.
     `AccountRepository` + `InMemoryAccountRepository` sebagai preview);
     13-14 SATU
     proyek Maven + GUI dibangun berkesinambungan (lihat catatan Matisse di
-    bawah); 15 `AccountRepository`/`JdbcAccountRepository` + SQLite
-    (menyambung interface Pertemuan 11); 16 PBL (mahasiswa memilih
+    bawah); 15 Langkah 1: `JdbcAccountRepository` + SQLite menggantikan
+    `InMemoryAccountRepository` (menyambung interface Pertemuan 11, tanpa
+    mengubah `Bank.java`), plus `Bank.saveAccount()` (baru) dipanggil
+    ulang setelah `deposit()`/`withdraw()`/`processMonthEnd()` supaya
+    perubahan saldo ikut tersimpan (payoff konkret: penyimpanan in-memory
+    otomatis "tersimpan" lewat referensi objek yang sama, penyimpanan
+    database TIDAK, harus disimpan ulang secara eksplisit setiap
+    perubahan, perbedaan nyata yang jadi materi "Mengapa Ini Penting?").
+    Langkah 2: `User`/`UserRepository`/`InMemoryUserRepository` (preview
+    singkat) lalu `JdbcUserRepository`/`PasswordHasher`/`LoginFrame`,
+    `Main.java` menjalankan `LoginFrame` lebih dulu, bukan `BankMiniFrame`
+    langsung. Tugas: `BankMiniFrame` menampilkan "Logged in as:
+    &lt;username&gt;" di judul jendela (constructor menerima parameter
+    username), plus satu pengguna tambahan; 16 PBL (mahasiswa memilih
     ekstensi sendiri). Rencana lengkap ada di
     `/home/dhs/.claude/plans/you-re-top-oop-lecturer-elegant-wind.md`
     (riwayat plan mode, bukan bagian repo ini, tapi jadi rujukan desain).

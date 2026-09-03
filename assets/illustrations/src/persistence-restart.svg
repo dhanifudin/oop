@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrowRedRestart" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowGreenRestart" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- left column: in-memory storage -->
+  <text x="200" y="35" text-anchor="middle" font-size="21.6" font-weight="700" fill="#dc2626">In-Memory Storage</text>
+
+  <rect x="90" y="55" width="220" height="70" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="200" y="82" text-anchor="middle" font-size="16.2" fill="#64748b">before restart</text>
+  <text x="200" y="108" text-anchor="middle" font-size="18.9" fill="#0f172a" font-weight="700">notes = 3</text>
+
+  <line x1="200" y1="125" x2="200" y2="180" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowRedRestart)"/>
+  <text x="235" y="157" font-size="15.8" fill="#dc2626">app restarts</text>
+
+  <rect x="90" y="185" width="220" height="80" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="200" y="210" text-anchor="middle" font-size="16.2" fill="#64748b">after restart</text>
+  <text x="200" y="238" text-anchor="middle" font-size="18.9" fill="#dc2626" font-weight="700">notes = 0</text>
+  <text x="200" y="258" text-anchor="middle" font-size="15.8" fill="#dc2626">data lost</text>
+
+  <!-- right column: database storage -->
+  <text x="600" y="35" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">Database Storage</text>
+
+  <rect x="490" y="55" width="220" height="70" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="600" y="82" text-anchor="middle" font-size="16.2" fill="#64748b">before restart</text>
+  <text x="600" y="108" text-anchor="middle" font-size="18.9" fill="#0f172a" font-weight="700">notes = 3</text>
+
+  <line x1="600" y1="125" x2="600" y2="180" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreenRestart)"/>
+  <text x="635" y="157" font-size="15.8" fill="#16a34a">app restarts</text>
+
+  <rect x="490" y="185" width="220" height="80" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="600" y="210" text-anchor="middle" font-size="16.2" fill="#64748b">after restart</text>
+  <text x="600" y="238" text-anchor="middle" font-size="18.9" fill="#16a34a" font-weight="700">notes = 3</text>
+  <text x="600" y="258" text-anchor="middle" font-size="15.8" fill="#16a34a">data survives</text>
+
+  <text x="400" y="305" text-anchor="middle" font-size="18.9" fill="#64748b" font-weight="600">restart clears RAM, but a database file on disk stays intact</text>
+</svg>

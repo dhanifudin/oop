@@ -1,0 +1,31 @@
+@startuml p15-userrepository-auth
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class LoginFrame {
+  - loginButtonActionPerformed(evt) : void
+}
+
+interface UserRepository {
+  + findByUsername(username : String) : User
+}
+
+class InMemoryUserRepository {
+}
+
+class JdbcUserRepository {
+}
+
+class User {
+  - username : String
+  - passwordHash : String
+}
+
+LoginFrame --> UserRepository
+UserRepository <|.. InMemoryUserRepository
+UserRepository <|.. JdbcUserRepository
+UserRepository ..> User
+@enduml

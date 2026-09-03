@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 340" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="arrowRedGate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowGreenGate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- left column: no login gate -->
+  <text x="200" y="35" text-anchor="middle" font-size="21.6" font-weight="700" fill="#dc2626">No Login Gate</text>
+
+  <rect x="90" y="50" width="220" height="55" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="200" y="72" text-anchor="middle" font-size="16.2" fill="#64748b">any user</text>
+  <text x="200" y="92" text-anchor="middle" font-size="16.2" fill="#64748b">runs the app directly</text>
+
+  <line x1="200" y1="105" x2="200" y2="150" stroke="#dc2626" stroke-width="3" stroke-dasharray="7,5" marker-end="url(#arrowRedGate)"/>
+  <text x="245" y="132" font-size="14.8" fill="#dc2626">no check</text>
+
+  <rect x="90" y="155" width="220" height="90" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="200" y="185" text-anchor="middle" font-size="18.2" fill="#dc2626" font-weight="700">Full Account Access</text>
+  <text x="200" y="212" text-anchor="middle" font-size="15.8" fill="#dc2626">no identity checked</text>
+  <text x="200" y="232" text-anchor="middle" font-size="15.8" fill="#dc2626">before reaching it</text>
+
+  <!-- right column: login gate -->
+  <text x="600" y="35" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">Login Gate</text>
+
+  <rect x="480" y="50" width="240" height="55" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="600" y="72" text-anchor="middle" font-size="16.2" fill="#64748b">user enters</text>
+  <text x="600" y="92" text-anchor="middle" font-size="16.2" fill="#64748b">username + password</text>
+
+  <line x1="600" y1="105" x2="600" y2="140" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arrowGreenGate)"/>
+
+  <rect x="480" y="145" width="240" height="55" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  <text x="600" y="168" text-anchor="middle" font-size="17.6" fill="#1d4ed8" font-weight="700">Login Gate</text>
+  <text x="600" y="188" text-anchor="middle" font-size="14.8" fill="#1d4ed8">checks stored credentials</text>
+
+  <line x1="600" y1="200" x2="600" y2="235" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreenGate)"/>
+  <text x="640" y="222" font-size="14.8" fill="#16a34a">only if valid</text>
+
+  <rect x="480" y="240" width="240" height="75" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="600" y="266" text-anchor="middle" font-size="18.2" fill="#16a34a" font-weight="700">Full Account Access</text>
+  <text x="600" y="292" text-anchor="middle" font-size="15.8" fill="#16a34a">granted only after login</text>
+
+  <text x="400" y="330" text-anchor="middle" font-size="18.9" fill="#64748b" font-weight="600">a login gate makes sure only verified users reach real data</text>
+</svg>

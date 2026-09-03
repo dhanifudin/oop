@@ -31,3 +31,9 @@ echo "==> jobsheets/assets/uml/p11-collections-motivation.png (from collections-
 
 rsvg-convert -w 1400 "$SRC/srp-split.svg" -o jobsheets/assets/uml/p11-srp-split.png
 echo "==> jobsheets/assets/uml/p11-srp-split.png (from srp-split.svg)"
+
+rsvg-convert -w 1400 "$SRC/persistence-restart.svg" -o jobsheets/assets/uml/p15-persistence-restart.png
+echo "==> jobsheets/assets/uml/p15-persistence-restart.png (from persistence-restart.svg)"
+
+rsvg-convert -w 1400 "$SRC/login-gate.svg" -o jobsheets/assets/uml/p15-login-gate.png
+echo "==> jobsheets/assets/uml/p15-login-gate.png (from login-gate.svg)"

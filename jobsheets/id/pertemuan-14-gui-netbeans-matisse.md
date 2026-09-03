@@ -90,6 +90,8 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa validasi `NumberFormatException` tetap diperlukan di GUI, padahal pengguna "seharusnya" hanya mengetik angka pada kolom Amount? (b) Bandingkan bagaimana `InsufficientBalanceException` ditangani di Pertemuan 10 (dicetak ke konsol) dengan di jobsheet ini (ditampilkan sebagai dialog). Apa yang berubah, dan apa yang tetap sama?
 
+Perhatikan satu hal yang sengaja belum dibahas: siapa pun yang menjalankan `BankMiniFrame` langsung mendapat akses penuh ke seluruh rekening, tanpa login sama sekali. Aplikasi perbankan sungguhan tidak pernah dirilis seperti ini. Pertemuan 15 menutup celah ini dengan menambahkan mekanisme autentikasi yang sesungguhnya, sekaligus alasan konkret pertama mengapa Bank Mini butuh database: kredensial login harus disimpan dan diperiksa dari data yang tersimpan, bukan dari nilai yang ditulis langsung di kode Java.
+
 ## E. Kriteria Penilaian
 
 | Komponen | Bobot | Kriteria Lengkap (100%) | Kriteria Minimum |
