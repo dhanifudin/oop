@@ -197,11 +197,11 @@ Kelas dengan satu tanggung jawab jauh lebih aman diubah: mengganti cara pengirim
 ## Open/Closed dan Liskov Substitution (Recap)
 
 <div class="term-box">
-<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah jenis rekening baru tidak pernah mengubah kode <code>Account</code> yang sudah ada, hanya menambah subclass baru dengan <code>canWithdraw()</code>-nya sendiri.
+<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah subclass <code>PaymentMethod</code> baru tidak pernah mengubah kode superclass yang sudah ada, subclass baru cukup meng-override method miliknya sendiri.
 </div>
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>SavingsAccount</code> dan <code>CheckingAccount</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Account</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah.
+<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>Dog</code> dan <code>Cat</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Animal</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah.
 </div>
 
 ---
@@ -209,7 +209,7 @@ Kelas dengan satu tanggung jawab jauh lebih aman diubah: mengganti cara pengirim
 ## Interface Segregation dan Dependency Inversion (Recap dan Baru)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: <code>InterestBearing</code> hanya diterapkan pada rekening berbunga, bukan ditambahkan ke <code>Account</code> untuk semua jenis rekening.
+<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: kemampuan seperti "bisa dibandingkan" dideklarasikan sebagai interface kecil tersendiri, bukan digabung ke satu interface besar yang memaksa kelas mengimplementasikan method yang tidak relevan baginya.
 </div>
 
 <div class="term-box">
@@ -223,7 +223,7 @@ Kelas dengan satu tanggung jawab jauh lebih aman diubah: mengganti cara pengirim
 Bayangkan kelas `OrderProcessor` yang bergantung langsung pada kelas konkret `MySqlDatabase`. Migrasi ke database lain, atau menambahkan pengujian otomatis (yang butuh basis data tiruan agar tidak menyentuh data sungguhan), sama-sama menjadi sulit tanpa mengubah `OrderProcessor` itu sendiri, karena ia "tahu" secara langsung bahwa penyimpanannya pasti MySQL.
 
 <div class="term-box">
-Dependency Inversion Principle membalik arah ketergantungan ini: <code>OrderProcessor</code> cukup bergantung pada interface <code>Repository</code>, implementasi konkretnya (MySQL, penyimpanan sementara, atau versi tiruan untuk pengujian) bebas berganti tanpa <code>OrderProcessor</code> pernah tahu atau peduli. Inilah prinsip yang sama yang membuat <code>AccountRepository</code> pada Bank Mini bisa berganti implementasi di Pertemuan 15 tanpa mengubah <code>Bank.java</code>.
+Dependency Inversion Principle membalik arah ketergantungan ini: <code>OrderProcessor</code> cukup bergantung pada interface <code>Repository</code>, implementasi konkretnya (MySQL, penyimpanan sementara, atau versi tiruan untuk pengujian) bebas berganti tanpa <code>OrderProcessor</code> pernah tahu atau peduli. Prinsip yang sama ini diterapkan langsung pada Bank Mini di Bagian 3, dan dipakai lagi saat cara penyimpanan datanya diganti ke database pada Pertemuan 15.
 </div>
 
 ---

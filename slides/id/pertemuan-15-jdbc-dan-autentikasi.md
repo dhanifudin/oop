@@ -158,16 +158,6 @@ JDBC (Java Database Connectivity) adalah API bawaan Java untuk terhubung ke data
 
 ---
 
-## Mengganti Penyimpanan Tanpa Mengubah Pemakainya
-
-![h:340 AccountRepository sekarang diimplementasikan oleh JdbcAccountRepository, menggantikan versi in-memory](../assets/uml/p15-accountrepository-jdbc.png)
-
-<div class="tip-box">
-Ini adalah Dependency Inversion Principle (Pertemuan 11) beraksi lagi: <code>Bank</code> hanya bergantung pada interface <code>AccountRepository</code>, sehingga penyimpanan in-memory bisa diganti penyimpanan database hanya dengan menulis implementasi baru, tanpa menyentuh <code>Bank</code> sama sekali.
-</div>
-
----
-
 <!-- _class: divider -->
 
 # Bagian 2
@@ -205,20 +195,20 @@ Password tidak boleh disimpan apa adanya (plain text). Password di-hash (diubah 
 
 ---
 
-## Pola yang Sama, Diterapkan Lagi
-
-![h:340 UserRepository diimplementasikan oleh InMemoryUserRepository dan JdbcUserRepository, persis pola AccountRepository](../assets/uml/p15-userrepository-auth.png)
-
-<div class="term-box">
-<code>UserRepository</code> mengikuti bentuk persis sama dengan <code>AccountRepository</code>: satu interface, satu implementasi in-memory sebagai preview, satu implementasi JDBC untuk penyimpanan sungguhan. Begitu sebuah pola desain dikuasai, ia bisa dipakai berulang untuk kebutuhan yang berbeda.
-</div>
-
----
-
 <!-- _class: divider -->
 
 # Bagian 3
 ## Menerapkan ke Bank Mini
+
+---
+
+## Mengganti Penyimpanan Tanpa Mengubah Pemakainya
+
+![h:340 AccountRepository sekarang diimplementasikan oleh JdbcAccountRepository, menggantikan versi in-memory](../assets/uml/p15-accountrepository-jdbc.png)
+
+<div class="tip-box">
+Ini adalah Dependency Inversion Principle (Pertemuan 11) beraksi lagi: <code>Bank</code> hanya bergantung pada interface <code>AccountRepository</code>, sehingga penyimpanan in-memory bisa diganti penyimpanan database hanya dengan menulis implementasi baru, tanpa menyentuh <code>Bank</code> sama sekali.
+</div>
 
 ---
 
@@ -228,6 +218,16 @@ Password tidak boleh disimpan apa adanya (plain text). Password di-hash (diubah 
 
 <div class="tip-box">
 Checkpoint jobsheet ini membuktikan persistensi secara konkret: ubah saldo sebuah rekening, tutup aplikasi sepenuhnya, jalankan ulang, saldo yang berubah tetap ada.
+</div>
+
+---
+
+## Pola yang Sama, Diterapkan Lagi
+
+![h:340 UserRepository diimplementasikan oleh InMemoryUserRepository dan JdbcUserRepository, persis pola AccountRepository](../assets/uml/p15-userrepository-auth.png)
+
+<div class="term-box">
+<code>UserRepository</code> mengikuti bentuk persis sama dengan <code>AccountRepository</code>: satu interface, satu implementasi in-memory sebagai preview, satu implementasi JDBC untuk penyimpanan sungguhan. Begitu sebuah pola desain dikuasai, ia bisa dipakai berulang untuk kebutuhan yang berbeda.
 </div>
 
 ---

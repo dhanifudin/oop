@@ -99,7 +99,20 @@ mahasiswa yang memakai editor teks biasa.
     `Bank`/`Account` di diagram yang sama. Periksa toy generik dan
     ilustrasinya benar-benar konsisten (nama kelas yang disebut di
     narasi sama dengan yang tampil di gambar) sebelum menganggap sebuah
-    "Bagian" selesai.
+    "Bagian" selesai. **Larangan ini juga berlaku untuk referensi recap ke
+    penerapan Bank Mini pertemuan-pertemuan sebelumnya**, bukan cuma
+    perkenalan pertama sebuah konsep: pernah lolos tanpa disadari di
+    slide recap OCP/LSP/ISP pada Pertemuan 11 (menjelaskan prinsip lewat
+    `Account`/`canWithdraw()`/`SavingsAccount`/`InterestBearing`, alih-alih
+    memakai ulang contoh generik yang sama persis dipakai saat konsep itu
+    pertama diajarkan) dan pada slide "Mengapa Ini Penting?" overloading
+    Pertemuan 7 (memakai nama method `deposit()`/`depositAmount()` Bank
+    Mini). Perbaikannya: recap tetap memakai ulang contoh generik dari
+    pertemuan asalnya (mis. `PaymentMethod` untuk OCP, `Animal`/`Dog`/`Cat`
+    untuk LSP), forward-reference ke pertemuan lain yang menyebut nama
+    kelas Bank Mini juga masuk kategori ini (mis. kalimat penutup slide
+    DIP yang menyebut `AccountRepository`/`Bank.java` untuk menunjuk ke
+    Pertemuan 15, seharusnya tanpa identifier).
   - **Setiap konsep butuh slide "Mengapa Ini Penting?" yang berdiri
     sendiri**, ditempatkan setelah slide masalah/motivasi awal dan
     sebelum definisi formal (term-box). Slide ini HARUS menjelaskan

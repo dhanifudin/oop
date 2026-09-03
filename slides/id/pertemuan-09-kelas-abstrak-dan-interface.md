@@ -137,6 +137,16 @@ Bayangkan kelas `Shape` sebagai superclass umum untuk `Circle` dan `Square`. Set
 
 ---
 
+## Mengapa Ini Penting?
+
+Bayangkan sebuah framework GUI dipakai oleh ratusan aplikasi berbeda: setiap komponen wajib tahu cara menggambar dirinya sendiri, tetapi "komponen generik" yang belum tahu cara menggambar apa pun tidak pernah boleh benar-benar dibuat. Tanpa cara memastikan hal ini, sebuah objek yang belum lengkap bisa saja lolos dibuat, dan galatnya baru muncul jauh kemudian, saat method yang belum diimplementasikan itu benar-benar dipanggil pengguna.
+
+<div class="term-box">
+Kelas abstrak memindahkan kesalahan ini dari saat program berjalan ke saat program dikompilasi: subclass yang belum mengimplementasikan seluruh method abstrak warisannya tidak akan pernah bisa diinstansiasi sama sekali, compiler yang menolaknya, bukan pengguna aplikasi yang menemukannya belakangan. Inilah sebabnya kelas abstrak menjadi fondasi banyak framework dan library besar, dari GUI toolkit sampai driver database.
+</div>
+
+---
+
 ## Method Abstrak
 
 ![Shape sebagai kelas abstrak, Circle dan Square mengimplementasikan area()](../assets/uml/p09-shape-abstract.png)

@@ -167,7 +167,7 @@ Pola yang dipakai sama seperti exception handling di Pertemuan 10: bungkus opera
 
 ## Satu Tabel, Banyak Baris, Satu yang Dipilih
 
-Sebuah `JTable` bisa menampilkan puluhan baris sekaligus. Ketika pengguna mengklik sebuah tombol aksi (mis. "Withdraw"), kode itu sendiri tidak tahu rekening mana yang dimaksud, kecuali diberi tahu baris mana yang sedang disorot pengguna.
+Sebuah `JTable` bisa menampilkan puluhan baris sekaligus. Ketika pengguna mengklik sebuah tombol aksi (mis. "Delete" atau "Edit"), kode itu sendiri tidak tahu baris data mana yang dimaksud, kecuali diberi tahu baris mana yang sedang disorot pengguna.
 
 ---
 

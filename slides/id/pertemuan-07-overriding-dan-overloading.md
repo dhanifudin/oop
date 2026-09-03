@@ -200,10 +200,10 @@ Contoh umum: `println()` pada `System.out` sebenarnya adalah puluhan method over
 
 ## Mengapa Ini Penting?
 
-Tanpa overloading, setiap variasi cara memanggil sebuah operasi butuh nama method yang berbeda, misalnya `depositAmount()`, `depositAmountWithNote()`, `depositAmountWithNoteAndDate()`. Semakin banyak variasi, semakin sulit programmer lain mengingat nama mana yang harus dipakai untuk kebutuhan tertentu.
+Tanpa overloading, setiap variasi cara memanggil sebuah operasi butuh nama method yang berbeda, misalnya `printString()`, `printInt()`, `printDouble()`, `printBoolean()`. Semakin banyak variasi tipe data, semakin sulit programmer lain mengingat nama mana yang harus dipakai untuk kebutuhan tertentu.
 
 <div class="term-box">
-Overloading membuat API sebuah kelas terasa alami untuk dipakai: satu nama method yang sama, <code>deposit(...)</code>, cukup untuk seluruh variasi, dan compiler yang menentukan versi mana yang cocok berdasarkan argumen yang diberikan. Inilah sebabnya method seperti <code>println()</code> di Java memiliki puluhan versi overload, alih-alih puluhan nama method yang berbeda-beda.
+Overloading membuat API sebuah kelas terasa alami untuk dipakai: satu nama method yang sama, <code>println(...)</code>, cukup untuk seluruh variasi tipe data, dan compiler yang menentukan versi mana yang cocok berdasarkan argumen yang diberikan. Inilah sebabnya <code>println()</code> di Java memiliki puluhan versi overload, alih-alih puluhan nama method yang berbeda-beda.
 </div>
 
 ---
