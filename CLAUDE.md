@@ -327,6 +327,18 @@ mahasiswa yang memakai editor teks biasa.
     signature ter-crop di tengah). `scripts/render-uml.sh` menaikkan
     batas ini lewat `JDK_JAVA_OPTIONS="-DPLANTUML_LIMIT_SIZE=8192"`;
     jangan hapus baris ini.
+  - **PlantUML butuh Graphviz (`dot`) terpasang eksplisit di CI, bukan
+    cuma `plantuml`.** Paket `plantuml` Ubuntu hanya men-Recommends
+    `graphviz`, bukan men-Depends, sehingga `apt-get install
+    --no-install-recommends` (dipakai `.github/workflows/pages.yml` demi
+    instalasi yang ramping) diam-diam melewatkannya; tanpa `dot`, seluruh
+    diagram kelas (semua UML pertemuan pakai diagram kelas) gagal tampil
+    dengan benar di situs Pages hasil build CI. Bug ini tidak pernah
+    muncul saat verifikasi lokal di lingkungan Nix milik developer, karena
+    wrapper PlantUML dari Nix men-set `GRAPHVIZ_DOT` secara eksplisit ke
+    binary Graphviz miliknya sendiri; workflow CI sekarang menambahkan
+    `graphviz` secara eksplisit ke daftar paket `apt-get install` demi
+    konsistensi lingkungan.
   - **Gambar penuh-lebar (bukan dua-kolom) yang diikuti paragraf/kotak
     teks panjang bisa meluber ke luar slide** setelah `max-height` global
     dinaikkan, karena gambar kini benar-benar lebih tinggi dari

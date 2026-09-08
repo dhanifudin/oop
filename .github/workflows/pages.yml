@@ -31,11 +31,11 @@ jobs:
       - name: Install marp-cli
         run: npm install -g @marp-team/marp-cli@4.5.0
 
-      - name: Install pandoc, PlantUML, librsvg, TeX Live, and emoji/DejaVu fonts
+      - name: Install pandoc, PlantUML, Graphviz, librsvg, TeX Live, and emoji/DejaVu fonts
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            pandoc plantuml librsvg2-bin \
+            pandoc plantuml graphviz librsvg2-bin \
             fonts-dejavu fonts-dejavu-extra fonts-symbola \
             texlive-latex-base texlive-latex-recommended texlive-latex-extra \
             texlive-fonts-recommended texlive-luatex texlive-plain-generic
