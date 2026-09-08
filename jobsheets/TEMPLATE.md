@@ -6,8 +6,6 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | N (Minggu N) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | <tidak ada, proyek dibuat dari nol (Pertemuan 2)> ATAU `code/bank-mini/pertemuan-<N-1>/` (checkpoint minggu sebelumnya) |
-| **Kode Akhir** | <deskripsi state akhir proyek, mis. "proyek Bank Mini setelah Langkah N", checkpoint disalin ke `code/bank-mini/pertemuan-N/`> |
 
 <!--
 Catatan penulisan (hapus komentar ini di jobsheet final):
@@ -29,9 +27,14 @@ Catatan penulisan (hapus komentar ini di jobsheet final):
   Mini.
 - TIDAK ADA git di jobsheet ini: tidak ada langkah git init/branch/commit,
   tidak ada baris git di tabel metadata, tidak ada deliverable git log.
-  OOP adalah fokus mata kuliah ini, bukan version control. Mahasiswa yang
-  tertinggal melanjutkan dari checkpoint `code/bank-mini/pertemuan-<N-1>/`
-  yang dibagikan Dosen, bukan dari version control.
+  OOP adalah fokus mata kuliah ini, bukan version control. TIDAK ADA juga
+  baris "Kode Awal"/"Kode Akhir" di tabel metadata dan TIDAK ADA path
+  internal repo (`code/bank-mini/pertemuan-NN/`) di narasi mana pun:
+  starter code untuk mahasiswa yang tertinggal diunggah Dosen secara
+  terpisah di luar jobsheet ini, bukan lewat path repo atau version
+  control. Narasi "Kelanjutan kode"/Langkah 1 cukup menyebut nama
+  pertemuan sebelumnya ("melanjutkan proyek `bank-mini` dari Pertemuan
+  N-1"), tanpa menyebut path checkpoint mana pun.
 - Semua kode Java memakai package id.ac.polinema. Pertemuan 2-11 memakai
   javac/java langsung; Pertemuan 13 dan seterusnya (fase GUI/JDBC) beralih
   ke proyek Maven (mvn -q compile exec:java), dengan subpaket

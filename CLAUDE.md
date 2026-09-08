@@ -280,12 +280,25 @@ mahasiswa yang memakai editor teks biasa.
     per-halaman, bukan dari membaca markdown-nya). Tulis ulang jadi
     prosa dengan spasi/koma alami, atau di tabel sempit ganti istilah
     kode dengan frasa deskriptif singkat.
-  - **Kelanjutan proyek tanpa git**: mahasiswa yang tertinggal melanjutkan
-    dari checkpoint `code/bank-mini/pertemuan-<N-1>/` (snapshot lengkap
-    yang bisa langsung dijalankan/dibuka NetBeans), bukan dari version
-    control. Checkpoint dihasilkan otomatis oleh
-    `scripts/build-checkpoints.py` dari `jobsheets/assets/code-src/`
-    (lihat bagian Struktur direktori), jangan diedit manual.
+  - **Kelanjutan proyek tanpa git**: checkpoint `code/bank-mini/pertemuan-<N-1>/`
+    (snapshot lengkap yang bisa langsung dijalankan/dibuka NetBeans, bukan
+    version control) dihasilkan otomatis oleh `scripts/build-checkpoints.py`
+    dari `jobsheets/assets/code-src/` (lihat bagian Struktur direktori),
+    jangan diedit manual. **Path internal ini TIDAK LAGI disebut di teks
+    jobsheet mana pun** (bukan cuma tidak disebut dari awal): tabel
+    metadata jobsheet sebelumnya punya baris "Kode Awal"/"Kode Akhir" yang
+    menyebut path ini secara eksplisit, plus kotak "Tanpa NetBeans?" yang
+    menyuruh mahasiswa `cd bank-mini` untuk melanjutkan folder pertemuan
+    sebelumnya; keduanya dihapus dari seluruh jobsheet (dan dari
+    `jobsheets/TEMPLATE.md`) karena path repo-internal ini tidak berarti
+    apa pun bagi mahasiswa yang membaca PDF, starter code untuk mahasiswa
+    yang tertinggal kini diunggah Dosen secara terpisah di luar jobsheet.
+    Narasi "melanjutkan proyek `bank-mini` dari Pertemuan N-1" (tanpa
+    menyebut path checkpoint) tetap dipertahankan di setiap jobsheet;
+    hanya path repo-internal-nya yang dihapus. Jobsheet 1 masih memakai
+    `cd bank-mini` di kotak "Tanpa NetBeans?"-nya karena baris itu untuk
+    MEMBUAT folder proyek baru dari nol (`mkdir -p bank-mini/...`), bukan
+    melanjutkan checkpoint pertemuan sebelumnya, jadi sengaja dibiarkan.
   - Kalau menambah materi pertemuan baru di luar cakupan RPS ini: jangan
     perluas cakupan kelas Bank Mini tanpa alasan kuat; kalau memang perlu
     domain tambahan yang sama sekali berbeda, ikuti pola lama (generik,
@@ -429,7 +442,13 @@ jobsheet) lalu slide biasa "Diskusi" (satu pertanyaan diskusi yang konkret
 dan terjawab, dengan skenario/tugas spesifik, bukan pertanyaan terbuka
 tanpa jangkar). Jangan gabungkan keduanya jadi satu slide "Referensi dan
 Diskusi": pernah menyembunyikan tiga hal berbeda (sitasi, pointer jobsheet,
-pertanyaan diskusi) dalam satu blok tak terbedakan. **Slide fokus pada
+pertanyaan diskusi) dalam satu blok tak terbedakan. **Pengecualian sengaja
+di Pertemuan 3**: slide "Diskusi" penutup diganti dengan "Tugas Mandiri:
+Mencari Encapsulation di Dunia Nyata", tugas luring berdomain bebas (mahasiswa
+memilih sendiri sistem nyata apa pun di luar Bank Mini untuk dianalisis),
+bukan pertanyaan diskusi tunggal yang terjangkar seperti biasa. Ini permintaan
+eksplisit Dosen, bukan pola baku untuk dek lain: jangan meniru pengecualian
+ini ke dek lain kecuali ada permintaan eksplisit yang sama. **Slide fokus pada
 konsep**: cuplikan
 kode di slide singkat (maksimal ~8 baris, teks biasa dengan highlight native
 Marp), bukan gambar; listing lengkap ada di jobsheet. Diagram struktur/UML

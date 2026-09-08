@@ -5,12 +5,6 @@ public class Account {
     private String ownerName;
     private double balance;
 
-    public Account(String accountNumber, String ownerName) {
-        this.accountNumber = accountNumber;
-        this.ownerName = ownerName;
-        this.balance = 0;
-    }
-
     public Account(String accountNumber, String ownerName, double balance) {
         this.accountNumber = accountNumber;
         this.ownerName = ownerName;

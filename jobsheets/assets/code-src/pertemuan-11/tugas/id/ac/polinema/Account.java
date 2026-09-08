@@ -9,12 +9,6 @@ public abstract class Account {
     private double balance;
     private List<Transaction> history = new ArrayList<>();
 
-    public Account(String accountNumber, Customer owner) {
-        this.accountNumber = accountNumber;
-        this.owner = owner;
-        this.balance = 0;
-    }
-
     public Account(String accountNumber, Customer owner, double balance) {
         this.accountNumber = accountNumber;
         this.owner = owner;

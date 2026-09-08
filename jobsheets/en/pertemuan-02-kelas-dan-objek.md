@@ -6,16 +6,15 @@
 | **Course** | Practicum: Object-Oriented Programming (RTI253008) |
 | **Meeting** | 2 (Week 2) |
 | **Duration** | 1 &times; 4 &times; 50' practicum session; 1 &times; 1 &times; 50' independent assignment/report |
-| **Starting Code** | `code/bank-mini/pertemuan-01/` (Meeting 1 checkpoint) |
-| **Final Code** | the `bank-mini` project after Step 6, copied as the checkpoint `code/bank-mini/pertemuan-02/` |
 
 ## A. Practicum Outcomes
 
 After completing this jobsheet, students will be able to:
 
 1. Define a Java class with attributes and methods, and create objects from it using `new`.
-2. Write a method that returns a value and apply it to simple logic on an object's data.
-3. Explain reference behavior (aliasing and `null`) and create many objects at once using an array.
+2. Write a constructor to guarantee an object's data is always complete from the moment it's created.
+3. Write a method that returns a value and apply it to simple logic on an object's data.
+4. Explain reference behavior (aliasing and `null`) and create many objects at once using an array.
 
 ## B. Preparation and Prerequisites
 
@@ -28,9 +27,8 @@ After completing this jobsheet, students will be able to:
   ```
   If both display a version number with no errors, the process may proceed.
 
-> **Without NetBeans?** This jobsheet can still be followed using a plain text editor, continuing the `bank-mini/` folder from Meeting 1:
+> **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash
-> cd bank-mini
 > javac -d out src/id/ac/polinema/*.java
 > java -cp out id.ac.polinema.Main
 > ```
@@ -86,27 +84,41 @@ The following UML class diagram summarizes `Account` so far:
 
 The `+` mark in front of an attribute or method indicates a public nature (directly accessible from outside the class), while the `-` mark indicates a private nature. The diagram above is entirely marked `+`, meaning `ownerName` and `balance` can still be changed directly from outside the class, without going through `deposit()`/`withdraw()`. This is intentional for this meeting; the risk of a design like this becomes the motivation for encapsulation, covered in full in Meeting 3.
 
-### Step 4: Methods with Logic and Return Values
+### Step 4: Constructor
 
-A method does not have to be `void`. A method that returns a value processes an object's data and hands the result back to the caller through `return`. Add the following two methods to `Account`:
+Notice the following risk in `Main.java` so far: if the line `acc.ownerName = "Nadia";` from Step 2 were accidentally skipped before `printInfo()` is called, the program still runs without error, but prints `null - balance: 0.0`, a bug that's easy to miss since no exception stops the program. A **constructor** closes this gap by requiring complete data at the moment the object is created:
 
-![Account.java with the formatBalance() and isOverdrawn() methods added](../assets/code/pertemuan-02/p02-04-account.png){width=55%}
+![Account.java with a constructor added](../assets/code/pertemuan-02/p02-04-account.png){width=55%}
 
-`formatBalance()` turns `balance` into text with a thousands separator and two decimal places using `String.format("%,.2f", balance)`, while `isOverdrawn()` returns `true` once the balance has gone negative. Update `Main.java` to try both, including deliberately withdrawing more than the available balance:
+`this.ownerName` refers to the attribute belonging to the object, while `ownerName` on the right-hand side is the constructor's parameter. Because both names are deliberately made identical, the keyword `this` is needed so that Java can distinguish between the two. Simplify `Main.java` to use this constructor:
 
-![Main.java printing the formatted balance, then testing isOverdrawn()](../assets/code/pertemuan-02/p02-04-main.png){width=75%}
+![Main.java using the Account constructor](../assets/code/pertemuan-02/p02-04-main.png){width=75%}
 
-> ✅ **Checkpoint:** the first line displays `Nadia - balance: 350,000.00`, the second line displays `Overdrawn: true`.
+> ✅ **Checkpoint:** the program displays `Nadia - balance: 350000.0`, the exact same output as Step 3, while the `Main.java` code is now considerably more concise.
+
+> ⚠️ **If it fails:** if the error `constructor Account in class Account cannot be applied to given types` appears, check whether the number and order of arguments in `new Account(...)` match the constructor's parameters.
+
+### Step 5: Methods with Logic and Return Values
+
+A method does not have to be `void`. A method that returns a value processes an object's data and hands the result back to the caller through `return`. Add the following two methods to `Account`, and update `withdraw()` to make use of one of them:
+
+![Account.java with the formatBalance() and isOverdrawn() methods added, withdraw() updated](../assets/code/pertemuan-02/p02-05-account.png){width=55%}
+
+`formatBalance()` turns `balance` into text with a thousands separator and two decimal places using `String.format("%,.2f", balance)`. `isOverdrawn()` returns `true` once the balance has gone negative, and `withdraw()` now makes use of it: it subtracts the amount first, checks `isOverdrawn()`, then undoes that subtraction (restoring the balance) if it turns out to have made the balance negative. Update `Main.java` to try all of this, including deliberately withdrawing more than the available balance:
+
+![Main.java printing the formatted balance, then testing a rejected withdrawal](../assets/code/pertemuan-02/p02-05-main.png){width=75%}
+
+> ✅ **Checkpoint:** the program prints four lines: `Nadia - balance: 350000.0`, `Formatted: 350,000.00`, `Withdrawal rejected: insufficient balance.`, then `Nadia - balance: 350000.0` again (the balance is back to what it was, since the second withdrawal was rejected).
 
 > ⚠️ **If it fails:** if the result of `formatBalance()` does not show a thousands separator, check the format string `"%,.2f"` again: the comma before `.2f` is what enables the thousands separator.
 
-> **Note.** This version of `Account` has no validation at all: `withdraw()` allows the balance to go negative without any check, so `isOverdrawn()` is only useful as an after-the-fact check, not a prevention. This weakness is exactly what motivates Meeting 3: encapsulation closes this gap by validating a value before the balance actually changes.
+> **Note.** The way `withdraw()` rejects a withdrawal above is rather clumsy: subtract the balance first, check via `isOverdrawn()`, then undo it if it turns out to be wrong. A cleaner approach is to check whether the balance is sufficient BEFORE changing it at all, which is exactly what Meeting 3 does. More importantly, this validation can be bypassed entirely: because `balance` is still a public attribute, other code is free to write `acc.balance = -999999;` directly, never going through `withdraw()` or `isOverdrawn()` at all. Encapsulation in Meeting 3 closes this gap: once `balance` becomes private, the method is the only way left to change it, and it's already validated.
 
-### Step 5: References, Aliasing, and `null`
+### Step 6: References, Aliasing, and `null`
 
 An object variable in Java is not the object itself, but rather a **reference** that points to an object in memory. Because of this, two variables can point to the exact same object. Replace the contents of `Main.java` with the following code:
 
-![Main.java with an aliasing block and a null test added](../assets/code/pertemuan-02/p02-05-bug-main.png){width=75%}
+![Main.java with an aliasing block and a null test added](../assets/code/pertemuan-02/p02-06-bug-main.png){width=75%}
 
 Run the program.
 
@@ -118,15 +130,15 @@ The illustration on the stack and heap is as follows:
 
 Fix this by removing the last line (`Account empty = null;` along with the `printInfo()` call above it) so that the program runs again without errors:
 
-![Main.java after the null-test line has been removed](../assets/code/pertemuan-02/p02-05-fix-main.png){width=75%}
+![Main.java after the null-test line has been removed](../assets/code/pertemuan-02/p02-06-fix-main.png){width=75%}
 
 > ⚠️ **If it fails:** `NullPointerException` always occurs when a method is called on a reference that does not yet point to any object (`null`). The solution is always the same: make sure the object has actually been created with `new` before its methods are called.
 
-### Step 6: Array of Objects, Many Objects from One Class
+### Step 7: Array of Objects, Many Objects from One Class
 
 A single class can produce many objects at once. Replace the contents of `Main.java` with an `Account[]` array holding three accounts:
 
-![Main.java final version: an Account[] array holding three accounts](../assets/code/pertemuan-02/p02-06-main.png){width=75%}
+![Main.java final version: an Account[] array holding three accounts](../assets/code/pertemuan-02/p02-07-main.png){width=75%}
 
 > ✅ **Checkpoint:** the program prints three `- balance:` lines (one per array element, each with a different value since every `Account` has its own data): `Nadia - balance: 350000.0`, `Budi - balance: 1000000.0`, `Sari - balance: 500000.0`.
 
@@ -136,15 +148,11 @@ A single class can produce many objects at once. Replace the contents of `Main.j
 
 Submit the following according to the format requested by the instructor:
 
-- Screenshot of the program output after Step 6.
+- Screenshot of the program output after Step 7.
 - **Independent assignment:**
-  1. Bank Mini needs to move balance between accounts. Add a method `transferTo` to `Account` following the UML class diagram below:
+  1. Bank Mini needs to move balance between accounts. Add a method `transferTo` to `Account` following the UML class diagram below. There is no code example for this step, design it yourself based on the methods already available (`deposit()`, `withdraw()`) on the diagram:
 
      ![UML class diagram for Account with transferTo added](../assets/uml/p02-account-transfer.png){width=50%}
-
-     `transferTo(target, amount)` deposits `amount` into the `target` account, then withdraws the same `amount` from its own caller's account:
-
-     ![Account.java with transferTo added](../assets/code/pertemuan-02/p02-tugas-account.png){width=55%}
 
      Demonstrate this by creating two `Account` objects in `Main`, calling `transferTo` from one to the other, then printing both:
 

@@ -6,16 +6,15 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | 2 (Minggu 2) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | `code/bank-mini/pertemuan-01/` (checkpoint Pertemuan 1) |
-| **Kode Akhir** | proyek `bank-mini` setelah Langkah 6, disalin sebagai checkpoint `code/bank-mini/pertemuan-02/` |
 
 ## A. Capaian Praktikum
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 1. Mendefinisikan kelas Java dengan atribut dan method, serta membuat objek darinya menggunakan `new`.
-2. Menulis method yang mengembalikan nilai dan menerapkannya untuk logika sederhana pada data sebuah objek.
-3. Menjelaskan perilaku referensi (aliasing dan `null`) serta membuat banyak objek sekaligus lewat array.
+2. Menulis constructor untuk menjamin objek selalu lengkap datanya sejak awal dibuat.
+3. Menulis method yang mengembalikan nilai dan menerapkannya untuk logika sederhana pada data sebuah objek.
+4. Menjelaskan perilaku referensi (aliasing dan `null`) serta membuat banyak objek sekaligus lewat array.
 
 ## B. Persiapan dan Prasyarat
 
@@ -28,9 +27,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
   ```
   Apabila keduanya menampilkan nomor versi tanpa galat, proses dapat dilanjutkan.
 
-> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa, lanjutkan folder `bank-mini/` dari Pertemuan 1:
+> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
-> cd bank-mini
 > javac -d out src/id/ac/polinema/*.java
 > java -cp out id.ac.polinema.Main
 > ```
@@ -86,27 +84,41 @@ Diagram kelas UML berikut merangkum `Account` sejauh ini:
 
 Tanda `+` di depan atribut atau method menunjukkan sifat publik (dapat diakses langsung dari luar kelas), sedangkan tanda `-` menunjukkan sifat privat. Diagram di atas seluruhnya bertanda `+`, artinya `ownerName` dan `balance` masih dapat diubah langsung dari luar kelas, tanpa lewat `deposit()`/`withdraw()`. Ini disengaja untuk pertemuan ini; risiko dari desain seperti ini menjadi alasan munculnya encapsulation, yang dibahas tuntas pada Pertemuan 3.
 
-### Langkah 4: Method dengan Logika dan Nilai Kembali
+### Langkah 4: Konstruktor
 
-Method tidak harus bertipe `void`. Method yang mengembalikan nilai memproses data objek lalu menyerahkan hasilnya kepada pemanggil lewat `return`. Tambahkan dua method berikut ke `Account`:
+Perhatikan risiko berikut pada `Main.java` sejauh ini: apabila baris `acc.ownerName = "Nadia";` pada Langkah 2 tidak sengaja terlewat sebelum `printInfo()` dipanggil, program tetap berjalan tanpa galat, tetapi mencetak `null - balance: 0.0`, sebuah bug yang mudah terlewat karena tidak ada exception yang menghentikan program. **Konstruktor** menutup celah ini dengan mewajibkan data lengkap pada saat objek dibuat:
 
-![Account.java dengan method formatBalance() dan isOverdrawn() ditambahkan](../assets/code/pertemuan-02/p02-04-account.png){width=55%}
+![Account.java dengan constructor ditambahkan](../assets/code/pertemuan-02/p02-04-account.png){width=55%}
 
-`formatBalance()` mengubah `balance` menjadi teks dengan pemisah ribuan dan dua angka desimal lewat `String.format("%,.2f", balance)`, sedangkan `isOverdrawn()` mengembalikan `true` apabila saldo sudah negatif. Perbarui `Main.java` untuk mencoba keduanya, termasuk sengaja menarik saldo melebihi batas yang tersedia:
+`this.ownerName` merujuk pada atribut milik objek, sedangkan `ownerName` di sisi kanan merupakan parameter konstruktor. Karena kedua nama tersebut sengaja dibuat sama, kata kunci `this` diperlukan agar Java dapat membedakan keduanya. Sederhanakan `Main.java` agar memakai constructor ini:
 
-![Main.java mencetak saldo terformat, lalu menguji isOverdrawn()](../assets/code/pertemuan-02/p02-04-main.png){width=75%}
+![Main.java memakai constructor Account](../assets/code/pertemuan-02/p02-04-main.png){width=75%}
 
-> ✅ **Checkpoint:** baris pertama menampilkan `Nadia - balance: 350,000.00`, baris kedua menampilkan `Overdrawn: true`.
+> ✅ **Checkpoint:** program menampilkan `Nadia - balance: 350000.0`, output sama persis dengan Langkah 3, kode `Main.java` kini jauh lebih ringkas.
+
+> ⚠️ **Jika gagal:** apabila muncul galat `constructor Account in class Account cannot be applied to given types`, periksa apakah jumlah dan urutan argumen pada `new Account(...)` sudah sesuai dengan parameter konstruktornya.
+
+### Langkah 5: Method dengan Logika dan Nilai Kembali
+
+Method tidak harus bertipe `void`. Method yang mengembalikan nilai memproses data objek lalu menyerahkan hasilnya kepada pemanggil lewat `return`. Tambahkan dua method berikut ke `Account`, sekaligus perbarui `withdraw()` agar memanfaatkan salah satunya:
+
+![Account.java dengan method formatBalance() dan isOverdrawn() ditambahkan, withdraw() diperbarui](../assets/code/pertemuan-02/p02-05-account.png){width=55%}
+
+`formatBalance()` mengubah `balance` menjadi teks dengan pemisah ribuan dan dua angka desimal lewat `String.format("%,.2f", balance)`. `isOverdrawn()` mengembalikan `true` apabila saldo sudah negatif, dan `withdraw()` kini memanfaatkannya: mengurangi saldo lebih dulu, memeriksa lewat `isOverdrawn()`, lalu membatalkan pengurangan tersebut (mengembalikan saldo seperti semula) apabila ternyata membuat saldo negatif. Perbarui `Main.java` untuk mencoba semuanya, termasuk sengaja menarik saldo melebihi batas yang tersedia:
+
+![Main.java mencetak saldo terformat, lalu menguji penarikan yang ditolak](../assets/code/pertemuan-02/p02-05-main.png){width=75%}
+
+> ✅ **Checkpoint:** program mencetak empat baris: `Nadia - balance: 350000.0`, `Formatted: 350,000.00`, `Withdrawal rejected: insufficient balance.`, lalu `Nadia - balance: 350000.0` lagi (saldo kembali seperti semula karena penarikan kedua ditolak).
 
 > ⚠️ **Jika gagal:** apabila hasil `formatBalance()` tidak menampilkan pemisah ribuan, periksa kembali format string `"%,.2f"`: tanda koma sebelum `.2f` yang mengaktifkan pemisah ribuan.
 
-> **Catatan.** `Account` versi ini belum memiliki validasi apa pun: `withdraw()` mengizinkan saldo menjadi negatif begitu saja, sehingga `isOverdrawn()` baru berguna sebagai pengecekan setelah kejadian, bukan pencegahan. Kelemahan inilah yang menjadi motivasi utama Pertemuan 3: encapsulation menutup celah ini dengan memvalidasi nilai sebelum saldo benar-benar berubah.
+> **Catatan.** Cara `withdraw()` menolak penarikan di atas cukup janggal: mengurangi saldo dulu, memeriksa lewat `isOverdrawn()`, baru membatalkan bila ternyata salah. Cara yang lebih bersih adalah memeriksa kecukupan saldo SEBELUM saldo diubah sama sekali, itulah yang dilakukan Pertemuan 3. Lebih penting lagi, validasi ini bisa dilewati sepenuhnya: karena `balance` masih atribut publik, kode lain bebas menulis `acc.balance = -999999;` secara langsung, tanpa pernah melalui `withdraw()` atau `isOverdrawn()` sama sekali. Encapsulation pada Pertemuan 3 menutup celah ini: begitu `balance` menjadi privat, satu-satunya jalan mengubahnya adalah lewat method yang sudah divalidasi.
 
-### Langkah 5: Referensi, Aliasing, dan `null`
+### Langkah 6: Referensi, Aliasing, dan `null`
 
 Variabel objek di Java bukan merupakan objeknya sendiri, melainkan **referensi** yang menunjuk ke objek di memori. Oleh karena itu, dua variabel dapat menunjuk ke objek yang persis sama. Ganti isi `Main.java` dengan kode berikut:
 
-![Main.java dengan blok aliasing dan uji null ditambahkan](../assets/code/pertemuan-02/p02-05-bug-main.png){width=75%}
+![Main.java dengan blok aliasing dan uji null ditambahkan](../assets/code/pertemuan-02/p02-06-bug-main.png){width=75%}
 
 Jalankan.
 
@@ -118,15 +130,15 @@ Berikut ilustrasinya pada stack dan heap:
 
 Perbaiki dengan menghapus baris terakhir (`Account empty = null;` beserta pemanggilan `printInfo()` di atasnya) agar program dapat berjalan kembali tanpa galat:
 
-![Main.java setelah baris uji null dihapus](../assets/code/pertemuan-02/p02-05-fix-main.png){width=75%}
+![Main.java setelah baris uji null dihapus](../assets/code/pertemuan-02/p02-06-fix-main.png){width=75%}
 
 > ⚠️ **Jika gagal:** `NullPointerException` selalu muncul apabila method dipanggil pada referensi yang belum menunjuk ke objek mana pun (`null`). Solusinya selalu sama, yaitu memastikan objek telah benar-benar dibuat dengan `new` sebelum method-nya dipanggil.
 
-### Langkah 6: Array of Objects, Banyak Objek dari Satu Kelas
+### Langkah 7: Array of Objects, Banyak Objek dari Satu Kelas
 
 Satu kelas dapat menghasilkan banyak objek sekaligus. Ganti isi `Main.java` dengan array `Account[]` berisi tiga rekening:
 
-![Main.java final: array Account[] berisi tiga rekening](../assets/code/pertemuan-02/p02-06-main.png){width=75%}
+![Main.java final: array Account[] berisi tiga rekening](../assets/code/pertemuan-02/p02-07-main.png){width=75%}
 
 > ✅ **Checkpoint:** program mencetak tiga baris `- balance:` (satu per elemen array, dengan nilai yang berbeda-beda karena setiap `Account` memiliki datanya sendiri): `Nadia - balance: 350000.0`, `Budi - balance: 1000000.0`, `Sari - balance: 500000.0`.
 
@@ -136,15 +148,11 @@ Satu kelas dapat menghasilkan banyak objek sekaligus. Ganti isi `Main.java` deng
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
-- Screenshot output program setelah Langkah 6.
+- Screenshot output program setelah Langkah 7.
 - **Tugas mandiri:**
-  1. Bank Mini perlu memindahkan saldo antar rekening. Tambahkan method `transferTo` ke `Account` sesuai diagram kelas UML berikut:
+  1. Bank Mini perlu memindahkan saldo antar rekening. Tambahkan method `transferTo` ke `Account` sesuai diagram kelas UML berikut. Tidak ada contoh kode untuk langkah ini, rancang sendiri isinya berdasarkan method yang sudah tersedia (`deposit()`, `withdraw()`) pada diagram:
 
      ![Diagram kelas UML untuk Account dengan tambahan transferTo](../assets/uml/p02-account-transfer.png){width=50%}
-
-     `transferTo(target, amount)` men-deposit `amount` ke rekening `target`, lalu menarik `amount` yang sama dari rekening pemanggilnya sendiri:
-
-     ![Account.java dengan tambahan transferTo](../assets/code/pertemuan-02/p02-tugas-account.png){width=55%}
 
      Buktikan dengan membuat dua objek `Account` di `Main`, memanggil `transferTo` dari salah satunya ke yang lain, lalu mencetak keduanya:
 

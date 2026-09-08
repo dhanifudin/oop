@@ -9,7 +9,6 @@ class Account {
   - ownerName : String
   - balance : double
   --
-  + Account(accountNumber : String, ownerName : String)
   + Account(accountNumber : String, ownerName : String, balance : double)
   + getAccountNumber() : String
   + getOwnerName() : String

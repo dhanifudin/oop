@@ -2,10 +2,7 @@ package id.ac.polinema;
 
 public class Main {
     public static void main(String[] args) {
-        Account original = new Account();
-        original.ownerName = "Nadia";
-        original.deposit(500000);
-
+        Account original = new Account("Nadia", 500000);
         Account copy = original;
         copy.deposit(100000);
 

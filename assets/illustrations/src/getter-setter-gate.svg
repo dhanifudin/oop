@@ -32,7 +32,7 @@
   <path d="M230,275 C260,275 275,220 300,180" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrowRed)"/>
 
   <!-- stored field -->
-  <rect x="360" y="220" width="80" height="50" rx="10" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="340" y="220" width="120" height="50" rx="10" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
   <text x="400" y="240" text-anchor="middle" font-size="14.9" fill="#64748b">temperature</text>
   <text x="400" y="257" text-anchor="middle" font-size="17.6" fill="#1d4ed8" font-weight="700">field</text>
 

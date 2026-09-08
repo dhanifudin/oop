@@ -6,8 +6,6 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | 13 (Minggu 13) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | `code/bank-mini/pertemuan-11/` (checkpoint Pertemuan 11) |
-| **Kode Akhir** | proyek Maven `bank-mini` setelah Langkah 2, disalin sebagai checkpoint `code/bank-mini/pertemuan-13/` |
 
 ## A. Capaian Praktikum
 
@@ -30,7 +28,6 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 > **Tanpa NetBeans?** Langkah 1 (reorganisasi paket) tetap bisa diikuti dengan editor teks biasa dan Maven baris perintah:
 > ```bash
-> cd bank-mini
 > mvn -q compile exec:java
 > ```
 > Langkah 2 (desain GUI dengan Matisse) membutuhkan NetBeans, karena GUI Builder adalah fitur bawaan NetBeans yang tidak punya padanan baris perintah. Mahasiswa tanpa NetBeans dapat langsung memakai berkas `BankMiniFrame.java` hasil jadi dari checkpoint (lengkap tanpa `.form`) dan mengompilasinya dengan `mvn -q compile exec:java`; checkpoint dan tampilan GUI yang dihasilkan tetap sama persis.

@@ -6,8 +6,6 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | 1 (Minggu 1) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | tidak ada, proyek dibuat dari nol |
-| **Kode Akhir** | proyek `bank-mini` setelah Langkah 3, disalin sebagai checkpoint `code/bank-mini/pertemuan-01/` |
 
 ## A. Capaian Praktikum
 

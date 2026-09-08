@@ -61,11 +61,12 @@ def rows_p02():
         (p02("langkah-02"), "Main.java", p02("langkah-03"), "Main.java", "p02-03-main"),
         (p02("langkah-03"), "Account.java", p02("langkah-04"), "Account.java", "p02-04-account"),
         (p02("langkah-03"), "Main.java", p02("langkah-04"), "Main.java", "p02-04-main"),
-        (p02("langkah-04"), "Main.java", p02("langkah-05-bug"), "Main.java", "p02-05-bug-main"),
-        (p02("langkah-05-bug"), "Main.java", p02("langkah-05-fix"), "Main.java", "p02-05-fix-main"),
-        (p02("langkah-05-fix"), "Main.java", p02("langkah-06"), "Main.java", "p02-06-main"),
-        (p02("langkah-04"), "Account.java", p02("tugas"), "Account.java", "p02-tugas-account"),
-        (p02("langkah-06"), "Main.java", p02("tugas"), "Main.java", "p02-tugas-main"),
+        (p02("langkah-04"), "Account.java", p02("langkah-05"), "Account.java", "p02-05-account"),
+        (p02("langkah-04"), "Main.java", p02("langkah-05"), "Main.java", "p02-05-main"),
+        (p02("langkah-05"), "Main.java", p02("langkah-06-bug"), "Main.java", "p02-06-bug-main"),
+        (p02("langkah-06-bug"), "Main.java", p02("langkah-06-fix"), "Main.java", "p02-06-fix-main"),
+        (p02("langkah-06-fix"), "Main.java", p02("langkah-07"), "Main.java", "p02-07-main"),
+        (p02("langkah-07"), "Main.java", p02("tugas"), "Main.java", "p02-tugas-main"),
     ]
 
 
@@ -75,8 +76,8 @@ def p03(step):
 
 def rows_p03():
     return [
-        (p02("langkah-04"), "Account.java", p03("langkah-02"), "Account.java", "p03-02-account"),
-        (p02("langkah-06"), "Main.java", p03("langkah-02"), "Main.java", "p03-02-main"),
+        (p02("langkah-05"), "Account.java", p03("langkah-02"), "Account.java", "p03-02-account"),
+        (p02("langkah-07"), "Main.java", p03("langkah-02"), "Main.java", "p03-02-main"),
         (p03("langkah-02"), "Account.java", p03("tugas"), "Account.java", "p03-tugas-account"),
         (None, None, p03("tugas"), "Main.java", "p03-tugas-main"),
     ]
@@ -121,13 +122,13 @@ def p07(step):
 def rows_p07():
     return [
         (p04("langkah-01"), "Account.java", p07("langkah-01"), "Account.java", "p07-01-account",
-         [(1, 3), (40, 50), (55, 55)]),
+         [(1, 3), (34, 44), (49, 49)]),
         (p06("langkah-01"), "SavingsAccount.java", p07("langkah-02"), "SavingsAccount.java", "p07-02-savingsaccount"),
         (p07("langkah-01"), "Main.java", p07("langkah-02"), "Main.java", "p07-02-main"),
         (p06("langkah-02"), "CheckingAccount.java", p07("langkah-03"), "CheckingAccount.java", "p07-03-checkingaccount"),
         (p07("langkah-02"), "Main.java", p07("langkah-03"), "Main.java", "p07-03-main"),
         (p07("langkah-01"), "Account.java", p07("langkah-04"), "Account.java", "p07-04-account",
-         [(1, 3), (40, 46), (63, 63)]),
+         [(1, 3), (34, 40), (57, 57)]),
         (p07("langkah-03"), "Main.java", p07("langkah-04"), "Main.java", "p07-04-main"),
         (p06("tugas"), "BusinessAccount.java", p07("tugas"), "BusinessAccount.java", "p07-tugas-businessaccount"),
         (None, None, p07("tugas"), "Main.java", "p07-tugas-main"),
@@ -141,7 +142,7 @@ def p09(step):
 def rows_p09():
     return [
         (p07("langkah-04"), "Account.java", p09("langkah-01"), "Account.java", "p09-01-account",
-         [(1, 3), (64, 65)]),
+         [(1, 3), (58, 59)]),
         (p04("langkah-02"), "Bank.java", p09("langkah-01"), "Bank.java", "p09-01-bank"),
         (p07("langkah-02"), "SavingsAccount.java", p09("langkah-01"), "SavingsAccount.java", "p09-01-savingsaccount"),
         (p07("langkah-03"), "CheckingAccount.java", p09("langkah-01"), "CheckingAccount.java", "p09-01-checkingaccount"),
@@ -165,7 +166,7 @@ def rows_p10():
         (None, None, p10("langkah-01"), "InsufficientBalanceException.java",
          "p10-01-insufficientbalanceexception"),
         (p09("langkah-01"), "Account.java", p10("langkah-01"), "Account.java", "p10-01-account",
-         [(1, 3), (48, 54)]),
+         [(1, 3), (42, 48)]),
         (p09("langkah-02"), "Main.java", p10("langkah-01"), "Main.java", "p10-01-main"),
         (p09("langkah-01"), "Bank.java", p10("langkah-02"), "Bank.java", "p10-02-bank",
          [(1, 3), (42, 51)]),
@@ -188,7 +189,7 @@ def rows_p11():
         (p10("langkah-02"), "Main.java", p11("langkah-01"), "Main.java", "p11-01-main"),
         (None, None, p11("langkah-02"), "Transaction.java", "p11-02-transaction"),
         (p11("langkah-01"), "Account.java", p11("langkah-02"), "Account.java", "p11-02-account",
-         [(1, 6), (10, 10), (40, 47), (57, 64)]),
+         [(1, 6), (10, 10), (34, 41), (51, 58)]),
         (p11("langkah-01"), "Bank.java", p11("langkah-02"), "Bank.java", "p11-02-bank",
          [(1, 6), (43, 53)]),
         (p11("langkah-01"), "Main.java", p11("langkah-02"), "Main.java", "p11-02-main"),

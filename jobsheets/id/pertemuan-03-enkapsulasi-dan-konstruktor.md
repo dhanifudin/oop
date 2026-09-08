@@ -6,16 +6,14 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | 3 (Minggu 3) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | `code/bank-mini/pertemuan-02/` (checkpoint Pertemuan 2) |
-| **Kode Akhir** | proyek `bank-mini` setelah Langkah 2, disalin sebagai checkpoint `code/bank-mini/pertemuan-03/` |
 
 ## A. Capaian Praktikum
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
-1. Menjelaskan risiko atribut publik dan menerapkan encapsulation (atribut `private`, akses lewat method).
+1. Menjelaskan risiko atribut publik terhadap invariant sebuah objek, lalu menerapkan encapsulation dan information hiding (atribut `private`, akses lewat method).
 2. Menulis getter dan setter, termasuk method yang memvalidasi nilai masukan.
-3. Menulis lebih dari satu constructor untuk kelas yang sama (overloading constructor).
+3. Menulis constructor yang mewajibkan data lengkap dan menetapkan atribut read-only (getter tanpa setter).
 
 ## B. Persiapan dan Prasyarat
 
@@ -28,9 +26,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
   ```
   Apabila keduanya menampilkan nomor versi tanpa galat, proses dapat dilanjutkan.
 
-> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa, lanjutkan folder `bank-mini/` dari Pertemuan 2:
+> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
-> cd bank-mini
 > javac -d out src/id/ac/polinema/*.java
 > java -cp out id.ac.polinema.Main
 > ```
@@ -40,13 +37,13 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: Melanjutkan Proyek `bank-mini`
 
-Buka kembali proyek `bank-mini` dari Pertemuan 2 (atau lanjutkan dari checkpoint `code/bank-mini/pertemuan-02/` apabila tertinggal). Jalankan proyek untuk memastikan kondisinya masih sesuai kondisi akhir Pertemuan 2 sebelum `Account` diubah pada langkah berikutnya.
+Buka kembali proyek `bank-mini` dari Pertemuan 2. Jalankan proyek untuk memastikan kondisinya masih sesuai kondisi akhir Pertemuan 2 sebelum `Account` diubah pada langkah berikutnya.
 
 > ✅ **Checkpoint:** program masih mengompilasi dan berjalan, menampilkan tiga baris `- balance:` seperti pada akhir Pertemuan 2 (`Nadia`, `Budi`, `Sari`).
 
 ### Langkah 2: Menerapkan Encapsulation ke Account
 
-`Account` dari Pertemuan 2 masih memiliki atribut publik `ownerName` dan `balance`: kode lain dapat langsung menulis `acc.balance = -999999;` tanpa melalui `deposit()`/`withdraw()`, tanpa ada satu titik pun yang memvalidasi nilainya. Ganti isi `Account.java` sesuai diagram kelas yang telah dibahas di slide konsep: atribut privat, tambahan atribut `accountNumber`, dua constructor (dengan dan tanpa saldo awal), getter untuk setiap atribut, serta `deposit()`/`withdraw()` yang memvalidasi nilai masukan dan mengembalikan `boolean`:
+`Account` dari Pertemuan 2 masih memiliki atribut publik `ownerName` dan `balance`: kode lain dapat langsung menulis `acc.balance = -999999;` tanpa melalui `deposit()`/`withdraw()`, sehingga invariant paling dasar sebuah rekening (saldo tidak pernah diubah tanpa validasi) sama sekali tidak terjamin. Ganti isi `Account.java` sesuai diagram kelas yang telah dibahas di slide konsep: seluruh atribut dibuat `private` (information hiding, dengan access modifier paling ketat yang masih memungkinkan kelas bekerja), tambahan atribut `accountNumber`, satu constructor yang mewajibkan data lengkap (nomor rekening, nama pemilik, saldo awal), getter untuk setiap atribut, serta `deposit()`/`withdraw()` yang memvalidasi nilai masukan dan mengembalikan `boolean`:
 
 ![Account.java setelah encapsulation diterapkan](../assets/code/pertemuan-03/p03-02-account.png){width=65%}
 
@@ -56,7 +53,9 @@ Karena constructor kini mewajibkan data lengkap, perbarui pengujian di `Main.jav
 
 > ✅ **Checkpoint:** program berhasil dikompilasi ulang dan menampilkan `A001 - Nadia - balance: 350000.0`.
 
-> ⚠️ **Jika gagal:** apabila muncul galat `constructor Account in class Account cannot be applied to given types`, periksa apakah jumlah dan urutan argumen pada `new Account(...)` sudah sesuai dengan salah satu dari dua constructor yang tersedia.
+> ⚠️ **Jika gagal:** apabila muncul galat `constructor Account in class Account cannot be applied to given types`, periksa apakah jumlah dan urutan argumen pada `new Account(...)` sudah sesuai dengan constructor yang tersedia.
+
+> **Catatan.** `accountNumber` sengaja hanya diberi getter, tanpa setter, mengikuti pola atribut read-only dari slide konsep: nilainya ditetapkan sekali lewat constructor dan tidak pernah berubah lagi seumur hidup objek `Account` tersebut.
 
 ## D. Tugas dan Deliverable
 
@@ -71,7 +70,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      Buktikan dengan membuat satu `Account` bersaldo 1000000 dan batas harian 200000 di `Main`, lalu coba tarik 300000 (harus ditolak) dan 150000 (harus berhasil):
 
      ![Main.java menguji dailyWithdrawalLimit](../assets/code/pertemuan-03/p03-tugas-main.png){width=70%}
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa mengembalikan nilai `boolean` dari `deposit()`/`withdraw()` lebih aman dibandingkan tidak memberi tahu pemanggil sama sekali ketika nilainya ditolak? (b) sebutkan satu atribut pada `Account` yang menurutmu sebaiknya hanya memiliki getter, tanpa setter, dan jelaskan alasannya.
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa mengembalikan nilai `boolean` dari `deposit()`/`withdraw()` lebih aman dibandingkan tidak memberi tahu pemanggil sama sekali ketika nilainya ditolak? (b) sebutkan satu atribut pada `Account` yang menurutmu sebaiknya dibuat read-only (getter tanpa setter), dan jelaskan alasannya.
 
 ## E. Kriteria Penilaian
 

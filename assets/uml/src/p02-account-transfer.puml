@@ -8,6 +8,7 @@ class Account {
   + ownerName : String
   + balance : double
   --
+  + Account(ownerName : String, balance : double)
   + deposit(amount : double) : void
   + withdraw(amount : double) : void
   + printInfo() : void

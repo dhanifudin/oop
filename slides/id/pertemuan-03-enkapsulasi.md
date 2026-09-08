@@ -111,8 +111,9 @@ Melindungi data sebuah objek dari akses yang tidak terkendali
 ## Yang Akan Kamu Pelajari
 
 - Risiko yang muncul apabila atribut sebuah objek dapat diakses langsung dari luar
-- Konsep encapsulation: menyembunyikan data, menyediakan akses lewat method
-- Pola getter dan setter, termasuk setter yang memvalidasi nilai masukan
+- Konsep encapsulation dan information hiding, serta access modifier di Java
+- Class invariant: kondisi yang harus selalu benar sepanjang umur sebuah objek
+- Pola getter dan setter, termasuk atribut read-only dan setter yang memvalidasi nilai masukan
 - Penerapan encapsulation pada kelas `Account` di studi kasus Bank Mini
 
 <div class="tip-box">
@@ -130,7 +131,7 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Ketika Atribut Bisa Diubah Siapa Saja
 
-Bayangkan kelas `Thermostat` dengan atribut publik `temperature`: kode lain dapat langsung menulis nilai apa pun ke `temperature`, tanpa melalui method apa pun. Selama nilainya masuk akal, hal ini tidak terlihat bermasalah. Namun apa yang mencegah kode lain mengisi `temperature` dengan angka yang mustahil secara fisik, misalnya `-50`, atau melewati validasi sama sekali?
+Bayangkan kelas `Thermostat` yang mengendalikan pemanas ruangan lewat atribut publik `temperature`. Perangkat ini hanya dirancang bekerja pada rentang 16 sampai 30 derajat, tetapi kode lain dapat langsung menulis nilai apa pun ke `temperature`, tanpa melalui method apa pun. Selama nilainya masuk akal, hal ini tidak terlihat bermasalah. Namun apa yang mencegah kode lain mengisi `temperature` dengan angka jauh di luar jangkauan perangkat, misalnya `-50`, dan melewati pemeriksaan sama sekali?
 
 <div class="warn-box">
 Atribut publik berarti tidak ada satu pun titik yang menjamin data objek selalu berada dalam kondisi valid.
@@ -143,7 +144,7 @@ Atribut publik berarti tidak ada satu pun titik yang menjamin data objek selalu 
 ![h:340 Kode luar menulis langsung ke atribut publik, tanpa validasi apa pun](../assets/illustrations/direct-access-bug.svg)
 
 <div class="warn-box">
-Karena atribut bersifat publik, tidak ada kode yang dijalankan untuk memeriksa nilai baru sebelum disimpan. Nilai yang tidak masuk akal, misalnya suhu <code>-50</code>, diterima begitu saja.
+Karena atribut bersifat publik, tidak ada kode yang dijalankan untuk memeriksa nilai baru sebelum disimpan. Nilai di luar jangkauan yang didukung perangkat, misalnya <code>-50</code>, diterima begitu saja.
 </div>
 
 ---
@@ -175,12 +176,51 @@ Inilah salah satu alasan encapsulation dianggap salah satu prinsip paling mendas
 
 ---
 
+## Encapsulation dan Information Hiding
+
+Kedua istilah ini sering dianggap sama, padahal menjelaskan hal yang berbeda. **Encapsulation** adalah mekanismenya: membungkus data bersama method yang mengoperasikan data itu dalam satu kelas. **Information hiding** adalah tujuannya: menyembunyikan detail bagaimana data disimpan dan diproses di dalam kelas, sehingga kode di luar kelas hanya bergantung pada method publik yang tersedia, bukan pada bagaimana data itu direpresentasikan di dalam.
+
+<div class="term-box">
+Sebuah kelas bisa saja membungkus data dan method dalam satu unit (encapsulation) tanpa benar-benar menyembunyikan apa pun, misalnya bila seluruh atributnya tetap <code>public</code>. Access modifier <code>private</code> adalah alat bahasa Java yang membuat information hiding benar-benar tercapai lewat encapsulation.
+</div>
+
+---
+
+## Access Modifier di Java
+
+| Modifier | Kelas sendiri | Kelas lain di package sama | Subclass beda package | Kelas lain beda package |
+|---|:---:|:---:|:---:|:---:|
+| `private` | ya | tidak | tidak | tidak |
+| (tanpa modifier) | ya | ya | tidak | tidak |
+| `protected` | ya | ya | ya | tidak |
+| `public` | ya | ya | ya | ya |
+
+<div class="tip-box">
+Pertemuan ini baru membutuhkan <code>private</code> dan <code>public</code>. <code>protected</code> dan akses tanpa modifier (package-private) baru relevan saat inheritance dibahas pada Pertemuan 6-7.
+</div>
+
+<div class="term-box">
+Aturan praktis: pilih access modifier yang paling ketat yang masih memungkinkan kelas bekerja dengan benar. Atribut hampir selalu <code>private</code>; method dibuka (<code>public</code>) hanya untuk yang memang perlu dipanggil dari luar kelas.
+</div>
+
+---
+
 ## Validasi Terjamin di Satu Tempat
 
 Dengan encapsulation, setiap perubahan pada data sebuah objek wajib melewati method yang telah ditentukan. Method tersebut bisa memvalidasi nilai baru sebelum benar-benar disimpan, sehingga objek tidak pernah berada dalam kondisi yang tidak masuk akal.
 
 <div class="term-box">
 Prinsip ini sering disingkat sebagai <b>"sembunyikan data, ekspos perilaku"</b>: dunia luar tidak perlu tahu bagaimana data disimpan di dalam, cukup tahu method apa yang bisa dipanggil.
+</div>
+
+---
+
+## Class Invariant
+
+**Class invariant** adalah kondisi yang harus selalu benar untuk setiap objek dari sebuah kelas, sepanjang umur objek tersebut. Pada `Thermostat`, invariant-nya adalah "`temperature` selalu berada di rentang 16 sampai 30". Invariant ini harus tetap benar tidak peduli method mana yang baru saja dipanggil, atau kapan pun objek itu diperiksa.
+
+<div class="term-box">
+Encapsulation adalah mekanisme yang membuat sebuah invariant benar-benar bisa ditegakkan: karena satu-satunya jalan mengubah data adalah lewat method milik kelas itu sendiri, method tersebut bisa memeriksa invariant sebelum menyimpan perubahan apa pun. Tanpa encapsulation, atribut publik membuat invariant hanya sebatas harapan, bukan jaminan, karena kode mana pun bisa melanggarnya kapan saja.
 </div>
 
 ---
@@ -210,8 +250,14 @@ Prinsip ini sering disingkat sebagai <b>"sembunyikan data, ekspos perilaku"</b>:
 Konvensi penamaan umum di Java: setter diberi nama <code>setNamaAtribut(...)</code>, getter diberi nama <code>getNamaAtribut()</code>. Kombinasi keduanya disebut pola <b>getter-setter</b>.
 </div>
 
-<div class="tip-box">
-Sebuah atribut tidak wajib memiliki keduanya. Atribut yang tidak boleh diubah dari luar sama sekali cukup diberi getter, tanpa setter.
+---
+
+## Atribut Read-Only
+
+Sebuah atribut tidak wajib memiliki getter maupun setter sekaligus. Atribut yang nilainya ditetapkan sekali saat objek dibuat dan tidak boleh berubah lagi seumur hidup objek itu cukup diberi getter saja, tanpa setter. Pola ini disebut **atribut read-only**: constructor menetapkan nilainya di awal, dan karena tidak ada setter, tidak ada method mana pun setelahnya yang bisa mengubahnya.
+
+<div class="term-box">
+Atribut read-only adalah bentuk encapsulation yang paling ketat: bukan hanya validasi yang dijamin lewat satu titik, melainkan perubahan itu sendiri sama sekali tidak dimungkinkan setelah objek selesai dibuat. Contoh umum: nomor identitas seperti nomor rekening atau NIM, yang secara alami tidak pernah berubah setelah ditetapkan.
 </div>
 
 ---
@@ -243,12 +289,12 @@ Seluruh atribut kini bersifat <code>private</code>, diakses lewat <b>getter</b> 
 
 ---
 
-## Constructor Lebih dari Satu: Overloading
+## Constructor Menetapkan Data Sekali di Awal
 
-Kelas `Account` yang baru memiliki dua constructor: satu menerima nomor rekening dan nama pemilik saja (saldo awal otomatis nol), satu lagi menerima saldo awal secara eksplisit.
+Constructor `Account(accountNumber, ownerName, balance)` mewajibkan ketiga nilai ini diberikan sejak objek dibuat, lalu menetapkannya ke atribut privat. Atribut `accountNumber` sengaja hanya diberi getter, tanpa setter: begitu ditetapkan lewat constructor, nomor rekening sebuah `Account` tidak pernah berubah lagi seumur hidup objeknya.
 
 <div class="term-box">
-Java mengizinkan beberapa constructor (atau method) berbagi nama yang sama selama daftar parameternya berbeda. Kemampuan ini disebut <b>overloading</b>, dan dibahas lebih lengkap pada Pertemuan 7.
+Inilah pola atribut read-only dari Bagian 3 diterapkan secara nyata: <code>accountNumber</code> adalah identitas sebuah rekening, sama seperti NIM bagi seorang mahasiswa, sehingga tidak masuk akal bila ada method yang bisa mengubahnya setelah rekening dibuat.
 </div>
 
 ---
@@ -265,6 +311,10 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Diskusi
+## Tugas Mandiri: Mencari Encapsulation di Dunia Nyata
 
-Bandingkan dua atribut `Account`: `accountNumber` dan `balance`. Untuk masing-masing, tentukan apakah sebaiknya punya setter atau tidak, lalu berikan satu alasan konkret untuk tiap keputusanmu (bukan sekadar "supaya aman", jelaskan skenario nyata yang menjadi risikonya bila setter tetap disediakan).
+Cari satu sistem nyata di luar Bank Mini yang kamu kenal atau gunakan sehari-hari, bebas memilih domain apa pun (aplikasi, perangkat, atau layanan apa saja). Identifikasi bagaimana sistem itu kemungkinan menerapkan encapsulation: data apa yang menurutmu disembunyikan, invariant apa yang dijaga, dan lewat method atau antarmuka publik apa saja data itu bisa diakses atau diubah.
+
+<div class="tip-box">
+Tuliskan temuanmu secara singkat (nama sistem, data yang disembunyikan, invariant yang dijaga, cara mengaksesnya) dan siap mendiskusikannya pada awal Pertemuan 4.
+</div>

@@ -6,8 +6,6 @@
 | **Mata Kuliah** | Praktikum Pemrograman Berbasis Objek (RTI253008) |
 | **Pertemuan** | 11 (Minggu 11) |
 | **Durasi** | 1 &times; 4 &times; 50' praktikum; 1 &times; 1 &times; 50' tugas/laporan mandiri |
-| **Kode Awal** | `code/bank-mini/pertemuan-10/` (checkpoint Pertemuan 10) |
-| **Kode Akhir** | proyek `bank-mini` setelah Langkah 3, disalin sebagai checkpoint `code/bank-mini/pertemuan-11/` |
 
 ## A. Capaian Praktikum
 
@@ -28,9 +26,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
   ```
   Apabila keduanya menampilkan nomor versi tanpa galat, proses dapat dilanjutkan.
 
-> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa, lanjutkan folder `bank-mini/` dari Pertemuan 10:
+> **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
-> cd bank-mini
 > javac -d out src/id/ac/polinema/*.java
 > java -cp out id.ac.polinema.Main
 > ```
