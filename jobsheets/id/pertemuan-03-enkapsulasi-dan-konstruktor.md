@@ -11,7 +11,7 @@
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
-1. Menjelaskan risiko atribut publik terhadap invariant sebuah objek, lalu menerapkan encapsulation dan information hiding (atribut `private`, akses lewat method).
+1. Menjelaskan risiko atribut publik, lalu menerapkan encapsulation dan information hiding (atribut `private`, akses lewat method).
 2. Menulis getter dan setter, termasuk method yang memvalidasi nilai masukan.
 3. Menulis constructor yang mewajibkan data lengkap dan menetapkan atribut read-only (getter tanpa setter).
 
@@ -43,7 +43,7 @@ Buka kembali proyek `bank-mini` dari Pertemuan 2. Jalankan proyek untuk memastik
 
 ### Langkah 2: Menerapkan Encapsulation ke Account
 
-`Account` dari Pertemuan 2 masih memiliki atribut publik `ownerName` dan `balance`: kode lain dapat langsung menulis `acc.balance = -999999;` tanpa melalui `deposit()`/`withdraw()`, sehingga invariant paling dasar sebuah rekening (saldo tidak pernah diubah tanpa validasi) sama sekali tidak terjamin. Ganti isi `Account.java` sesuai diagram kelas yang telah dibahas di slide konsep: seluruh atribut dibuat `private` (information hiding, dengan access modifier paling ketat yang masih memungkinkan kelas bekerja), tambahan atribut `accountNumber`, satu constructor yang mewajibkan data lengkap (nomor rekening, nama pemilik, saldo awal), getter untuk setiap atribut, serta `deposit()`/`withdraw()` yang memvalidasi nilai masukan dan mengembalikan `boolean`:
+`Account` dari Pertemuan 2 masih memiliki atribut publik `ownerName` dan `balance`. Kode lain bisa langsung menulis `acc.balance = -999999;`, tanpa melalui `deposit()`/`withdraw()`. Invariant paling dasar sebuah rekening, saldo yang selalu tervalidasi, jadi tidak terjamin sama sekali. Ganti isi `Account.java` sesuai diagram kelas yang telah dibahas di slide konsep: seluruh atribut dibuat `private` (information hiding lewat access modifier paling ketat yang masih memungkinkan kelas bekerja), tambahan atribut `accountNumber`, satu constructor yang mewajibkan data lengkap (nomor rekening, nama pemilik, saldo awal), getter untuk setiap atribut, serta `deposit()`/`withdraw()` yang memvalidasi nilai masukan dan mengembalikan `boolean`:
 
 ![Account.java setelah encapsulation diterapkan](../assets/code/pertemuan-03/p03-02-account.png){width=65%}
 
@@ -55,7 +55,7 @@ Karena constructor kini mewajibkan data lengkap, perbarui pengujian di `Main.jav
 
 > ⚠️ **Jika gagal:** apabila muncul galat `constructor Account in class Account cannot be applied to given types`, periksa apakah jumlah dan urutan argumen pada `new Account(...)` sudah sesuai dengan constructor yang tersedia.
 
-> **Catatan.** `accountNumber` sengaja hanya diberi getter, tanpa setter, mengikuti pola atribut read-only dari slide konsep: nilainya ditetapkan sekali lewat constructor dan tidak pernah berubah lagi seumur hidup objek `Account` tersebut.
+> **Catatan.** `accountNumber` sengaja hanya diberi getter, tanpa setter, mengikuti pola atribut read-only dari slide konsep. Nilainya ditetapkan sekali lewat constructor dan tidak pernah berubah lagi.
 
 ## D. Tugas dan Deliverable
 

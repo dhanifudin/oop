@@ -131,10 +131,10 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Ketika Atribut Bisa Diubah Siapa Saja
 
-Bayangkan kelas `Thermostat` yang mengendalikan pemanas ruangan lewat atribut publik `temperature`. Perangkat ini hanya dirancang bekerja pada rentang 16 sampai 30 derajat, tetapi kode lain dapat langsung menulis nilai apa pun ke `temperature`, tanpa melalui method apa pun. Selama nilainya masuk akal, hal ini tidak terlihat bermasalah. Namun apa yang mencegah kode lain mengisi `temperature` dengan angka jauh di luar jangkauan perangkat, misalnya `-50`, dan melewati pemeriksaan sama sekali?
+Bayangkan kelas `Thermostat` dengan atribut publik `temperature`. Perangkat ini hanya bekerja pada rentang 16 sampai 30 derajat. Karena `temperature` publik, kode lain bisa langsung mengubah nilainya tanpa melalui method apa pun. Apa yang mencegah kode itu mengisi `temperature` dengan angka jauh di luar rentang, misalnya `-50`?
 
 <div class="warn-box">
-Atribut publik berarti tidak ada satu pun titik yang menjamin data objek selalu berada dalam kondisi valid.
+Atribut publik berarti tidak ada satu titik pun yang menjamin data objek selalu valid.
 </div>
 
 ---
@@ -144,17 +144,17 @@ Atribut publik berarti tidak ada satu pun titik yang menjamin data objek selalu 
 ![h:340 Kode luar menulis langsung ke atribut publik, tanpa validasi apa pun](../assets/illustrations/direct-access-bug.svg)
 
 <div class="warn-box">
-Karena atribut bersifat publik, tidak ada kode yang dijalankan untuk memeriksa nilai baru sebelum disimpan. Nilai di luar jangkauan yang didukung perangkat, misalnya <code>-50</code>, diterima begitu saja.
+Karena atribut publik, tidak ada kode yang memeriksa nilai baru sebelum disimpan. Nilai di luar rentang perangkat, misalnya <code>-50</code>, diterima begitu saja.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bug seperti ini bukan sekadar risiko teoretis. Pada aplikasi nyata, atribut publik berarti setiap bagian program, termasuk kode yang ditulis tim lain atau ditambahkan bertahun-tahun kemudian, punya akses langsung untuk mengubah data tersebut. Programmer yang memperbaiki bug semacam ini sering harus menelusuri seluruh basis kode untuk menemukan setiap tempat yang mengubah atribut itu, karena tidak ada satu titik tunggal yang bisa diperiksa.
+Bug seperti ini bukan sekadar risiko teoretis. Pada aplikasi nyata, atribut publik berarti setiap bagian program, termasuk kode tim lain, bisa langsung mengubah data itu. Saat bug muncul, programmer harus menelusuri seluruh basis kode untuk menemukan tempat yang mengubahnya, karena tidak ada satu titik yang bisa diperiksa.
 
 <div class="term-box">
-Inilah salah satu alasan encapsulation dianggap salah satu prinsip paling mendasar dalam OOP: dengan menyembunyikan data di balik method, tim pengembang bisa mengubah cara data disimpan di dalam kelas kapan pun, tanpa perlu khawatir kode di luar kelas ikut rusak, selama method publiknya tidak berubah.
+Inilah salah satu alasan encapsulation dianggap prinsip paling mendasar dalam OOP. Dengan menyembunyikan data di balik method, tim bisa mengubah cara data disimpan kapan pun, tanpa merusak kode lain, selama method publiknya tidak berubah.
 </div>
 
 ---
@@ -171,17 +171,17 @@ Inilah salah satu alasan encapsulation dianggap salah satu prinsip paling mendas
 ![h:340 Data privat sebuah objek hanya bisa dicapai lewat method, tidak ada jalan pintas](../assets/illustrations/capsule-shield.svg)
 
 <div class="term-box">
-<b>Encapsulation</b> berarti data sebuah objek disembunyikan (dibuat <code>private</code>) dan hanya dapat diakses atau diubah melalui method yang disediakan objek itu sendiri. Method inilah satu-satunya "pintu" menuju data tersebut.
+<b>Encapsulation</b> berarti data sebuah objek disembunyikan (dibuat <code>private</code>), hanya bisa diakses lewat method milik objek itu sendiri. Method inilah satu-satunya "pintu" menuju data tersebut.
 </div>
 
 ---
 
 ## Encapsulation dan Information Hiding
 
-Kedua istilah ini sering dianggap sama, padahal menjelaskan hal yang berbeda. **Encapsulation** adalah mekanismenya: membungkus data bersama method yang mengoperasikan data itu dalam satu kelas. **Information hiding** adalah tujuannya: menyembunyikan detail bagaimana data disimpan dan diproses di dalam kelas, sehingga kode di luar kelas hanya bergantung pada method publik yang tersedia, bukan pada bagaimana data itu direpresentasikan di dalam.
+Kedua istilah ini sering dianggap sama, padahal berbeda. **Encapsulation** adalah caranya: membungkus data bersama method dalam satu kelas. **Information hiding** adalah tujuannya: menyembunyikan detail penyimpanan data, sehingga kode luar hanya bergantung pada method publik, bukan pada isi di dalamnya.
 
 <div class="term-box">
-Sebuah kelas bisa saja membungkus data dan method dalam satu unit (encapsulation) tanpa benar-benar menyembunyikan apa pun, misalnya bila seluruh atributnya tetap <code>public</code>. Access modifier <code>private</code> adalah alat bahasa Java yang membuat information hiding benar-benar tercapai lewat encapsulation.
+Sebuah kelas bisa membungkus data dan method (encapsulation) tanpa benar-benar menyembunyikan apa pun, misalnya bila atributnya tetap <code>public</code>. Access modifier <code>private</code>-lah yang membuat information hiding benar-benar tercapai.
 </div>
 
 ---
@@ -196,18 +196,18 @@ Sebuah kelas bisa saja membungkus data dan method dalam satu unit (encapsulation
 | `public` | ya | ya | ya | ya |
 
 <div class="tip-box">
-Pertemuan ini baru membutuhkan <code>private</code> dan <code>public</code>. <code>protected</code> dan akses tanpa modifier (package-private) baru relevan saat inheritance dibahas pada Pertemuan 6-7.
+Pertemuan ini baru membutuhkan <code>private</code> dan <code>public</code>. <code>protected</code> muncul lagi saat inheritance dibahas di Pertemuan 6; akses tanpa modifier (package-private) jarang dipakai eksplisit di Bank Mini.
 </div>
 
 <div class="term-box">
-Aturan praktis: pilih access modifier yang paling ketat yang masih memungkinkan kelas bekerja dengan benar. Atribut hampir selalu <code>private</code>; method dibuka (<code>public</code>) hanya untuk yang memang perlu dipanggil dari luar kelas.
+Aturan praktis: pilih access modifier paling ketat yang kelas masih bisa bekerja dengannya. Atribut hampir selalu <code>private</code>; method dibuka (<code>public</code>) hanya yang perlu dipanggil dari luar.
 </div>
 
 ---
 
 ## Validasi Terjamin di Satu Tempat
 
-Dengan encapsulation, setiap perubahan pada data sebuah objek wajib melewati method yang telah ditentukan. Method tersebut bisa memvalidasi nilai baru sebelum benar-benar disimpan, sehingga objek tidak pernah berada dalam kondisi yang tidak masuk akal.
+Dengan encapsulation, setiap perubahan data wajib melewati method yang sudah ditentukan. Method itu bisa memvalidasi nilai baru sebelum disimpan, sehingga objek tidak pernah berada dalam kondisi yang tidak masuk akal.
 
 <div class="term-box">
 Prinsip ini sering disingkat sebagai <b>"sembunyikan data, ekspos perilaku"</b>: dunia luar tidak perlu tahu bagaimana data disimpan di dalam, cukup tahu method apa yang bisa dipanggil.
@@ -217,10 +217,10 @@ Prinsip ini sering disingkat sebagai <b>"sembunyikan data, ekspos perilaku"</b>:
 
 ## Class Invariant
 
-**Class invariant** adalah kondisi yang harus selalu benar untuk setiap objek dari sebuah kelas, sepanjang umur objek tersebut. Pada `Thermostat`, invariant-nya adalah "`temperature` selalu berada di rentang 16 sampai 30". Invariant ini harus tetap benar tidak peduli method mana yang baru saja dipanggil, atau kapan pun objek itu diperiksa.
+**Class invariant** adalah kondisi yang harus selalu benar untuk setiap objek, sepanjang umur objek itu. Pada `Thermostat`, invariant-nya adalah "`temperature` selalu di rentang 16 sampai 30". Kondisi ini harus tetap benar kapan pun objek diperiksa, apa pun method yang baru dipanggil.
 
 <div class="term-box">
-Encapsulation adalah mekanisme yang membuat sebuah invariant benar-benar bisa ditegakkan: karena satu-satunya jalan mengubah data adalah lewat method milik kelas itu sendiri, method tersebut bisa memeriksa invariant sebelum menyimpan perubahan apa pun. Tanpa encapsulation, atribut publik membuat invariant hanya sebatas harapan, bukan jaminan, karena kode mana pun bisa melanggarnya kapan saja.
+Encapsulation membuat invariant benar-benar bisa ditegakkan. Satu-satunya jalan mengubah data adalah lewat method milik kelas, jadi method itu bisa memeriksa invariant lebih dulu. Tanpa encapsulation, atribut publik membuat invariant hanya jadi harapan, bukan jaminan, karena kode mana pun bisa melanggarnya kapan saja.
 </div>
 
 ---
@@ -237,7 +237,7 @@ Encapsulation adalah mekanisme yang membuat sebuah invariant benar-benar bisa di
 ![h:340 Setter memeriksa nilai masukan sebelum menyimpannya ke field](../assets/illustrations/getter-setter-gate.svg)
 
 <div class="term-box">
-<b>Setter</b> adalah method yang mengubah nilai sebuah atribut privat. Karena berbentuk method biasa, setter bebas berisi logika pemeriksaan, misalnya membatasi nilai ke rentang yang aman, sebelum nilai tersebut benar-benar disimpan ke field.
+<b>Setter</b> adalah method yang mengubah nilai sebuah atribut privat. Karena berbentuk method biasa, setter bisa memeriksa nilai dulu, misalnya membatasi ke rentang yang aman, sebelum menyimpannya ke field.
 </div>
 
 ---
@@ -254,10 +254,10 @@ Konvensi penamaan umum di Java: setter diberi nama <code>setNamaAtribut(...)</co
 
 ## Atribut Read-Only
 
-Sebuah atribut tidak wajib memiliki getter maupun setter sekaligus. Atribut yang nilainya ditetapkan sekali saat objek dibuat dan tidak boleh berubah lagi seumur hidup objek itu cukup diberi getter saja, tanpa setter. Pola ini disebut **atribut read-only**: constructor menetapkan nilainya di awal, dan karena tidak ada setter, tidak ada method mana pun setelahnya yang bisa mengubahnya.
+Sebuah atribut tidak wajib punya getter dan setter sekaligus. Atribut yang nilainya ditetapkan sekali saat objek dibuat, dan tidak boleh berubah lagi, cukup diberi getter saja. Pola ini disebut **atribut read-only**: constructor menetapkan nilainya di awal, dan tanpa setter, tidak ada method lain yang bisa mengubahnya.
 
 <div class="term-box">
-Atribut read-only adalah bentuk encapsulation yang paling ketat: bukan hanya validasi yang dijamin lewat satu titik, melainkan perubahan itu sendiri sama sekali tidak dimungkinkan setelah objek selesai dibuat. Contoh umum: nomor identitas seperti nomor rekening atau NIM, yang secara alami tidak pernah berubah setelah ditetapkan.
+Atribut read-only adalah bentuk encapsulation paling ketat: bukan cuma validasi yang terjamin, tapi perubahannya sendiri tidak mungkin terjadi lagi. Contoh umum: nomor identitas seperti nomor rekening atau NIM, yang secara alami tidak pernah berubah.
 </div>
 
 ---
@@ -274,7 +274,7 @@ Atribut read-only adalah bentuk encapsulation yang paling ketat: bukan hanya val
 Kelas `Account` pada Pertemuan 2 memiliki atribut publik `ownerName` dan `balance`, tanpa validasi apa pun pada `deposit()` maupun `withdraw()`.
 
 <div class="warn-box">
-Risiko yang sama seperti pada <code>Thermostat</code> berlaku di sini: saldo dapat diubah langsung ke nilai berapa pun, dan jumlah setoran atau penarikan negatif dapat diterima tanpa ditolak.
+Risiko yang sama seperti <code>Thermostat</code> berlaku di sini: saldo bisa diubah langsung ke nilai berapa pun, dan setoran atau penarikan negatif bisa diterima tanpa ditolak.
 </div>
 
 ---
@@ -291,10 +291,10 @@ Seluruh atribut kini bersifat <code>private</code>, diakses lewat <b>getter</b> 
 
 ## Constructor Menetapkan Data Sekali di Awal
 
-Constructor `Account(accountNumber, ownerName, balance)` mewajibkan ketiga nilai ini diberikan sejak objek dibuat, lalu menetapkannya ke atribut privat. Atribut `accountNumber` sengaja hanya diberi getter, tanpa setter: begitu ditetapkan lewat constructor, nomor rekening sebuah `Account` tidak pernah berubah lagi seumur hidup objeknya.
+Constructor `Account(accountNumber, ownerName, balance)` mewajibkan ketiga nilai ini diberikan sejak objek dibuat. Atribut `accountNumber` sengaja hanya diberi getter, tanpa setter. Begitu ditetapkan lewat constructor, nomor rekening sebuah `Account` tidak pernah berubah lagi.
 
 <div class="term-box">
-Inilah pola atribut read-only dari Bagian 3 diterapkan secara nyata: <code>accountNumber</code> adalah identitas sebuah rekening, sama seperti NIM bagi seorang mahasiswa, sehingga tidak masuk akal bila ada method yang bisa mengubahnya setelah rekening dibuat.
+Inilah pola atribut read-only dari Bagian 3, diterapkan secara nyata. <code>accountNumber</code> adalah identitas sebuah rekening, sama seperti NIM bagi mahasiswa, jadi tidak masuk akal bila ada method yang bisa mengubahnya.
 </div>
 
 ---
@@ -313,7 +313,7 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Tugas Mandiri: Mencari Encapsulation di Dunia Nyata
 
-Cari satu sistem nyata di luar Bank Mini yang kamu kenal atau gunakan sehari-hari, bebas memilih domain apa pun (aplikasi, perangkat, atau layanan apa saja). Identifikasi bagaimana sistem itu kemungkinan menerapkan encapsulation: data apa yang menurutmu disembunyikan, invariant apa yang dijaga, dan lewat method atau antarmuka publik apa saja data itu bisa diakses atau diubah.
+Cari satu sistem nyata di luar Bank Mini yang kamu kenal atau gunakan sehari-hari, bebas memilih domain apa pun. Identifikasi bagaimana sistem itu menerapkan encapsulation: data apa yang disembunyikan, invariant apa yang dijaga, dan lewat apa data itu bisa diakses.
 
 <div class="tip-box">
 Tuliskan temuanmu secara singkat (nama sistem, data yang disembunyikan, invariant yang dijaga, cara mengaksesnya) dan siap mendiskusikannya pada awal Pertemuan 4.

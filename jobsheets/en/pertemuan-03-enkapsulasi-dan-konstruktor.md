@@ -11,7 +11,7 @@
 
 After completing this jobsheet, students will be able to:
 
-1. Explain the risk public attributes pose to an object's invariant, then apply encapsulation and information hiding (`private` attributes, access through methods).
+1. Explain the risk of public attributes, then apply encapsulation and information hiding (`private` attributes, access through methods).
 2. Write getters and setters, including a method that validates input values.
 3. Write a constructor that requires complete data and establishes a read-only attribute (getter without setter).
 
@@ -43,7 +43,7 @@ Open the `bank-mini` project from Meeting 2 again. Run the project to confirm it
 
 ### Step 2: Applying Encapsulation to Account
 
-`Account` from Meeting 2 still has public attributes `ownerName` and `balance`: other code can write `acc.balance = -999999;` directly, without going through `deposit()`/`withdraw()`, so an account's most basic invariant (the balance is never changed without validation) is not guaranteed at all. Replace the contents of `Account.java` according to the class diagram already covered in the concept slide: every attribute is made `private` (information hiding, with the strictest access modifier that still lets the class work), a new `accountNumber` attribute is added, a single constructor requires complete data (account number, owner name, initial balance), a getter is provided for every attribute, and `deposit()`/`withdraw()` validate their input and return `boolean`:
+`Account` from Meeting 2 still has public attributes `ownerName` and `balance`. Other code can write `acc.balance = -999999;` directly, without going through `deposit()`/`withdraw()`. An account's most basic invariant, a balance that is always validated, is therefore not guaranteed at all. Replace the contents of `Account.java` according to the class diagram already covered in the concept slide: every attribute is made `private` (information hiding through the strictest access modifier that still lets the class work), a new `accountNumber` attribute is added, a single constructor requires complete data (account number, owner name, initial balance), a getter is provided for every attribute, and `deposit()`/`withdraw()` validate their input and return `boolean`:
 
 ![Account.java after encapsulation is applied](../assets/code/pertemuan-03/p03-02-account.png){width=65%}
 
@@ -55,7 +55,7 @@ Since the constructor now requires complete data, update the test in `Main.java`
 
 > ⚠️ **If it fails:** if the error `constructor Account in class Account cannot be applied to given types` appears, check whether the number and order of arguments in `new Account(...)` match the available constructor.
 
-> **Note.** `accountNumber` is deliberately given only a getter, no setter, following the read-only attribute pattern from the concept slide: its value is set once by the constructor and never changes again for the rest of that `Account` object's lifetime.
+> **Note.** `accountNumber` is deliberately given only a getter, no setter, following the read-only attribute pattern from the concept slide. Its value is set once by the constructor and never changes again.
 
 ## D. Assignment and Deliverables
 
