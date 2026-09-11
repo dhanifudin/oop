@@ -109,7 +109,7 @@ Bagaimana objek-objek saling terhubung membentuk sebuah sistem
 ## Yang Akan Kamu Pelajari
 
 - Bahwa sebuah objek dapat memiliki objek lain sebagai atributnya
-- Tiga kekuatan relasi antar kelas: association, aggregation, composition
+- Empat kekuatan relasi antar kelas: dependency, association, aggregation, composition
 - Perbedaan umur objek pada masing-masing jenis relasi
 - Penerapan relasi kelas pada studi kasus Bank Mini: `Customer`, `Account`, `Bank`
 
@@ -136,20 +136,24 @@ Ketika sebuah kelas memiliki kelas lain sebagai atributnya, kedua kelas tersebut
 
 ---
 
-## Tiga Kekuatan Relasi
+## Empat Kekuatan Relasi
 
-![Tiga tingkat kekuatan relasi has-a: association, aggregation, composition](../assets/illustrations/relation-strengths.svg)
+![h:230 Empat tingkat kekuatan relasi antar kelas: dependency, association, aggregation, composition](../assets/illustrations/relation-strengths.svg)
 
-Ketiganya sama-sama berarti "memiliki", tetapi berbeda dalam seberapa erat umur kedua objek saling terikat.
+Keempatnya menyatakan bagaimana satu kelas bergantung pada kelas lain, mulai dari sekadar dipakai sesaat (dependency) sampai dimiliki seumur hidup objeknya (composition).
+
+<div class="term-box">
+<b>Dependency</b> berbeda dari tiga lainnya. Kelas yang dipakai tidak pernah disimpan sebagai atribut, hanya dipakai sebentar, misalnya sebagai parameter method. Karena itu, dependency tidak termasuk pola "objek memiliki objek lain sebagai atributnya" dari Bagian 1.
+</div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Hampir seluruh sistem perangkat lunak nyata memodelkan jaringan objek yang saling terhubung, bukan potongan data yang berdiri sendiri-sendiri. Memilih kekuatan relasi yang keliru bisa menimbulkan bug nyata: menghapus sebuah `Car` yang secara tidak sengaja ikut menghapus `Driver`-nya, padahal `Driver` masih dipakai objek lain, atau sebaliknya, `Engine` yang tetap "hidup" di memori padahal `Car` pemiliknya sudah lama dihapus, membuang-buang sumber daya program.
+Hampir seluruh sistem perangkat lunak nyata memodelkan objek-objek yang saling terhubung, bukan potongan data yang berdiri sendiri. Memilih kekuatan relasi yang keliru bisa menimbulkan bug nyata. Contoh pertama: menghapus `Car` ikut menghapus `Driver`-nya, padahal `Driver` masih dipakai objek lain. Contoh kedua: `Engine` tetap "hidup" di memori padahal `Car` pemiliknya sudah lama dihapus, membuang-buang sumber daya program.
 
 <div class="term-box">
-Memodelkan relasi dengan kekuatan yang tepat, association, aggregation, atau composition, membuat umur setiap objek berperilaku sesuai harapan, sehingga program tidak diam-diam kehilangan data atau menyimpan data yang seharusnya sudah tidak diperlukan.
+Memilih kekuatan relasi yang tepat, association, aggregation, atau composition, membuat umur setiap objek sesuai harapan. Program pun tidak diam-diam kehilangan data atau menyimpan data yang seharusnya sudah tidak diperlukan.
 </div>
 
 ---
@@ -174,7 +178,7 @@ Memodelkan relasi dengan kekuatan yang tepat, association, aggregation, atau com
 ![Composition: bagian ikut hilang bersama keseluruhan. Association: bagian tetap hidup meski keseluruhan bubar](../assets/illustrations/whole-part-lifecycle.svg)
 
 <div class="term-box">
-Pada <b>composition</b>, objek bagian (<code>Engine</code>) dibuat di dalam objek pemilik dan tidak pernah diberikan ke pihak luar; ketika objek pemilik dibuang, objek bagian ikut hilang. Pada <b>association</b>, kedua objek dapat tetap hidup secara independen satu sama lain.
+Pada <b>composition</b>, objek bagian (<code>Engine</code>) dibuat di dalam objek pemilik dan tidak pernah diberikan ke pihak luar. Ketika objek pemilik dibuang, objek bagian ikut hilang. Pada <b>association</b>, kedua objek bisa tetap hidup, masing-masing independen satu sama lain.
 </div>
 
 ---
@@ -199,17 +203,17 @@ Pada <b>composition</b>, objek bagian (<code>Engine</code>) dibuat di dalam obje
 ![Satu Bank mereferensikan array, yang mereferensikan objek Account, yang mereferensikan objek Customer](../assets/illustrations/object-graph-references.svg)
 
 <div class="tip-box">
-Objek-objek yang saling berelasi membentuk sebuah <b>graf objek</b> di heap: satu objek menunjuk ke objek lain lewat referensi, bukan menyalin datanya. Mengubah data <code>Customer</code> lewat satu <code>Account</code> akan terlihat oleh siapa pun yang memegang referensi <code>Customer</code> yang sama, persis seperti aliasing yang dibahas pada Pertemuan 2.
+Objek-objek yang saling berelasi membentuk sebuah <b>graf objek</b> di heap: satu objek menunjuk ke objek lain lewat referensi, bukan menyalin datanya. Karena itu, mengubah data <code>Customer</code> lewat satu <code>Account</code> akan terlihat oleh siapa pun yang memegang referensi <code>Customer</code> yang sama. Ini persis seperti aliasing yang dibahas pada Pertemuan 2.
 </div>
 
 ---
 
 ## Bank Mengelola Banyak Account
 
-`Bank` menyimpan referensi ke banyak `Account` dalam sebuah array, mirip dengan array `Account[]` yang dibuat pada Pertemuan 2, namun kali ini array tersebut menjadi atribut sebuah kelas, bukan variabel lokal di `main`.
+`Bank` menyimpan referensi ke banyak `Account` dalam sebuah array, mirip dengan array `Account[]` yang dibuat pada Pertemuan 2. Bedanya, array ini menjadi atribut sebuah kelas, bukan variabel lokal di `main`.
 
 <div class="term-box">
-Method <code>addAccount()</code> menambah anggota array, <code>findAccount()</code> mencari berdasarkan nomor rekening dan mengembalikan <code>null</code> bila tidak ditemukan, <code>printAllAccounts()</code> mencetak seluruh anggotanya satu per satu.
+Method <code>addAccount()</code> menambah anggota array. Method <code>findAccount()</code> mencari berdasarkan nomor rekening, dan mengembalikan <code>null</code> bila tidak ditemukan. Method <code>printAllAccounts()</code> mencetak seluruh anggotanya satu per satu.
 </div>
 
 ---

@@ -46,7 +46,7 @@
   <text x="575" y="202" text-anchor="middle" font-size="14.9" fill="#64748b">owner</text>
   <text x="575" y="218" text-anchor="middle" font-size="14.9" fill="#64748b">balance = 200000</text>
 
-  <path d="M322,149 C322,190 420,95 498,95" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <path d="M322,125 C322,80 420,95 498,95" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
   <path d="M387,149 C420,180 460,195 498,198" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
   <!-- two Customer objects -->
