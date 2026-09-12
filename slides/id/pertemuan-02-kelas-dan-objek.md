@@ -564,7 +564,7 @@ Setiap baris diagram punya padanan langsung di kode: atribut jadi field, method 
 
 ## Jawaban Latihan
 
-Kelas ini punya beberapa atribut, seluruhnya privat (tanda `-`), sehingga tidak bisa diakses langsung dari luar kelas. Method-methodnya publik (tanda `+`), masing-masing menerima parameter sesuai kebutuhannya, itulah satu-satunya jalan resmi berinteraksi dengan datanya dari luar.
+Kelas ini punya dua atribut, `ownerName` dan `balance`, dan keduanya bersifat publik (tanda `+`): bisa diakses maupun diubah langsung dari luar kelas, tanpa lewat method apa pun. Method-nya juga publik: `deposit(amount)` dan `withdraw(amount)` masing-masing menerima satu parameter angka, sedangkan `printInfo()` tidak menerima parameter sama sekali. Atribut publik ini bukan kebetulan, melainkan celah yang sengaja dibahas tuntas pada Pertemuan 3.
 
 <div class="tip-box">
 <code>Account</code> adalah kelas pertama dari studi kasus <b>Bank Mini</b> yang akan dibangun sepanjang semester ini. Penerjemahan diagram ini menjadi kode Java dilakukan sebagai latihan praktik pada jobsheet Praktikum Pertemuan 2 (RTI253008).
