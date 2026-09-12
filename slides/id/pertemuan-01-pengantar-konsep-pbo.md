@@ -112,8 +112,8 @@ Mengapa dunia perangkat lunak berpikir dalam objek
 
 - Perbedaan mendasar antara paradigma prosedural dan paradigma objek
 - Bagaimana benda di dunia nyata punya data dan perilaku sekaligus
-- Empat pilar object-oriented programming (OOP): encapsulation, inheritance, polymorphism, abstraction
-- Gambaran umum studi kasus satu semester, dan bagaimana perkuliahan konsep (RTI253007) dan praktikum (RTI253008) saling melengkapi
+- Empat gagasan besar yang mendasari pemrograman berorientasi objek, dan mengapa keempatnya dianggap penting sepanjang semester ini
+- Gambaran umum studi kasus satu semester, dan bagaimana perkuliahan konsep dan praktikum saling melengkapi
 
 <div class="tip-box">
 Mata kuliah ini (RTI253007) berfokus pada konsep. Seluruh latihan pemrograman untuk materi hari ini tersedia di mata kuliah pendamping, <b>Praktikum Pemrograman Berbasis Objek (RTI253008)</b>, jobsheet Pertemuan 1.

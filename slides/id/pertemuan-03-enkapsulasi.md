@@ -110,11 +110,11 @@ Melindungi data sebuah objek dari akses yang tidak terkendali
 
 ## Yang Akan Kamu Pelajari
 
-- Risiko yang muncul apabila atribut sebuah objek dapat diakses langsung dari luar
-- Konsep encapsulation dan information hiding, serta access modifier di Java
-- Class invariant: kondisi yang harus selalu benar sepanjang umur sebuah objek
-- Pola getter dan setter, termasuk atribut read-only dan setter yang memvalidasi nilai masukan
-- Penerapan encapsulation pada kelas `Account` di studi kasus Bank Mini
+- Risiko yang muncul apabila data sebuah objek bisa diubah bebas dari luar
+- Cara melindungi data sebuah objek supaya perubahannya selalu terkendali
+- Syarat yang harus selalu terjaga benar pada data sebuah objek sepanjang umurnya
+- Pola membaca dan mengubah data secara aman, termasuk data yang sengaja dibuat tidak bisa diubah lagi
+- Penerapan seluruh konsep ini ke salah satu kelas inti Bank Mini
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 3.

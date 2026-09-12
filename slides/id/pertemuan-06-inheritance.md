@@ -110,11 +110,11 @@ Menurunkan sifat sebuah kelas ke kelas lain
 
 ## Yang Akan Kamu Pelajari
 
-- Motivasi inheritance: menghindari duplikasi antar kelas yang mirip
-- Cara mendeklarasikan subclass dengan `extends` dan memanggil constructor induk lewat `super(...)`, termasuk urutan eksekusi ketika beberapa `super(...)` berantai
-- Kata kunci `protected`, dan inheritance bertingkat (multilevel) hingga kelas `Object` sebagai akar semua kelas di Java
-- Kapan sebaiknya memilih inheritance ("is-a"), dan kapan memilih relasi ("has-a")
-- Penerapan inheritance pada Bank Mini: `SavingsAccount` dan `CheckingAccount`
+- Mengapa kode yang mirip di beberapa kelas sebaiknya digabung jadi satu, bukan disalin berulang-ulang
+- Cara sebuah kelas baru mewarisi kemampuan kelas yang sudah ada, dan urutan proses pembuatannya tahap demi tahap
+- Tingkatan hak akses antar kelas, dan bagaimana pewarisan bisa berlapis-lapis hingga ke akar seluruh kelas di Java
+- Kapan sebuah kelas sebaiknya benar-benar menjadi jenis khusus dari kelas lain, dan kapan sebaiknya tidak
+- Penerapan seluruh konsep ini untuk membedakan jenis-jenis rekening di Bank Mini
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 6.

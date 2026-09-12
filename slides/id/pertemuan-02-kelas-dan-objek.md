@@ -110,11 +110,10 @@ Fondasi pemrograman berorientasi objek
 
 ## Yang Akan Dipelajari
 
-- Perbedaan **kelas** dan **objek**
-- Anatomi kelas: atribut, method, konstruktor
-- Apa yang sebenarnya terjadi di memori pada saat objek dibuat
-- Referensi dibandingkan objek, serta risiko referensi kosong
-- Cara membaca diagram kelas UML sederhana
+- Perbedaan kelas (sebagai rancangan) dan objek (wujud nyatanya)
+- Bagian penyusun kelas, dan bagaimana objek baru terbentuk
+- Apa yang terjadi di memori saat objek dibuat dan dipakai
+- Cara membaca diagram rancangan kelas yang sederhana
 
 <div class="term-box">
 <b>Prasyarat (Pertemuan 1):</b> mahasiswa telah mengenal perbedaan antara paradigma prosedural (data dan fungsi terpisah) dengan paradigma objek (data dan fungsi digabungkan menjadi satu unit). Pertemuan ini membahas konsep unit tersebut secara lebih mendalam.

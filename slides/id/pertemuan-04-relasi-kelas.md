@@ -110,9 +110,9 @@ Bagaimana objek-objek saling terhubung membentuk sebuah sistem
 
 ## Yang Akan Kamu Pelajari
 
-- Bahwa sebuah objek dapat memiliki objek lain sebagai atributnya
-- Empat kekuatan relasi antar kelas: dependency, association, aggregation, composition
-- Perbedaan umur objek pada masing-masing jenis relasi
+- Bahwa sebuah objek dapat memiliki objek lain sebagai bagian dari dirinya
+- Empat tingkat kekuatan hubungan antar kelas, dari yang paling longgar sampai paling erat
+- Perbedaan umur objek pada masing-masing tingkat hubungan tersebut
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 4.
