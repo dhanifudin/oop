@@ -18,18 +18,23 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans.
-- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dari Pertemuan 14. Tambahkan dependency SQLite JDBC Driver pada `pom.xml` (klik kanan proyek > **Properties > Libraries > Add Dependency**, cari `org.xerial:sqlite-jdbc:3.45.1.0`).
+- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dari Pertemuan 14. Tambahkan DUA dependency pada `pom.xml` (klik kanan proyek > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) dan Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), yang menyederhanakan penulisan kode JDBC pada Langkah 1 dan 2.
 - **Verifikasi cepat** sebelum memulai:
   ```bash
   mvn -version
   ```
 
-> **Tanpa NetBeans?** Tambahkan dependency berikut secara manual ke `pom.xml`, di dalam elemen `<dependencies>`:
+> **Tanpa NetBeans?** Tambahkan kedua dependency berikut secara manual ke `pom.xml`, di dalam elemen `<dependencies>`:
 > ```xml
 > <dependency>
 >   <groupId>org.xerial</groupId>
 >   <artifactId>sqlite-jdbc</artifactId>
 >   <version>3.45.1.0</version>
+> </dependency>
+> <dependency>
+>   <groupId>commons-dbutils</groupId>
+>   <artifactId>commons-dbutils</artifactId>
+>   <version>1.8.1</version>
 > </dependency>
 > ```
 > Seluruh langkah kerja jobsheet ini tidak membutuhkan NetBeans (tidak ada desain form baru), sehingga bisa diikuti penuh dengan `mvn -q compile exec:java`.
@@ -39,6 +44,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ### Langkah 1: JdbcAccountRepository, Rekening Tersimpan di Database
 
 > **Konsep Singkat: JDBC.** JDBC (Java Database Connectivity) adalah API bawaan Java untuk berkomunikasi dengan database relasional lewat perintah SQL biasa. Tiga elemen utamanya: `Connection` (koneksi ke satu berkas/server database), `Statement`/`PreparedStatement` (pembawa perintah SQL, `PreparedStatement` memakai tanda tanya `?` sebagai placeholder nilai supaya aman dari SQL injection), dan `ResultSet` (baris hasil query, dibaca satu per satu lewat `next()`). SQLite menyimpan seluruh database dalam satu berkas biasa di disk (`bankmini.db`), sehingga tidak butuh server database terpisah, cocok untuk latihan.
+
+> **Konsep Singkat: Apache Commons DbUtils.** Menulis `Connection`/`PreparedStatement`/`ResultSet` secara manual di setiap method itu berulang dan gampang lupa ditutup. `QueryRunner` dari Apache Commons DbUtils membungkus pola ini: `run.update(sql, params...)` untuk `INSERT`/`UPDATE`/`CREATE TABLE`, `run.query(sql, handler, params...)` untuk `SELECT`, keduanya membuka dan menutup koneksinya sendiri. `QueryRunner` dibuat sekali dari `SQLiteDataSource` (bukan dari `Connection` langsung), sehingga setiap pemanggilan `run.update(...)`/`run.query(...)` otomatis mengambil dan menutup koneksinya sendiri, menghilangkan risiko lupa `close()`.
 
 Sejak Pertemuan 11, `Bank` sudah bergantung pada interface `AccountRepository`, bukan pada implementasi konkretnya secara langsung (Dependency Inversion Principle). Berkat itu, penyimpanan in-memory bisa diganti penyimpanan JDBC hanya dengan menulis implementasi baru, tanpa menyentuh `Bank` sama sekali:
 

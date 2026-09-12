@@ -46,11 +46,16 @@ MEETING_ORDER = ["01", "02", "03", "04", "06", "07", "09", "10", "11", "13", "14
 MAVEN_FROM = "13"
 MAIN_CLASS = "id.ac.polinema.Main"
 
-SQLITE_DEPENDENCY = """  <dependencies>
+JDBC_DEPENDENCIES = """  <dependencies>
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.45.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbutils</groupId>
+      <artifactId>commons-dbutils</artifactId>
+      <version>1.8.1</version>
     </dependency>
   </dependencies>
 """
@@ -99,7 +104,7 @@ def write_snapshot(files: dict, nn: str):
         shutil.copyfile(abs_path, target)
     if is_maven:
         dest_root.mkdir(parents=True, exist_ok=True)
-        deps = SQLITE_DEPENDENCY if nn >= "15" else ""
+        deps = JDBC_DEPENDENCIES if nn >= "15" else ""
         pom = (
             POM_TEMPLATE
             .replace("{{ARTIFACT_ID}}", f"bank-mini-pertemuan-{nn}")

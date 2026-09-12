@@ -20,7 +20,10 @@
   Pertemuan 2-11: struktur `src/id/ac/polinema/*.java` polos (javac/java).
   Pertemuan 13-16: proyek Maven (`pom.xml` dari `scripts/pom-template.xml`,
   `src/main/java/id/ac/polinema/{model,repository,ui}/`); Pertemuan 15
-  menambah dependency `org.xerial:sqlite-jdbc`.
+  menambah dependency `org.xerial:sqlite-jdbc` dan
+  `commons-dbutils:commons-dbutils` (dipakai lewat `QueryRunner` di
+  `JdbcAccountRepository`/`JdbcUserRepository`, menggantikan
+  `Connection`/`PreparedStatement`/`ResultSet` manual).
 
   `code/bank-mini-zips/pertemuan-NN-starter.zip`: checkpoint pertemuan
   praktikum SEBELUMNYA (bukan checkpoint pertemuan NN sendiri), dikemas

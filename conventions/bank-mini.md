@@ -159,6 +159,11 @@ State SETELAH pertemuan tsb, mengikuti pemetaan topik resmi di atas:
   `User`/`UserRepository`/`InMemoryUserRepository` (preview singkat) lalu
   `JdbcUserRepository`/`PasswordHasher`/`LoginFrame`, `Main.java`
   menjalankan `LoginFrame` lebih dulu, bukan `BankMiniFrame` langsung.
+  `JdbcAccountRepository`/`JdbcUserRepository` memakai Apache Commons
+  DbUtils (`QueryRunner` dibuat dari `SQLiteDataSource`, plus satu
+  `ResultSetHandler` kecil per kelas untuk pemetaan baris polimorfik/flat)
+  alih-alih `Connection`/`PreparedStatement`/`ResultSet` manual; jangan
+  regresi ke JDBC mentah saat merevisi deck atau jobsheet ini.
   Tugas: `BankMiniFrame` menampilkan "Logged in as: &lt;username&gt;" di
   judul jendela (constructor menerima parameter username), plus satu
   pengguna tambahan.

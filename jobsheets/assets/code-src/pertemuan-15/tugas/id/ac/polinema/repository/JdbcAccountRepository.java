@@ -5,20 +5,22 @@ import id.ac.polinema.model.CheckingAccount;
 import id.ac.polinema.model.Customer;
 import id.ac.polinema.model.SavingsAccount;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.sqlite.SQLiteDataSource;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class JdbcAccountRepository implements AccountRepository {
-    private String url;
+    private QueryRunner run;
 
     public JdbcAccountRepository(String databasePath) {
-        this.url = "jdbc:sqlite:" + databasePath;
+        SQLiteDataSource dataSource = new SQLiteDataSource();
+        dataSource.setUrl("jdbc:sqlite:" + databasePath);
+        this.run = new QueryRunner(dataSource);
         createTableIfNotExists();
     }
 
@@ -30,9 +32,8 @@ public class JdbcAccountRepository implements AccountRepository {
                 + "account_type TEXT NOT NULL, "
                 + "balance REAL NOT NULL, "
                 + "extra_param REAL NOT NULL)";
-        try (Connection conn = DriverManager.getConnection(url);
-                Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+        try {
+            run.update(sql);
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to initialize accounts table", e);
         }
@@ -43,21 +44,19 @@ public class JdbcAccountRepository implements AccountRepository {
         String sql = "INSERT OR REPLACE INTO accounts "
                 + "(account_number, owner_name, owner_phone, account_type, balance, extra_param) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(url);
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, account.getAccountNumber());
-            stmt.setString(2, account.getOwner().getName());
-            stmt.setString(3, account.getOwner().getPhone());
-            if (account instanceof SavingsAccount savings) {
-                stmt.setString(4, "SAVINGS");
-                stmt.setDouble(6, savings.getInterestRate());
-            } else {
-                CheckingAccount checking = (CheckingAccount) account;
-                stmt.setString(4, "CHECKING");
-                stmt.setDouble(6, checking.getOverdraftLimit());
-            }
-            stmt.setDouble(5, account.getBalance());
-            stmt.executeUpdate();
+        String type;
+        double extraParam;
+        if (account instanceof SavingsAccount savings) {
+            type = "SAVINGS";
+            extraParam = savings.getInterestRate();
+        } else {
+            CheckingAccount checking = (CheckingAccount) account;
+            type = "CHECKING";
+            extraParam = checking.getOverdraftLimit();
+        }
+        try {
+            run.update(sql, account.getAccountNumber(), account.getOwner().getName(),
+                    account.getOwner().getPhone(), type, account.getBalance(), extraParam);
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to save account " + account.getAccountNumber(), e);
         }
@@ -66,12 +65,8 @@ public class JdbcAccountRepository implements AccountRepository {
     @Override
     public Account findByNumber(String accountNumber) {
         String sql = "SELECT * FROM accounts WHERE account_number = ?";
-        try (Connection conn = DriverManager.getConnection(url);
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, accountNumber);
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next() ? mapRow(rs) : null;
-            }
+        try {
+            return run.query(sql, new AccountHandler(), accountNumber);
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to find account " + accountNumber, e);
         }
@@ -79,21 +74,15 @@ public class JdbcAccountRepository implements AccountRepository {
 
     @Override
     public Collection<Account> findAll() {
-        Collection<Account> accounts = new ArrayList<>();
         String sql = "SELECT * FROM accounts";
-        try (Connection conn = DriverManager.getConnection(url);
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                accounts.add(mapRow(rs));
-            }
+        try {
+            return run.query(sql, new AccountListHandler());
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to load accounts", e);
         }
-        return accounts;
     }
 
-    private Account mapRow(ResultSet rs) throws SQLException {
+    private static Account mapRow(ResultSet rs) throws SQLException {
         Customer owner = new Customer(rs.getString("owner_name"), rs.getString("owner_phone"));
         String accountNumber = rs.getString("account_number");
         double balance = rs.getDouble("balance");
@@ -102,5 +91,23 @@ public class JdbcAccountRepository implements AccountRepository {
             return new SavingsAccount(accountNumber, owner, balance, extraParam);
         }
         return new CheckingAccount(accountNumber, owner, balance, extraParam);
+    }
+
+    private static class AccountHandler implements ResultSetHandler<Account> {
+        @Override
+        public Account handle(ResultSet rs) throws SQLException {
+            return rs.next() ? mapRow(rs) : null;
+        }
+    }
+
+    private static class AccountListHandler implements ResultSetHandler<Collection<Account>> {
+        @Override
+        public Collection<Account> handle(ResultSet rs) throws SQLException {
+            Collection<Account> accounts = new ArrayList<>();
+            while (rs.next()) {
+                accounts.add(mapRow(rs));
+            }
+            return accounts;
+        }
     }
 }

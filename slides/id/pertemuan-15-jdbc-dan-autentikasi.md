@@ -169,17 +169,55 @@ JDBC (Java Database Connectivity) adalah API bawaan Java untuk terhubung ke data
 
 ---
 
-## Contoh Kode: Koneksi JDBC dan Query
+## Mengelola Dependency Lewat Maven
+
+SQLite bukan bagian dari Java bawaan, ia adalah pustaka (library) pihak ketiga. Pertanyaannya: bagaimana `import org.sqlite...` bisa dipakai, padahal tidak pernah diketik ulang isi kodenya sendiri?
+
+<div class="term-box">
+Proyek Maven mendeklarasikan pustaka yang dibutuhkan sebagai <b>dependency</b> di dalam <code>pom.xml</code>, cukup nama dan nomor versinya. Maven mengunduh pustaka itu (dan seluruh pustaka lain yang dibutuhkannya) dari server pusat bernama <i>Maven Central</i>, lalu menaruhnya di classpath proyek secara otomatis. Tidak ada berkas <code>.jar</code> yang perlu diunduh atau disalin manual.
+</div>
+
+---
+
+## Contoh: Mendeklarasikan Dependency
+
+```xml
+<dependency>
+    <groupId>org.xerial</groupId>
+    <artifactId>sqlite-jdbc</artifactId>
+    <version>3.45.1.0</version>
+</dependency>
+```
+
+Tiga koordinat ini (`groupId`, `artifactId`, `version`) sudah cukup bagi Maven untuk menemukan, mengunduh, dan memasang pustaka SQLite JDBC Driver yang dipakai pertemuan ini.
+
+---
+
+## Apache Commons DbUtils: Menyederhanakan JDBC
+
+Menulis `Connection`/`Statement`/`ResultSet` secara manual di setiap method itu berulang dan gampang lupa ditutup, seperti dibahas di slide sebelumnya. Maven memudahkan pemakaian pustaka yang sudah memecahkan masalah ini.
+
+<div class="term-box">
+<b>Apache Commons DbUtils</b> adalah pustaka pihak ketiga (dependency Maven kedua di pertemuan ini) yang membungkus pola JDBC berulang lewat kelas <code>QueryRunner</code>: satu pemanggilan method menggantikan seluruh blok <code>Connection</code>/<code>PreparedStatement</code>/<code>try</code>-with-resources.
+</div>
+
+---
+
+## Contoh Kode: Koneksi JDBC, Mentah vs Lewat DbUtils
 
 ```java
+// JDBC mentah
 try (Connection conn = DriverManager.getConnection(url);
         PreparedStatement stmt = conn.prepareStatement(sql)) {
     stmt.setString(1, accountNumber);
     stmt.executeUpdate();
 }
+
+// Lewat QueryRunner (Apache Commons DbUtils)
+run.update(sql, accountNumber);
 ```
 
-`PreparedStatement` dengan tanda tanya (`?`) sebagai placeholder mencegah nilai yang dimasukkan disalahartikan sebagai bagian perintah SQL itu sendiri.
+Baris kedua melakukan hal yang PERSIS sama seperti blok pertama: membuka koneksi, menyiapkan `PreparedStatement`, mengisi parameter, mengeksekusinya, lalu menutup semuanya, hanya saja dilakukan di dalam `run.update(...)`.
 
 ---
 
@@ -189,7 +227,7 @@ try (Connection conn = DriverManager.getConnection(url);
 <b>Salah:</b> membuka <code>Connection conn = DriverManager.getConnection(url);</code> tanpa <code>try</code>-with-resources maupun <code>conn.close()</code> manual setelahnya.
 </div>
 
-**Benar:** setiap `Connection`, `Statement`, dan `ResultSet` wajib ditutup setelah dipakai, sebab masing-masing memegang sumber daya sistem (berkas, memori) yang tidak dilepaskan otomatis. Pola `try (Connection conn = ...; PreparedStatement stmt = ...) { ... }` menutup keduanya otomatis begitu blok selesai, bahkan bila terjadi exception di dalamnya.
+**Benar:** setiap `Connection`, `Statement`, dan `ResultSet` wajib ditutup setelah dipakai, sebab masing-masing memegang sumber daya sistem (berkas, memori) yang tidak dilepaskan otomatis. Pola `try (Connection conn = ...; PreparedStatement stmt = ...) { ... }` menutup keduanya otomatis begitu blok selesai. `QueryRunner` yang dibuat dari `DataSource` (bukan dari `Connection` langsung) menghilangkan seluruh kelas bug ini: setiap `run.update(...)`/`run.query(...)` mengambil dan menutup koneksinya sendiri.
 
 ---
 
@@ -340,18 +378,21 @@ Ini adalah Dependency Inversion Principle (Pertemuan 11) beraksi lagi: <code>Ban
 ## Contoh Kode: JdbcAccountRepository.save()
 
 ```java
-String sql = "INSERT OR REPLACE INTO accounts "
-        + "(account_number, owner_name, balance) VALUES (?, ?, ?)";
-try (Connection conn = DriverManager.getConnection(url);
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-    stmt.setString(1, account.getAccountNumber());
-    stmt.setString(2, account.getOwner().getName());
-    stmt.setDouble(3, account.getBalance());
-    stmt.executeUpdate();
+public JdbcAccountRepository(String databasePath) {
+    SQLiteDataSource dataSource = new SQLiteDataSource();
+    dataSource.setUrl("jdbc:sqlite:" + databasePath);
+    this.run = new QueryRunner(dataSource);
+    createTableIfNotExists();
+}
+
+public void save(Account account) {
+    String sql = "INSERT OR REPLACE INTO accounts "
+            + "(account_number, owner_name, balance) VALUES (?, ?, ?)";
+    run.update(sql, account.getAccountNumber(), account.getOwner().getName(), account.getBalance());
 }
 ```
 
-`INSERT OR REPLACE` menyimpan baris baru, atau menimpa baris lama bila nomor rekeningnya sudah ada.
+`QueryRunner` dibuat sekali di constructor dari `SQLiteDataSource`. `INSERT OR REPLACE` menyimpan baris baru, atau menimpa baris lama bila nomor rekeningnya sudah ada; `run.update(...)` yang mengurus koneksi dan parameter-binding-nya.
 
 ---
 
@@ -430,6 +471,19 @@ Sesi 4 dari 4
 <div class="term-box">
 <code>UserRepository</code> mengikuti bentuk persis sama dengan <code>AccountRepository</code>: satu interface, satu implementasi in-memory sebagai preview, satu implementasi JDBC untuk penyimpanan sungguhan. Begitu sebuah pola desain dikuasai, ia bisa dipakai berulang untuk kebutuhan yang berbeda.
 </div>
+
+---
+
+## Contoh Kode: JdbcUserRepository.findByUsername()
+
+```java
+public User findByUsername(String username) {
+    String sql = "SELECT * FROM users WHERE username = ?";
+    return run.query(sql, new UserHandler(), username);
+}
+```
+
+`QueryRunner` yang sama dari Bagian 3 dipakai lagi di sini; `UserHandler` adalah `ResultSetHandler` kecil yang mengubah satu baris hasil query menjadi objek `User`, pola yang PERSIS sama dengan `AccountHandler` pada `JdbcAccountRepository`.
 
 ---
 

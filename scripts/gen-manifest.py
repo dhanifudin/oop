@@ -250,9 +250,9 @@ def p15(step):
 def rows_p15():
     return [
         (None, None, p15("langkah-01"), "repository/JdbcAccountRepository.java",
-         "p15-01-jdbcaccountrepository-save", [(1, 3), (17, 64)]),
+         "p15-01-jdbcaccountrepository-save", [(1, 3), (17, 63)]),
         (None, None, p15("langkah-01"), "repository/JdbcAccountRepository.java",
-         "p15-01-jdbcaccountrepository-find", [(1, 3), (66, 106)]),
+         "p15-01-jdbcaccountrepository-find", [(1, 3), (65, 113)]),
         (p14("langkah-02"), "Bank.java", p15("langkah-01"), "Bank.java",
          "p15-01-bank-saveaccount", [(1, 10), (28, 34)]),
         (p14("langkah-02"), "Bank.java", p15("langkah-01"), "Bank.java",
@@ -265,9 +265,9 @@ def rows_p15():
         (None, None, p15("langkah-02"), "repository/InMemoryUserRepository.java",
          "p15-02-inmemoryuserrepository"),
         (None, None, p15("langkah-02"), "repository/JdbcUserRepository.java",
-         "p15-02-jdbcuserrepository-seed", [(1, 3), (13, 39)]),
+         "p15-02-jdbcuserrepository-seed", [(1, 3), (13, 40)]),
         (None, None, p15("langkah-02"), "repository/JdbcUserRepository.java",
-         "p15-02-jdbcuserrepository-find", [(1, 3), (41, 69)]),
+         "p15-02-jdbcuserrepository-find", [(1, 3), (42, 67)]),
         (None, None, p15("langkah-02"), "ui/LoginFrame.java", "p15-02-loginhandler",
          [(1, 6), (73, 88)]),
         (p14("langkah-02"), "Main.java", p15("langkah-02"), "Main.java", "p15-02-main"),
@@ -276,7 +276,7 @@ def rows_p15():
         (p15("langkah-02"), "ui/LoginFrame.java", p15("tugas"), "ui/LoginFrame.java",
          "p15-tugas-loginhandler", [(1, 6), (73, 88)]),
         (p15("langkah-02"), "repository/JdbcUserRepository.java", p15("tugas"),
-         "repository/JdbcUserRepository.java", "p15-tugas-seconduser", [(1, 3), (34, 40)]),
+         "repository/JdbcUserRepository.java", "p15-tugas-seconduser", [(1, 3), (35, 41)]),
     ]
 
 
