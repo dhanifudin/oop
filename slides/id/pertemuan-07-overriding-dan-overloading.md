@@ -150,6 +150,18 @@ Pertemuan 6 menunjukkan bahwa subclass mewarisi method superclass apa adanya. Ka
 
 ---
 
+## Apa Itu Signature?
+
+Dua orang boleh punya nama yang sama; mereka dibedakan lewat data lain (tanggal lahir, alamat). Dua method dalam satu kelas juga boleh punya nama yang sama, asal Java bisa membedakannya lewat daftar parameternya, itulah yang disebut signature.
+
+![h:220 Anatomi signature: honk(int times), nama method dan daftar parameter, terpisah dari visibility dan return type](../assets/illustrations/method-signature-anatomy.svg)
+
+<div class="term-box">
+<b>Signature</b> sebuah method terdiri dari nama method dan daftar parameternya (jumlah, urutan, dan tipe data). Return type dan visibility BUKAN bagian dari signature.
+</div>
+
+---
+
 ## Mengapa Ini Penting?
 
 Bayangkan sebuah sistem pembayaran dengan puluhan jenis metode (kartu kredit, transfer bank, e-wallet), dengan superclass `PaymentMethod` yang subclass-nya terus bertambah seiring waktu. Tanpa overriding, setiap kali ditambahkan jenis pembayaran baru, kode yang memproses pembayaran juga harus diubah untuk menangani kasus baru itu, berisiko merusak jenis pembayaran lain yang sudah berjalan baik.
@@ -228,7 +240,7 @@ Gunakan <code>final</code> secukupnya: hanya ketika ada alasan kuat suatu perila
 <b>Salah:</b> menulis <code>public String honk(String mode)</code> di <code>Truck</code>, mengira ini meng-override <code>honk()</code> milik <code>Vehicle</code>, padahal daftar parameternya berbeda.
 </div>
 
-**Benar:** `honk(String mode)` bukan override, melainkan method BARU yang kebetulan bernama sama. Tanda tangan (nama dan parameter) harus identik persis; `@Override` akan menampilkan galat compile kalau tidak cocok, justru mengungkap kesalahan ini lebih awal.
+**Benar:** `honk(String mode)` bukan override, melainkan method BARU yang kebetulan bernama sama. Signature (nama dan parameter) harus identik persis; `@Override` akan menampilkan galat compile kalau tidak cocok, justru mengungkap kesalahan ini lebih awal.
 
 ---
 
@@ -268,7 +280,7 @@ Sesi 2 dari 4
 ## Nama Sama, Parameter Berbeda
 
 <div class="term-box">
-<b>Overloading</b> adalah menambahkan method dengan nama yang sama tetapi daftar parameter (jumlah atau tipe) yang berbeda. Compiler memilih versi mana yang dipanggil berdasarkan argumen yang diberikan saat pemanggilan, ditentukan sejak program dikompilasi, bukan saat program berjalan.
+<b>Overloading</b> adalah menambahkan method dengan nama yang sama tetapi daftar parameter (jumlah atau tipe) yang berbeda, dengan kata lain: nama sama, signature berbeda. Compiler memilih versi mana yang dipanggil berdasarkan argumen yang diberikan saat pemanggilan, ditentukan sejak program dikompilasi, bukan saat program berjalan.
 </div>
 
 Contoh umum: `println()` pada `System.out` sebenarnya adalah puluhan method overload, masing-masing menerima tipe argumen yang berbeda (`String`, `int`, `double`, `boolean`, dan seterusnya), tetapi semuanya dipanggil dengan nama yang sama.

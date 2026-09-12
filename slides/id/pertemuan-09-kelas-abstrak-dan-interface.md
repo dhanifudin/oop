@@ -152,7 +152,7 @@ Kelas abstrak memindahkan kesalahan ini dari saat program berjalan ke saat progr
 ![Shape sebagai kelas abstrak, Circle dan Square mengimplementasikan area()](../assets/uml/p09-shape-abstract.png)
 
 <div class="term-box">
-<b>Method abstrak</b> hanya dideklarasikan tanda tangannya (nama, parameter, tipe kembalian), tanpa isi sama sekali. Setiap subclass konkret (yang bisa diinstansiasi) wajib menyediakan isinya sendiri, atau compiler akan menampilkan galat.
+<b>Method abstrak</b> hanya dideklarasikan signature-nya (nama, parameter, tipe kembalian), tanpa isi sama sekali. Setiap subclass konkret (yang bisa diinstansiasi) wajib menyediakan isinya sendiri, atau compiler akan menampilkan galat.
 </div>
 
 ---
@@ -181,7 +181,7 @@ Kelas abstrak boleh tetap memiliki method biasa (dengan isi lengkap) selain meth
 Kelas abstrak cocok ketika beberapa kelas memang berbagi satu superclass yang masuk akal. Namun terkadang beberapa kelas yang sama sekali tidak berkerabat butuh kemampuan yang sama, misalnya "bisa dibandingkan" atau "bisa disimpan ke berkas", tanpa harus berbagi satu superclass.
 
 <div class="term-box">
-<b>Interface</b> mendeklarasikan kontrak method (tanda tangan tanpa isi) yang wajib dipenuhi kelas mana pun yang menyatakan <code>implements</code> terhadapnya, tanpa mewajibkan hubungan <code>extends</code> sama sekali.
+<b>Interface</b> mendeklarasikan kontrak method (signature tanpa isi) yang wajib dipenuhi kelas mana pun yang menyatakan <code>implements</code> terhadapnya, tanpa mewajibkan hubungan <code>extends</code> sama sekali.
 </div>
 
 ---

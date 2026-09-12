@@ -510,7 +510,7 @@ Inilah yang akan diselesaikan Pertemuan 7 lewat overriding: subclass menulis ula
 
 `CheckingAccount` menambahkan atribut `overdraftLimit`, mengikuti pola yang sama seperti `SavingsAccount`.
 
-Tuliskan signature constructor `CheckingAccount` yang tepat, lengkap dengan pemanggilan `super(...)`-nya.
+Tuliskan signature (nama dan daftar parameter) constructor `CheckingAccount` yang tepat, lengkap dengan pemanggilan `super(...)`-nya.
 
 ---
 

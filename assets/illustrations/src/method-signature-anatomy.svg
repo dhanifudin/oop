@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <text x="400" y="55" text-anchor="middle" font-size="28" fill="#94a3b8">public String</text>
+  <text x="400" y="90" text-anchor="middle" font-size="16" fill="#94a3b8">visibility dan return type: BUKAN bagian signature</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="150" y="115" width="500" height="70" rx="14" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  </g>
+  <text x="400" y="160" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">honk(int times)</text>
+
+  <text x="290" y="220" text-anchor="middle" font-size="16" fill="#334155">nama method</text>
+  <text x="510" y="220" text-anchor="middle" font-size="16" fill="#334155">daftar parameter</text>
+
+  <text x="400" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#1d4ed8">signature = nama method + daftar parameternya</text>
+</svg>
