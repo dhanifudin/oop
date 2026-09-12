@@ -43,13 +43,12 @@
   </g>
   <text x="605" y="75" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">aggregation</text>
 
-  <rect x="518" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
-  <text x="553" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Library</text>
-  <path d="M588,143 L592,143" stroke="#1d4ed8" stroke-width="2"/>
-  <path d="M592,143 l13,-11 13,11 -13,11 z" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
-  <path d="M618,143 L622,143" stroke="#1d4ed8" stroke-width="2"/>
-  <rect x="622" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
-  <text x="657" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Book</text>
+  <rect x="510" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="545" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Library</text>
+  <path d="M580,143 l13,-11 13,11 -13,11 z" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.5"/>
+  <line x1="606" y1="143" x2="630" y2="143" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="630" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="665" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Book</text>
 
   <text x="605" y="230" text-anchor="middle" font-size="16.2" fill="#64748b">whole holds part,</text>
   <text x="605" y="248" text-anchor="middle" font-size="16.2" fill="#64748b">but part can</text>
@@ -61,13 +60,12 @@
   </g>
   <text x="835" y="75" text-anchor="middle" font-size="21.6" font-weight="700" fill="#1d4ed8">composition</text>
 
-  <rect x="748" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
-  <text x="783" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Car</text>
-  <path d="M818,143 L822,143" stroke="#1d4ed8" stroke-width="2"/>
-  <path d="M822,143 l13,-11 13,11 -13,11 z" fill="#1d4ed8" stroke="#1d4ed8" stroke-width="2.5"/>
-  <path d="M848,143 L852,143" stroke="#1d4ed8" stroke-width="2"/>
-  <rect x="852" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
-  <text x="887" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Engine</text>
+  <rect x="740" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="775" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Car</text>
+  <path d="M810,143 l13,-11 13,11 -13,11 z" fill="#1d4ed8" stroke="#1d4ed8" stroke-width="2.5"/>
+  <line x1="836" y1="143" x2="860" y2="143" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="860" y="120" width="70" height="46" rx="8" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="895" y="147" text-anchor="middle" font-size="16.2" fill="#1d4ed8">Engine</text>
 
   <text x="835" y="230" text-anchor="middle" font-size="16.2" fill="#64748b">strongest link:</text>
   <text x="835" y="248" text-anchor="middle" font-size="16.2" fill="#64748b">part's lifetime is</text>
