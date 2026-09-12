@@ -1,0 +1,28 @@
+@startuml p04-multiplicity
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Driver {
+  - name : String
+  - car : Car
+}
+
+class Car {
+  - plateNumber : String
+}
+
+class Library {
+  - name : String
+  - books : Book[]
+}
+
+class Book {
+  - title : String
+}
+
+Driver "1" --> "1" Car : association
+Library "1" o-- "0..*" Book : aggregation
+@enduml
