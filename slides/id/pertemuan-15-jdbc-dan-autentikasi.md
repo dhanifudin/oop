@@ -111,7 +111,7 @@ Dari data yang menguap saat aplikasi ditutup menjadi data yang benar-benar tersi
 ## Yang Akan Kamu Pelajari
 
 - Mengapa penyimpanan in-memory kehilangan seluruh datanya setiap aplikasi ditutup, dan bagaimana JDBC mengatasinya
-- Dependency Inversion Principle beraksi lagi: mengganti implementasi penyimpanan tanpa mengubah kode yang memakainya
+- Cara Dependency Inversion Principle beraksi lagi: mengganti implementasi penyimpanan tanpa mengubah kode yang memakainya
 - Mengapa aplikasi tanpa mekanisme login adalah risiko nyata, dan bagaimana password semestinya disimpan (di-hash, bukan apa adanya)
 - Penerapan pada Bank Mini: `JdbcAccountRepository`, `JdbcUserRepository`, dan `LoginFrame`
 
@@ -121,10 +121,21 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ---
 
+## Peta Sesi Hari Ini
+
+- **Sesi 1 (50')**: Persistensi, data yang bertahan
+- **Sesi 2 (50')**: Autentikasi, siapa yang boleh masuk
+- **Sesi 3 (50')**: Menerapkan JDBC ke Bank Mini
+- **Sesi 4 (50')**: Menerapkan autentikasi ke Bank Mini
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 1
 ## Persistensi: Data yang Bertahan
+
+Sesi 1 dari 4
 
 ---
 
@@ -150,7 +161,7 @@ Persistensi (data yang bertahan melewati siklus hidup satu proses aplikasi) adal
 
 ## RAM Dibersihkan, Disk Tidak
 
-![Kontras antara penyimpanan in-memory yang hilang saat restart dan penyimpanan database yang bertahan](../assets/illustrations/persistence-restart.svg)
+![h:260 Kontras antara penyimpanan in-memory yang hilang saat restart dan penyimpanan database yang bertahan](../assets/illustrations/persistence-restart.svg)
 
 <div class="term-box">
 JDBC (Java Database Connectivity) adalah API bawaan Java untuk terhubung ke database relasional lewat perintah SQL. SQLite menyimpan seluruh database dalam satu berkas biasa di disk, sehingga tidak butuh server database terpisah, cocok untuk aplikasi kecil sampai menengah.
@@ -158,10 +169,60 @@ JDBC (Java Database Connectivity) adalah API bawaan Java untuk terhubung ke data
 
 ---
 
+## Contoh Kode: Koneksi JDBC dan Query
+
+```java
+try (Connection conn = DriverManager.getConnection(url);
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+    stmt.setString(1, accountNumber);
+    stmt.executeUpdate();
+}
+```
+
+`PreparedStatement` dengan tanda tanya (`?`) sebagai placeholder mencegah nilai yang dimasukkan disalahartikan sebagai bagian perintah SQL itu sendiri.
+
+---
+
+## Kesalahan Umum: Lupa Menutup Koneksi
+
+<div class="warn-box">
+<b>Salah:</b> membuka <code>Connection conn = DriverManager.getConnection(url);</code> tanpa <code>try</code>-with-resources maupun <code>conn.close()</code> manual setelahnya.
+</div>
+
+**Benar:** setiap `Connection`, `Statement`, dan `ResultSet` wajib ditutup setelah dipakai, sebab masing-masing memegang sumber daya sistem (berkas, memori) yang tidak dilepaskan otomatis. Pola `try (Connection conn = ...; PreparedStatement stmt = ...) { ... }` menutup keduanya otomatis begitu blok selesai, bahkan bila terjadi exception di dalamnya.
+
+---
+
+## Latihan
+
+Sebuah method membuka `Connection` di baris pertama, lalu melakukan beberapa query, TANPA `try`-with-resources maupun `close()` di akhir method.
+
+Apa risikonya bila method ini dipanggil ribuan kali dalam aplikasi yang berjalan lama? Jelaskan.
+
+---
+
+## Jawaban Latihan
+
+**Kebocoran sumber daya (resource leak).** Setiap pemanggilan membuka koneksi baru yang tidak pernah ditutup, sumber daya sistem yang dipegangnya (soket, berkas database) terus menumpuk. Setelah ribuan pemanggilan, aplikasi bisa kehabisan koneksi yang tersedia atau bahkan menyebabkan seluruh aplikasi berhenti merespons. Perbaikan: bungkus `Connection` dalam `try`-with-resources supaya selalu ditutup otomatis, apa pun yang terjadi di dalam bloknya.
+
+---
+
+## Rangkuman Bagian 1
+
+- Data yang hanya disimpan di variabel (RAM) hilang setiap aplikasi ditutup; persistensi berarti data bertahan melewati siklus hidup aplikasi.
+- JDBC menghubungkan Java ke database lewat SQL; SQLite menyimpan seluruh database dalam satu berkas di disk.
+- `Connection`, `Statement`, dan `ResultSet` wajib ditutup setelah dipakai, `try`-with-resources melakukannya otomatis.
+
+Selanjutnya: Bagian 2 membahas autentikasi, cara memastikan hanya pengguna yang sah yang bisa mengakses data yang kini tersimpan.
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 2
 ## Autentikasi: Siapa yang Boleh Masuk
+
+Sesi 2 dari 4
 
 ---
 
@@ -187,24 +248,88 @@ Autentikasi (memverifikasi siapa penggunanya) berbeda dari otorisasi (menentukan
 
 ## Gerbang Sebelum Data
 
-![Kontras antara aplikasi tanpa login dan aplikasi dengan gerbang login](../assets/illustrations/login-gate.svg)
+![h:260 Kontras antara aplikasi tanpa login dan aplikasi dengan gerbang login](../assets/illustrations/login-gate.svg)
+
+<div class="term-box">
+Sebuah <b>login gate</b> memeriksa kredensial (username dan password) SEBELUM mengizinkan akses ke data sungguhan. Tanpa gerbang ini, seluruh data sama saja terbuka untuk siapa pun yang menjalankan aplikasinya.
+</div>
+
+---
+
+## Hashing: Fungsi Satu Arah
 
 <div class="warn-box">
 Password tidak boleh disimpan apa adanya (plain text). Password di-hash (diubah lewat fungsi satu arah yang tidak bisa dibalik) sebelum disimpan; saat login, password yang diketik di-hash ulang lalu dibandingkan dengan hash tersimpan.
 </div>
+
+<div class="term-box">
+Fungsi hash mengubah input apa pun menjadi deretan karakter tetap panjangnya, dan MUSTAHIL dibalik untuk mendapatkan kembali input aslinya. Bahkan bila database bocor, penyerang hanya mendapat hash-nya, bukan password asli penggunanya.
+</div>
+
+---
+
+## Contoh Kode: Meng-hash Password dengan SHA-256
+
+```java
+MessageDigest digest = MessageDigest.getInstance("SHA-256");
+byte[] hashBytes = digest.digest(plainPassword.getBytes("UTF-8"));
+StringBuilder hex = new StringBuilder();
+for (byte b : hashBytes) {
+    hex.append(String.format("%02x", b));
+}
+return hex.toString();
+```
+
+Password yang sama selalu menghasilkan hash yang sama persis, tetapi hash-nya sendiri tidak bisa dibalik menjadi password aslinya.
+
+---
+
+## Kesalahan Umum: Membandingkan Password Polos dengan Hash
+
+<div class="warn-box">
+<b>Salah:</b> menulis <code>if (user.getPasswordHash().equals(password))</code>, membandingkan hash yang tersimpan langsung dengan password polos yang baru diketik pengguna.
+</div>
+
+**Benar:** password yang baru diketik harus DI-HASH DULU dengan algoritma yang sama, baru dibandingkan dengan hash tersimpan: `user.getPasswordHash().equals(PasswordHasher.hash(password))`. Membandingkan hash dengan teks polos hampir selalu bernilai `false`, bahkan untuk password yang sebenarnya benar.
+
+---
+
+## Latihan
+
+Tabel `users` menyimpan `passwordHash` untuk `"nadia"` sebagai hasil `PasswordHasher.hash("rahasia123")`.
+
+Pengguna login dengan username `"nadia"` dan password `"rahasia123"`. Jelaskan langkah yang harus dilakukan kode `LoginFrame` untuk memutuskan apakah login ini berhasil.
+
+---
+
+## Jawaban Latihan
+
+Kode HARUS meng-hash ulang password yang baru diketik (`PasswordHasher.hash("rahasia123")`), baru membandingkan hasilnya dengan `passwordHash` yang tersimpan di database untuk `"nadia"`. Karena fungsi hash menghasilkan output yang sama persis untuk input yang sama, kedua hash ini akan cocok dan login dinyatakan berhasil, TANPA pernah membandingkan password polosnya secara langsung.
+
+---
+
+## Rangkuman Bagian 2
+
+- Aplikasi tanpa login gate tidak bisa membedakan pengguna sah dari siapa pun yang menjalankan programnya.
+- Password di-hash (fungsi satu arah) sebelum disimpan; password asli tidak pernah tersimpan sama sekali.
+- Verifikasi login membandingkan hash dengan hash, bukan membandingkan hash dengan password polos.
+
+Selanjutnya: Bagian 3 menerapkan JDBC ke penyimpanan data rekening Bank Mini.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 3
-## Menerapkan ke Bank Mini
+## Menerapkan JDBC ke Bank Mini
+
+Sesi 3 dari 4
 
 ---
 
 ## Mengganti Penyimpanan Tanpa Mengubah Pemakainya
 
-![h:340 AccountRepository sekarang diimplementasikan oleh JdbcAccountRepository, menggantikan versi in-memory](../assets/uml/p15-accountrepository-jdbc.png)
+![h:300 AccountRepository sekarang diimplementasikan oleh JdbcAccountRepository, menggantikan versi in-memory](../assets/uml/p15-accountrepository-jdbc.png)
 
 <div class="tip-box">
 Ini adalah Dependency Inversion Principle (Pertemuan 11) beraksi lagi: <code>Bank</code> hanya bergantung pada interface <code>AccountRepository</code>, sehingga penyimpanan in-memory bisa diganti penyimpanan database hanya dengan menulis implementasi baru, tanpa menyentuh <code>Bank</code> sama sekali.
@@ -212,19 +337,95 @@ Ini adalah Dependency Inversion Principle (Pertemuan 11) beraksi lagi: <code>Ban
 
 ---
 
-## JdbcAccountRepository dan Bank.saveAccount()
+## Contoh Kode: JdbcAccountRepository.save()
 
-`BankMiniFrame` kini memakai `JdbcAccountRepository`, menyimpan seluruh data rekening ke berkas `bankmini.db`. Satu detail penting: penyimpanan in-memory "menyimpan" perubahan secara otomatis (objek yang diubah adalah objek yang sama dengan yang tersimpan), sedangkan penyimpanan JDBC tidak, `Bank` mendapat method baru, `saveAccount()`, yang harus dipanggil ulang setelah setiap `deposit()`, `withdraw()`, atau `processMonthEnd()`.
+```java
+String sql = "INSERT OR REPLACE INTO accounts "
+        + "(account_number, owner_name, balance) VALUES (?, ?, ?)";
+try (Connection conn = DriverManager.getConnection(url);
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+    stmt.setString(1, account.getAccountNumber());
+    stmt.setString(2, account.getOwner().getName());
+    stmt.setDouble(3, account.getBalance());
+    stmt.executeUpdate();
+}
+```
 
-<div class="tip-box">
-Checkpoint jobsheet ini membuktikan persistensi secara konkret: ubah saldo sebuah rekening, tutup aplikasi sepenuhnya, jalankan ulang, saldo yang berubah tetap ada.
+`INSERT OR REPLACE` menyimpan baris baru, atau menimpa baris lama bila nomor rekeningnya sudah ada.
+
+---
+
+## Bank.saveAccount(): Menyimpan Ulang Setelah Perubahan
+
+Penyimpanan in-memory "menyimpan" perubahan secara otomatis: objek yang diubah di memori adalah objek yang sama persis dengan yang tersimpan di `HashMap`. Penyimpanan JDBC TIDAK bekerja seperti ini, mengubah objek `Account` di memori tidak pernah otomatis mengubah barisnya di database.
+
+```java
+public void saveAccount(Account account) {
+    repository.save(account);
+}
+```
+
+---
+
+## Contoh Kode: Memanggil saveAccount() Setelah Perubahan
+
+```java
+account.deposit(amount);
+bank.saveAccount(account);
+amountField.setText("");
+loadAccounts();
+```
+
+`saveAccount(account)` wajib dipanggil ulang setelah setiap `deposit()`, `withdraw()`, atau `processMonthEnd()`, persis di titik yang sama tempat perubahan saldo terjadi.
+
+---
+
+## Kesalahan Umum: Lupa Memanggil saveAccount()
+
+<div class="warn-box">
+<b>Salah:</b> memanggil <code>account.deposit(amount);</code> lalu langsung <code>loadAccounts();</code>, tanpa <code>bank.saveAccount(account);</code> di antaranya.
 </div>
+
+**Benar:** tanpa `saveAccount(...)`, perubahan saldo hanya terjadi di objek `Account` dalam memori, TIDAK PERNAH tersimpan ke database. `loadAccounts()` kebetulan tetap menampilkan saldo yang benar (sebab membaca dari objek yang sama di memori), sehingga bug ini mudah lolos tanpa disadari, sampai aplikasi ditutup dan dibuka lagi, saldo kembali ke nilai sebelum setoran.
+
+---
+
+## Latihan
+
+Pengguna menyetor Rp 50.000 ke `SavingsAccount` A001, tabel langsung menampilkan saldo baru yang benar. Namun baris `bank.saveAccount(account);` ternyata terlewat ditulis di kode `depositButtonActionPerformed`.
+
+Apa yang terjadi pada saldo A001 setelah aplikasi ditutup lalu dibuka kembali? Jelaskan.
+
+---
+
+## Jawaban Latihan
+
+**Saldo kembali ke nilai SEBELUM setoran Rp 50.000.** Setoran hanya mengubah objek `Account` di memori, dan `loadAccounts()` membaca dari objek yang sama sehingga tabel sempat menampilkan saldo yang "benar". Tetapi tanpa `saveAccount(...)`, baris di database tidak pernah diperbarui; begitu aplikasi ditutup, objek di memori hilang, dan saat dibuka kembali data dimuat ulang dari database yang masih menyimpan saldo lama.
+
+---
+
+## Rangkuman Bagian 3
+
+- `AccountRepository` kini diimplementasikan `JdbcAccountRepository`, menyimpan data ke berkas `bankmini.db`, tanpa mengubah `Bank` sama sekali (Dependency Inversion Principle).
+- Penyimpanan JDBC tidak otomatis tersinkron dengan objek di memori; `Bank.saveAccount(...)` wajib dipanggil ulang setelah setiap perubahan.
+- Lupa memanggil `saveAccount(...)` adalah bug yang mudah lolos, sebab tampilannya tetap benar sampai aplikasi benar-benar ditutup dan dibuka kembali.
+
+Selanjutnya: Bagian 4 menerapkan pola yang sama untuk autentikasi pengguna.
+
+---
+
+<!-- _class: divider -->
+
+# Bagian 4
+## Menerapkan Autentikasi ke Bank Mini
+
+Sesi 4 dari 4
 
 ---
 
 ## Pola yang Sama, Diterapkan Lagi
 
-![h:340 UserRepository diimplementasikan oleh InMemoryUserRepository dan JdbcUserRepository, persis pola AccountRepository](../assets/uml/p15-userrepository-auth.png)
+![h:300 UserRepository diimplementasikan oleh InMemoryUserRepository dan JdbcUserRepository, persis pola AccountRepository](../assets/uml/p15-userrepository-auth.png)
 
 <div class="term-box">
 <code>UserRepository</code> mengikuti bentuk persis sama dengan <code>AccountRepository</code>: satu interface, satu implementasi in-memory sebagai preview, satu implementasi JDBC untuk penyimpanan sungguhan. Begitu sebuah pola desain dikuasai, ia bisa dipakai berulang untuk kebutuhan yang berbeda.
@@ -232,13 +433,80 @@ Checkpoint jobsheet ini membuktikan persistensi secara konkret: ubah saldo sebua
 
 ---
 
-## LoginFrame dan PasswordHasher
+## LoginFrame: Gerbang Sebelum BankMiniFrame
 
-`Main.java` kini menjalankan `LoginFrame` lebih dulu, bukan langsung membuka `BankMiniFrame`. Password yang diketik pengguna di-hash lewat `PasswordHasher` (SHA-256 lewat `java.security.MessageDigest`) sebelum dibandingkan dengan hash yang tersimpan di tabel `users`. `BankMiniFrame` baru terbuka setelah kredensial yang dimasukkan cocok dengan data yang tersimpan di database.
+![h:220 Jendela LoginFrame kosong sebelum diisi](../assets/screenshots/pertemuan-15/p15-login-screen.png)
+
+`Main.java` kini menjalankan `LoginFrame` lebih dulu, bukan langsung membuka `BankMiniFrame`. `BankMiniFrame` baru terbuka setelah kredensial yang dimasukkan cocok dengan data yang tersimpan di tabel `users`.
+
+---
+
+## Contoh Kode: loginButtonActionPerformed
+
+```java
+User user = userRepository.findByUsername(username);
+if (user == null || !user.getPasswordHash().equals(PasswordHasher.hash(password))) {
+    JOptionPane.showMessageDialog(this,
+            "Invalid username or password.",
+            "Login failed", JOptionPane.ERROR_MESSAGE);
+    passwordField.setText("");
+    return;
+}
+dispose();
+new BankMiniFrame().setVisible(true);
+```
+
+---
+
+## Login Gagal, Password Dikosongkan
+
+![h:200 Dialog galat setelah mencoba login dengan password salah](../assets/screenshots/pertemuan-15/p15-login-failed.png)
+
+`user == null` (username tidak ditemukan) dan password yang salah ditangani lewat pengecekan yang SAMA, keduanya menampilkan pesan generik "Invalid username or password.", tidak membocorkan mana yang sebenarnya salah.
 
 <div class="warn-box">
 SHA-256 polos di jobsheet ini murni penyederhanaan untuk latihan. Sistem produksi memakai algoritma yang dirancang khusus untuk password, seperti bcrypt, Argon2, atau PBKDF2.
 </div>
+
+---
+
+## Kesalahan Umum: Pesan Galat yang Membocorkan Informasi
+
+<div class="warn-box">
+<b>Salah:</b> menampilkan pesan berbeda untuk "username tidak ditemukan" dan "password salah", mis. <code>"Username not found"</code> vs <code>"Wrong password"</code>.
+</div>
+
+**Benar:** kode `LoginFrame` yang sebenarnya sengaja menampilkan pesan generik yang SAMA untuk keduanya, `"Invalid username or password."`. Pesan yang berbeda membocorkan informasi ke penyerang: mereka jadi tahu username mana yang valid, tinggal menebak passwordnya saja.
+
+---
+
+## Latihan
+
+Pengguna mencoba login dengan username `"admin"` yang TIDAK ADA di tabel `users`.
+
+Apa yang dikembalikan `userRepository.findByUsername("admin")`, dan pesan apa yang ditampilkan ke pengguna? Jelaskan mengapa pesannya dibuat seperti itu.
+
+---
+
+## Jawaban Latihan
+
+`findByUsername("admin")` mengembalikan `null`, sebab tidak ada baris dengan username tersebut. Pengecekan `user == null || ...` bernilai `true` (short-circuit, bagian setelah `||` tidak perlu dievaluasi), sehingga dialog "Invalid username or password." ditampilkan, PERSIS pesan yang sama seandainya usernya ada tetapi passwordnya salah. Pesan generik ini sengaja dipakai supaya penyerang tidak bisa membedakan "username salah" dari "password salah".
+
+---
+
+## Rangkuman Bagian 4
+
+- `UserRepository` mengikuti pola persis `AccountRepository`: satu interface, implementasi in-memory dan JDBC.
+- `LoginFrame` memeriksa kredensial lewat `PasswordHasher.hash(...)` sebelum membuka `BankMiniFrame`.
+- Pesan galat login sengaja dibuat generik, tidak membedakan "username salah" dari "password salah", supaya tidak membocorkan informasi ke penyerang.
+
+---
+
+## Rangkuman Pertemuan 15
+
+- Persistensi berarti data bertahan melewati siklus hidup aplikasi; JDBC menghubungkan Java ke database, `Connection`/`Statement`/`ResultSet` wajib ditutup setelah dipakai.
+- Autentikasi memverifikasi identitas pengguna sebelum memberi akses; password disimpan sebagai hash satu arah, tidak pernah apa adanya.
+- Bank Mini menerapkan keduanya: `JdbcAccountRepository` menggantikan penyimpanan in-memory tanpa mengubah `Bank`, dan `LoginFrame` menjadi gerbang sebelum `BankMiniFrame` terbuka.
 
 ---
 
