@@ -36,9 +36,9 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: withdraw() Melempar InsufficientBalanceException
 
-> **Konsep Singkat: Exception Handling.** Ketika sebuah method menemui kondisi yang tidak bisa ditangani secara wajar (misalnya saldo tidak mencukupi untuk sebuah penarikan), method itu bisa melempar (`throw`) sebuah objek exception, menghentikan eksekusinya saat itu juga. Kode pemanggil membungkus pemanggilan method dalam blok `try`, lalu menangani exception yang mungkin dilempar lewat blok `catch`. Sebuah exception kustom dibuat dengan mendeklarasikan kelas yang meng-`extends` `Exception`. Contoh generik: `Thermostat.setTemperature(-50)` melempar `InvalidTemperatureException` alih-alih diam-diam membatasi nilainya, sehingga kode pemanggil tahu persis ada yang salah dan wajib menanganinya.
+> **Konsep Singkat: Exception Handling.** Ketika sebuah method menemui kondisi yang tidak bisa ditangani secara wajar (misalnya saldo tidak mencukupi untuk sebuah penarikan), method itu bisa melempar (`throw`) sebuah objek exception, menghentikan eksekusinya saat itu juga. Kode pemanggil membungkus pemanggilan method dalam blok `try`, lalu menangani exception yang mungkin dilempar lewat blok `catch`. Sebuah exception kustom dibuat dengan mendeklarasikan kelas yang meng-`extends` `Exception`. Contoh generik: `Grade.setScore(150)` melempar `InvalidScoreException` alih-alih diam-diam membatasi nilainya, sehingga kode pemanggil tahu persis ada yang salah dan wajib menanganinya.
 
-![Exception, InvalidTemperatureException, dan Thermostat yang melemparnya](../assets/uml/p10-invalidtemperature-exception.png){width=60%}
+![Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png){width=60%}
 
 Sejauh ini, `withdraw()` diam-diam mengembalikan `false` ketika penarikan gagal, kode pemanggil bisa saja lupa memeriksa nilai kembaliannya dan melanjutkan seolah penarikan berhasil. Ubah kontrak `withdraw()` supaya melempar exception alih-alih mengembalikan boolean. Tambahkan kelas exception kustom:
 

@@ -1,0 +1,22 @@
+@startuml p10-invalidscore-exception
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Exception {
+}
+
+class InvalidScoreException {
+}
+
+class Grade {
+  - score : int
+  --
+  + setScore(score : int) : void
+}
+
+Exception <|-- InvalidScoreException
+Grade ..> InvalidScoreException : throws
+@enduml
