@@ -286,14 +286,22 @@ class ReportFormatter {
 
 ---
 
-## Open/Closed dan Liskov Substitution (Recap)
+## Open/Closed Principle (Recap)
+
+![h:260 PaymentMethod.pay() dengan if/else per tipe, dibandingkan subclass baru GoPay yang ditambahkan tanpa mengubah kode lama](../assets/illustrations/ocp-extend-not-modify.svg)
 
 <div class="term-box">
-<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah subclass <code>PaymentMethod</code> baru tidak pernah mengubah kode superclass yang sudah ada, subclass baru cukup meng-override method miliknya sendiri.
+<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah subclass <code>PaymentMethod</code> baru tidak pernah mengubah kode superclass yang sudah ada, subclass baru cukup meng-override method miliknya sendiri. Bandingkan dengan cabang <code>if</code>/<code>else</code> per tipe: satu bug pada cabang salah satu tipe pembayaran berisiko merusak cabang tipe lain, sebab semuanya bercampur di method yang sama.
 </div>
 
+---
+
+## Liskov Substitution Principle (Recap)
+
+![h:260 List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
+
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>Sedan</code> dan <code>Truck</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Vehicle</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah.
+<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>Sedan</code> dan <code>Truck</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Vehicle</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah. Slide berikutnya menunjukkan subclass yang GAGAL memenuhi janji ini.
 </div>
 
 ---
@@ -351,8 +359,10 @@ Sesi 3 dari 4
 
 ## Interface Segregation Principle (Recap)
 
+![h:260 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
+
 <div class="term-box">
-<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: kemampuan seperti "bisa diisi daya" dideklarasikan sebagai interface kecil tersendiri (<code>Chargeable</code>), bukan digabung ke satu interface besar yang memaksa kelas mengimplementasikan method yang tidak relevan baginya.
+<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: kemampuan seperti "bisa diisi daya" dideklarasikan sebagai interface kecil tersendiri (<code>Chargeable</code>), bukan digabung ke satu interface besar yang memaksa kelas mengimplementasikan method yang tidak relevan baginya. Andai <code>charge()</code> digabung ke satu interface besar bersama method seperti <code>call()</code>, <code>ElectricCar</code> terpaksa ikut mengimplementasikan <code>call()</code> walau tidak pernah relevan baginya.
 </div>
 
 ---
@@ -362,6 +372,14 @@ Sesi 3 dari 4
 <div class="term-box">
 <b>Dependency Inversion Principle</b>: kelas tingkat tinggi sebaiknya bergantung pada interface (abstraksi), bukan pada implementasi konkret. Ini baru diterapkan secara eksplisit pada Bank Mini di pertemuan ini, dibahas pada Bagian 4.
 </div>
+
+---
+
+## Membalik Arah Ketergantungan
+
+![h:280 OrderProcessor bergantung langsung pada MySqlDatabase, dibandingkan bergantung pada interface Repository yang diimplementasikan MySqlDatabase dan MockRepository](../assets/illustrations/dip-invert-dependency.svg)
+
+Slide berikutnya menjelaskan mengapa pembalikan arah ketergantungan ini penting, bukan sekadar tambahan tingkat abstraksi.
 
 ---
 
