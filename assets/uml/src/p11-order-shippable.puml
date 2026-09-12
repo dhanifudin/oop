@@ -1,0 +1,28 @@
+@startuml p11-order-shippable
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Order {
+  - description : String
+  - amount : int
+  --
+  + describe() : String
+}
+
+interface Shippable {
+  + ship() : String
+}
+
+class PhysicalOrder {
+  + ship() : String
+}
+
+class DigitalOrder {
+}
+
+Order <|-- PhysicalOrder
+Order <|-- DigitalOrder
+Shippable <|.. PhysicalOrder
+@enduml

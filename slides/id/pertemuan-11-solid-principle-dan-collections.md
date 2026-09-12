@@ -113,7 +113,7 @@ Lima prinsip desain kelas yang baik, dan struktur data siap pakai
 - Cara menyimpan dan mencari data tanpa harus menebak ukuran di awal atau memeriksa elemen satu per satu
 - Lima prinsip yang membuat kelas tetap mudah dipahami, diperluas, dan diuji seiring aplikasi bertambah besar
 - Cara mengenali kapan sebuah kelas melanggar salah satu dari prinsip-prinsip itu
-- Penerapan pada Bank Mini: `Bank` beralih ke `Map`, `Transaction` memisahkan tanggung jawab pencatatan, `AccountRepository` memisahkan `Bank` dari cara penyimpanan data
+- Studi kasus sintesis: sebuah sistem pemrosesan pesanan yang menerapkan kelima prinsip SOLID sekaligus dalam satu desain
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 11.
@@ -126,7 +126,7 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 - **Sesi 1 (50')**: Collections, `ArrayList` dan `Map`
 - **Sesi 2 (50')**: SOLID bagian 1, Single Responsibility, Open/Closed, Liskov Substitution
 - **Sesi 3 (50')**: SOLID bagian 2, Interface Segregation, Dependency Inversion
-- **Sesi 4 (50')**: Menerapkan SOLID ke Bank Mini
+- **Sesi 4 (50')**: Sintesis, kelima prinsip dalam satu sistem pemrosesan pesanan
 
 ---
 
@@ -370,7 +370,7 @@ Sesi 3 dari 4
 ## Dependency Inversion Principle
 
 <div class="term-box">
-<b>Dependency Inversion Principle</b>: kelas tingkat tinggi sebaiknya bergantung pada interface (abstraksi), bukan pada implementasi konkret. Ini baru diterapkan secara eksplisit pada Bank Mini di pertemuan ini, dibahas pada Bagian 4.
+<b>Dependency Inversion Principle</b>: kelas tingkat tinggi sebaiknya bergantung pada interface (abstraksi), bukan pada implementasi konkret. Bagian 4 menunjukkan prinsip ini bekerja berdampingan dengan keempat prinsip lainnya dalam satu sistem.
 </div>
 
 ---
@@ -388,7 +388,7 @@ Slide berikutnya menjelaskan mengapa pembalikan arah ketergantungan ini penting,
 Bayangkan kelas `OrderProcessor` yang bergantung langsung pada kelas konkret `MySqlDatabase`. Migrasi ke database lain, atau menambahkan pengujian otomatis (yang butuh basis data tiruan agar tidak menyentuh data sungguhan), sama-sama menjadi sulit tanpa mengubah `OrderProcessor` itu sendiri, karena ia "tahu" secara langsung bahwa penyimpanannya pasti MySQL.
 
 <div class="term-box">
-Dependency Inversion Principle membalik arah ketergantungan ini: <code>OrderProcessor</code> cukup bergantung pada interface <code>Repository</code>, implementasi konkretnya (MySQL, penyimpanan sementara, atau versi tiruan untuk pengujian) bebas berganti tanpa <code>OrderProcessor</code> pernah tahu atau peduli. Prinsip yang sama ini diterapkan langsung pada Bank Mini di Bagian 4, dan dipakai lagi saat cara penyimpanan datanya diganti ke database pada Pertemuan 15.
+Dependency Inversion Principle membalik arah ketergantungan ini: <code>OrderProcessor</code> cukup bergantung pada interface <code>Repository</code>, implementasi konkretnya (MySQL, penyimpanan sementara, atau versi tiruan untuk pengujian) bebas berganti tanpa <code>OrderProcessor</code> pernah tahu atau peduli. Bagian 4 menerapkan prinsip yang sama ini sebagai bagian dari sistem yang lebih besar.
 </div>
 
 ---
@@ -440,117 +440,121 @@ Buat interface `Repository` dengan method yang dibutuhkan (mis. `save(...)`), bu
 - Dependency Inversion Principle: kelas tingkat tinggi bergantung pada interface, bukan implementasi konkret.
 - Kelas yang membuat sendiri instance konkret dependensinya (`new MySqlDatabase()` di dalam dirinya sendiri) melanggar Dependency Inversion Principle, walau interface-nya sudah ada.
 
-Selanjutnya: Bagian 4 menerapkan seluruh prinsip ini ke `Bank` Bank Mini.
+Selanjutnya: Bagian 4 menyatukan seluruh prinsip ini dalam satu studi kasus sintesis.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 4
-## Menerapkan SOLID ke Bank Mini
+## Sintesis: Kelima Prinsip dalam Satu Sistem
 
 Sesi 4 dari 4
 
 ---
 
-## Bank Beralih dari Array ke Map
+## Satu Sistem Pemrosesan Pesanan
 
-`Bank` sejauh ini menyimpan rekening di `Account[] accounts` berukuran tetap, `findAccount()` memeriksa elemen satu per satu. `Bank` kini menyimpan rekening lewat `Map<String, Account>`, memakai nomor rekening sebagai kunci, pencarian menjadi langsung.
+Bayangkan sebuah sistem pemrosesan pesanan toko daring: ada pesanan fisik (perlu dikirim) dan pesanan digital (tidak perlu dikirim), diskon yang besarnya berbeda tiap jenis pelanggan, dan penyimpanan data yang suatu hari mungkin harus berpindah dari memori ke berkas. Satu sistem kecil ini ternyata cukup untuk menunjukkan kelima prinsip SOLID bekerja bersama sekaligus, bukan satu per satu secara terpisah.
 
 ---
 
-## Contoh Kode: Pencarian Rekening Lewat Map
+## Shippable: LSP dan ISP Sekaligus
+
+![h:230 Order, PhysicalOrder yang mengimplementasikan Shippable, dan DigitalOrder yang sengaja tidak](../assets/uml/p11-order-shippable.png)
+
+`Shippable` sengaja kecil dan fokus, hanya `ship()` (Interface Segregation). `PhysicalOrder` mengimplementasikannya; `DigitalOrder` sengaja TIDAK, sebab pesanan digital tidak pernah bisa dikirim. Ini menghormati Liskov Substitution Principle: `DigitalOrder` tidak dipaksa berpura-pura punya `ship()` yang tidak masuk akal baginya.
+
+---
+
+## Contoh Kode: `PhysicalOrder` dan `DigitalOrder`
 
 ```java
-public void save(Account account) {
-    accounts.put(account.getAccountNumber(), account);
+public class PhysicalOrder extends Order implements Shippable {
+    public String ship() {
+        return "Shipping \"" + getDescription() + "\"...";
+    }
 }
 
-public Account findByNumber(String accountNumber) {
-    return accounts.get(accountNumber);
-}
-```
-
-`findByNumber(...)` langsung mengembalikan rekeningnya lewat `accounts.get(...)`, tidak ada lagi perulangan memeriksa elemen satu per satu.
-
----
-
-## Transaction: Single Responsibility Principle pada Bank Mini
-
-![h:280 Account dan Transaction, satu Account memiliki banyak Transaction](../assets/uml/p11-transaction.png)
-
-`Account` sejauh ini tidak mencatat riwayat transaksinya sama sekali. Kelas `Transaction` kini menjadi satu-satunya yang bertanggung jawab merepresentasikan satu transaksi, dipisah dari `Account` yang bertanggung jawab menjaga saldo dan aturan bisnis.
-
----
-
-## Contoh Kode: `deposit()` Mencatat ke `Transaction`
-
-```java
-public boolean deposit(double amount) {
-    if (amount <= 0) return false;
-    balance += amount;
-    history.add(new Transaction("DEPOSIT", amount));
-    return true;
+public class DigitalOrder extends Order {
+    // sengaja tidak mengimplementasikan Shippable
 }
 ```
 
-`Account` tetap menjaga `balance`, tetapi mendelegasikan representasi tiap transaksi ke kelas `Transaction`, bukan mengurusnya sendiri.
+---
+
+## OrderProcessor: Single Responsibility Principle
+
+![h:280 OrderProcessor mendelegasikan ke DiscountCalculator, Repository, dan ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
+
+`OrderProcessor` sendiri tidak menghitung diskon, tidak menyimpan data, dan tidak mencetak apa pun. Ketiga tanggung jawab itu didelegasikan masing-masing ke `DiscountCalculator`, `Repository`, dan `ReceiptPrinter`, sehingga mengubah cara struk dicetak, misalnya, tidak pernah berisiko merusak perhitungan diskon.
 
 ---
 
-## AccountRepository: Dependency Inversion Principle pada Bank Mini
-
-![h:280 Bank bergantung pada interface AccountRepository, diimplementasikan InMemoryAccountRepository](../assets/uml/p11-accountrepository.png)
-
-`Bank` kini bergantung pada interface `AccountRepository`, bukan pada `Map` secara langsung. `InMemoryAccountRepository` adalah implementasi hari ini; Pertemuan 15 mengganti cara penyimpanan menjadi database, tanpa mengubah `Bank` satu baris pun.
-
----
-
-## Contoh Kode: `Bank` Menerima `AccountRepository` Lewat Constructor
+## Contoh Kode: `OrderProcessor` Hanya Mengoordinasikan
 
 ```java
-public class Bank {
-    private AccountRepository repository;
+public void processOrder(Customer customer, Order order) {
+    int discount = discountCalculator.calculate(customer, order);
+    int total = order.getAmount() - discount;
+    repository.save(order, total);
+    receiptPrinter.print(customer, order, discount, total);
+}
+```
 
-    public Bank(AccountRepository repository) {
-        this.repository = repository;
+---
+
+## DiscountPolicy dan Repository: OCP dan DIP Berdampingan
+
+![h:280 DiscountPolicy diimplementasikan RegularDiscount dan WholesaleDiscount, Repository diimplementasikan InMemoryRepository dan FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
+
+Kedua sisi memakai pola yang sama: satu interface, banyak implementasi kecil yang bisa ditambah atau ditukar. `DiscountPolicy` (Open/Closed): jenis diskon baru cukup jadi kelas baru, `DiscountCalculator` tidak pernah diubah. `Repository` (Dependency Inversion): `OrderProcessor` bergantung pada interface-nya saja, implementasi penyimpanan bebas ditukar.
+
+---
+
+## Contoh Kode: Menambah `DiscountPolicy` Baru
+
+```java
+public class WholesaleDiscountPolicy implements DiscountPolicy {
+    public int calculate(int amount) {
+        return amount * 20 / 100;
     }
 }
 ```
 
-`Bank` tidak pernah menulis `new InMemoryAccountRepository()` di dalam dirinya sendiri, implementasi konkretnya diteruskan dari luar.
+Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `OrderProcessor` yang sudah ada.
 
 ---
 
-## Kesalahan Umum: Bank Membuat Sendiri Implementasinya
+## Kesalahan Umum: Memaksakan Kontrak yang Tidak Relevan
 
 <div class="warn-box">
-<b>Salah:</b> menulis <code>public Bank() { this.repository = new InMemoryAccountRepository(); }</code> di dalam <code>Bank</code>, membuat sendiri implementasi konkretnya.
+<b>Salah:</b> menulis <code>class DigitalOrder extends Order implements Shippable { public String ship() { return "N/A"; } }</code>, memaksa <code>DigitalOrder</code> ikut mengimplementasikan <code>Shippable</code> supaya "konsisten" dengan <code>PhysicalOrder</code>.
 </div>
 
-**Benar:** `Bank` menerima `AccountRepository` lewat constructor, seperti kode sebenarnya, tidak pernah membuat instance konkretnya sendiri. Kode yang membuat objek `Bank`-lah yang memutuskan implementasi mana dipakai, persis prinsip yang baru dibahas di Bagian 3.
+**Benar:** ini melanggar Interface Segregation Principle (`DigitalOrder` dipaksa mengimplementasikan method yang tidak relevan baginya) sekaligus Liskov Substitution Principle (`ship()` yang mengembalikan `"N/A"` adalah kontrak palsu, bukan perilaku `Shippable` yang sesungguhnya). Kelas yang memang tidak punya kemampuan tertentu sebaiknya tidak mengimplementasikan interface-nya sama sekali.
 
 ---
 
 ## Latihan
 
-Pertemuan 15 mengganti `InMemoryAccountRepository` dengan `JdbcAccountRepository` (implementasi baru yang menyimpan ke database).
+Toko ingin menambahkan `StudentDiscountPolicy` (potongan 10% untuk pelanggan berstatus mahasiswa).
 
-Sebutkan kode apa saja yang perlu diubah di `Bank`, dan jelaskan mengapa.
+Kelas apa saja yang perlu ditambah atau diubah? Sebutkan prinsip SOLID yang membuat perubahan ini tidak perlu menyentuh kode `DiscountCalculator` maupun `OrderProcessor` yang sudah ada.
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak ada satu baris pun kode `Bank` yang perlu diubah.** `Bank` hanya bergantung pada interface `AccountRepository`, bukan implementasi konkretnya. Cukup ganti objek yang diteruskan ke constructor `Bank` saat aplikasi dijalankan, dari `new InMemoryAccountRepository()` menjadi `new JdbcAccountRepository(...)`.
+**Cukup menambah satu kelas baru**, `StudentDiscountPolicy implements DiscountPolicy`, lalu mendaftarkannya ke `DiscountCalculator` untuk tipe pelanggan yang sesuai. Tidak ada kode `DiscountCalculator` maupun `OrderProcessor` yang perlu diubah. Ini adalah **Open/Closed Principle**: sistem terbuka untuk diperluas (kelas kebijakan diskon baru) tetapi tertutup untuk diubah (kode yang sudah ada tidak disentuh).
 
 ---
 
 ## Rangkuman Bagian 4
 
-- `Bank` beralih ke `Map` (lewat `AccountRepository`), pencarian rekening menjadi langsung lewat nomor rekening.
-- `Transaction` memisahkan tanggung jawab mencatat riwayat dari `Account`, menerapkan Single Responsibility Principle.
-- `AccountRepository` memisahkan `Bank` dari cara penyimpanan data, menerapkan Dependency Inversion Principle, sehingga Pertemuan 15 bisa mengganti penyimpanan ke database tanpa mengubah `Bank`.
+- `Shippable` yang kecil dan fokus, hanya diimplementasikan kelas yang benar-benar relevan, menerapkan Interface Segregation sekaligus menjaga Liskov Substitution.
+- `OrderProcessor` mendelegasikan diskon, penyimpanan, dan pencetakan ke kelas terpisah, menerapkan Single Responsibility.
+- `DiscountPolicy` dan `Repository` sama-sama pola satu-interface-banyak-implementasi: yang pertama menerapkan Open/Closed, yang kedua menerapkan Dependency Inversion.
 
 ---
 
@@ -558,7 +562,7 @@ Sebutkan kode apa saja yang perlu diubah di `Bank`, dan jelaskan mengapa.
 
 - `ArrayList` dan `Map` menggantikan array biasa untuk data yang ukurannya berubah-ubah atau sering dicari berdasarkan kunci.
 - SOLID adalah lima prinsip desain kelas: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
-- Bank Mini menerapkan ketiganya: `Map` untuk penyimpanan, `Transaction` untuk SRP, `AccountRepository` untuk Dependency Inversion.
+- Sistem pemrosesan pesanan pada Bagian 4 menunjukkan kelima prinsip ini bekerja bersama dalam satu desain, bukan lima aturan lepas yang berdiri sendiri-sendiri.
 
 ---
 
@@ -576,4 +580,4 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Diskusi
 
-`AccountRepository` disebut memungkinkan Pertemuan 15 mengganti `InMemoryAccountRepository` dengan `JdbcAccountRepository` tanpa mengubah `Bank.java` sama sekali. Jelaskan dengan kata-katamu sendiri: apa yang akan terjadi (kode apa yang harus diubah, dan di berapa banyak tempat) apabila `Bank` sejak awal bergantung langsung pada `Map<String, Account>` tanpa lewat interface `AccountRepository`, lalu suatu hari cara penyimpanannya harus diganti ke database?
+`OrderProcessor` menerima `Repository` lewat constructor, sehingga bisa berpindah dari `InMemoryRepository` ke `FileRepository` tanpa mengubah `OrderProcessor` sama sekali. Jelaskan dengan kata-katamu sendiri: apa yang akan terjadi (kode apa yang harus diubah, dan di berapa banyak tempat) apabila `OrderProcessor` sejak awal bergantung langsung pada `InMemoryRepository` tanpa lewat interface `Repository`, lalu suatu hari penyimpanannya harus diganti ke berkas?

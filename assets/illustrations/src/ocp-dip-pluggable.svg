@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowGreen10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT: DiscountPolicy family, OCP -->
+  <text x="215" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4ed8">DiscountPolicy (OCP)</text>
+
+  <rect x="105" y="45" width="220" height="55" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.2"/>
+  <text x="215" y="78" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d4ed8">DiscountPolicy (interface)</text>
+
+  <path d="M170,140 C170,120 190,108 200,102" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowGreen10)"/>
+  <path d="M260,140 C260,120 240,108 230,102" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowGreen10)"/>
+
+  <rect x="60" y="145" width="160" height="55" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <text x="140" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">RegularDiscount</text>
+
+  <rect x="230" y="145" width="170" height="55" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="0"/>
+  <text x="315" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">WholesaleDiscount</text>
+  <text x="315" y="188" text-anchor="middle" font-size="11" fill="#166534">(ditambah tanpa ubah kode lama)</text>
+
+  <line x1="450" y1="20" x2="450" y2="380" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- RIGHT: Repository family, DIP -->
+  <text x="685" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4ed8">Repository (DIP)</text>
+
+  <rect x="575" y="45" width="220" height="55" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.2"/>
+  <text x="685" y="78" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d4ed8">Repository (interface)</text>
+
+  <path d="M640,140 C640,120 660,108 670,102" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowGreen10)"/>
+  <path d="M735,140 C735,120 715,108 705,102" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowGreen10)"/>
+
+  <rect x="530" y="145" width="170" height="55" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <text x="615" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">InMemoryRepository</text>
+
+  <rect x="710" y="145" width="150" height="55" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  <text x="785" y="177" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">FileRepository</text>
+
+  <text x="450" y="250" text-anchor="middle" font-size="16" fill="#94a3b8">keduanya sama-sama pola "banyak implementasi kecil,</text>
+  <text x="450" y="273" text-anchor="middle" font-size="16" fill="#94a3b8">satu interface": OCP untuk memilih perilaku, DIP untuk memilih penyimpanan</text>
+</svg>

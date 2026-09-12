@@ -77,6 +77,18 @@ terjangkar seperti biasa. Ini permintaan eksplisit Dosen, bukan pola baku
 untuk dek lain: jangan meniru pengecualian ini ke dek lain kecuali ada
 permintaan eksplisit yang sama.
 
+**Pengecualian sengaja di Pertemuan 11**: dek ini TIDAK punya Bagian
+"Menerapkan ke Bank Mini" sama sekali, atas permintaan eksplisit pengguna
+("don't mention any Bank Mini case, use general theory and concept").
+Bagian 4 diisi studi kasus sintesis generik (sistem pemrosesan pesanan,
+`Order`/`OrderProcessor`/`DiscountPolicy`/`Repository`, diadaptasi dari
+`archive/pertemuan-11-solid/`) yang menunjukkan kelima prinsip SOLID
+bekerja bersama, bukan penerapan ke Bank Mini. Jobsheet praktikum
+Pertemuan 11 TETAP Bank-Mini-only seperti biasa, hanya slide konsepnya
+yang murni generik. Ini pengecualian khusus untuk dek ini saja, bukan
+pola baku: jangan hapus Bagian Bank Mini dek lain kecuali ada permintaan
+eksplisit yang sama.
+
 ## Bahaya tersembunyi di kelas `divider`
 
 Blok CSS `section.divider h1` mengatur warna putih, tapi aturan global
