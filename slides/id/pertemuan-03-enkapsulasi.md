@@ -122,10 +122,21 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ---
 
+## Peta Sesi Hari Ini
+
+- **Sesi 1 (50')**: Risiko akses langsung ke atribut
+- **Sesi 2 (50')**: Encapsulation, access modifier, dan class invariant
+- **Sesi 3 (50')**: Pola getter dan setter
+- **Sesi 4 (50')**: Menerapkan encapsulation ke Account
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 1
 ## Risiko Akses Langsung
+
+Sesi 1 dari 4
 
 ---
 
@@ -141,10 +152,27 @@ Atribut publik berarti tidak ada satu titik pun yang menjamin data objek selalu 
 
 ## Ilustrasi: Akses Langsung yang Tidak Diperiksa
 
-![h:340 Kode luar menulis langsung ke atribut publik, tanpa validasi apa pun](../assets/illustrations/direct-access-bug.svg)
+![h:300 Kode luar menulis langsung ke atribut publik, tanpa validasi apa pun](../assets/illustrations/direct-access-bug.svg)
 
 <div class="warn-box">
 Karena atribut publik, tidak ada kode yang memeriksa nilai baru sebelum disimpan. Nilai di luar rentang perangkat, misalnya <code>-50</code>, diterima begitu saja.
+</div>
+
+---
+
+## Contoh Kode: Atribut Publik, Tidak Ada Penjaga
+
+```java
+class Thermostat {
+    public double temperature;
+}
+
+Thermostat t = new Thermostat();
+t.temperature = -50;  // diterima begitu saja, tidak ada yang memeriksa
+```
+
+<div class="tip-box">
+Java hanya memastikan <code>-50</code> bertipe angka. Java tidak tahu, dan tidak peduli, bahwa <code>-50</code> tidak masuk akal untuk sebuah termostat.
 </div>
 
 ---
@@ -159,19 +187,72 @@ Inilah salah satu alasan encapsulation dianggap prinsip paling mendasar dalam OO
 
 ---
 
+## Kesalahan Umum: Mengira Komentar Cukup Melindungi
+
+<div class="warn-box">
+<b>Salah:</b> menambahkan komentar seperti "jangan diisi di luar 16-30" di atas atribut publik, berharap itu cukup mencegah nilai yang tidak valid.
+</div>
+
+**Benar:** komentar hanyalah teks, tidak pernah benar-benar dipaksakan oleh Java. Satu-satunya cara memaksakan aturan adalah lewat kode yang benar-benar dijalankan, yaitu method yang memeriksa nilai sebelum menyimpannya.
+
+---
+
+## Latihan
+
+Sebuah kelas `Elevator` punya atribut publik `currentFloor`. Gedung tempat elevator ini dipasang hanya punya lantai 1 sampai 20.
+
+Tuliskan satu baris kode dari luar kelas yang bisa merusak data `Elevator` ini, lalu jelaskan mengapa Java tidak mencegahnya.
+
+---
+
+## Jawaban Latihan
+
+Misalnya `elevator.currentFloor = 99;`. Java tidak mencegahnya karena `currentFloor` bersifat publik; compiler hanya memastikan tipe datanya benar (angka), bukan apakah nilainya masuk akal untuk gedung tersebut.
+
+---
+
+## Rangkuman Bagian 1
+
+- Atribut publik bisa diubah kode mana pun, tanpa ada yang memeriksa nilainya lebih dulu.
+- Java hanya memeriksa tipe data, bukan apakah nilainya masuk akal.
+- Komentar bukan pengganti validasi; hanya kode yang benar-benar dijalankan yang bisa memaksakan aturan.
+
+Selanjutnya: Bagian 2 mengenalkan encapsulation, cara Java benar-benar menutup celah ini.
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 2
 ## Encapsulation: Data di Balik Method
 
+Sesi 2 dari 4
+
 ---
 
 ## Konsep Encapsulation
 
-![h:340 Data privat sebuah objek hanya bisa dicapai lewat method, tidak ada jalan pintas](../assets/illustrations/capsule-shield.svg)
+![h:300 Data privat sebuah objek hanya bisa dicapai lewat method, tidak ada jalan pintas](../assets/illustrations/capsule-shield.svg)
 
 <div class="term-box">
 <b>Encapsulation</b> berarti data sebuah objek disembunyikan (dibuat <code>private</code>), hanya bisa diakses lewat method milik objek itu sendiri. Method inilah satu-satunya "pintu" menuju data tersebut.
+</div>
+
+---
+
+## Contoh Kode: Membuat Atribut Privat
+
+```java
+class Thermostat {
+    private double temperature;
+}
+
+Thermostat t = new Thermostat();
+t.temperature = 22;  // gagal dikompilasi: temperature bersifat private
+```
+
+<div class="warn-box">
+Baris terakhir bahkan tidak akan pernah sampai dijalankan; Java menolaknya sejak proses kompilasi, sebelum program sempat berjalan.
 </div>
 
 ---
@@ -225,20 +306,74 @@ Encapsulation membuat invariant benar-benar bisa ditegakkan. Satu-satunya jalan 
 
 ---
 
+## Kesalahan Umum: Mengira Private Saja Sudah Cukup
+
+<div class="warn-box">
+<b>Salah:</b> mengubah atribut jadi <code>private</code>, lalu menambahkan getter dan setter untuk semuanya tanpa validasi apa pun, dan menganggap ini sudah "encapsulation yang benar".
+</div>
+
+**Benar:** setter yang menerima nilai apa pun tanpa memeriksa sama saja dengan atribut publik, cuma dibungkus method. Encapsulation baru benar-benar melindungi data kalau method-nya memvalidasi, bukan sekadar menyalin nilai.
+
+---
+
+## Latihan
+
+Sebuah kelas `Thermostat` punya method berikut:
+
+`public void setTemperature(double temperature) { this.temperature = temperature; }`
+
+Apakah method ini benar-benar melindungi invariant "`temperature` selalu 16-30"? Jelaskan.
+
+---
+
+## Jawaban Latihan
+
+**Tidak.** Setter ini menyalin nilai apa pun tanpa memeriksa rentangnya, sama persis seperti atribut publik. Encapsulation di sini hanya membungkus, bukan melindungi; setter perlu menolak atau menyesuaikan nilai di luar 16-30 sebelum menyimpannya.
+
+---
+
+## Rangkuman Bagian 2
+
+- Encapsulation membungkus data dan method; information hiding tercapai ketika datanya benar-benar `private`.
+- Access modifier menentukan siapa boleh mengakses; atribut sebaiknya `private`, method publik seperlunya.
+- Class invariant hanya benar-benar terjamin kalau setter-nya memvalidasi, bukan sekadar menyalin nilai.
+
+Selanjutnya: Bagian 3 membahas pola getter dan setter secara lebih mendalam, termasuk kapan sebuah atribut tidak perlu keduanya.
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 3
 ## Getter dan Setter
 
+Sesi 3 dari 4
+
 ---
 
 ## Setter yang Memvalidasi
 
-![h:340 Setter memeriksa nilai masukan sebelum menyimpannya ke field](../assets/illustrations/getter-setter-gate.svg)
+![h:300 Setter memeriksa nilai masukan sebelum menyimpannya ke field](../assets/illustrations/getter-setter-gate.svg)
 
 <div class="term-box">
 <b>Setter</b> adalah method yang mengubah nilai sebuah atribut privat. Karena berbentuk method biasa, setter bisa memeriksa nilai dulu, misalnya membatasi ke rentang yang aman, sebelum menyimpannya ke field.
 </div>
+
+---
+
+## Contoh Kode: Setter dan Getter
+
+```java
+public void setTemperature(double temperature) {
+    if (temperature < 16) temperature = 16;
+    if (temperature > 30) temperature = 30;
+    this.temperature = temperature;
+}
+
+public double getTemperature() {
+    return temperature;
+}
+```
 
 ---
 
@@ -262,10 +397,73 @@ Atribut read-only adalah bentuk encapsulation paling ketat: bukan cuma validasi 
 
 ---
 
+## Contoh Kode: Atribut Read-Only
+
+```java
+class Student {
+    private String studentId;
+
+    public Student(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+}
+```
+
+<div class="tip-box">
+Tidak ada <code>setStudentId(...)</code> sama sekali. Begitu ditetapkan lewat constructor, <code>studentId</code> tidak pernah bisa diubah lagi oleh kode mana pun.
+</div>
+
+---
+
+## Kesalahan Umum: Mengira Semua Atribut Wajib Punya Keduanya
+
+<div class="warn-box">
+<b>Salah:</b> menambahkan getter dan setter untuk SEMUA atribut privat tanpa berpikir apakah kode luar benar-benar perlu mengaksesnya.
+</div>
+
+**Benar:** getter dan setter dibuat hanya kalau memang dibutuhkan. Atribut yang tidak perlu diketahui atau diubah dari luar sebaiknya tidak diberi keduanya sama sekali; menambahkan getter/setter untuk semua atribut secara membabi buta justru melemahkan tujuan encapsulation itu sendiri.
+
+---
+
+## Latihan
+
+Sebuah kelas `Stopwatch` punya dua atribut:
+
+1. `elapsedSeconds`, lama waktu berjalan, ditampilkan ke pengguna tapi hanya boleh berubah lewat method `start()`/`stop()`, bukan diisi langsung dari luar.
+2. `id`, nomor seri stopwatch, ditetapkan sekali saat objek dibuat, tidak pernah ditampilkan maupun diubah dari luar.
+
+Untuk tiap atribut, tentukan: perlu getter saja, setter saja, keduanya, atau tidak keduanya?
+
+---
+
+## Jawaban Latihan
+
+`elapsedSeconds`: **getter saja** (ditampilkan ke pengguna, tapi diubah lewat `start()`/`stop()`, bukan lewat setter langsung).
+
+`id`: **tidak keduanya** (tidak pernah ditampilkan maupun diubah dari luar, cukup dipakai secara internal oleh kelasnya sendiri).
+
+---
+
+## Rangkuman Bagian 3
+
+- Setter yang baik memvalidasi nilai sebelum menyimpannya; getter sekadar mengembalikan nilai dengan aman.
+- Atribut read-only hanya punya getter; nilainya ditetapkan sekali lewat constructor dan tidak pernah berubah lagi.
+- Tidak semua atribut butuh getter dan setter; keduanya dibuat hanya kalau memang diperlukan dari luar.
+
+Selanjutnya: Bagian 4 menerapkan seluruh pola ini ke kelas `Account` di Bank Mini.
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 4
 ## Menerapkan Encapsulation ke Account
+
+Sesi 4 dari 4
 
 ---
 
@@ -281,11 +479,27 @@ Risiko yang sama seperti <code>Thermostat</code> berlaku di sini: saldo bisa diu
 
 ## Account Sesudah Encapsulation
 
-![h:340 Diagram kelas Account setelah encapsulation diterapkan](../assets/uml/p03-account-encapsulated.png)
+![h:280 Diagram kelas Account setelah encapsulation diterapkan](../assets/uml/p03-account-encapsulated.png)
 
 <div class="term-box">
 Seluruh atribut kini bersifat <code>private</code>, diakses lewat <b>getter</b> (<code>getBalance()</code>, dst.). Method <code>deposit()</code> dan <code>withdraw()</code> mengembalikan nilai <code>boolean</code>: <code>true</code> bila berhasil, <code>false</code> bila nilai yang diberikan tidak valid.
 </div>
+
+---
+
+## Contoh Kode: Account Setelah Encapsulation
+
+```java
+class Account {
+    private double balance;
+
+    public boolean deposit(double amount) {
+        if (amount <= 0) return false;
+        balance = balance + amount;
+        return true;
+    }
+}
+```
 
 ---
 
@@ -296,6 +510,37 @@ Constructor `Account(accountNumber, ownerName, balance)` mewajibkan ketiga nilai
 <div class="term-box">
 Inilah pola atribut read-only dari Bagian 3, diterapkan secara nyata. <code>accountNumber</code> adalah identitas sebuah rekening, sama seperti NIM bagi mahasiswa, jadi tidak masuk akal bila ada method yang bisa mengubahnya.
 </div>
+
+---
+
+## Latihan
+
+Method `withdraw(double amount)` pada `Account` mengembalikan `false` bila `amount` melebihi `balance` saat ini, atau bila `amount` bukan angka positif.
+
+Diberi `balance` saat ini 100000, tentukan hasil pemanggilan berikut: `withdraw(150000)`, `withdraw(-5000)`, `withdraw(50000)`.
+
+---
+
+## Jawaban Latihan
+
+`withdraw(150000)` mengembalikan `false` (melebihi saldo). `withdraw(-5000)` mengembalikan `false` (bukan angka positif). `withdraw(50000)` mengembalikan `true` (valid, saldo mencukupi).
+
+---
+
+## Rangkuman Bagian 4
+
+- `Account` kini menyembunyikan seluruh atributnya, hanya bisa diakses lewat getter dan method tervalidasi.
+- `deposit()` dan `withdraw()` menolak nilai yang tidak valid lewat nilai kembali `boolean`.
+- `accountNumber` bersifat read-only, ditetapkan sekali lewat constructor, tidak pernah berubah lagi.
+
+---
+
+## Rangkuman Pertemuan 3
+
+- Atribut publik tidak punya penjaga; nilai apa pun, termasuk yang tidak masuk akal, bisa diterima begitu saja.
+- Encapsulation menyembunyikan data di balik method, sehingga validasi bisa dijamin di satu tempat.
+- Class invariant hanya benar-benar terjaga kalau setter-nya memvalidasi, bukan sekadar menyalin nilai.
+- Getter dan setter dibuat seperlunya; atribut read-only hanya punya getter, ditetapkan sekali lewat constructor.
 
 ---
 
