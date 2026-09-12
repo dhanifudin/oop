@@ -145,7 +145,7 @@ Sesi 1 dari 4
 Pertemuan 6 menunjukkan bahwa subclass mewarisi method superclass apa adanya. Kadang perilaku yang diwarisi tidak cocok untuk subclass tertentu: `Sedan` dan `Truck` sama-sama mewarisi `honk()` dari `Vehicle`, tetapi tentu saja bunyi klaksonnya seharusnya berbeda.
 
 <div class="term-box">
-<b>Overriding</b> adalah menulis ulang method superclass di dalam subclass, dengan nama dan daftar parameter (tanda tangan) yang sama persis. Java memanggil versi milik objek yang sebenarnya saat program berjalan, bukan versi yang dideklarasikan di tipe variabelnya.
+<b>Overriding</b> adalah menulis ulang method superclass di dalam subclass, dengan nama dan daftar parameter (signature) yang sama persis. Java memanggil versi milik objek yang sebenarnya saat program berjalan, bukan versi yang dideklarasikan di tipe variabelnya.
 </div>
 
 ---
@@ -178,7 +178,7 @@ class Truck extends Vehicle {
 ## Anotasi `@Override`
 
 <div class="tip-box">
-Anotasi <code>@Override</code> memberi tahu compiler untuk memeriksa bahwa method benar-benar menulis ulang method superclass dengan tanda tangan yang sama persis. Bila ada kesalahan ketik pada nama method, compiler menampilkan galat alih-alih diam-diam membuat method baru yang tidak pernah terpanggil.
+Anotasi <code>@Override</code> memberi tahu compiler untuk memeriksa bahwa method benar-benar menulis ulang method superclass dengan signature yang sama persis. Bila ada kesalahan ketik pada nama method, compiler menampilkan galat alih-alih diam-diam membuat method baru yang tidak pernah terpanggil.
 </div>
 
 <div class="warn-box">
@@ -248,8 +248,8 @@ Apakah ini overriding? Jelaskan, lalu prediksi apa yang terjadi kalau `Truck` me
 
 ## Rangkuman Bagian 1
 
-- Overriding menulis ulang method superclass di subclass, dengan tanda tangan yang harus sama persis.
-- `@Override` membuat compiler memeriksa tanda tangannya benar-benar cocok, menangkap kesalahan lebih awal.
+- Overriding menulis ulang method superclass di subclass, dengan signature yang harus sama persis.
+- `@Override` membuat compiler memeriksa signature-nya benar-benar cocok, menangkap kesalahan lebih awal.
 - `super.method(...)` memanggil versi superclass; `final` mencegah method di-override sama sekali.
 
 Selanjutnya: Bagian 2 membahas method overloading, situasi ketika daftar parameter yang berbeda ternyata bukan overriding sama sekali.
@@ -407,7 +407,7 @@ class CheckingAccount extends Account {
 
 - `canWithdraw()` di-override tiap subclass `Account`, memberi aturan penarikan yang berbeda tanpa mengubah `withdraw()` itu sendiri.
 - Method override tidak boleh mengurangi visibility dibanding superclass-nya.
-- Aturan overriding dari Bagian 1 (tanda tangan sama persis, `@Override`) berlaku persis sama di sini.
+- Aturan overriding dari Bagian 1 (signature sama persis, `@Override`) berlaku persis sama di sini.
 
 Selanjutnya: Bagian 4 menerapkan overloading ke method setoran Bank Mini.
 
@@ -472,8 +472,8 @@ Method mana yang dipanggil Java untuk masing-masing, dan berdasarkan apa Java me
 
 ## Rangkuman Pertemuan 7
 
-- Overriding menulis ulang perilaku warisan dengan tanda tangan yang sama persis; overloading menambah versi baru dengan parameter berbeda.
-- `@Override` menangkap kesalahan tanda tangan lebih awal; `super.method(...)` tetap memanfaatkan perilaku lama; `final` mencegah override sama sekali.
+- Overriding menulis ulang perilaku warisan dengan signature yang sama persis; overloading menambah versi baru dengan parameter berbeda.
+- `@Override` menangkap kesalahan signature lebih awal; `super.method(...)` tetap memanfaatkan perilaku lama; `final` mencegah override sama sekali.
 - Bank Mini memakai overriding untuk aturan penarikan tiap jenis rekening, dan overloading untuk setoran dengan atau tanpa catatan.
 
 ---
