@@ -70,11 +70,11 @@ def main():
                 shutil.copyfile(src, dest)
                 cells.append(f'<a href="jobsheets/{src.name}">Jobsheet ({label})</a>')
 
-        zip_src = CHECKPOINT_ZIPS / f"pertemuan-{nn}.zip"
+        zip_src = CHECKPOINT_ZIPS / f"pertemuan-{nn}-starter.zip"
         if zip_src.exists():
             zip_name = zip_src.name
             shutil.copyfile(zip_src, DOCS / "code" / zip_name)
-            cells.append(f'<a href="code/{zip_name}">Code (ZIP)</a>')
+            cells.append(f'<a href="code/{zip_name}">Starter Code (ZIP)</a>')
 
         rows.append((nn, title, cells))
 

@@ -111,7 +111,6 @@ Bagaimana objek-objek saling terhubung membentuk sebuah sistem
 - Bahwa sebuah objek dapat memiliki objek lain sebagai atributnya
 - Empat kekuatan relasi antar kelas: dependency, association, aggregation, composition
 - Perbedaan umur objek pada masing-masing jenis relasi
-- Penerapan relasi kelas pada studi kasus Bank Mini: `Customer`, `Account`, `Bank`
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 4.

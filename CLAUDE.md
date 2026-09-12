@@ -370,13 +370,20 @@ mahasiswa yang memakai editor teks biasa.
   Pertemuan 13-16: proyek Maven (`pom.xml` dari `scripts/pom-template.xml`,
   `src/main/java/id/ac/polinema/{model,repository,ui}/`); Pertemuan 15
   menambah dependency `org.xerial:sqlite-jdbc`. `code/bank-mini-zips/
-  pertemuan-NN.zip`: checkpoint yang sama, dikemas jadi satu berkas zip
-  (folder teratas `bank-mini-pertemuan-NN/`) oleh
+  pertemuan-NN-starter.zip`: checkpoint pertemuan praktikum SEBELUMNYA
+  (bukan checkpoint pertemuan NN sendiri), dikemas jadi satu berkas zip
+  (folder teratas `bank-mini-pertemuan-NN-starter/`) oleh
   `scripts/gen-checkpoint-zips.py`, ditautkan dari situs GitHub Pages
   (`scripts/gen-pages-index.py` + `.github/workflows/pages.yml`, lihat
   `https://dhanifudin.com/oop/`) supaya mahasiswa yang tertinggal bisa
-  mengunduh langsung, tanpa git dan tanpa menunggu Dosen membagikan
-  berkas secara manual.
+  mengunduh titik awal yang benar untuk jobsheet yang sedang dibuka,
+  tanpa git dan tanpa menunggu Dosen membagikan berkas secara manual.
+  **Kode LENGKAP/jawaban akhir suatu pertemuan tidak pernah dipublikasikan
+  atas nama pertemuan itu sendiri**, supaya mahasiswa yang membuka
+  jobsheet tidak bisa mengunduh langsung jawabannya; kode akhir pertemuan
+  N baru muncul di situs sebagai starter pertemuan berikutnya. Pertemuan
+  praktikum pertama (01) tidak punya starter (proyek dibangun dari nol
+  di jobsheet 1).
   - **Gotcha nyata, ditemukan saat mengemas checkpoint 13-14 jadi zip
     (jauh lebih terlihat begitu file dikemas untuk diunduh langsung
     dibanding sekadar duduk di direktori lokal)**: reorganisasi paket
@@ -421,10 +428,12 @@ mahasiswa yang memakai editor teks biasa.
   ke `slides/`/`jobsheets/`), `build-checkpoints.py` (susun snapshot
   `code/bank-mini/pertemuan-NN/` dari `jobsheets/assets/code-src/`,
   termasuk berkas `.form` sejak Pertemuan 13),
-  `gen-checkpoint-zips.py` (kemas tiap checkpoint jadi
-  `code/bank-mini-zips/pertemuan-NN.zip`, hanya modul standar Python,
-  tidak perlu venv; secara sengaja mengecualikan `target/` dan metadata
-  IDE seperti `.classpath`/`.project`/`.settings` andai direktori
+  `gen-checkpoint-zips.py` (kemas checkpoint pertemuan N-1 sebagai starter
+  pertemuan N, jadi `code/bank-mini-zips/pertemuan-NN-starter.zip`, bukan
+  checkpoint N sendiri, supaya kode lengkap/jawaban pertemuan N tidak
+  pernah dipublikasikan atas nama pertemuan itu; hanya modul standar
+  Python, tidak perlu venv; secara sengaja mengecualikan `target/` dan
+  metadata IDE seperti `.classpath`/`.project`/`.settings` andai direktori
   checkpoint pernah ikut ter-compile manual saat pengujian lokal),
   `pom-template.xml` (kerangka `pom.xml` untuk checkpoint Maven),
   `gen-pages-index.py` (susun `docs-site/` berisi seluruh PDF slide/

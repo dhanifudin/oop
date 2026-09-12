@@ -8,7 +8,8 @@
 #   make diagrams   just re-render UML diagrams + SVG illustrations
 #   make images     just regenerate jobsheet code-snippet images
 #   make checkpoints  regenerate code/bank-mini/pertemuan-NN/ snapshots
-#   make zips       zip each checkpoint into code/bank-mini-zips/pertemuan-NN.zip
+#   make zips       zip each checkpoint's PREVIOUS meeting as a starter into
+#                   code/bank-mini-zips/pertemuan-NN-starter.zip
 #   make setup      create the Python venv used by the image-rendering scripts
 #   make clean      remove build/ output directories (source files untouched)
 #
