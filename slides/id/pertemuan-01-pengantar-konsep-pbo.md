@@ -81,6 +81,8 @@ style: |
   .cols img {
     display: block;
     margin: 0 auto;
+    max-width: 100%;
+    max-height: 460px;
   }
   .footnote {
     font-size: 0.55em;
