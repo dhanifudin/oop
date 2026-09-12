@@ -140,12 +140,20 @@ Sesi 1 dari 4
 
 ---
 
-## Dari Kelas yang Mirip ke Superclass
+## Dari Kelas yang Mirip
 
 Bayangkan kelas `Dog` dan `Cat` ditulis terpisah, padahal keduanya sama-sama punya atribut nama dan method untuk mendapatkan nama tersebut. Menyalin kode yang sama ke kedua kelas membuat program sulit dirawat: perubahan pada satu kelas harus diulang secara manual di kelas lainnya.
 
+<div class="warn-box">
+Kode yang sama, disalin ke banyak tempat, adalah salah satu tanda desain yang perlu diperbaiki.
+</div>
+
+---
+
+## Superclass dan Subclass
+
 <div class="term-box">
-<b>Inheritance</b> memungkinkan sebuah kelas (subclass) mewarisi atribut dan method dari kelas lain (superclass), sehingga kode yang sama cukup ditulis satu kali di superclass.
+<b>Inheritance</b> memungkinkan sebuah kelas (disebut <b>subclass</b>) mewarisi atribut dan method dari kelas lain (disebut <b>superclass</b>), sehingga kode yang sama cukup ditulis satu kali di superclass, lalu dipakai bersama oleh subclass-subclassnya.
 </div>
 
 ---
