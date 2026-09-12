@@ -304,7 +304,13 @@ class ReportFormatter {
 <b>Salah:</b> <code>Penguin extends Bird</code> meng-override <code>fly()</code> untuk melempar <code>UnsupportedOperationException</code>, karena penguin tidak bisa terbang.
 </div>
 
-**Benar:** ini melanggar Liskov Substitution Principle. Kode yang menerima `Bird` dan memanggil `fly()` akan gagal saat menerima `Penguin`, padahal `Penguin` seharusnya bisa menggantikan `Bird` di mana pun tanpa membuat kode itu berperilaku salah.
+```java
+for (Bird b : birds) {
+    b.fly();  // meledak begitu b ternyata Penguin
+}
+```
+
+**Benar:** kode di atas mengasumsikan SEMUA `Bird` bisa `fly()` tanpa masalah, itulah kontrak tipe `Bird`. `Penguin` menolak kontrak itu (melempar exception, bukan terbang), sehingga `b.fly()` tiba-tiba gagal begitu `birds` berisi seekor `Penguin`. Inilah pelanggaran Liskov Substitution Principle: `Penguin` gagal menggantikan `Bird` justru di tempat yang mengharapkan `Bird`.
 
 ---
 
