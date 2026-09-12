@@ -148,10 +148,10 @@ Ketika sebuah kelas memakai atau memiliki kelas lain, kedua kelas tersebut dikat
 
 ## Mengapa Ini Penting?
 
-Memilih dependency atau association yang keliru membuat dua kelas jadi terlalu terikat satu sama lain. Contohnya, `Printer` cukup menerima `File` sebagai parameter method, dipakai sesaat, lalu dilupakan. Kalau `File` malah disimpan sebagai atribut `Printer` (dijadikan association), `Printer` jadi terikat permanen ke satu `File` itu saja, padahal seharusnya bisa mencetak file apa pun yang diberikan kapan saja.
+Kalau `Printer` menyimpan `File` sebagai atributnya, padahal seharusnya cukup dipakai sesaat, `Printer` jadi terikat pada satu `File` itu saja. Padahal `Printer` seharusnya bisa mencetak file apa pun, kapan saja.
 
 <div class="term-box">
-Istilah untuk keterikatan antar kelas ini adalah <b>coupling</b>. Pada sistem besar berisi ratusan kelas, coupling yang terlalu erat berbahaya: perubahan kecil di satu kelas bisa memaksa perubahan di banyak kelas lain. Ini salah satu penyebab utama kode yang sulit dirawat.
+Keterikatan antar kelas seperti ini disebut <b>coupling</b>. Semakin erat coupling-nya, semakin sulit satu kelas diubah tanpa ikut mengubah kelas lain. Pada program besar berisi ratusan kelas, ini salah satu penyebab utama kode yang sulit dirawat.
 </div>
 
 ---
@@ -235,44 +235,44 @@ Sesi 2 dari 4
 
 ## Dari Sekadar Menyimpan ke Kepemilikan Sungguhan
 
-Association menyimpan referensi objek lain, tetapi kedua objek tetap independen sepenuhnya, seperti `Driver` dan `Car` pada Bagian 1. Ada relasi has-a yang lebih erat lagi: satu objek benar-benar menjadi BAGIAN dari objek lain, sehingga umur keduanya saling terkait. Sebuah `Library` memiliki banyak `Book` sebagai koleksinya; sebuah `Car` memiliki `Engine` sebagai komponennya. Keduanya sama-sama kepemilikan, tetapi berbeda seberapa erat.
+Association menyimpan referensi objek lain, tetapi kedua objek tetap independen sepenuhnya, seperti `Driver` dan `Car` pada Bagian 1. Ada relasi has-a yang lebih erat lagi: satu objek benar-benar menjadi bagian dari objek lain, sehingga umur keduanya saling terkait. Sebuah `Library` memiliki banyak `Book` sebagai koleksinya; sebuah `Car` memiliki `Engine` sebagai komponennya. Keduanya sama-sama kepemilikan, tetapi berbeda seberapa erat.
 
 ---
 
 ## Aggregation: Kepemilikan yang Longgar
 
-Pada aggregation, whole (`Library`) menyimpan referensi ke part (`Book`), tetapi part bisa dibuat sebelum whole memilikinya, dan tetap bisa hidup terpisah setelah whole dibuang. Sebuah `Book` bisa dipindahkan ke `Library` lain, atau tetap ada meski `Library` asalnya sudah tutup.
+Pada aggregation, pemilik (`Library`) menyimpan referensi ke bagian (`Book`), tetapi bagian itu bisa dibuat sebelum jadi milik pemiliknya, dan tetap bisa hidup terpisah setelah pemiliknya dibuang. Sebuah `Book` bisa dipindahkan ke `Library` lain, atau tetap ada meski `Library` asalnya sudah tutup.
 
 <div class="term-box">
-<b>Aggregation</b>: whole memiliki koleksi part, tapi part tidak bergantung penuh pada whole untuk tetap hidup.
+<b>Aggregation</b>: pemilik memiliki koleksi bagian, tapi bagian tidak bergantung penuh pada pemiliknya untuk tetap hidup.
 </div>
 
 ---
 
 ## Composition: Kepemilikan yang Erat
 
-Pada composition, whole (`Car`) membuat part-nya sendiri (`Engine`) di dalam constructor, dan tidak pernah membagikan referensi part itu ke pihak luar. Begitu `Car` dibuang, `Engine` yang menjadi bagiannya ikut hilang; tidak ada `Engine` "yatim" yang tetap hidup sendirian.
+Pada composition, pemilik (`Car`) membuat bagiannya sendiri (`Engine`) di dalam constructor, dan tidak pernah membagikan referensinya ke pihak luar. Begitu `Car` dibuang, `Engine` yang jadi bagiannya ikut hilang; tidak ada `Engine` "yatim" yang tetap hidup sendirian.
 
 <div class="term-box">
-<b>Composition</b>: whole membuat dan sepenuhnya mengendalikan part-nya; umur part terikat penuh pada umur whole.
+<b>Composition</b>: pemilik membuat dan sepenuhnya mengendalikan bagiannya; umur bagian terikat penuh pada umur pemiliknya.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Memilih composition padahal seharusnya aggregation memaksa duplikasi: sesuatu yang semestinya dipakai bersama (misalnya satu `Book` yang sama di beberapa cabang `Library`) malah harus dibuat ulang untuk tiap pemiliknya.
+Salah pilih composition atau aggregation bisa merepotkan. Kalau pakai composition padahal seharusnya aggregation, sesuatu yang semestinya dipakai bersama (misalnya satu `Book` yang sama di beberapa cabang `Library`) malah harus dibuat ulang terus-menerus.
 
-Sebaliknya, memilih aggregation padahal seharusnya composition membuka celah referensi liar. Part yang seharusnya sepenuhnya milik whole malah bisa dipegang dan diubah kode lain, sehingga data whole dan part jadi tidak konsisten (nilainya beda-beda padahal seharusnya sama). Bug seperti ini sulit dilacak karena penyebabnya jauh dari gejalanya.
+Sebaliknya, kalau pakai aggregation padahal seharusnya composition, bagian yang seharusnya milik satu pemilik saja malah bisa dipegang dan diubah kode lain di tempat lain. Akibatnya data jadi tidak konsisten, nilainya beda-beda padahal seharusnya sama. Bug seperti ini sulit dilacak karena penyebabnya jauh dari gejalanya.
 
 ---
 
 ## Perbedaan Umur Objek
 
-![h:280 Composition: bagian ikut hilang bersama keseluruhan. Association: bagian tetap hidup meski keseluruhan bubar](../assets/illustrations/whole-part-lifecycle.svg)
+![h:280 Composition: bagian ikut hilang bersama pemiliknya. Association: bagian tetap hidup meski pemiliknya bubar](../assets/illustrations/whole-part-lifecycle.svg)
 
 <div class="term-box">
-Pada <b>composition</b>, part dibuat di dalam whole dan tidak pernah diberikan ke pihak luar; whole dibuang, part ikut hilang. Pada <b>association</b>, kedua objek independen sepenuhnya. <b>Aggregation</b> ada di antara keduanya, seperti sudah dijelaskan sebelumnya.
+Pada <b>composition</b>, bagian dibuat di dalam pemiliknya dan tidak pernah diberikan ke pihak luar; pemiliknya dibuang, bagian ikut hilang. Pada <b>association</b>, kedua objek independen sepenuhnya. <b>Aggregation</b> ada di antara keduanya, seperti sudah dijelaskan sebelumnya.
 </div>
 
 ---
@@ -283,11 +283,11 @@ Pada <b>composition</b>, part dibuat di dalam whole dan tidak pernah diberikan k
 |---|---|---|
 | Dependency | putus-putus, panah terbuka | `Printer` &#8674; `File` |
 | Association | penuh, panah terbuka | `Driver` &#8594; `Car` |
-| Aggregation | penuh, diamond KOSONG di sisi whole | `Library` &#9671;&#8212; `Book` |
-| Composition | penuh, diamond PENUH di sisi whole | `Car` &#9670;&#8212; `Engine` |
+| Aggregation | penuh, diamond KOSONG di sisi pemilik | `Library` &#9671;&#8212; `Book` |
+| Composition | penuh, diamond PENUH di sisi pemilik | `Car` &#9670;&#8212; `Engine` |
 
 <div class="term-box">
-Diamond SELALU berada di sisi whole (pemilik), bukan di sisi part.
+Diamond SELALU berada di sisi pemilik, bukan di sisi bagian.
 </div>
 
 ---
@@ -315,7 +315,7 @@ class Library {
 ```
 
 <div class="tip-box">
-Kelas yang memanggil <code>new</code> untuk membuat objek part-nya sendiri, seperti <code>Car</code>, itu composition. Kelas yang menerima part sebagai parameter, seperti <code>Library</code>, itu aggregation.
+Kelas yang memanggil <code>new</code> untuk membuat objek bagiannya sendiri, seperti <code>Car</code>, itu composition. Kelas yang menerima bagian sebagai parameter, seperti <code>Library</code>, itu aggregation.
 </div>
 
 ---
@@ -323,10 +323,10 @@ Kelas yang memanggil <code>new</code> untuk membuat objek part-nya sendiri, sepe
 ## Kesalahan Umum: Diamond di Sisi yang Salah
 
 <div class="warn-box">
-<b>Salah:</b> menggambar diamond di sisi <code>Book</code> (part), seolah <code>Book</code> yang memiliki <code>Library</code>.
+<b>Salah:</b> menggambar diamond di sisi <code>Book</code> (bagian), seolah <code>Book</code> yang memiliki <code>Library</code>.
 </div>
 
-**Benar:** diamond selalu di sisi `Library` (whole), searah dengan siapa yang menyimpan koleksinya. Sebelum menggambar diamond, baca ulang kalimatnya: harus terbaca "`Library` MEMILIKI `Book`", bukan sebaliknya.
+**Benar:** diamond selalu di sisi `Library` (pemilik), searah dengan siapa yang menyimpan koleksinya. Sebelum menggambar diamond, baca ulang kalimatnya: harus terbaca "`Library` MEMILIKI `Book`", bukan sebaliknya.
 
 ---
 
@@ -352,9 +352,9 @@ Untuk tiap pasangan berikut, tentukan **aggregation** atau **composition**, lalu
 
 ## Rangkuman Bagian 2
 
-- Aggregation: whole menyimpan referensi part, tapi part bisa hidup terpisah (kepemilikan longgar).
-- Composition: whole membuat part-nya sendiri dan tidak membagikannya keluar; umur part terikat penuh pada whole.
-- Notasi UML: diamond selalu di sisi whole, kosong untuk aggregation, penuh untuk composition; multiplicity di ujung garis menyatakan jumlah objek yang terlibat.
+- Aggregation: pemilik menyimpan referensi ke bagian, tapi bagian bisa hidup terpisah (kepemilikan longgar).
+- Composition: pemilik membuat bagiannya sendiri dan tidak membagikannya keluar; umur bagian terikat penuh pada pemiliknya.
+- Notasi UML: diamond selalu di sisi pemilik, kosong untuk aggregation, penuh untuk composition; multiplicity di ujung garis menyatakan jumlah objek yang terlibat.
 
 Selanjutnya: semua relasi ini bekerja lewat referensi, bukan salinan objek. Bagian 3 masuk ke bagaimana referensi ini sebenarnya bekerja di memori.
 
@@ -397,7 +397,7 @@ System.out.println(b.getWidth());  // 10
 
 ## Mengapa Ini Penting?
 
-Dua variabel yang menunjuk objek yang sama disebut **aliasing**. Aliasing yang tidak disadari adalah sumber bug yang sangat umum pada aplikasi besar. Bayangkan sebuah method menerima objek lewat parameter, lalu mengubahnya sekadar untuk mencoba. Pemanggil method itu masih memegang referensi yang sama, dan tidak menyangka objeknya ikut berubah. Bug seperti ini sulit dilacak, sebab lokasi perubahannya jauh dari lokasi gejalanya.
+Dua variabel yang menunjuk objek yang sama disebut **aliasing**. Kalau tidak disadari, aliasing gampang menimbulkan bug. Contohnya, sebuah method menerima objek lewat parameter, lalu mengubahnya sekadar untuk mencoba. Padahal yang memanggil method itu masih memegang referensi yang sama, dan tidak menyangka objeknya ikut berubah. Bug seperti ini sulit dilacak, sebab tempat perubahannya jauh dari tempat gejalanya muncul.
 
 ---
 
@@ -571,7 +571,7 @@ Bila objek `Customer` (misalnya Nadia) dihapus dari memori sementara `Account` m
 ## Rangkuman Bagian 4
 
 - `Account`-`Customer`: association, referensi ke objek yang sudah ada, diterima dari luar.
-- `Bank`-`Account`: aggregation, whole menyimpan koleksi part yang tetap bisa berdiri sendiri.
+- `Bank`-`Account`: aggregation, pemilik menyimpan koleksi bagian yang tetap bisa berdiri sendiri.
 - Seluruh method `Bank` bekerja di atas array referensi, termasuk kemungkinan `null` yang harus diperiksa pemanggilnya.
 
 ---
@@ -579,7 +579,7 @@ Bila objek `Customer` (misalnya Nadia) dihapus dari memori sementara `Account` m
 ## Rangkuman Pertemuan 4
 
 - Empat kekuatan relasi antar kelas, dari terlemah ke terkuat: dependency, association, aggregation, composition.
-- Notasi UML: dependency (panah putus-putus), association (panah penuh), aggregation (diamond kosong di sisi whole), composition (diamond penuh di sisi whole).
+- Notasi UML: dependency (panah putus-putus), association (panah penuh), aggregation (diamond kosong di sisi pemilik), composition (diamond penuh di sisi pemilik).
 - Semua relasi ini bekerja lewat referensi, bukan salinan objek; array objek menampung banyak referensi sekaligus.
 - Bank Mini: `Account` ber-association dengan `Customer`, dan `Bank` ber-aggregation dengan `Account`.
 
