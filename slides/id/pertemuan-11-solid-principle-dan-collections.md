@@ -322,6 +322,22 @@ for (Bird b : birds) {
 
 ---
 
+## Perbaikan: Pisahkan Kemampuan Terbang ke Interface
+
+<div class="term-box">
+Solusi yang benar: <code>fly()</code> dikeluarkan dari <code>Bird</code>, dideklarasikan sebagai interface kecil tersendiri, misalnya <code>Flyable</code>. Hanya subclass yang benar-benar bisa terbang (<code>Sparrow</code>, <code>Duck</code>) yang meng-implement <code>Flyable</code>; <code>Penguin</code> tidak mengimplementasikannya sama sekali, bukan mengimplementasikan lalu menolaknya.
+</div>
+
+```java
+interface Flyable { void fly(); }
+class Sparrow extends Bird implements Flyable { ... }
+class Penguin extends Bird { /* tidak implements Flyable */ }
+```
+
+Kode pemanggil berubah menjadi `if (b instanceof Flyable f) f.fly();`, memeriksa kemampuan lewat interface alih-alih mengasumsikan seluruh `Bird` pasti bisa terbang. Pola memisahkan kemampuan lewat interface kecil ini muncul lagi pada Bagian 4 (`Shippable`).
+
+---
+
 ## Latihan
 
 Untuk tiap skenario berikut, tentukan prinsip mana (Single Responsibility, Open/Closed, atau Liskov Substitution) yang dilanggar:
