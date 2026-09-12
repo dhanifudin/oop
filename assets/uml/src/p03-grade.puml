@@ -1,0 +1,15 @@
+@startuml p03-grade
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+class Grade {
+  - score : int
+  --
+  + Grade()
+  + setScore(score : int) : void
+  + getScore() : int
+  + getLetterGrade() : String
+}
+@enduml

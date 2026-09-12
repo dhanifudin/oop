@@ -11,7 +11,7 @@
   <!-- caller -->
   <rect x="40" y="130" width="160" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
   <text x="120" y="155" text-anchor="middle" font-size="17.6" fill="#64748b">other code</text>
-  <text x="120" y="175" text-anchor="middle" font-size="17.6" fill="#991b1b" font-weight="700">t.temperature = -50;</text>
+  <text x="120" y="175" text-anchor="middle" font-size="17.6" fill="#991b1b" font-weight="700">g.score = -20;</text>
 
   <!-- broken shell, no gate -->
   <rect x="280" y="60" width="260" height="220" rx="30" fill="#fef2f2" stroke="#dc2626" stroke-width="3" stroke-dasharray="10,8"/>
@@ -19,8 +19,8 @@
 
   <!-- the field, exposed -->
   <rect x="350" y="150" width="120" height="60" rx="10" fill="#ffffff" stroke="#dc2626" stroke-width="2.5"/>
-  <text x="410" y="172" text-anchor="middle" font-size="14.9" fill="#64748b">temperature</text>
-  <text x="410" y="192" text-anchor="middle" font-size="18.9" fill="#dc2626" font-weight="700">-50</text>
+  <text x="410" y="172" text-anchor="middle" font-size="14.9" fill="#64748b">score</text>
+  <text x="410" y="192" text-anchor="middle" font-size="18.9" fill="#dc2626" font-weight="700">-20</text>
 
   <!-- direct arrow straight through the broken wall -->
   <path d="M200,168 C240,168 300,175 348,178" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowRed)"/>

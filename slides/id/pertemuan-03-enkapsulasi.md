@@ -142,7 +142,7 @@ Sesi 1 dari 4
 
 ## Ketika Atribut Bisa Diubah Siapa Saja
 
-Bayangkan kelas `Thermostat` dengan atribut publik `temperature`. Perangkat ini hanya bekerja pada rentang 16 sampai 30 derajat. Karena `temperature` publik, kode lain bisa langsung mengubah nilainya tanpa melalui method apa pun. Apa yang mencegah kode itu mengisi `temperature` dengan angka jauh di luar rentang, misalnya `-50`?
+Bayangkan kelas `Grade` dengan atribut publik `score`. Nilai ujian hanya masuk akal pada rentang 0 sampai 100. Karena `score` publik, kode lain bisa langsung mengubah nilainya tanpa melalui method apa pun. Apa yang mencegah kode itu mengisi `score` dengan angka jauh di luar rentang, misalnya `-20`?
 
 <div class="warn-box">
 Atribut publik berarti tidak ada satu titik pun yang menjamin data objek selalu valid.
@@ -155,7 +155,7 @@ Atribut publik berarti tidak ada satu titik pun yang menjamin data objek selalu 
 ![h:300 Kode luar menulis langsung ke atribut publik, tanpa validasi apa pun](../assets/illustrations/direct-access-bug.svg)
 
 <div class="warn-box">
-Karena atribut publik, tidak ada kode yang memeriksa nilai baru sebelum disimpan. Nilai di luar rentang perangkat, misalnya <code>-50</code>, diterima begitu saja.
+Karena atribut publik, tidak ada kode yang memeriksa nilai baru sebelum disimpan. Nilai di luar rentang yang masuk akal, misalnya <code>-20</code>, diterima begitu saja.
 </div>
 
 ---
@@ -163,16 +163,16 @@ Karena atribut publik, tidak ada kode yang memeriksa nilai baru sebelum disimpan
 ## Contoh Kode: Atribut Publik, Tidak Ada Penjaga
 
 ```java
-class Thermostat {
-    public double temperature;
+class Grade {
+    public int score;
 }
 
-Thermostat t = new Thermostat();
-t.temperature = -50;  // diterima begitu saja, tidak ada yang memeriksa
+Grade g = new Grade();
+g.score = -20;  // diterima begitu saja, tidak ada yang memeriksa
 ```
 
 <div class="tip-box">
-Java hanya memastikan <code>-50</code> bertipe angka. Java tidak tahu, dan tidak peduli, bahwa <code>-50</code> tidak masuk akal untuk sebuah termostat.
+Java hanya memastikan <code>-20</code> bertipe angka. Java tidak tahu, dan tidak peduli, bahwa nilai ujian tidak pernah negatif.
 </div>
 
 ---
@@ -190,7 +190,7 @@ Inilah salah satu alasan encapsulation dianggap prinsip paling mendasar dalam OO
 ## Kesalahan Umum: Mengira Komentar Cukup Melindungi
 
 <div class="warn-box">
-<b>Salah:</b> menambahkan komentar seperti "jangan diisi di luar 16-30" di atas atribut publik, berharap itu cukup mencegah nilai yang tidak valid.
+<b>Salah:</b> menambahkan komentar seperti "jangan diisi di luar 0-100" di atas atribut publik, berharap itu cukup mencegah nilai yang tidak valid.
 </div>
 
 **Benar:** komentar hanyalah teks, tidak pernah benar-benar dipaksakan oleh Java. Satu-satunya cara memaksakan aturan adalah lewat kode yang benar-benar dijalankan, yaitu method yang memeriksa nilai sebelum menyimpannya.
@@ -243,12 +243,12 @@ Sesi 2 dari 4
 ## Contoh Kode: Membuat Atribut Privat
 
 ```java
-class Thermostat {
-    private double temperature;
+class Grade {
+    private int score;
 }
 
-Thermostat t = new Thermostat();
-t.temperature = 22;  // gagal dikompilasi: temperature bersifat private
+Grade g = new Grade();
+g.score = 85;  // gagal dikompilasi: score bersifat private
 ```
 
 <div class="warn-box">
@@ -298,7 +298,7 @@ Prinsip ini sering disingkat sebagai <b>"sembunyikan data, ekspos perilaku"</b>:
 
 ## Class Invariant
 
-**Class invariant** adalah kondisi yang harus selalu benar untuk setiap objek, sepanjang umur objek itu. Pada `Thermostat`, invariant-nya adalah "`temperature` selalu di rentang 16 sampai 30". Kondisi ini harus tetap benar kapan pun objek diperiksa, apa pun method yang baru dipanggil.
+**Class invariant** adalah kondisi yang harus selalu benar untuk setiap objek, sepanjang umur objek itu. Pada `Grade`, invariant-nya adalah "`score` selalu di rentang 0 sampai 100". Kondisi ini harus tetap benar kapan pun objek diperiksa, apa pun method yang baru dipanggil.
 
 <div class="term-box">
 Encapsulation membuat invariant benar-benar bisa ditegakkan. Satu-satunya jalan mengubah data adalah lewat method milik kelas, jadi method itu bisa memeriksa invariant lebih dulu. Tanpa encapsulation, atribut publik membuat invariant hanya jadi harapan, bukan jaminan, karena kode mana pun bisa melanggarnya kapan saja.
@@ -318,17 +318,17 @@ Encapsulation membuat invariant benar-benar bisa ditegakkan. Satu-satunya jalan 
 
 ## Latihan
 
-Sebuah kelas `Thermostat` punya method berikut:
+Sebuah kelas `Grade` punya method berikut:
 
-`public void setTemperature(double temperature) { this.temperature = temperature; }`
+`public void setScore(int score) { this.score = score; }`
 
-Apakah method ini benar-benar melindungi invariant "`temperature` selalu 16-30"? Jelaskan.
+Apakah method ini benar-benar melindungi invariant "`score` selalu 0-100"? Jelaskan.
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak.** Setter ini menyalin nilai apa pun tanpa memeriksa rentangnya, sama persis seperti atribut publik. Encapsulation di sini hanya membungkus, bukan melindungi; setter perlu menolak atau menyesuaikan nilai di luar 16-30 sebelum menyimpannya.
+**Tidak.** Setter ini menyalin nilai apa pun tanpa memeriksa rentangnya, sama persis seperti atribut publik. Encapsulation di sini hanya membungkus, bukan melindungi; setter perlu menolak atau menyesuaikan nilai di luar 0-100 sebelum menyimpannya.
 
 ---
 
@@ -364,14 +364,14 @@ Sesi 3 dari 4
 ## Contoh Kode: Setter dan Getter
 
 ```java
-public void setTemperature(double temperature) {
-    if (temperature < 16) temperature = 16;
-    if (temperature > 30) temperature = 30;
-    this.temperature = temperature;
+public void setScore(int score) {
+    if (score < 0) score = 0;
+    if (score > 100) score = 100;
+    this.score = score;
 }
 
-public double getTemperature() {
-    return temperature;
+public int getScore() {
+    return score;
 }
 ```
 
@@ -383,6 +383,23 @@ public double getTemperature() {
 
 <div class="term-box">
 Konvensi penamaan umum di Java: setter diberi nama <code>setNamaAtribut(...)</code>, getter diberi nama <code>getNamaAtribut()</code>. Kombinasi keduanya disebut pola <b>getter-setter</b>.
+</div>
+
+---
+
+## Contoh Kode: Getter yang Menurunkan Nilai Lain
+
+```java
+public String getLetterGrade() {
+    if (score >= 85) return "A";
+    if (score >= 70) return "B";
+    if (score >= 55) return "C";
+    return "D";
+}
+```
+
+<div class="tip-box">
+Getter tidak harus sekadar mengembalikan field apa adanya. <code>getLetterGrade()</code> menghitung nilai baru dari <code>score</code> setiap kali dipanggil, bukan menyimpan huruf secara terpisah.
 </div>
 
 ---
@@ -472,7 +489,7 @@ Sesi 4 dari 4
 Kelas `Account` pada Pertemuan 2 memiliki atribut publik `ownerName` dan `balance`, tanpa validasi apa pun pada `deposit()` maupun `withdraw()`.
 
 <div class="warn-box">
-Risiko yang sama seperti <code>Thermostat</code> berlaku di sini: saldo bisa diubah langsung ke nilai berapa pun, dan setoran atau penarikan negatif bisa diterima tanpa ditolak.
+Risiko yang sama seperti <code>Grade</code> berlaku di sini: saldo bisa diubah langsung ke nilai berapa pun, dan setoran atau penarikan negatif bisa diterima tanpa ditolak.
 </div>
 
 ---
