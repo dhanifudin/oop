@@ -48,12 +48,15 @@ Struktur:
      Bagian berikutnya (apa yang akan dibahas selanjutnya dan kenapa itu
      relevan setelah apa yang baru dipelajari). Bagian terakhir cukup
      rangkuman tanpa jembatan (sudah masuk penutup dek).
-   - **Demo Langsung** (dipakai di titik yang Dosen perlu mempraktikkan
-     kode secara langsung, bukan di setiap Bagian): satu slide penanda
-     singkat ("Demo Langsung: ...") berisi instruksi untuk Dosen tentang
-     apa yang didemonstrasikan langsung di editor/IDE, BUKAN kode
-     panjang; aturan maksimal ~8 baris kode di slide tetap berlaku kalau
-     slide ini menyertakan cuplikan.
+   - **Contoh Kode** (dipakai di titik yang butuh penguatan konkret,
+     bukan di setiap Bagian): satu slide berjudul "Contoh Kode: ..."
+     berisi cuplikan kode singkat (maksimal ~8 baris, sesuai aturan
+     umum cuplikan kode di slide) yang mengonkretkan konsep yang baru
+     dijelaskan, diikuti satu kalimat takeaway (tip-box). Tidak
+     mengasumsikan Dosen mengetik ulang kode ini secara langsung; kalau
+     Dosen ingin live-coding di kelas, cuplikan ini tetap jadi acuan
+     yang aman untuk ditampilkan bila demo langsung gagal atau
+     kehabisan waktu.
 3. **Penutup (3 slide, tidak berubah dari pola lama)**: satu slide
    rangkuman akhir dek, lalu dua slide TERPISAH: lead "Referensi" (hanya
    sitasi + pointer jobsheet) lalu slide biasa "Diskusi" (satu pertanyaan

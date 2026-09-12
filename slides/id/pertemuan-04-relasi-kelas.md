@@ -148,10 +148,10 @@ Ketika sebuah kelas memakai atau memiliki kelas lain, kedua kelas tersebut dikat
 
 ## Mengapa Ini Penting?
 
-Memilih dependency ketika seharusnya association, atau sebaliknya, memengaruhi seberapa erat dua kelas saling terikat. Sebuah `Printer` yang hanya menerima `File` sebagai parameter method tidak perlu tahu apa pun tentang `File` itu di luar saat itu; bila hubungan ini malah dijadikan association (`File` disimpan sebagai atribut `Printer`), `Printer` jadi terikat permanen ke satu `File` tertentu, padahal seharusnya bisa mencetak file apa pun yang diberikan kapan saja.
+Memilih dependency atau association yang keliru membuat dua kelas jadi terlalu terikat satu sama lain. Contohnya, `Printer` cukup menerima `File` sebagai parameter method, dipakai sesaat, lalu dilupakan. Kalau `File` malah disimpan sebagai atribut `Printer` (dijadikan association), `Printer` jadi terikat permanen ke satu `File` itu saja, padahal seharusnya bisa mencetak file apa pun yang diberikan kapan saja.
 
 <div class="term-box">
-Pada sistem besar dengan ratusan kelas, coupling yang terlalu erat seperti ini membuat perubahan kecil di satu kelas merambat memaksa perubahan di banyak kelas lain, salah satu penyebab utama kode yang sulit dirawat menurut praktik rekayasa perangkat lunak industri.
+Istilah untuk keterikatan antar kelas ini adalah <b>coupling</b>. Pada sistem besar berisi ratusan kelas, coupling yang terlalu erat berbahaya: perubahan kecil di satu kelas bisa memaksa perubahan di banyak kelas lain. Ini salah satu penyebab utama kode yang sulit dirawat.
 </div>
 
 ---
@@ -190,7 +190,7 @@ Pada association, kedua objek tetap independen satu sama lain: <code>Driver</cod
 <b>Salah:</b> parameter <code>File</code> pada method <code>print(File document)</code> ikut disimpan ke field <code>this.lastFile = document</code>, padahal <code>Printer</code> tidak pernah memakainya lagi setelah pencetakan selesai.
 </div>
 
-**Benar:** biarkan `File` hanya menjadi parameter lokal, tidak disimpan sebagai field, kecuali `Printer` memang sengaja perlu mengingatnya untuk operasi berikutnya (barulah ini menjadi association yang disengaja, bukan kebiasaan menyimpan segala sesuatu "untuk jaga-jaga").
+**Benar:** biarkan `File` hanya jadi parameter lokal, tidak disimpan sebagai field. Kecuali `Printer` memang butuh mengingatnya untuk dipakai lagi nanti, barulah itu pantas menjadi association yang disengaja.
 
 ---
 
@@ -261,7 +261,9 @@ Pada composition, whole (`Car`) membuat part-nya sendiri (`Engine`) di dalam con
 
 ## Mengapa Ini Penting?
 
-Memilih composition padahal seharusnya aggregation memaksa duplikasi yang tidak perlu: sesuatu yang semestinya bisa dipakai bersama (misalnya satu `Book` yang sama di beberapa cabang `Library`) malah harus dibuat ulang untuk tiap pemiliknya. Sebaliknya, memilih aggregation padahal seharusnya composition membuka celah referensi liar: part yang seharusnya sepenuhnya milik whole malah bisa dipegang dan diubah kode lain di luar kendali whole-nya, menimbulkan bug ketidakkonsistenan data yang sulit dilacak karena mutasinya terjadi jauh dari tempat gejalanya muncul.
+Memilih composition padahal seharusnya aggregation memaksa duplikasi: sesuatu yang semestinya dipakai bersama (misalnya satu `Book` yang sama di beberapa cabang `Library`) malah harus dibuat ulang untuk tiap pemiliknya.
+
+Sebaliknya, memilih aggregation padahal seharusnya composition membuka celah referensi liar. Part yang seharusnya sepenuhnya milik whole malah bisa dipegang dan diubah kode lain, sehingga data whole dan part jadi tidak konsisten (nilainya beda-beda padahal seharusnya sama). Bug seperti ini sulit dilacak karena penyebabnya jauh dari gejalanya.
 
 ---
 
@@ -270,7 +272,7 @@ Memilih composition padahal seharusnya aggregation memaksa duplikasi yang tidak 
 ![h:280 Composition: bagian ikut hilang bersama keseluruhan. Association: bagian tetap hidup meski keseluruhan bubar](../assets/illustrations/whole-part-lifecycle.svg)
 
 <div class="term-box">
-Pada <b>composition</b>, part dibuat di dalam whole dan tidak pernah diberikan ke pihak luar; whole dibuang, part ikut hilang. Pada <b>association</b>, kedua objek independen sepenuhnya. <b>Aggregation</b> ada di antara keduanya: part BISA hidup terpisah, tetapi tetap koleksi milik whole selama keduanya hidup bersama.
+Pada <b>composition</b>, part dibuat di dalam whole dan tidak pernah diberikan ke pihak luar; whole dibuang, part ikut hilang. Pada <b>association</b>, kedua objek independen sepenuhnya. <b>Aggregation</b> ada di antara keduanya, seperti sudah dijelaskan sebelumnya.
 </div>
 
 ---
@@ -298,12 +300,22 @@ Multiplicity di ujung garis menyatakan berapa banyak objek yang boleh terlibat d
 
 ---
 
-## Demo Langsung: Siapa yang Memanggil `new`?
+## Contoh Kode: Composition vs Aggregation
 
-Dosen mendemonstrasikan langsung di editor: constructor `Car` yang membuat `Engine`-nya sendiri di dalam constructor (composition), dibandingkan dengan constructor `Library` yang MENERIMA daftar `Book` dari luar sebagai parameter (aggregation).
+```java
+class Car {
+    Engine engine;
+    Car() { engine = new Engine(150); }  // buat sendiri: composition
+}
+
+class Library {
+    Book[] books;
+    Library(Book[] books) { this.books = books; }  // dari luar: aggregation
+}
+```
 
 <div class="tip-box">
-Kelas mana yang memanggil <code>new</code> untuk membuat objek part menentukan siapa pemilik sesungguhnya: kalau whole yang memanggil <code>new</code> untuk part-nya sendiri, itu composition.
+Kelas yang memanggil <code>new</code> untuk membuat objek part-nya sendiri, seperti <code>Car</code>, itu composition. Kelas yang menerima part sebagai parameter, seperti <code>Library</code>, itu aggregation.
 </div>
 
 ---
@@ -357,35 +369,35 @@ Sesi 3 dari 4
 
 ---
 
-## Recap: Variabel Objek Menyimpan Referensi
-
-Pada Pertemuan 2, sebuah variabel bertipe objek tidak pernah menyimpan objeknya sendiri, hanya referensi (alamat) ke objek tersebut di heap. Konsekuensi ini berlaku sama persis pada relasi antar kelas yang baru dipelajari: atribut association, aggregation, maupun composition semuanya menyimpan REFERENSI ke objek lain, bukan salinannya.
-
----
-
-## Ilustrasi: Dua Variabel, Satu Objek
+## Referensi, Bukan Salinan
 
 ![Dua variabel menunjuk satu objek yang sama di heap; perubahan lewat salah satunya terlihat lewat keduanya](../assets/illustrations/stack-heap-alias.svg)
 
 <div class="term-box">
-Ketika satu objek direferensikan oleh dua variabel berbeda, keduanya menunjuk ke objek yang sama persis di heap. Mengubah data lewat salah satu variabel akan terlihat lewat variabel yang lain, karena sebenarnya hanya ada satu objek.
+Pada Pertemuan 2, sebuah variabel objek tidak menyimpan objeknya sendiri, hanya referensi (alamat) ke objek itu di heap. Aturan ini berlaku juga pada association, aggregation, dan composition. Ketika dua variabel menunjuk objek yang sama, mengubah data lewat salah satunya akan terlihat lewat yang lain.
+</div>
+
+---
+
+## Contoh Kode: Satu Objek, Dua Variabel
+
+```java
+Rectangle a = new Rectangle(10, 4);
+Rectangle b = a;
+
+System.out.println(a.getWidth());  // 10
+System.out.println(b.getWidth());  // 10
+```
+
+<div class="tip-box">
+<code>b = a</code> tidak membuat objek baru. <code>a</code> dan <code>b</code> menunjuk objek yang sama persis di heap, seperti pada ilustrasi.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Aliasing yang tidak disadari adalah sumber bug yang sangat umum pada aplikasi berskala besar. Bayangkan sebuah method menerima objek lewat parameter, lalu memodifikasinya "sekadar mencoba", padahal si pemanggil masih memegang referensi yang sama dan mengharapkan objek itu tidak berubah. Karena keduanya menunjuk objek yang sama, perubahan itu terlihat di kedua tempat, sering muncul sebagai bug yang sulit dilacak sebab lokasi mutasinya jauh dari lokasi gejalanya.
-
----
-
-## Demo Langsung: Mutasi Lewat Referensi Alias
-
-Dosen mendemonstrasikan langsung: membuat satu objek `Rectangle`, menyalin referensinya ke variabel kedua (`Rectangle b = a;`), lalu mengubah `b.setWidth(...)` dan mencetak `a.getWidth()`.
-
-<div class="tip-box">
-Mahasiswa memprediksi keluarannya terlebih dahulu sebelum Dosen menjalankan kodenya.
-</div>
+Dua variabel yang menunjuk objek yang sama disebut **aliasing**. Aliasing yang tidak disadari adalah sumber bug yang sangat umum pada aplikasi besar. Bayangkan sebuah method menerima objek lewat parameter, lalu mengubahnya sekadar untuk mencoba. Pemanggil method itu masih memegang referensi yang sama, dan tidak menyangka objeknya ikut berubah. Bug seperti ini sulit dilacak, sebab lokasi perubahannya jauh dari lokasi gejalanya.
 
 ---
 
@@ -493,10 +505,10 @@ Sesi 4 dari 4
 
 ## Mengapa Association, Bukan Aggregation atau Composition?
 
-`Customer` TIDAK dibuat oleh `Account` (bukan composition: `Account` tidak pernah memanggil `new Customer(...)` untuk dirinya sendiri), dan `Account` juga tidak mengelola sekumpulan `Customer` sebagai koleksinya (bukan aggregation dalam pengertian whole-part).
+`Account` hanya menyimpan referensi ke satu `Customer` yang sudah ada sebelumnya, diterima dari luar. `Account` tidak membuat `Customer`-nya sendiri (jadi bukan composition), dan tidak mengelola banyak `Customer` sebagai koleksi (jadi bukan aggregation).
 
 <div class="term-box">
-<code>Account</code> sekadar menyimpan referensi ke satu <code>Customer</code> yang sudah ada, diterima dari luar; hubungan paling pas untuk pola ini adalah <b>association</b>.
+Karena <code>Account</code> sekadar menyimpan referensi ke objek yang sudah ada, hubungan paling pas untuk pola ini adalah <b>association</b>.
 </div>
 
 ---
@@ -506,7 +518,7 @@ Sesi 4 dari 4
 `Bank` menyimpan referensi ke banyak `Account` dalam sebuah array, mirip array `Account[]` yang dibuat pada Pertemuan 2. Bedanya, array ini menjadi atribut sebuah kelas, bukan variabel lokal di `main`.
 
 <div class="term-box">
-<code>Account</code> dibuat terpisah sebelum ditambahkan ke <code>Bank</code> lewat <code>addAccount(...)</code>, dan tetap bisa berdiri sendiri secara independen bila dilepas dari <code>Bank</code>, ciri khas <b>aggregation</b>.
+<code>Account</code> dibuat terpisah, baru ditambahkan ke <code>Bank</code> lewat <code>addAccount(...)</code>. Bila dilepas dari <code>Bank</code>, <code>Account</code> tetap bisa berdiri sendiri, ciri khas <b>aggregation</b>.
 </div>
 
 ---
@@ -525,15 +537,22 @@ Objek-objek yang saling berelasi membentuk sebuah <b>graf objek</b> di heap: sat
 
 Method `addAccount()` menambah anggota array. Method `findAccount()` mencari berdasarkan nomor rekening, dan mengembalikan `null` bila tidak ditemukan. Method `printAllAccounts()` mencetak seluruh anggotanya satu per satu.
 
-<div class="warn-box">
-Hasil <code>findAccount()</code> WAJIB diperiksa terhadap <code>null</code> sebelum dipakai, persis seperti aturan yang dibahas pada Bagian 3: memanggil method apa pun pada hasil <code>null</code> selalu melempar <code>NullPointerException</code>.
-</div>
-
 ---
 
-## Demo Langsung: Memeriksa Hasil `findAccount`
+## Contoh Kode: Memeriksa Hasil `findAccount`
 
-Dosen mendemonstrasikan langsung: memanggil `findAccount("Z999")` dengan nomor yang tidak ada di `Bank`, menunjukkan hasilnya `null`, lalu menulis pemeriksaan `if (hasil != null)` sebelum memanggil method apa pun pada hasil tersebut.
+```java
+Account result = bank.findAccount("Z999");
+if (result != null) {
+    result.printInfo();
+} else {
+    System.out.println("Account not found");
+}
+```
+
+<div class="tip-box">
+Selalu periksa hasil <code>findAccount(...)</code> terhadap <code>null</code> sebelum dipakai, seperti dibahas pada Bagian 3.
+</div>
 
 ---
 
