@@ -3,7 +3,6 @@ scale 2
 !include _common.iuml
 hide circle
 hide empty members
-left to right direction
 
 class Employee {
   # name : String

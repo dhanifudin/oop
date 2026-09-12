@@ -1,0 +1,30 @@
+@startuml p06-vehicle
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Vehicle {
+  - name : String
+  --
+  + Vehicle(name : String)
+  + getName() : String
+  + honk() : String
+}
+
+class Sedan {
+  --
+  + Sedan(name : String)
+  + honk() : String
+}
+
+class Truck {
+  --
+  + Truck(name : String)
+  + honk() : String
+}
+
+Vehicle <|-- Sedan
+Vehicle <|-- Truck
+@enduml

@@ -333,7 +333,7 @@ Keempat pilar ini akan dibahas satu per satu, satu pilar per beberapa pertemuan,
 
 ## Inheritance: Mewarisi dan Memperluas
 
-![h:220 Dog dan Cat sama-sama mewarisi Animal](../assets/illustrations/inheritance-tree.svg)
+![h:220 Sedan dan Truck sama-sama mewarisi Vehicle](../assets/illustrations/inheritance-tree.svg)
 
 <div class="term-box">
 <b>Inheritance</b> (dibahas mendalam Pertemuan 6-7): sebuah kelas dapat mewarisi dan memperluas kelas lain, sehingga kode yang sudah ada bisa dipakai ulang. Ibarat resep masakan turunan, resep baru cukup menambahkan bahan tambahan tanpa menulis ulang seluruh resep dasarnya.

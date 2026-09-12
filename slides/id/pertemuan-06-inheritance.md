@@ -142,7 +142,7 @@ Sesi 1 dari 4
 
 ## Dari Kelas yang Mirip
 
-Bayangkan kelas `Dog` dan `Cat` ditulis terpisah, padahal keduanya sama-sama punya atribut nama dan method untuk mendapatkan nama tersebut. Menyalin kode yang sama ke kedua kelas membuat program sulit dirawat: perubahan pada satu kelas harus diulang secara manual di kelas lainnya.
+Bayangkan kelas `Sedan` dan `Truck` ditulis terpisah, padahal keduanya sama-sama punya atribut nama dan method untuk mendapatkan nama tersebut. Menyalin kode yang sama ke kedua kelas membuat program sulit dirawat: perubahan pada satu kelas harus diulang secara manual di kelas lainnya.
 
 <div class="warn-box">
 Kode yang sama, disalin ke banyak tempat, adalah salah satu tanda desain yang perlu diperbaiki.
@@ -160,7 +160,7 @@ Kode yang sama, disalin ke banyak tempat, adalah salah satu tanda desain yang pe
 
 ## Mengapa Ini Penting?
 
-Bayangkan `Dog` dan `Cat` ditulis terpisah selama bertahun-tahun, lalu ditemukan bug pada method `getName()`-nya. Programmer memperbaiki bug itu di `Dog`, tetapi lupa melakukan hal yang sama di `Cat`, karena keduanya adalah salinan kode yang terpisah. Kode yang seharusnya identik tetapi perlahan "berbeda" karena hanya sebagian salinan yang diperbarui adalah salah satu sumber bug paling umum di proyek nyata.
+Bayangkan `Sedan` dan `Truck` ditulis terpisah selama bertahun-tahun, lalu ditemukan bug pada method `getName()`-nya. Programmer memperbaiki bug itu di `Sedan`, tetapi lupa melakukan hal yang sama di `Truck`, karena keduanya adalah salinan kode yang terpisah. Kode yang seharusnya identik tetapi perlahan "berbeda" karena hanya sebagian salinan yang diperbarui adalah salah satu sumber bug paling umum di proyek nyata.
 
 <div class="term-box">
 Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya ada di satu tempat, yaitu superclass. Namun inheritance adalah alat yang kuat sekaligus mudah disalahgunakan: memaksakan hubungan "is-a" yang sebenarnya tidak alami justru menciptakan ketergantungan yang kaku antar kelas. Pertemuan 11 (SOLID) membahas disiplin lebih lanjut soal kapan inheritance sebaiknya dihindari.
@@ -170,21 +170,21 @@ Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya 
 
 ## Struktur Inheritance
 
-![h:280 Dog dan Cat masing-masing mewarisi dari Animal](../assets/illustrations/inheritance-tree.svg)
+![h:280 Sedan dan Truck masing-masing mewarisi dari Vehicle](../assets/illustrations/inheritance-tree.svg)
 
-Kata kunci `extends` menyatakan hubungan ini dalam Java: `class Dog extends Animal` berarti `Dog` adalah subclass dari `Animal`, superclass-nya.
+Kata kunci `extends` menyatakan hubungan ini dalam Java: `class Sedan extends Vehicle` berarti `Sedan` adalah subclass dari `Vehicle`, superclass-nya.
 
 ---
 
 ## Contoh Kode: Superclass dan Subclass
 
 ```java
-class Animal {
+class Vehicle {
     private String name;
     public String getName() { return name; }
 }
 
-class Dog extends Animal {
+class Sedan extends Vehicle {
     // otomatis punya getName(), tanpa menulis ulang
 }
 ```
@@ -193,7 +193,7 @@ class Dog extends Animal {
 
 ## Apa yang Diwariskan?
 
-![h:280 Subclass Dog mewarisi seluruh anggota Animal, ditambah anggotanya sendiri](../assets/illustrations/inherited-members.svg)
+![h:280 Subclass Sedan mewarisi seluruh anggota Vehicle, ditambah anggotanya sendiri](../assets/illustrations/inherited-members.svg)
 
 Subclass otomatis memiliki seluruh atribut dan method (yang tidak bersifat `private`) milik superclass-nya, ditambah atribut dan method baru yang ditulis di subclass itu sendiri.
 
@@ -202,24 +202,24 @@ Subclass otomatis memiliki seluruh atribut dan method (yang tidak bersifat `priv
 ## Kesalahan Umum: Mengira Semua Anggota Harus Ditulis Ulang
 
 <div class="warn-box">
-<b>Salah:</b> menulis ulang <code>getName()</code> di dalam <code>Dog</code> padahal isinya persis sama dengan milik <code>Animal</code>, karena mengira subclass "belum benar-benar punya" method itu sebelum dituliskan sendiri.
+<b>Salah:</b> menulis ulang <code>getName()</code> di dalam <code>Sedan</code> padahal isinya persis sama dengan milik <code>Vehicle</code>, karena mengira subclass "belum benar-benar punya" method itu sebelum dituliskan sendiri.
 </div>
 
-**Benar:** `Dog` otomatis mewarisi `getName()` apa adanya begitu `extends Animal` dituliskan. Menulis ulang tanpa perubahan apa pun hanya menciptakan duplikasi yang seharusnya dihindari, persis masalah yang coba diselesaikan inheritance.
+**Benar:** `Sedan` otomatis mewarisi `getName()` apa adanya begitu `extends Vehicle` dituliskan. Menulis ulang tanpa perubahan apa pun hanya menciptakan duplikasi yang seharusnya dihindari, persis masalah yang coba diselesaikan inheritance.
 
 ---
 
 ## Latihan
 
-Kelas `Bird` mewarisi `Animal` (dengan atribut `name` dan method `getName()`). `Bird` menambahkan atribut baru `wingspan` dan method baru `fly()`.
+Kelas `Bus` mewarisi `Vehicle` (dengan atribut `name` dan method `getName()`). `Bus` menambahkan atribut baru `passengerCapacity` dan method baru `boardPassenger()`.
 
-Sebutkan apa saja yang otomatis dimiliki `Bird` tanpa perlu ditulis ulang, dan apa saja yang harus ditulis sendiri di dalam `Bird`.
+Sebutkan apa saja yang otomatis dimiliki `Bus` tanpa perlu ditulis ulang, dan apa saja yang harus ditulis sendiri di dalam `Bus`.
 
 ---
 
 ## Jawaban Latihan
 
-Otomatis dimiliki (dari `Animal`): atribut `name` dan method `getName()`. Harus ditulis sendiri di `Bird`: atribut `wingspan` dan method `fly()`, sebab keduanya baru dan tidak ada di `Animal`.
+Otomatis dimiliki (dari `Vehicle`): atribut `name` dan method `getName()`. Harus ditulis sendiri di `Bus`: atribut `passengerCapacity` dan method `boardPassenger()`, sebab keduanya baru dan tidak ada di `Vehicle`.
 
 ---
 
@@ -244,14 +244,14 @@ Sesi 2 dari 4
 
 ## Constructor Superclass: `super(...)`
 
-![h:260 Diagram kelas Animal, Dog, dan Cat](../assets/uml/p06-animal.png)
+![h:260 Diagram kelas Vehicle, Sedan, dan Truck](../assets/uml/p06-vehicle.png)
 
 <div class="term-box">
 Constructor subclass wajib memanggil constructor superclass, baik secara eksplisit lewat <code>super(...)</code> di baris pertama, maupun secara implisit (Java memanggil constructor tanpa parameter milik superclass apabila <code>super(...)</code> tidak dituliskan).
 </div>
 
 <div class="tip-box">
-<code>Dog</code> dan <code>Cat</code> meng-override <code>makeSound()</code> agar setiap subclass punya bunyinya sendiri, ditandai anotasi <code>@Override</code>. Detail aturan overriding dibahas tuntas Pertemuan 7.
+<code>Sedan</code> dan <code>Truck</code> meng-override <code>honk()</code> agar setiap subclass punya bunyi klaksonnya sendiri, ditandai anotasi <code>@Override</code>. Detail aturan overriding dibahas tuntas Pertemuan 7.
 </div>
 
 ---
@@ -259,12 +259,12 @@ Constructor subclass wajib memanggil constructor superclass, baik secara eksplis
 ## Contoh Kode: Memanggil `super(...)`
 
 ```java
-class Animal {
-    public Animal(String name) { this.name = name; }
+class Vehicle {
+    public Vehicle(String name) { this.name = name; }
 }
 
-class Dog extends Animal {
-    public Dog(String name) {
+class Sedan extends Vehicle {
+    public Sedan(String name) {
         super(name);  // wajib jadi baris pertama
     }
 }
@@ -414,7 +414,7 @@ class Car {
 ## Kesalahan Umum: Inheritance Hanya untuk Menghindari Duplikasi
 
 <div class="warn-box">
-<b>Salah:</b> membuat <code>Cat extends Dog</code> semata-mata karena keduanya kebetulan punya method yang mirip, padahal seekor Cat bukan jenis Dog.
+<b>Salah:</b> membuat <code>Truck extends Sedan</code> semata-mata karena keduanya kebetulan punya method yang mirip, padahal Truck bukan jenis Sedan.
 </div>
 
 **Benar:** kesamaan kode saja tidak cukup untuk memilih inheritance. Kalau relasinya tidak benar-benar "is-a", kesamaan kode sebaiknya diselesaikan dengan cara lain (misalnya kelas pembantu yang dipakai bersama), bukan dengan memaksakan hierarki subclass-superclass.
