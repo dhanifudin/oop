@@ -460,7 +460,7 @@ Kelas yang mengelola array semacam ini biasanya juga menyimpan sebuah pencacah (
 
 ## Pratinjau: IS-A vs HAS-A
 
-![Uji lisan sederhana untuk membedakan relasi IS-A (inheritance) dari HAS-A (relasi atribut)](../assets/illustrations/is-a-vs-has-a.svg)
+![h:260 Uji lisan sederhana untuk membedakan relasi IS-A (inheritance) dari HAS-A (relasi atribut)](../assets/illustrations/is-a-vs-has-a.svg)
 
 Seluruh relasi pada pertemuan ini adalah HAS-A: satu kelas MEMILIKI kelas lain sebagai atribut. Ada satu kategori relasi lagi yang justru menyatakan satu kelas ADALAH jenis khusus dari kelas lain, disebut IS-A, dibahas mendalam pada Pertemuan 6.
 

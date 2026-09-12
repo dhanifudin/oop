@@ -5,7 +5,7 @@
     </filter>
   </defs>
 
-  <rect x="330" y="20" width="140" height="50" rx="12" fill="#1d4ed8"/>
+  <rect x="310" y="20" width="180" height="50" rx="12" fill="#1d4ed8"/>
   <text x="400" y="52" text-anchor="middle" font-size="20.2" font-weight="700" fill="#ffffff">new relation?</text>
 
   <path d="M370,70 C310,100 250,110 210,130" fill="none" stroke="#1d4ed8" stroke-width="2"/>

@@ -122,10 +122,21 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ---
 
+## Peta Sesi Hari Ini
+
+- **Sesi 1 (50')**: Konsep inheritance, superclass dan subclass
+- **Sesi 2 (50')**: Constructor, `super(...)`, `protected`, dan inheritance bertingkat
+- **Sesi 3 (50')**: Kapan sebaiknya memakai inheritance
+- **Sesi 4 (50')**: Menerapkan inheritance ke Bank Mini
+
+---
+
 <!-- _class: divider -->
 
 # Bagian 1
 ## Konsep Inheritance
+
+Sesi 1 dari 4
 
 ---
 
@@ -151,17 +162,66 @@ Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya 
 
 ## Struktur Inheritance
 
-![Dog dan Cat masing-masing mewarisi dari Animal](../assets/illustrations/inheritance-tree.svg)
+![h:280 Dog dan Cat masing-masing mewarisi dari Animal](../assets/illustrations/inheritance-tree.svg)
 
 Kata kunci `extends` menyatakan hubungan ini dalam Java: `class Dog extends Animal` berarti `Dog` adalah subclass dari `Animal`, superclass-nya.
 
 ---
 
+## Contoh Kode: Superclass dan Subclass
+
+```java
+class Animal {
+    private String name;
+    public String getName() { return name; }
+}
+
+class Dog extends Animal {
+    // otomatis punya getName(), tanpa menulis ulang
+}
+```
+
+---
+
 ## Apa yang Diwariskan?
 
-![Subclass Dog mewarisi seluruh anggota Animal, ditambah anggotanya sendiri](../assets/illustrations/inherited-members.svg)
+![h:280 Subclass Dog mewarisi seluruh anggota Animal, ditambah anggotanya sendiri](../assets/illustrations/inherited-members.svg)
 
 Subclass otomatis memiliki seluruh atribut dan method (yang tidak bersifat `private`) milik superclass-nya, ditambah atribut dan method baru yang ditulis di subclass itu sendiri.
+
+---
+
+## Kesalahan Umum: Mengira Semua Anggota Harus Ditulis Ulang
+
+<div class="warn-box">
+<b>Salah:</b> menulis ulang <code>getName()</code> di dalam <code>Dog</code> padahal isinya persis sama dengan milik <code>Animal</code>, karena mengira subclass "belum benar-benar punya" method itu sebelum dituliskan sendiri.
+</div>
+
+**Benar:** `Dog` otomatis mewarisi `getName()` apa adanya begitu `extends Animal` dituliskan. Menulis ulang tanpa perubahan apa pun hanya menciptakan duplikasi yang seharusnya dihindari, persis masalah yang coba diselesaikan inheritance.
+
+---
+
+## Latihan
+
+Kelas `Bird` mewarisi `Animal` (dengan atribut `name` dan method `getName()`). `Bird` menambahkan atribut baru `wingspan` dan method baru `fly()`.
+
+Sebutkan apa saja yang otomatis dimiliki `Bird` tanpa perlu ditulis ulang, dan apa saja yang harus ditulis sendiri di dalam `Bird`.
+
+---
+
+## Jawaban Latihan
+
+Otomatis dimiliki (dari `Animal`): atribut `name` dan method `getName()`. Harus ditulis sendiri di `Bird`: atribut `wingspan` dan method `fly()`, sebab keduanya baru dan tidak ada di `Animal`.
+
+---
+
+## Rangkuman Bagian 1
+
+- Inheritance membuat subclass mewarisi atribut dan method superclass, menghindari duplikasi kode antar kelas yang mirip.
+- Kata kunci `extends` menyatakan hubungan subclass-superclass di Java.
+- Anggota yang diwarisi otomatis tersedia di subclass; hanya anggota baru atau yang sengaja diubah yang perlu ditulis.
+
+Selanjutnya: Bagian 2 masuk ke bagaimana constructor bekerja saat sebuah subclass dibuat.
 
 ---
 
@@ -170,11 +230,13 @@ Subclass otomatis memiliki seluruh atribut dan method (yang tidak bersifat `priv
 # Bagian 2
 ## Constructor, super(...), dan Visibilitas
 
+Sesi 2 dari 4
+
 ---
 
 ## Constructor Superclass: `super(...)`
 
-![h:280 Diagram kelas Animal, Dog, dan Cat](../assets/uml/p06-animal.png)
+![h:260 Diagram kelas Animal, Dog, dan Cat](../assets/uml/p06-animal.png)
 
 <div class="term-box">
 Constructor subclass wajib memanggil constructor superclass, baik secara eksplisit lewat <code>super(...)</code> di baris pertama, maupun secara implisit (Java memanggil constructor tanpa parameter milik superclass apabila <code>super(...)</code> tidak dituliskan).
@@ -186,9 +248,25 @@ Constructor subclass wajib memanggil constructor superclass, baik secara eksplis
 
 ---
 
+## Contoh Kode: Memanggil `super(...)`
+
+```java
+class Animal {
+    public Animal(String name) { this.name = name; }
+}
+
+class Dog extends Animal {
+    public Dog(String name) {
+        super(name);  // wajib jadi baris pertama
+    }
+}
+```
+
+---
+
 ## Urutan Eksekusi Ketika super(...) Berantai
 
-![Urutan pemanggilan super(...) dan urutan constructor body benar-benar dijalankan](../assets/illustrations/constructor-chain.svg)
+![h:260 Urutan pemanggilan super(...) dan urutan constructor body benar-benar dijalankan](../assets/illustrations/constructor-chain.svg)
 
 Ketika `new Director(...)` dipanggil, `super(...)` merambat ke atas terlebih dahulu hingga mencapai `Employee`. Baru setelah itu, isi constructor benar-benar dijalankan, dimulai dari `Employee`, kemudian `Manager`, dan terakhir `Director`.
 
@@ -208,7 +286,7 @@ Pemanggilan <code>super(...)</code>, bila dituliskan, wajib menjadi pernyataan p
 
 ## Kata Kunci `protected` dan Inheritance Bertingkat
 
-![h:380 Empat tingkat visibilitas di Java](../assets/illustrations/protected-visibility.svg)
+![h:320 Empat tingkat visibilitas di Java](../assets/illustrations/protected-visibility.svg)
 
 <div class="term-box">
 <code>protected</code> berada di antara default (hanya satu package) dan <code>public</code>: anggota bertanda <code>protected</code> dapat diakses subclass, bahkan bila berada di package berbeda.
@@ -216,9 +294,25 @@ Pemanggilan <code>super(...)</code>, bila dituliskan, wajib menjadi pernyataan p
 
 ---
 
+## Contoh Kode: Mengakses Anggota `protected`
+
+```java
+class Employee {
+    protected String name;
+}
+
+class Manager extends Employee {
+    public String greet() {
+        return "Halo, " + name;  // langsung akses name, protected
+    }
+}
+```
+
+---
+
 ## Inheritance Bertingkat (Multilevel)
 
-![Object sebagai akar semua kelas, dengan Employee, Manager, dan Director bertingkat di bawahnya](../assets/illustrations/multilevel-ladder.svg)
+![h:280 Object sebagai akar semua kelas, dengan Employee, Manager, dan Director bertingkat di bawahnya](../assets/illustrations/multilevel-ladder.svg)
 
 Sebuah subclass boleh diturunkan lagi menjadi superclass bagi subclass yang lain. Setiap kelas di Java, tanpa terkecuali, pada akhirnya diturunkan dari kelas `Object`, meskipun kata `extends Object` tidak pernah dituliskan secara eksplisit.
 
@@ -226,9 +320,43 @@ Sebuah subclass boleh diturunkan lagi menjadi superclass bagi subclass yang lain
 
 ## Diagram Kelas: Employee, Manager, Director
 
-![Employee sebagai superclass, Manager dan Director bertingkat di bawahnya](../assets/uml/p06-employee-multilevel.png)
+![h:280 Employee sebagai superclass, Manager dan Director bertingkat di bawahnya](../assets/uml/p06-employee-multilevel.png)
 
 `name` bertanda `#` (protected) sehingga `Manager` dan `Director` dapat mengaksesnya secara langsung. `describe()` bertanda `{final}`: method ini sengaja tidak boleh di-override, supaya format keluarannya konsisten untuk seluruh jenis pegawai.
+
+---
+
+## Kesalahan Umum: Lupa super(...) Wajib Baris Pertama
+
+<div class="warn-box">
+<b>Salah:</b> menulis pernyataan lain (misalnya mengisi atribut sendiri) sebelum memanggil <code>super(...)</code> di dalam constructor subclass.
+</div>
+
+**Benar:** `super(...)`, bila dituliskan, harus selalu jadi baris pertama, tanpa terkecuali. Java menampilkan galat compile begitu aturan ini dilanggar, bukan sekadar peringatan.
+
+---
+
+## Latihan
+
+`Employee` hanya punya satu constructor: `Employee(String name, double baseSalary)`, tanpa constructor tanpa parameter. `Manager` menulis constructornya tanpa memanggil `super(...)` sama sekali.
+
+Apa yang terjadi ketika kode ini dikompilasi? Jelaskan alasannya.
+
+---
+
+## Jawaban Latihan
+
+**Gagal dikompilasi.** Tanpa `super(...)` eksplisit, Java otomatis mencoba memanggil constructor tanpa parameter milik `Employee`. Karena `Employee` tidak punya constructor semacam itu, kompilasi gagal. `Manager` wajib memanggil `super(name, baseSalary)` secara eksplisit.
+
+---
+
+## Rangkuman Bagian 2
+
+- Constructor subclass selalu memanggil constructor superclass lebih dulu lewat `super(...)`, eksplisit atau implisit.
+- `super(...)`, bila dituliskan, wajib jadi baris pertama; superclass yang tidak punya constructor tanpa parameter memaksanya menjadi wajib eksplisit.
+- `protected` membuka akses ke subclass lintas package; inheritance bisa bertingkat, berakar pada `Object`.
+
+Selanjutnya: Bagian 3 membahas kapan inheritance sebaiknya dipakai, dan kapan sebaiknya dihindari.
 
 ---
 
@@ -237,15 +365,81 @@ Sebuah subclass boleh diturunkan lagi menjadi superclass bagi subclass yang lain
 # Bagian 3
 ## Kapan Memakai Inheritance?
 
+Sesi 3 dari 4
+
 ---
 
 ## IS-A vs HAS-A
 
-![Uji cepat: baca relasinya, apakah lebih cocok is-a atau has-a](../assets/illustrations/is-a-vs-has-a.svg)
+![h:280 Uji cepat: baca relasinya, apakah lebih cocok is-a atau has-a](../assets/illustrations/is-a-vs-has-a.svg)
 
 <div class="warn-box">
 Inheritance sering dipakai secara keliru hanya karena dua kelas kebetulan punya beberapa atribut yang sama. Selalu uji dulu apakah relasinya benar-benar "is-a"; bila tidak terdengar wajar, relasi ("has-a", dibahas Pertemuan 4) biasanya pilihan yang lebih tepat.
 </div>
+
+---
+
+## Mengapa Ini Penting?
+
+Memaksakan inheritance pada relasi yang sebenarnya "has-a" menciptakan ketergantungan yang kaku. Subclass mewarisi SELURUH anggota superclass, termasuk yang tidak relevan atau bahkan membingungkan, dan setiap perubahan pada superclass otomatis merambat ke semua subclass-nya, termasuk yang tidak seharusnya terpengaruh.
+
+<div class="term-box">
+Pada aplikasi besar, inheritance yang salah tempat membuat hierarki kelas menjadi kaku dan sulit diubah: menambah satu method baru di superclass bisa diam-diam memengaruhi puluhan subclass yang sebenarnya tidak membutuhkannya.
+</div>
+
+---
+
+## Contoh Kode: IS-A yang Dipaksakan
+
+```java
+// Salah: Car bukan jenis Engine, dipaksakan jadi inheritance
+class Car extends Engine { ... }
+
+// Benar: relasi (composition), seperti dibahas Pertemuan 4
+class Car {
+    private Engine engine;
+}
+```
+
+---
+
+## Kesalahan Umum: Inheritance Hanya untuk Menghindari Duplikasi
+
+<div class="warn-box">
+<b>Salah:</b> membuat <code>Cat extends Dog</code> semata-mata karena keduanya kebetulan punya method yang mirip, padahal seekor Cat bukan jenis Dog.
+</div>
+
+**Benar:** kesamaan kode saja tidak cukup untuk memilih inheritance. Kalau relasinya tidak benar-benar "is-a", kesamaan kode sebaiknya diselesaikan dengan cara lain (misalnya kelas pembantu yang dipakai bersama), bukan dengan memaksakan hierarki subclass-superclass.
+
+---
+
+## Latihan
+
+Untuk tiap pasangan berikut, tentukan **is-a** atau **has-a**:
+
+1. `Sedan` dan `Mobil`
+2. `Mobil` dan `GPS`
+3. `Manager` dan `Employee`
+4. `Restoran` dan `Menu`
+
+---
+
+## Jawaban Latihan
+
+1. **is-a**, `Sedan` adalah jenis khusus dari `Mobil`.
+2. **has-a**, `Mobil` memiliki `GPS`, bukan jenis dari `GPS`.
+3. **is-a**, `Manager` adalah jenis khusus dari `Employee` (seperti dibahas Bagian 2).
+4. **has-a**, `Restoran` memiliki `Menu`, bukan jenis dari `Menu`.
+
+---
+
+## Rangkuman Bagian 3
+
+- Sebelum memakai inheritance, uji dulu apakah relasinya benar-benar "is-a"; kalau tidak, "has-a" biasanya lebih tepat.
+- Inheritance yang dipaksakan menciptakan ketergantungan kaku: subclass mewarisi seluruh anggota superclass, relevan maupun tidak.
+- Kesamaan kode semata bukan alasan cukup untuk memilih inheritance.
+
+Selanjutnya: Bagian 4 menerapkan inheritance ke `Account` di Bank Mini.
 
 ---
 
@@ -254,13 +448,31 @@ Inheritance sering dipakai secara keliru hanya karena dua kelas kebetulan punya 
 # Bagian 4
 ## Menerapkan Inheritance ke Bank Mini
 
+Sesi 4 dari 4
+
 ---
 
 ## SavingsAccount dan CheckingAccount
 
-![Account sebagai superclass, SavingsAccount dan CheckingAccount sebagai subclass](../assets/uml/p06-account-hierarchy.png)
+![h:280 Account sebagai superclass, SavingsAccount dan CheckingAccount sebagai subclass](../assets/uml/p06-account-hierarchy.png)
 
 Kedua subclass ini menambahkan atributnya sendiri (`interestRate` dan `overdraftLimit`) serta method barunya sendiri (`printAccountType()`), sambil tetap mewarisi `deposit()`, `withdraw()`, dan `printInfo()` dari `Account` apa adanya, belum ada satu pun yang ditulis ulang.
+
+---
+
+## Contoh Kode: SavingsAccount Menambah Atribut
+
+```java
+class SavingsAccount extends Account {
+    private double interestRate;
+
+    public SavingsAccount(String accountNumber, Customer owner,
+            double balance, double interestRate) {
+        super(accountNumber, owner, balance);
+        this.interestRate = interestRate;
+    }
+}
+```
 
 ---
 
@@ -273,6 +485,53 @@ Kedua subclass ini menambahkan atributnya sendiri (`interestRate` dan `overdraft
 <div class="tip-box">
 Inilah yang akan diselesaikan Pertemuan 7 lewat overriding: subclass menulis ulang method superclass untuk memberi perilaku yang berbeda, tanpa mengubah kode <code>Account</code> maupun <code>Bank</code> sama sekali.
 </div>
+
+---
+
+## Kesalahan Umum: Lupa Meneruskan Data lewat super(...)
+
+<div class="warn-box">
+<b>Salah:</b> menulis constructor <code>SavingsAccount</code> yang hanya mengisi <code>interestRate</code>, tanpa memanggil <code>super(accountNumber, owner, balance)</code>, berharap ketiga atribut warisan itu tetap terisi dengan benar.
+</div>
+
+**Benar:** tanpa `super(...)` yang meneruskan nilai sesungguhnya, `accountNumber`, `owner`, dan `balance` diam-diam tetap kosong (nilai bawaan), bukan galat yang langsung terlihat. `SavingsAccount` wajib meneruskan ketiganya lewat `super(...)`.
+
+---
+
+## Latihan
+
+`CheckingAccount` menambahkan atribut `overdraftLimit`, mengikuti pola yang sama seperti `SavingsAccount`.
+
+Tuliskan signature constructor `CheckingAccount` yang tepat, lengkap dengan pemanggilan `super(...)`-nya.
+
+---
+
+## Jawaban Latihan
+
+```java
+public CheckingAccount(String accountNumber, Customer owner,
+        double balance, double overdraftLimit) {
+    super(accountNumber, owner, balance);
+    this.overdraftLimit = overdraftLimit;
+}
+```
+
+---
+
+## Rangkuman Bagian 4
+
+- `SavingsAccount` dan `CheckingAccount` menambahkan atributnya sendiri, sambil tetap mewarisi seluruh method `Account` apa adanya.
+- Constructor subclass wajib meneruskan data milik superclass lewat `super(...)`, bukan mengisinya sendiri secara terpisah.
+- Method warisan belum tentu cocok untuk semua subclass; menulis ulang perilakunya adalah topik Pertemuan 7 (overriding).
+
+---
+
+## Rangkuman Pertemuan 6
+
+- Inheritance membuat subclass mewarisi atribut dan method superclass lewat `extends`, menghindari duplikasi kode.
+- Constructor subclass selalu memanggil constructor superclass lebih dulu lewat `super(...)`, wajib jadi baris pertama.
+- `protected` membuka akses ke subclass lintas package; inheritance bisa bertingkat, berakar pada `Object`.
+- Pilih inheritance hanya untuk relasi "is-a" yang benar-benar alami; Bank Mini menerapkannya lewat `SavingsAccount` dan `CheckingAccount`.
 
 ---
 
