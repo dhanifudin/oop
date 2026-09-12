@@ -315,7 +315,7 @@ Sesi 3 dari 4
 
 ## Empat Pilar OOP
 
-![Encapsulation, inheritance, polymorphism, dan abstraction menopang satu atap bernama OOP](../assets/illustrations/oop-four-pillars.svg)
+![h:260 Encapsulation, inheritance, polymorphism, dan abstraction menopang satu atap bernama OOP](../assets/illustrations/oop-four-pillars.svg)
 
 Keempat pilar ini akan dibahas satu per satu, satu pilar per beberapa pertemuan, sepanjang semester ini. Pertemuan hari ini hanya memperkenalkan namanya secara singkat; penjelasan mendalam menyusul di pertemuan-pertemuan berikutnya.
 
@@ -333,7 +333,7 @@ Keempat pilar ini akan dibahas satu per satu, satu pilar per beberapa pertemuan,
 
 ## Inheritance: Mewarisi dan Memperluas
 
-![Dog dan Cat sama-sama mewarisi Animal](../assets/illustrations/inheritance-tree.svg)
+![h:220 Dog dan Cat sama-sama mewarisi Animal](../assets/illustrations/inheritance-tree.svg)
 
 <div class="term-box">
 <b>Inheritance</b> (dibahas mendalam Pertemuan 6-7): sebuah kelas dapat mewarisi dan memperluas kelas lain, sehingga kode yang sudah ada bisa dipakai ulang. Ibarat resep masakan turunan, resep baru cukup menambahkan bahan tambahan tanpa menulis ulang seluruh resep dasarnya.
@@ -343,7 +343,7 @@ Keempat pilar ini akan dibahas satu per satu, satu pilar per beberapa pertemuan,
 
 ## Polymorphism: Satu Pesan, Banyak Respons
 
-![Satu pemanggilan area() menghasilkan hasil berbeda tergantung objeknya Circle atau Square](../assets/illustrations/polymorphic-dispatch.svg)
+![h:210 Satu pemanggilan area() menghasilkan hasil berbeda tergantung objeknya Circle atau Square](../assets/illustrations/polymorphic-dispatch.svg)
 
 <div class="term-box">
 <b>Polymorphism</b> (dibahas mendalam Pertemuan 10): satu pesan yang sama dapat menghasilkan perilaku berbeda, tergantung objek mana yang menerimanya. Ibarat perintah "bersuara" ke seekor kucing dan seekor anjing, hasilnya berbeda meski perintahnya sama.
