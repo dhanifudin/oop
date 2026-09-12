@@ -1,0 +1,29 @@
+@startuml p09-chargeable
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+interface Chargeable {
+  + charge() : void
+}
+
+class Phone {
+  - model : String
+  --
+  + Phone(model : String)
+  + call() : void
+  + charge() : void
+}
+
+class ElectricCar {
+  - plate : String
+  --
+  + ElectricCar(plate : String)
+  + drive() : void
+  + charge() : void
+}
+
+Chargeable <|.. Phone
+Chargeable <|.. ElectricCar
+@enduml

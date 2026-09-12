@@ -1,0 +1,32 @@
+@startuml p09-account-monthlyfee
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+
+abstract class Account {
+  - accountNumber : String
+  - owner : Customer
+  - balance : double
+  --
+  + withdraw(amount : double) : boolean
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+  + {abstract} monthlyFee() : double
+}
+
+class SavingsAccount {
+  - interestRate : double
+  --
+  + monthlyFee() : double
+}
+
+class CheckingAccount {
+  - overdraftLimit : double
+  --
+  + monthlyFee() : double
+}
+
+Account <|-- SavingsAccount
+Account <|-- CheckingAccount
+@enduml
