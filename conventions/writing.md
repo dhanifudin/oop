@@ -27,8 +27,11 @@
 - Istilah teknis bahasa Inggris TETAP dalam bahasa Inggris di materi
   berbahasa Indonesia, untuk menghindari makna ganda/salah: dependency
   injection, constructor injection, interface, refactoring, code smell,
-  override, exception, getter/setter, repository, dst. Narasi di sekitarnya
-  tetap bahasa Indonesia.
+  override, exception, getter/setter, repository, signature, dst. Narasi di
+  sekitarnya tetap bahasa Indonesia. Khusus **signature**: JANGAN
+  diterjemahkan jadi "tanda tangan" (arti harfiahnya beda total, hanya
+  berarti tanda tangan tulisan tangan dalam bahasa Indonesia sehari-hari,
+  membingungkan di konteks method).
 - Sebutan dosen memakai **"Dosen"** saja, tidak ada "asisten/Asisten".
 - **Tidak ada git di jobsheet.** OOP adalah fokus mata kuliah ini, bukan
   version control. Jangan tambahkan langkah `git init`/branch/commit ke
