@@ -81,6 +81,8 @@ style: |
   .cols img {
     display: block;
     margin: 0 auto;
+    max-width: 100%;
+    max-height: 460px;
   }
   .footnote {
     font-size: 0.55em;
@@ -181,6 +183,23 @@ Berbeda dari dependency, association menyimpan referensi objek lain sebagai atri
 <div class="term-box">
 Pada association, kedua objek tetap independen satu sama lain: <code>Driver</code> bisa berganti <code>Car</code>, dan <code>Car</code> yang sama bisa dipakai <code>Driver</code> lain, tanpa memengaruhi umur objek satu sama lain.
 </div>
+
+---
+
+## Contoh Kode: Dependency vs Association
+
+```java
+class Printer {
+    void print(File document) {
+        // document dipakai sesaat: dependency
+    }
+}
+
+class Driver {
+    Car car;
+    Driver(Car car) { this.car = car; }  // disimpan sebagai atribut: association
+}
+```
 
 ---
 
