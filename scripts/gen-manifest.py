@@ -185,21 +185,31 @@ def p11(step):
 
 def rows_p11():
     return [
-        (p10("langkah-02"), "Bank.java", p11("langkah-01"), "Bank.java", "p11-01-bank"),
-        (p10("langkah-02"), "Main.java", p11("langkah-01"), "Main.java", "p11-01-main"),
+        (p10("langkah-02"), "Bank.java", p11("langkah-01"), "Bank.java", "p11-01-bank",
+         [(1, 25)]),
+        (p10("langkah-02"), "Main.java", p11("langkah-01"), "Main.java", "p11-01-main",
+         [(1, 4), (27, 31)]),
         (None, None, p11("langkah-02"), "TransactionType.java", "p11-02-transactiontype"),
         (None, None, p11("langkah-02"), "Transaction.java", "p11-02-transaction"),
         (p11("langkah-01"), "Account.java", p11("langkah-02"), "Account.java", "p11-02-account",
          [(1, 6), (10, 10), (34, 41), (51, 58)]),
         (p11("langkah-01"), "Bank.java", p11("langkah-02"), "Bank.java", "p11-02-bank",
          [(1, 6), (43, 53)]),
-        (p11("langkah-01"), "Main.java", p11("langkah-02"), "Main.java", "p11-02-main"),
+        (p11("langkah-01"), "Main.java", p11("langkah-02"), "Main.java", "p11-02-main",
+         [(1, 3), (31, 33)]),
         (None, None, p11("langkah-03"), "AccountRepository.java", "p11-03-accountrepository"),
         (None, None, p11("langkah-03"), "InMemoryAccountRepository.java", "p11-03-inmemoryaccountrepository"),
-        (p11("langkah-02"), "Bank.java", p11("langkah-03"), "Bank.java", "p11-03-bank"),
-        (p11("langkah-02"), "Main.java", p11("langkah-03"), "Main.java", "p11-03-main"),
-        (None, None, p11("tugas"), "BusinessAccount.java", "p11-tugas-businessaccount"),
-        (p11("langkah-03"), "Main.java", p11("tugas"), "Main.java", "p11-tugas-main"),
+        (p11("langkah-02"), "Bank.java", p11("langkah-03"), "Bank.java", "p11-03-bank",
+         [(1, 26)]),
+        (p11("langkah-02"), "Main.java", p11("langkah-03"), "Main.java", "p11-03-main",
+         [(1, 3), (27, 28)]),
+        (None, None, p07("langkah-02"), "SavingsAccount.java", "p11-04-savingsaccount"),
+        (None, None, p07("langkah-03"), "CheckingAccount.java", "p11-04-checkingaccount"),
+        (None, None, p09("langkah-02"), "InterestBearing.java", "p11-04-interestbearing"),
+        (None, None, p10("langkah-02"), "Bank.java", "p11-04-bank",
+         [(1, 3), (42, 51)]),
+        (p11("langkah-03"), "Main.java", p11("tugas"), "Main.java", "p11-tugas-main",
+         [(1, 3), (27, 36)]),
     ]
 
 

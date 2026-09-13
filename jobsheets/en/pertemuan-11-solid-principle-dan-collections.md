@@ -14,13 +14,13 @@ After completing this jobsheet, students will be able to:
 1. Replace a plain array with `ArrayList`/`Map` from the Java Collections Framework, and explain its advantages over an array.
 2. Apply the Single Responsibility Principle by separating the responsibility of recording transactions into its own class.
 3. Apply the Dependency Inversion Principle by making a class depend on an interface, not on a concrete implementation.
-4. Trace and prove the Open/Closed Principle, Liskov Substitution Principle, and Interface Segregation Principle through `Account`/`Bank` code already built since Meeting 6-10.
+4. Trace and prove the Open/Closed Principle, Liskov Substitution Principle, and Interface Segregation Principle through `Account`/`Bank` code already built since the Inheritance through Polymorphism topics.
 5. Add a new `Account` subclass with no change to the existing `Account`/`Bank` code, as direct proof of all five SOLID principles working together.
 
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this meeting continues the `bank-mini` project from Meeting 10.
+- **Project**: this meeting continues the `bank-mini` project from the Polymorphism and Exception Handling topic.
 - **Quick verification** before starting:
   ```bash
   java -version
@@ -47,13 +47,15 @@ After completing this jobsheet, students will be able to:
 
 So far, `Bank` has stored accounts in a fixed-size `Account[] accounts`, with `findAccount()` checking elements one by one. Replace it with a `Map<String, Account>`, using the account number as the key:
 
-![Bank.java using LinkedHashMap in place of an Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=70%}
+![Bank.java using LinkedHashMap in place of an Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=65%}
+
+Apply the same `accounts.values()` change to `printMonthlyFees()` and `processMonthEnd()` (not shown here, the pattern is identical to `printAllAccounts()` above).
 
 Update `Main.java`; the `Bank` constructor no longer needs a capacity:
 
 ![Main.java creating Bank with no capacity parameter](../assets/code/pertemuan-11/p11-01-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program's output remains identical to Meeting 10 (the `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, and `monthly fee` lines for A001, A002, A003).
+> ✅ **Checkpoint:** the program's output remains identical to before, from the Polymorphism and Exception Handling topic (the `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, and `monthly fee` lines for A001, A002, A003).
 
 > ⚠️ **If it fails:** if the error `incompatible types: Account cannot be converted to ...` appears in a loop, check whether the `for` loop uses `accounts.values()` (not `accounts` directly), since a `Map` cannot be iterated over like an array.
 
@@ -111,7 +113,9 @@ Update `Main.java`:
 
 `Bank` now depends on the `AccountRepository` interface, not directly on `Map`:
 
-![Bank.java depending on AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=70%}
+![Bank.java depending on AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=65%}
+
+The other methods (`printMonthlyFees()`, `processMonthEnd()`, `printHistory()`) follow the same pattern: `accounts.values()` becomes `repository.findAll()`, and `accounts.get(...)` becomes `repository.findByNumber(...)`.
 
 ![Bank depending on interface AccountRepository, implemented by InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=75%}
 
@@ -125,17 +129,17 @@ Update `Main.java`:
 
 ### Step 4: Tracing OCP, LSP, and ISP in Code Already Built
 
-> **Concept Brief: Open/Closed Principle.** One of the five SOLID principles, the Open/Closed Principle, states that a class should be open for extension (a new subclass) but closed for modification (existing code untouched). Bank Mini has actually applied this principle since Meeting 6-7 already; no new code is needed to prove it, only tracing.
+> **Concept Brief: Open/Closed Principle.** One of the five SOLID principles, the Open/Closed Principle, states that a class should be open for extension (a new subclass) but closed for modification (existing code untouched). Bank Mini has actually applied this principle since the Overriding and Overloading topic already; no new code is needed to prove it, only tracing.
 
-> **Concept Brief: Liskov Substitution Principle.** One of the five SOLID principles, the Liskov Substitution Principle, states that a subclass must be able to stand in for its superclass anywhere without changing the correctness of the program. `Bank` processing `Account` polymorphically since Meeting 9-10 already shows this principle at work.
+> **Concept Brief: Liskov Substitution Principle.** One of the five SOLID principles, the Liskov Substitution Principle, states that a subclass must be able to stand in for its superclass anywhere without changing the correctness of the program. `Bank` processing `Account` polymorphically since the Abstract Class/Interface and Polymorphism topics already shows this principle at work.
 
-> **Concept Brief: Interface Segregation Principle.** One of the five SOLID principles, the Interface Segregation Principle, states that an interface should be small and focused, never forcing a class to implement a method irrelevant to it. `InterestBearing`, already built since Meeting 9, is a genuine example of it.
+> **Concept Brief: Interface Segregation Principle.** One of the five SOLID principles, the Interface Segregation Principle, states that an interface should be small and focused, never forcing a class to implement a method irrelevant to it. `InterestBearing`, already built since the Abstract Classes and Interfaces topic, is a genuine example of it.
 
 `SavingsAccount.canWithdraw()` (enforcing a minimum balance) and `CheckingAccount.canWithdraw()` (allowing overdraft) override the same method with different rules, with neither `Account` nor `Bank` ever knowing either subclass's specific rule:
 
-![SavingsAccount.java overriding canWithdraw to enforce a minimum balance](../assets/code/pertemuan-07/p07-02-savingsaccount.png){width=65%}
+![SavingsAccount.java overriding canWithdraw to enforce a minimum balance](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=65%}
 
-![CheckingAccount.java overriding canWithdraw for overdraft](../assets/code/pertemuan-07/p07-03-checkingaccount.png){width=65%}
+![CheckingAccount.java overriding canWithdraw for overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
 
 Prove it directly from the command line, not just by reading the code:
 
@@ -145,15 +149,15 @@ grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id
 
 > ✅ **Checkpoint:** both `grep` results above show `0`. `Account.java` and `Bank.java` never name either concrete class at all, even though both must process `SavingsAccount` and `CheckingAccount` differently. This is the **Open/Closed Principle**: a new withdrawal rule is simply written through an override, with no change to `Account`/`Bank`.
 
-`Bank.processMonthEnd()` and `printAllAccounts()` (Meeting 9-10) call `monthlyFee()` and `printInfo()` polymorphically through the `Account` type, trusting that method's contract is always fulfilled by whatever subclass it is:
+`Bank.processMonthEnd()` and `printAllAccounts()` (the Abstract Class/Interface and Polymorphism topics) call `monthlyFee()` and `printInfo()` polymorphically through the `Account` type, trusting that method's contract is always fulfilled by whatever subclass it is:
 
-![Bank.java with method processMonthEnd, iterating polymorphically through the repository](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
+![Bank.java with method processMonthEnd, iterating polymorphically through the repository](../assets/code/pertemuan-11/p11-04-bank.png){width=68%}
 
 > ✅ **Checkpoint:** explain in your own words why `processMonthEnd()` can process both `SavingsAccount` and `CheckingAccount` through the same single line `acc.monthlyFee()`, with no `if`/`else` branch per account kind. This is the **Liskov Substitution Principle**: both subclasses can stand in for `Account` at this point without changing the correctness of the program.
 
-`InterestBearing` (Meeting 9) contains only one method, `applyInterest()`, and ONLY `SavingsAccount` implements it; `CheckingAccount` is never forced to have a method irrelevant to it:
+`InterestBearing` (the Abstract Classes and Interfaces topic) contains only one method, `applyInterest()`, and ONLY `SavingsAccount` implements it; `CheckingAccount` is never forced to have a method irrelevant to it:
 
-![InterestBearing.java, a small one-method interface](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=45%}
+![InterestBearing.java, a small one-method interface](../assets/code/pertemuan-11/p11-04-interestbearing.png){width=45%}
 
 Prove it again from the command line:
 
@@ -163,7 +167,7 @@ grep -c "InterestBearing" src/id/ac/polinema/SavingsAccount.java src/id/ac/polin
 
 > ✅ **Checkpoint:** the `grep` result for `SavingsAccount.java` shows `1` (it implements `InterestBearing`), the result for `CheckingAccount.java` shows `0`. This is the **Interface Segregation Principle**: a small, focused interface, with `CheckingAccount` never forced to implement `applyInterest()`, which would make no sense for it.
 
-> ⚠️ **If it fails:** if a `grep` result expected to be `0` instead shows another number, check again whether `Account.java`/`Bank.java` ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since Meeting 6-10.
+> ⚠️ **If it fails:** if a `grep` result expected to be `0` instead shows another number, check again whether `Account.java`/`Bank.java` ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since the Inheritance through Polymorphism topics.
 
 ## D. Assignment and Deliverables
 
@@ -171,9 +175,9 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the program output after Step 3, and after the independent assignment.
 - **Independent assignment:**
-  1. **BusinessAccount: proving OCP, LSP, and ISP through new code.** Add `BusinessAccount extends Account` (a business account, minimum balance Rp 1,000,000, earning no interest):
+  1. **BusinessAccount: proving OCP, LSP, and ISP through new code.** Add `BusinessAccount extends Account` (a business account, minimum balance Rp 1,000,000, earning no interest). The diagram below is only a sketch of which methods need overriding, NOT finished code; the actual implementation of `canWithdraw()`/`monthlyFee()`/`printInfo()` (exactly the `SavingsAccount`/`CheckingAccount` pattern already traced in Step 4) is entirely up to you:
 
-     ![BusinessAccount.java](../assets/code/pertemuan-11/p11-tugas-businessaccount.png){width=60%}
+     ![Sketch of BusinessAccount, methods to override with no implementation](../assets/uml/p11-tugas-businessaccount.png){width=60%}
 
      Register it with `Bank`, then run `processMonthEnd()` and `printAllAccounts()`:
 
@@ -182,7 +186,7 @@ Submit the following according to the format requested by the instructor:
      Prove both of the following from the program's output, with NO change to a single line of `Account.java` or `Bank.java`:
      - **(Open/Closed + Liskov Substitution)** the line `A004 monthly fee: 0.0` appears among `processMonthEnd()`'s other lines, and `A004 - Budi - balance: 2000000.0` followed by `Account type: Business` appears in `printAllAccounts()`, exactly as `SavingsAccount`/`CheckingAccount` were processed earlier.
      - **(Interface Segregation)** NO `A004 interest applied` line appears, since `BusinessAccount` does not implement `InterestBearing`.
-  2. Answer briefly (2 to 3 sentences for each question): (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why. (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence. (c) Meeting 15 will replace `InMemoryAccountRepository` with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
+  2. Answer briefly (2 to 3 sentences for each question): (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why. (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence. (c) Sometime later (the Persistence with JDBC and an Authentication Mechanism topic), `InMemoryAccountRepository` will be replaced with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
 
 ## E. Grading Criteria
 
