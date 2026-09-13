@@ -101,14 +101,69 @@ def main():
   .title {{ flex: 1; min-width: 200px; }}
   .links a {{ color: #1d4ed8; text-decoration: none; margin-right: 4px; }}
   .links a:hover {{ text-decoration: underline; }}
+  #login-gate {{ max-width: 320px; margin: 80px auto; }}
+  #login-gate h1 {{ font-size: 1.3em; }}
+  #login-gate label {{ display: block; margin-top: 14px; font-size: 0.9em; color: #334155; }}
+  #login-gate input {{ width: 100%; box-sizing: border-box; padding: 8px 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1em; }}
+  #login-gate button {{ margin-top: 18px; width: 100%; padding: 9px; background: #1d4ed8; color: #fff; border: none; border-radius: 4px; font-size: 1em; cursor: pointer; }}
+  #login-gate button:hover {{ background: #1e40af; }}
+  #login-error {{ color: #dc2626; font-size: 0.88em; margin-top: 10px; }}
 </style>
 </head>
 <body>
+<div id="login-gate">
+  <h1>Pemrograman Berbasis Objek</h1>
+  <p class="sub">Masukkan username dan password kelas untuk melihat materi.</p>
+  <form id="login-form">
+    <label for="login-username">Username</label>
+    <input type="text" id="login-username" autocomplete="username" required>
+    <label for="login-password">Password</label>
+    <input type="password" id="login-password" autocomplete="current-password" required>
+    <button type="submit">Masuk</button>
+    <p id="login-error" hidden>Username atau password salah.</p>
+  </form>
+</div>
+<div id="site-content" hidden>
 <h1>Pemrograman Berbasis Objek</h1>
 <p class="sub">RTI253007 (konsep) &amp; RTI253008 (praktikum) &mdash; D-IV Teknik Informatika, Politeknik Negeri Malang. Studi kasus semester: Bank Mini.</p>
 <ul>
 {links_html}
 </ul>
+</div>
+<script>
+(function () {{
+  var GATE_USER = "oop";
+  var GATE_PASS = "polinema";
+  var SESSION_KEY = "oopPagesAuthed";
+
+  var gate = document.getElementById("login-gate");
+  var content = document.getElementById("site-content");
+  var form = document.getElementById("login-form");
+  var error = document.getElementById("login-error");
+
+  function unlock() {{
+    gate.hidden = true;
+    content.hidden = false;
+  }}
+
+  if (sessionStorage.getItem(SESSION_KEY) === "1") {{
+    unlock();
+  }}
+
+  form.addEventListener("submit", function (evt) {{
+    evt.preventDefault();
+    var user = document.getElementById("login-username").value;
+    var pass = document.getElementById("login-password").value;
+    if (user === GATE_USER && pass === GATE_PASS) {{
+      sessionStorage.setItem(SESSION_KEY, "1");
+      error.hidden = true;
+      unlock();
+    }} else {{
+      error.hidden = false;
+    }}
+  }});
+}})();
+</script>
 </body>
 </html>
 """
