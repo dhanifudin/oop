@@ -255,7 +255,7 @@ Beberapa di antaranya sudah kamu praktikkan tanpa disadari sejak beberapa pertem
 ![h:280 Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/illustrations/srp-split.svg)
 
 <div class="term-box">
-Satu kelas sebaiknya memiliki satu tanggung jawab, satu alasan untuk berubah. Kelas yang mencampur banyak tanggung jawab menjadi sulit dipahami, dan perubahan pada satu tanggung jawab berisiko memengaruhi tanggung jawab lain yang sebenarnya tidak berhubungan.
+Satu kelas sebaiknya memiliki satu tanggung jawab, satu alasan untuk berubah. Kelas yang mencampur banyak tanggung jawab menjadi sulit dipahami, dan perubahan pada satu tanggung jawab berisiko memengaruhi tanggung jawab lain yang sebenarnya tidak berhubungan. Ibarat restoran: satu orang tidak merangkap koki, kasir, dan pelayan sekaligus, supaya kesalahan di dapur tidak ikut mengacaukan pencatatan pembayaran.
 </div>
 
 ---
@@ -291,8 +291,46 @@ class ReportFormatter {
 ![h:260 PaymentMethod.pay() dengan if/else per tipe, dibandingkan subclass baru GoPay yang ditambahkan tanpa mengubah kode lama](../assets/illustrations/ocp-extend-not-modify.svg)
 
 <div class="term-box">
-<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah subclass <code>PaymentMethod</code> baru tidak pernah mengubah kode superclass yang sudah ada, subclass baru cukup meng-override method miliknya sendiri. Bandingkan dengan cabang <code>if</code>/<code>else</code> per tipe: satu bug pada cabang salah satu tipe pembayaran berisiko merusak cabang tipe lain, sebab semuanya bercampur di method yang sama.
+<b>Open/Closed Principle</b>: kelas sebaiknya terbuka untuk diperluas, tertutup untuk diubah. Kamu sudah mempraktikkan ini sejak Pertemuan 7: menambah subclass <code>PaymentMethod</code> baru tidak pernah mengubah kode superclass yang sudah ada, subclass baru cukup meng-override method miliknya sendiri. Bandingkan dengan cabang <code>if</code>/<code>else</code> per tipe: satu bug pada cabang salah satu tipe pembayaran berisiko merusak cabang tipe lain, sebab semuanya bercampur di method yang sama. Ibarat stop kontak listrik di dinding: alat baru apa pun tinggal dicolokkan, tidak perlu membongkar instalasi rumah untuk menambahkannya.
 </div>
+
+---
+
+## Mengapa Ini Penting?
+
+Bayangkan sebuah sistem pembayaran e-commerce yang menangani semua jenis pembayaran lewat satu method besar berisi cabang `if`/`else`: `if (type.equals("CREDIT_CARD")) {...} else if (type.equals("BANK_TRANSFER")) {...}`. Ketika toko ingin menambah GoPay, satu-satunya cara adalah menyisipkan cabang `else if` baru ke DALAM method yang sama. Programmer yang terburu-buru bisa saja salah menempatkan logika baru sehingga tanpa sengaja mengubah alur cabang Credit Card yang sebelumnya sudah berjalan benar, padahal keduanya sama sekali tidak berhubungan.
+
+<div class="term-box">
+Semakin banyak jenis pembayaran ditambahkan ke method yang sama, semakin besar method itu, dan semakin besar pula risiko satu perubahan kecil merembet ke cabang lain yang seharusnya tidak tersentuh. Inilah alasan Open/Closed Principle penting: menambah kemampuan baru seharusnya tidak pernah mengharuskan mengubah kode lama yang sudah teruji dan sudah berjalan benar.
+</div>
+
+---
+
+## Contoh Kode: Menambah GoPay Tanpa Mengubah Kode Lama
+
+```java
+// Sebelum: satu method besar, harus diubah tiap ada jenis baru
+if (type.equals("CREDIT_CARD")) { chargeCard(amount); }
+else if (type.equals("BANK_TRANSFER")) { transferBank(amount); }
+// menambah GoPay berarti menyisipkan cabang baru di sini
+
+// Sesudah: subclass baru, kode lama tidak tersentuh
+class GoPayMethod extends PaymentMethod {
+    void pay(double amount) { /* logika GoPay */ }
+}
+```
+
+`PaymentMethod`, `CreditCardMethod`, dan `BankTransferMethod` yang sudah ada sejak Pertemuan 7 tidak perlu diubah satu baris pun; `GoPayMethod` cukup ditambahkan sebagai kelas baru.
+
+---
+
+## Kesalahan Umum: Menyisipkan Cabang Baru ke Method Lama
+
+<div class="warn-box">
+<b>Salah:</b> menambah dukungan GoPay dengan menyisipkan <code>else if (type.equals("GOPAY")) {...}</code> baru ke dalam method <code>pay()</code> yang sudah ada, alih-alih membuat subclass baru.
+</div>
+
+**Benar:** buat kelas `GoPayMethod extends PaymentMethod`, lalu override method `pay()` miliknya sendiri. Method lama tempat `CreditCardMethod` dan `BankTransferMethod` sudah berjalan sama sekali tidak disentuh, sehingga tidak ada risiko regresi pada jenis pembayaran yang sudah ada dan sudah teruji.
 
 ---
 
@@ -301,7 +339,7 @@ class ReportFormatter {
 ![h:260 List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>Sedan</code> dan <code>Truck</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Vehicle</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah. Slide berikutnya menunjukkan subclass yang GAGAL memenuhi janji ini.
+<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. <code>Sedan</code> dan <code>Truck</code> selalu bisa dipakai di mana pun kode mengharapkan <code>Vehicle</code>, sejak Pertemuan 6-7, tanpa membuat kode itu berperilaku salah. Kode yang memanggil method lewat tipe superclass-nya percaya penuh pada kontrak itu; begitu ada satu subclass yang diam-diam melanggarnya, program bisa gagal di lokasi yang jauh dari subclass bermasalah, jauh lebih sulit dilacak dibanding galat kompilasi biasa. Slide berikutnya menunjukkan subclass yang GAGAL memenuhi janji ini.
 </div>
 
 ---
@@ -378,15 +416,45 @@ Sesi 3 dari 4
 ![h:260 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: kemampuan seperti "bisa diisi daya" dideklarasikan sebagai interface kecil tersendiri (<code>Chargeable</code>), bukan digabung ke satu interface besar yang memaksa kelas mengimplementasikan method yang tidak relevan baginya. Andai <code>charge()</code> digabung ke satu interface besar bersama method seperti <code>call()</code>, <code>ElectricCar</code> terpaksa ikut mengimplementasikan <code>call()</code> walau tidak pernah relevan baginya.
+<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, kelas tidak dipaksa mengimplementasikan method yang tidak relevan baginya. Kamu sudah mempraktikkan ini di Pertemuan 9: kemampuan seperti "bisa diisi daya" dideklarasikan sebagai interface kecil tersendiri (<code>Chargeable</code>), bukan digabung ke satu interface besar yang memaksa kelas lain mengimplementasikan method yang tidak relevan baginya. Ibarat remote TV: alat yang cuma perlu menyalakan dan mematikan tidak seharusnya dipaksa punya 50 tombol channel yang tidak akan pernah dipakainya.
 </div>
+
+---
+
+## Mengapa Ini Penting?
+
+Bayangkan `charge()` dan `call()` digabung menjadi satu interface besar, sebut saja `Device`. `ElectricCar` yang mengimplementasikan `Device` TERPAKSA ikut menuliskan method `call()`, walau mobil listrik tidak pernah bisa dipakai menelepon. Pilihan yang tersisa hanya dua, sama-sama bermasalah: method `call()` dibiarkan kosong (tidak melakukan apa-apa), atau melempar exception seperti `UnsupportedOperationException`.
+
+<div class="term-box">
+Kedua pilihan itu sama-sama merusak kepercayaan pada interface-nya: kode pemanggil yang memegang referensi <code>Device</code> dan memanggil <code>call()</code> berasumsi method itu benar-benar berfungsi, padahal pada <code>ElectricCar</code> method itu diam-diam tidak melakukan apa pun, atau malah membuat program berhenti. Interface yang gemuk seperti ini diam-diam menyeret pelanggaran Liskov Substitution Principle juga, sebab subclass tidak benar-benar memenuhi kontrak yang dijanjikan interface-nya.
+</div>
+
+---
+
+## Contoh Kode: Memecah Interface yang Gemuk
+
+```java
+// Sebelum: satu interface gemuk memaksa method yang tidak relevan
+interface Device { void charge(); void call(); }
+class ElectricCar implements Device {
+    public void charge() { /* isi daya baterai */ }
+    public void call() { throw new UnsupportedOperationException(); }
+}
+
+// Sesudah: dua interface kecil dan fokus
+interface Chargeable { void charge(); }
+interface Callable { void call(); }
+class ElectricCar implements Chargeable { /* hanya charge() */ }
+```
+
+`ElectricCar` kini hanya perlu mengimplementasikan kemampuan yang benar-benar relevan baginya.
 
 ---
 
 ## Dependency Inversion Principle
 
 <div class="term-box">
-<b>Dependency Inversion Principle</b>: kelas tingkat tinggi sebaiknya bergantung pada interface (abstraksi), bukan pada implementasi konkret. Bagian 4 menunjukkan prinsip ini bekerja berdampingan dengan keempat prinsip lainnya dalam satu sistem.
+<b>Dependency Inversion Principle</b>: kelas tingkat tinggi sebaiknya bergantung pada interface (abstraksi), bukan pada implementasi konkret. Ibarat charger USB-C: kabelnya sama untuk mengisi daya laptop, ponsel, atau earphone merek apa pun, asalkan perangkatnya mengikuti standar port USB-C, charger itu tidak perlu tahu merek spesifik perangkat yang akan diisi dayanya. Bagian 4 menunjukkan prinsip ini bekerja berdampingan dengan keempat prinsip lainnya dalam satu sistem.
 </div>
 
 ---
