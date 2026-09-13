@@ -51,12 +51,4 @@ public class Bank {
             System.out.println(accountNumber + " " + t);
         }
     }
-
-    public double totalAssets() {
-        double total = 0;
-        for (Account acc : repository.findAll()) {
-            total += acc.getBalance();
-        }
-        return total;
-    }
 }

@@ -197,8 +197,8 @@ def rows_p11():
         (None, None, p11("langkah-03"), "InMemoryAccountRepository.java", "p11-03-inmemoryaccountrepository"),
         (p11("langkah-02"), "Bank.java", p11("langkah-03"), "Bank.java", "p11-03-bank"),
         (p11("langkah-02"), "Main.java", p11("langkah-03"), "Main.java", "p11-03-main"),
-        (p11("langkah-03"), "Bank.java", p11("tugas"), "Bank.java", "p11-tugas-bank",
-         [(1, 3), (55, 61)]),
+        (None, None, p11("tugas"), "BusinessAccount.java", "p11-tugas-businessaccount"),
+        (p11("langkah-03"), "Main.java", p11("tugas"), "Main.java", "p11-tugas-main"),
     ]
 
 

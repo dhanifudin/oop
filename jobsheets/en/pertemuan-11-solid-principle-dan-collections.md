@@ -14,6 +14,8 @@ After completing this jobsheet, students will be able to:
 1. Replace a plain array with `ArrayList`/`Map` from the Java Collections Framework, and explain its advantages over an array.
 2. Apply the Single Responsibility Principle by separating the responsibility of recording transactions into its own class.
 3. Apply the Dependency Inversion Principle by making a class depend on an interface, not on a concrete implementation.
+4. Trace and prove the Open/Closed Principle, Liskov Substitution Principle, and Interface Segregation Principle through `Account`/`Bank` code already built since Meeting 6-10.
+5. Add a new `Account` subclass with no change to the existing `Account`/`Bank` code, as direct proof of all five SOLID principles working together.
 
 ## B. Preparation and Prerequisites
 
@@ -105,17 +107,66 @@ Update `Main.java`:
 
 > ⚠️ **If it fails:** if the error `constructor Bank in class Bank cannot be applied to given types` appears, check whether `Main.java` now calls `new Bank(new InMemoryAccountRepository())`, not `new Bank()` as in Steps 1-2.
 
+### Step 4: Tracing OCP, LSP, and ISP in Code Already Built
+
+> **Concept Brief: Open/Closed Principle.** One of the five SOLID principles, the Open/Closed Principle, states that a class should be open for extension (a new subclass) but closed for modification (existing code untouched). Bank Mini has actually applied this principle since Meeting 6-7 already; no new code is needed to prove it, only tracing.
+
+> **Concept Brief: Liskov Substitution Principle.** One of the five SOLID principles, the Liskov Substitution Principle, states that a subclass must be able to stand in for its superclass anywhere without changing the correctness of the program. `Bank` processing `Account` polymorphically since Meeting 9-10 already shows this principle at work.
+
+> **Concept Brief: Interface Segregation Principle.** One of the five SOLID principles, the Interface Segregation Principle, states that an interface should be small and focused, never forcing a class to implement a method irrelevant to it. `InterestBearing`, already built since Meeting 9, is a genuine example of it.
+
+`SavingsAccount.canWithdraw()` (enforcing a minimum balance) and `CheckingAccount.canWithdraw()` (allowing overdraft) override the same method with different rules, with neither `Account` nor `Bank` ever knowing either subclass's specific rule:
+
+![SavingsAccount.java overriding canWithdraw to enforce a minimum balance](../assets/code/pertemuan-07/p07-02-savingsaccount.png){width=65%}
+
+![CheckingAccount.java overriding canWithdraw for overdraft](../assets/code/pertemuan-07/p07-03-checkingaccount.png){width=65%}
+
+Prove it directly from the command line, not just by reading the code:
+
+```bash
+grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id/ac/polinema/Bank.java
+```
+
+> ✅ **Checkpoint:** both `grep` results above show `0`. `Account.java` and `Bank.java` never name either concrete class at all, even though both must process `SavingsAccount` and `CheckingAccount` differently. This is the **Open/Closed Principle**: a new withdrawal rule is simply written through an override, with no change to `Account`/`Bank`.
+
+`Bank.processMonthEnd()` and `printAllAccounts()` (Meeting 9-10) call `monthlyFee()` and `printInfo()` polymorphically through the `Account` type, trusting that method's contract is always fulfilled by whatever subclass it is:
+
+![Bank.java with method processMonthEnd, iterating polymorphically through the repository](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
+
+> ✅ **Checkpoint:** explain in your own words why `processMonthEnd()` can process both `SavingsAccount` and `CheckingAccount` through the same single line `acc.monthlyFee()`, with no `if`/`else` branch per account kind. This is the **Liskov Substitution Principle**: both subclasses can stand in for `Account` at this point without changing the correctness of the program.
+
+`InterestBearing` (Meeting 9) contains only one method, `applyInterest()`, and ONLY `SavingsAccount` implements it; `CheckingAccount` is never forced to have a method irrelevant to it:
+
+![InterestBearing.java, a small one-method interface](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=45%}
+
+Prove it again from the command line:
+
+```bash
+grep -c "InterestBearing" src/id/ac/polinema/SavingsAccount.java src/id/ac/polinema/CheckingAccount.java
+```
+
+> ✅ **Checkpoint:** the `grep` result for `SavingsAccount.java` shows `1` (it implements `InterestBearing`), the result for `CheckingAccount.java` shows `0`. This is the **Interface Segregation Principle**: a small, focused interface, with `CheckingAccount` never forced to implement `applyInterest()`, which would make no sense for it.
+
+> ⚠️ **If it fails:** if a `grep` result expected to be `0` instead shows another number, check again whether `Account.java`/`Bank.java` ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since Meeting 6-10.
+
 ## D. Assignment and Deliverables
 
 Submit the following according to the format requested by the instructor:
 
-- Screenshot of the program output after Step 3.
+- Screenshot of the program output after Step 3, and after the independent assignment.
 - **Independent assignment:**
-  1. Add `Bank.totalAssets()`, returning a `double` total balance across every account (using `repository.findAll()`), then print the result in `Main.java`:
+  1. **BusinessAccount: proving OCP, LSP, and ISP through new code.** Add `BusinessAccount extends Account` (a business account, minimum balance Rp 1,000,000, earning no interest):
 
-     ![Bank.java with method totalAssets](../assets/code/pertemuan-11/p11-tugas-bank.png){width=68%}
+     ![BusinessAccount.java](../assets/code/pertemuan-11/p11-tugas-businessaccount.png){width=60%}
 
-  2. Answer briefly (2 to 3 sentences for each question): (a) `findAccount()` now searches through a `Map`, no longer checking an array one by one. Explain the difference in search speed conceptually. (b) Meeting 15 will replace `InMemoryAccountRepository` with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
+     Register it with `Bank`, then run `processMonthEnd()` and `printAllAccounts()`:
+
+     ![Main.java adding BusinessAccount, calling processMonthEnd and printAllAccounts](../assets/code/pertemuan-11/p11-tugas-main.png){width=70%}
+
+     Prove both of the following from the program's output, with NO change to a single line of `Account.java` or `Bank.java`:
+     - **(Open/Closed + Liskov Substitution)** the line `A004 monthly fee: 0.0` appears among `processMonthEnd()`'s other lines, and `A004 - Budi - balance: 2000000.0` followed by `Account type: Business` appears in `printAllAccounts()`, exactly as `SavingsAccount`/`CheckingAccount` were processed earlier.
+     - **(Interface Segregation)** NO `A004 interest applied` line appears, since `BusinessAccount` does not implement `InterestBearing`.
+  2. Answer briefly (2 to 3 sentences for each question): (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why. (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence. (c) Meeting 15 will replace `InMemoryAccountRepository` with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
 
 ## E. Grading Criteria
 
@@ -123,4 +174,4 @@ Submit the following according to the format requested by the instructor:
 |---|---:|---|---|
 | Work steps completed | 40% | All steps carried out and functioning | Most steps completed, final result runs |
 | Checkpoints verified | 35% | All checkpoints reached and demonstrated (screenshot/output) | Some checkpoints demonstrated |
-| Independent assignment | 25% | `totalAssets()` correct, conceptual answers accurate | Some of the assignment completed even though answers are incomplete |
+| Independent assignment | 25% | `BusinessAccount` correct, OCP/LSP/ISP proven through output, conceptual answers accurate | Some of the assignment completed even though answers are incomplete |

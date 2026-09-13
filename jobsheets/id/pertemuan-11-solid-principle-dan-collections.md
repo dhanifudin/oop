@@ -14,6 +14,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 1. Mengganti array biasa dengan `ArrayList`/`Map` dari Java Collections Framework, dan menjelaskan keuntungannya dibandingkan array.
 2. Menerapkan Single Responsibility Principle dengan memisahkan tanggung jawab pencatatan transaksi ke kelas tersendiri.
 3. Menerapkan Dependency Inversion Principle dengan membuat kelas bergantung pada interface, bukan pada implementasi konkret.
+4. Menelusuri dan membuktikan Open/Closed Principle, Liskov Substitution Principle, dan Interface Segregation Principle lewat kode `Account`/`Bank` yang sudah dibangun sejak Pertemuan 6-10.
+5. Menambahkan subclass `Account` baru tanpa mengubah kode `Account`/`Bank` yang sudah ada, sebagai bukti langsung kelima prinsip SOLID bekerja bersama.
 
 ## B. Persiapan dan Prasyarat
 
@@ -105,17 +107,66 @@ Perbarui `Main.java`:
 
 > ⚠️ **Jika gagal:** apabila muncul galat `constructor Bank in class Bank cannot be applied to given types`, periksa apakah `Main.java` sudah memanggil `new Bank(new InMemoryAccountRepository())`, bukan `new Bank()` seperti Langkah 1-2.
 
+### Langkah 4: Menelusuri OCP, LSP, dan ISP pada Kode yang Sudah Dibangun
+
+> **Konsep Singkat: Open/Closed Principle.** Salah satu dari lima prinsip SOLID, Open/Closed Principle, menyatakan bahwa kelas sebaiknya terbuka untuk diperluas (subclass baru) tetapi tertutup untuk diubah (kode lama tidak disentuh). Bank Mini sebenarnya sudah menerapkan prinsip ini sejak Pertemuan 6-7, tidak butuh kode baru untuk membuktikannya, tinggal ditelusuri.
+
+> **Konsep Singkat: Liskov Substitution Principle.** Salah satu dari lima prinsip SOLID, Liskov Substitution Principle, menyatakan bahwa subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. `Bank` yang memproses `Account` secara polimorfik sejak Pertemuan 9-10 sudah menunjukkan prinsip ini bekerja.
+
+> **Konsep Singkat: Interface Segregation Principle.** Salah satu dari lima prinsip SOLID, Interface Segregation Principle, menyatakan bahwa interface sebaiknya kecil dan fokus, tidak memaksa kelas mengimplementasikan method yang tidak relevan baginya. `InterestBearing`, sudah dibangun sejak Pertemuan 9, adalah contoh nyatanya.
+
+`SavingsAccount.canWithdraw()` (menahan saldo minimum) dan `CheckingAccount.canWithdraw()` (mengizinkan overdraft) meng-override method yang sama dengan aturan yang berbeda, tanpa `Account` maupun `Bank` pernah tahu aturan spesifik keduanya:
+
+![SavingsAccount.java meng-override canWithdraw untuk menahan saldo minimum](../assets/code/pertemuan-07/p07-02-savingsaccount.png){width=65%}
+
+![CheckingAccount.java meng-override canWithdraw untuk overdraft](../assets/code/pertemuan-07/p07-03-checkingaccount.png){width=65%}
+
+Buktikan langsung lewat baris perintah, bukan sekadar membaca kode:
+
+```bash
+grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id/ac/polinema/Bank.java
+```
+
+> ✅ **Checkpoint:** kedua hasil `grep` di atas menunjukkan `0`. `Account.java` dan `Bank.java` tidak pernah menyebut nama kelas konkretnya sama sekali, padahal keduanya harus memproses `SavingsAccount` dan `CheckingAccount` secara berbeda. Inilah **Open/Closed Principle**: aturan penarikan baru cukup ditulis lewat override, tanpa mengubah `Account`/`Bank`.
+
+Method `Bank.processMonthEnd()` dan `printAllAccounts()` (Pertemuan 9-10) memanggil `monthlyFee()` dan `printInfo()` secara polimorfik lewat tipe `Account`, memercayai kontrak method itu selalu terpenuhi oleh subclass mana pun:
+
+![Bank.java dengan method processMonthEnd, iterasi polimorfik lewat repository](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
+
+> ✅ **Checkpoint:** jelaskan dengan kata-katamu sendiri mengapa `processMonthEnd()` bisa memproses `SavingsAccount` maupun `CheckingAccount` lewat satu baris `acc.monthlyFee()` yang sama, tanpa cabang `if`/`else` per jenis rekening. Inilah **Liskov Substitution Principle**: kedua subclass bisa menggantikan `Account` di titik ini tanpa mengubah kebenaran program.
+
+`InterestBearing` (Pertemuan 9) hanya berisi satu method, `applyInterest()`, dan HANYA `SavingsAccount` yang mengimplementasikannya; `CheckingAccount` tidak pernah dipaksa memiliki method yang tidak relevan baginya:
+
+![InterestBearing.java, interface kecil satu method](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=45%}
+
+Buktikan lagi lewat baris perintah:
+
+```bash
+grep -c "InterestBearing" src/id/ac/polinema/SavingsAccount.java src/id/ac/polinema/CheckingAccount.java
+```
+
+> ✅ **Checkpoint:** hasil `grep` untuk `SavingsAccount.java` menunjukkan `1` (meng-implement `InterestBearing`), hasil untuk `CheckingAccount.java` menunjukkan `0`. Inilah **Interface Segregation Principle**: interface kecil dan fokus, `CheckingAccount` tidak pernah dipaksa mengimplementasikan `applyInterest()` yang tidak masuk akal baginya.
+
+> ⚠️ **Jika gagal:** apabila hasil `grep` yang diharapkan `0` justru menunjukkan angka lain, periksa kembali apakah `Account.java`/`Bank.java` pernah menuliskan nama kelas konkret (mis. `if (acc instanceof SavingsAccount)`) alih-alih memakai method polimorfik/pengecekan `instanceof` lewat interface seperti seharusnya sejak Pertemuan 6-10.
+
 ## D. Tugas dan Deliverable
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
-- Screenshot output program setelah Langkah 3.
+- Screenshot output program setelah Langkah 3, dan setelah Tugas mandiri.
 - **Tugas mandiri:**
-  1. Tambahkan `Bank.totalAssets()`, mengembalikan `double` total saldo seluruh rekening (memakai `repository.findAll()`), lalu cetak hasilnya di `Main.java`:
+  1. **BusinessAccount: membuktikan OCP, LSP, dan ISP lewat kode baru.** Tambahkan `BusinessAccount extends Account` (rekening bisnis, saldo minimum Rp 1.000.000, tidak berbunga):
 
-     ![Bank.java dengan method totalAssets](../assets/code/pertemuan-11/p11-tugas-bank.png){width=68%}
+     ![BusinessAccount.java](../assets/code/pertemuan-11/p11-tugas-businessaccount.png){width=60%}
 
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) `findAccount()` sekarang mencari lewat `Map`, bukan lagi memeriksa array satu per satu. Jelaskan perbedaan kecepatan pencariannya secara konseptual. (b) Pertemuan 15 akan mengganti `InMemoryAccountRepository` dengan `JdbcAccountRepository` yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
+     Daftarkan ke `Bank`, lalu jalankan `processMonthEnd()` dan `printAllAccounts()`:
+
+     ![Main.java menambahkan BusinessAccount, memanggil processMonthEnd dan printAllAccounts](../assets/code/pertemuan-11/p11-tugas-main.png){width=70%}
+
+     Buktikan dua hal berikut dari output program, TANPA mengubah satu baris pun `Account.java` atau `Bank.java`:
+     - **(Open/Closed + Liskov Substitution)** baris `A004 monthly fee: 0.0` muncul di antara baris `processMonthEnd()` yang lain, dan `A004 - Budi - balance: 2000000.0` diikuti `Account type: Business` muncul di `printAllAccounts()`, persis seperti `SavingsAccount`/`CheckingAccount` diproses sebelumnya.
+     - **(Interface Segregation)** TIDAK ADA baris `A004 interest applied` yang muncul, sebab `BusinessAccount` tidak meng-implement `InterestBearing`.
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java`/`Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa. (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa `BusinessAccount` otomatis diperlakukan benar (tidak dikenai bunga) tanpa `Bank.java` perlu tahu apa pun tentang keberadaannya. (c) Pertemuan 15 akan mengganti `InMemoryAccountRepository` dengan `JdbcAccountRepository` yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
 
 ## E. Kriteria Penilaian
 
@@ -123,4 +174,4 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 |---|---:|---|---|
 | Langkah kerja tuntas | 40% | Seluruh langkah dijalankan dan berfungsi | Sebagian besar langkah selesai, hasil akhir berjalan |
 | Checkpoint terverifikasi | 35% | Semua checkpoint tercapai dan dibuktikan (screenshot/output) | Sebagian checkpoint terbukti |
-| Tugas mandiri | 25% | `totalAssets()` benar, jawaban konsep tepat | Sebagian tugas selesai meski jawaban belum lengkap |
+| Tugas mandiri | 25% | `BusinessAccount` benar, OCP/LSP/ISP terbukti lewat output, jawaban konsep tepat | Sebagian tugas selesai meski jawaban belum lengkap |
