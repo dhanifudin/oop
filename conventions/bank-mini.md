@@ -146,6 +146,10 @@ State SETELAH pertemuan tsb, mengikuti pemetaan topik resmi di atas:
   ada, LSP lewat kontrak subclass yang konsisten, ISP lewat interface
   kecil `InterestBearing`/`Auditable`, DIP lewat pengenalan
   `AccountRepository` + `InMemoryAccountRepository` sebagai preview).
+  `Transaction.type` bertipe enum `TransactionType` (`DEPOSIT`/`WITHDRAW`),
+  bukan `String`, supaya compiler menolak nilai di luar keduanya; jobsheet
+  memperkenalkan `enum` lewat Konsep Singkat singkat di Langkah 2, sebab
+  fitur ini belum pernah dipakai di pertemuan mana pun sebelumnya.
 - 13-14: SATU proyek Maven + GUI dibangun berkesinambungan (lihat catatan
   Matisse di bawah). `BankMiniFrame` HANYA menampilkan `JTable` + satu baris
   tombol (`Add Account...`, `Deposit...`, `Withdraw...`, `Refresh`,

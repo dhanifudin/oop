@@ -41,6 +41,8 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 > **Konsep Singkat: Collections.** Java Collections Framework menyediakan struktur data siap pakai seperti `ArrayList` (daftar yang ukurannya menyesuaikan otomatis, tidak perlu ditentukan di awal) dan `HashMap`/`LinkedHashMap` (menyimpan pasangan kunci-nilai, pencarian berdasarkan kunci dilakukan langsung tanpa memeriksa elemen satu per satu). Keduanya menggantikan array biasa, yang ukurannya tetap sejak dibuat dan pencariannya harus memeriksa elemen satu per satu.
 
+> **Konsep Singkat: Generics.** Tulisan `<...>` pada `Map<String, Account>` disebut *type parameter*: bagian ini menyatakan tipe apa yang boleh disimpan di dalam struktur data itu. Dengan `Map<String, Account>`, compiler memastikan hanya `String` yang boleh dipakai sebagai kunci dan hanya `Account` yang boleh disimpan sebagai nilai, galat tipe yang salah tertangkap saat kompilasi, bukan menyebabkan `ClassCastException` di kemudian hari saat program sudah berjalan.
+
 ![Array berukuran tetap dengan pencarian satu per satu, dibandingkan Map dengan pencarian langsung lewat kunci](../assets/uml/p11-collections-motivation.png){width=75%}
 
 Sejauh ini, `Bank` menyimpan rekening di `Account[] accounts` berukuran tetap, `findAccount()` memeriksa elemen satu per satu. Ganti dengan `Map<String, Account>`, memakai nomor rekening sebagai kunci:
@@ -61,7 +63,11 @@ Perbarui `Main.java`, konstruktor `Bank` tidak lagi memerlukan kapasitas:
 
 ![Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/uml/p11-srp-split.png){width=72%}
 
-Bank Mini sejauh ini tidak mencatat riwayat transaksi sama sekali. Tambahkan kelas `Transaction`, tanggung jawabnya hanya merepresentasikan satu transaksi:
+Bank Mini sejauh ini tidak mencatat riwayat transaksi sama sekali. Tambahkan kelas `Transaction`, tanggung jawabnya hanya merepresentasikan satu transaksi.
+
+> **Konsep Singkat: enum.** `enum` mendeklarasikan sekumpulan konstanta bernama yang tetap jumlahnya. Berbeda dari `String`, compiler menolak nilai apa pun di luar konstanta yang dideklarasikan: `TransactionType.DEPOSIT` pasti valid, sementara salah ketik seperti `"WITHDRAWL"` pada `String` tetap berhasil dikompilasi dan baru ketahuan salah jauh kemudian, saat baris riwayat transaksinya sudah tidak masuk akal.
+
+![TransactionType.java](../assets/code/pertemuan-11/p11-02-transactiontype.png){width=45%}
 
 ![Transaction.java](../assets/code/pertemuan-11/p11-02-transaction.png){width=55%}
 
@@ -81,11 +87,21 @@ Perbarui `Main.java`:
 
 > ✅ **Checkpoint:** program menambahkan baris `A003 WITHDRAW 30000.0` dan `A003 DEPOSIT 1400.0` setelah baris dari Langkah 1.
 
-> ⚠️ **Jika gagal:** apabila riwayat transaksi kosong, periksa apakah `history.add(...)` dipanggil SETELAH validasi berhasil (di dalam `deposit()` dan `withdraw()`), bukan sebelum pengecekan `canWithdraw()`/jumlah minimum.
+> ⚠️ **Jika gagal:** apabila riwayat transaksi kosong, periksa apakah `history.add(...)` dipanggil SETELAH validasi berhasil (di dalam `deposit()` dan `withdraw()`), bukan sebelum pengecekan `canWithdraw()`/jumlah minimum. Apabila muncul galat `cannot find symbol: variable DEPOSIT` atau semacamnya, periksa apakah konstanta dipanggil sebagai `TransactionType.DEPOSIT` (bukan `Transaction.DEPOSIT`), sebab konstanta enum-nya berasal dari kelas `TransactionType`, bukan dari `Transaction`.
 
 ### Langkah 3: AccountRepository, Dependency Inversion Principle
 
 > **Konsep Singkat: Dependency Inversion Principle.** Salah satu dari lima prinsip SOLID, Dependency Inversion Principle, menyatakan bahwa kelas tingkat tinggi (yang mengatur alur bisnis) sebaiknya bergantung pada interface (abstraksi), bukan pada kelas implementasi konkret secara langsung. Dengan begitu, implementasi konkretnya boleh diganti kapan saja tanpa mengubah satu baris pun kode yang bergantung padanya.
+
+> **Konsep Singkat: Mendeklarasikan Interface Generik.** Selain dipakai (seperti `Map<String, Account>` pada Langkah 1), sebuah interface atau kelas juga BISA dideklarasikan generik, dengan menuliskan `<T>` setelah namanya sendiri:
+> ```java
+> public interface Repository<T> {
+>     void save(T item);
+>     T findByNumber(String id);
+>     Collection<T> findAll();
+> }
+> ```
+> `T` di sini adalah *type parameter*, diisi kelak oleh siapa pun yang mengimplementasikan interface ini (mis. `Repository<Account>`). Bagian di bawah ini TIDAK dituliskan ke proyekmu, sekadar ilustrasi: `AccountRepository` sebenarnya bisa saja ditulis mengikuti pola `Repository<T>` ini, tetapi Bank Mini sengaja mempertahankannya sebagai interface konkret tersendiri, sebab sejauh ini hanya ada satu jenis entitas (`Account`) yang butuh disimpan, generalisasi lewat `<T>` baru benar-benar berguna begitu ada jenis entitas kedua yang juga butuh disimpan dengan cara serupa.
 
 `Bank` sejauh ini menyimpan `Map<String, Account>` secara langsung di dalam dirinya sendiri. Pisahkan tanggung jawab penyimpanan ke interface tersendiri:
 

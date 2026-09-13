@@ -36,7 +36,7 @@ public abstract class Account {
             return false;
         }
         balance += amount;
-        history.add(new Transaction("DEPOSIT", amount));
+        history.add(new Transaction(TransactionType.DEPOSIT, amount));
         return true;
     }
 
@@ -54,7 +54,7 @@ public abstract class Account {
                     accountNumber + ": insufficient balance for a withdrawal of " + amount);
         }
         balance -= amount;
-        history.add(new Transaction("WITHDRAW", amount));
+        history.add(new Transaction(TransactionType.WITHDRAW, amount));
     }
 
     protected boolean canWithdraw(double amount) {

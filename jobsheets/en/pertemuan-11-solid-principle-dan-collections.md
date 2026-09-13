@@ -41,6 +41,8 @@ After completing this jobsheet, students will be able to:
 
 > **Concept Brief: Collections.** The Java Collections Framework provides ready-made data structures such as `ArrayList` (a list whose size adjusts automatically, needing no upfront size) and `HashMap`/`LinkedHashMap` (storing key-value pairs, with a lookup by key done directly without checking elements one by one). Both replace a plain array, whose size stays fixed since creation and whose search must check elements one by one.
 
+> **Concept Brief: Generics.** The `<...>` written in `Map<String, Account>` is called a *type parameter*: this part states what type the data structure is allowed to hold. With `Map<String, Account>`, the compiler ensures only a `String` can be used as a key and only an `Account` can be stored as a value; a wrong type is caught at compile time, instead of causing a `ClassCastException` later once the program is already running.
+
 ![A fixed-size array with one-by-one search, compared with a Map with a direct lookup by key](../assets/uml/p11-collections-motivation.png){width=75%}
 
 So far, `Bank` has stored accounts in a fixed-size `Account[] accounts`, with `findAccount()` checking elements one by one. Replace it with a `Map<String, Account>`, using the account number as the key:
@@ -61,7 +63,11 @@ Update `Main.java`; the `Bank` constructor no longer needs a capacity:
 
 ![One class with three responsibilities, split into three classes each with one responsibility](../assets/uml/p11-srp-split.png){width=72%}
 
-Bank Mini has so far kept no transaction history at all. Add a class `Transaction`, whose sole responsibility is representing one transaction:
+Bank Mini has so far kept no transaction history at all. Add a class `Transaction`, whose sole responsibility is representing one transaction.
+
+> **Concept Brief: enum.** An `enum` declares a fixed set of named constants. Unlike a `String`, the compiler rejects any value outside the declared constants: `TransactionType.DEPOSIT` is always valid, while a typo such as `"WITHDRAWL"` on a `String` still compiles successfully and only surfaces much later, once a transaction history line stops making sense.
+
+![TransactionType.java](../assets/code/pertemuan-11/p11-02-transactiontype.png){width=45%}
 
 ![Transaction.java](../assets/code/pertemuan-11/p11-02-transaction.png){width=55%}
 
@@ -81,11 +87,21 @@ Update `Main.java`:
 
 > ✅ **Checkpoint:** the program adds the lines `A003 WITHDRAW 30000.0` and `A003 DEPOSIT 1400.0` after the lines from Step 1.
 
-> ⚠️ **If it fails:** if the transaction history is empty, check whether `history.add(...)` is called AFTER validation succeeds (inside `deposit()` and `withdraw()`), not before the `canWithdraw()`/minimum amount check.
+> ⚠️ **If it fails:** if the transaction history is empty, check whether `history.add(...)` is called AFTER validation succeeds (inside `deposit()` and `withdraw()`), not before the `canWithdraw()`/minimum amount check. If the error `cannot find symbol: variable DEPOSIT` or similar appears, check whether the constant is called as `TransactionType.DEPOSIT` (not `Transaction.DEPOSIT`), since the enum constant comes from the `TransactionType` class, not `Transaction`.
 
 ### Step 3: AccountRepository, Dependency Inversion Principle
 
 > **Concept Brief: Dependency Inversion Principle.** One of the five SOLID principles, the Dependency Inversion Principle, states that a high-level class (governing business flow) should depend on an interface (an abstraction), rather than directly on a concrete implementation class. This way, the concrete implementation can be swapped at any time without changing a single line of code that depends on it.
+
+> **Concept Brief: Declaring a Generic Interface.** Besides being used (as in `Map<String, Account>` in Step 1), an interface or class can also BE declared generic, by writing `<T>` right after its own name:
+> ```java
+> public interface Repository<T> {
+>     void save(T item);
+>     T findByNumber(String id);
+>     Collection<T> findAll();
+> }
+> ```
+> `T` here is a *type parameter*, filled in later by whoever implements this interface (e.g. `Repository<Account>`). The snippet above is NOT something to add to your project, purely an illustration: `AccountRepository` could in principle have been written following this same `Repository<T>` pattern, but Bank Mini deliberately keeps it as its own concrete interface, since there is so far only one entity type (`Account`) that needs storing; generalizing through `<T>` only genuinely pays off once a second entity type also needs storing the same way.
 
 `Bank` has so far stored `Map<String, Account>` directly inside itself. Separate the storage responsibility into its own interface:
 

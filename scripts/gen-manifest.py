@@ -187,6 +187,7 @@ def rows_p11():
     return [
         (p10("langkah-02"), "Bank.java", p11("langkah-01"), "Bank.java", "p11-01-bank"),
         (p10("langkah-02"), "Main.java", p11("langkah-01"), "Main.java", "p11-01-main"),
+        (None, None, p11("langkah-02"), "TransactionType.java", "p11-02-transactiontype"),
         (None, None, p11("langkah-02"), "Transaction.java", "p11-02-transaction"),
         (p11("langkah-01"), "Account.java", p11("langkah-02"), "Account.java", "p11-02-account",
          [(1, 6), (10, 10), (34, 41), (51, 58)]),
