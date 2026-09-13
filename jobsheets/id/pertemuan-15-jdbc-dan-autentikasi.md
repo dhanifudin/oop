@@ -99,6 +99,8 @@ Buat kelas `LoginFrame` (JFrame biasa, form login: `Username` sebagai `JTextFiel
 
 ![LoginFrame.java, loginButtonActionPerformed](../assets/code/pertemuan-15/p15-02-loginhandler.png){width=75%}
 
+> **Konsep Singkat: Berpindah ke Jendela Lain.** Perhatikan dua baris terakhir pada login yang berhasil: `dispose()` menutup dan melepas sumber daya jendela `LoginFrame` yang sedang aktif, lalu `new BankMiniFrame().setVisible(true)` membuat dan menampilkan jendela baru. Pola `dispose()` diikuti `new NamaFrame().setVisible(true)` inilah cara standar Swing berpindah dari satu jendela ke jendela lain, sudah diperkenalkan sebagai konsep pada Pertemuan 13; `LoginFrame` di sinilah praktik pertamanya benar-benar dipakai, sebab Pertemuan 13-14 hanya pernah membuka satu jendela (`BankMiniFrame`) langsung dari `Main.java`, belum pernah menutup satu jendela untuk membuka jendela lain.
+
 ![Jendela LoginFrame kosong sebelum diisi](../assets/screenshots/pertemuan-15/p15-login-screen.png){width=55%}
 
 ![Dialog galat setelah mencoba login dengan password salah](../assets/screenshots/pertemuan-15/p15-login-failed.png){width=55%}
@@ -108,6 +110,10 @@ Terakhir, `Main.java` menjalankan `LoginFrame` lebih dulu, bukan langsung membuk
 ![Main.java menjalankan LoginFrame](../assets/code/pertemuan-15/p15-02-main.png){width=68%}
 
 ![Jendela BankMiniFrame setelah login berhasil](../assets/screenshots/pertemuan-15/p15-bankmini-after-login.png){width=60%}
+
+Diagram berikut merangkum alur aplikasi Bank Mini secara utuh sampai titik ini, dari `Main.java` sampai transaksi di `BankMiniFrame`:
+
+![Alur aplikasi Bank Mini: Main.java, LoginFrame, dan BankMiniFrame](../assets/uml/p15-application-flow.png){width=75%}
 
 > ✅ **Checkpoint:** jalankan **Run Project** (F6). Jendela `LoginFrame` muncul lebih dulu. Coba login dengan username `teller1` dan password yang salah, dialog galat "Invalid username or password." muncul dan jendela login tetap terbuka. Login ulang dengan password yang benar, `teller123`, jendela login tertutup dan `BankMiniFrame` terbuka menampilkan daftar rekening seperti biasa.
 

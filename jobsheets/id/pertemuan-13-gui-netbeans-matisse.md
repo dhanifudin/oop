@@ -56,6 +56,13 @@ Pindahkan setiap berkas ke paket barunya (klik kanan `src/main/java` > **New > J
 
 > **Konsep Singkat: GUI Builder (Matisse).** Menulis tata letak (layout) GUI secara manual lewat kode itu merepotkan: posisi dan ukuran tiap komponen harus dihitung dan disesuaikan satu per satu setiap kali tampilan berubah. NetBeans menyediakan GUI Builder (dikenal sebagai Matisse) yang memungkinkan komponen (tombol, tabel, dan sebagainya) disusun dengan cara diseret (drag-and-drop) di editor visual, kode Java layout-nya (`GroupLayout`) dibuat otomatis oleh NetBeans di baliknya.
 
+> **Konsep Singkat: Merencanakan Tampilan Sebelum Membangunnya.** Sebelum menyeret komponen ke GUI Builder, buat dulu sketsa kasar: komponen apa saja yang dibutuhkan, dan bagaimana posisinya satu sama lain. Untuk `BankMiniFrame` pada langkah ini, sketsanya sesederhana:
+> ```
+> [ Tabel: Account Number | Owner | Balance ]
+>                                  [ Refresh ]
+> ```
+> Sketsa tidak perlu rapi, cukup menjawab dua hal: komponen apa (tabel untuk daftar data, tombol untuk aksi) dan di mana letaknya (tombol di bawah tabel). Semakin kompleks form-nya (lihat Pertemuan 14), semakin terasa manfaat merencanakan dulu di atas kertas sebelum mulai menyeret komponen di Matisse.
+
 Ikuti langkah berikut di NetBeans:
 
 1. Klik kanan paket `id.ac.polinema.ui` > **New > Other... > Swing GUI Forms > JFrame Form**. Beri nama kelas `BankMiniFrame`.
