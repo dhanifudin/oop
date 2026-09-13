@@ -57,32 +57,51 @@ def main():
         slug = next(iter(s.values()), next(iter(j.values()), (None, None)))[0]
         title = title_from_slug(slug) if slug else f"Pertemuan {nn}"
 
-        cells = []
-        for lang, label in (("id", "ID"), ("en", "EN")):
+        # Slides/jobsheets are per-language; a missing translation shows as
+        # grayed-out text (not a link) instead of disappearing, so the EN
+        # toggle doesn't make half the schedule vanish while translation
+        # coverage is still partial.
+        lang_cells = {"id": [], "en": []}
+        for lang in ("id", "en"):
             if lang in s:
                 _, src = s[lang]
                 dest = DOCS / "slides" / src.name
                 shutil.copyfile(src, dest)
-                cells.append(f'<a href="slides/{src.name}">Slides ({label})</a>')
+                lang_cells[lang].append(f'<a href="slides/{src.name}">Slides</a>')
+            else:
+                lang_cells[lang].append('<span class="unavailable">Slides</span>')
             if lang in j:
                 _, src = j[lang]
                 dest = DOCS / "jobsheets" / src.name
                 shutil.copyfile(src, dest)
-                cells.append(f'<a href="jobsheets/{src.name}">Jobsheet ({label})</a>')
+                lang_cells[lang].append(f'<a href="jobsheets/{src.name}">Jobsheet</a>')
+            else:
+                lang_cells[lang].append('<span class="unavailable">Jobsheet</span>')
 
-        zip_src = CHECKPOINT_ZIPS / f"pertemuan-{nn}-starter.zip"
-        if zip_src.exists():
-            zip_name = zip_src.name
-            shutil.copyfile(zip_src, DOCS / "code" / zip_name)
-            cells.append(f'<a href="code/{zip_name}">Starter Code (ZIP)</a>')
+        # Starter/end code is language-neutral (one codebase), so it stays
+        # visible regardless of which language is toggled on.
+        code_cells = []
+        for kind, label in (("starter", "Starter Code"), ("end", "End Code")):
+            zip_src = CHECKPOINT_ZIPS / f"pertemuan-{nn}-{kind}.zip"
+            if zip_src.exists():
+                zip_name = zip_src.name
+                shutil.copyfile(zip_src, DOCS / "code" / zip_name)
+                code_cells.append(f'<a href="code/{zip_name}">{label} (ZIP)</a>')
 
-        rows.append((nn, title, cells))
+        rows.append((nn, title, lang_cells, code_cells))
+
+    def lang_group_html(lang, cells):
+        return f'<span class="lang-group lang-{lang}">{" &middot; ".join(cells)}</span>'
 
     links_html = "\n".join(
         f'<li><span class="week">Pertemuan {nn}</span> '
         f'<span class="title">{title}</span> '
-        f'<span class="links">{" &middot; ".join(cells) if cells else "&mdash;"}</span></li>'
-        for nn, title, cells in rows
+        f'<span class="links">'
+        f'{lang_group_html("id", lang_cells["id"])}'
+        f'{lang_group_html("en", lang_cells["en"])}'
+        f'{" &middot; " + " &middot; ".join(code_cells) if code_cells else ""}'
+        f'</span></li>'
+        for nn, title, lang_cells, code_cells in rows
     )
 
     html = f"""<!doctype html>
@@ -101,6 +120,13 @@ def main():
   .title {{ flex: 1; min-width: 200px; }}
   .links a {{ color: #1d4ed8; text-decoration: none; margin-right: 4px; }}
   .links a:hover {{ text-decoration: underline; }}
+  .links .unavailable {{ color: #94a3b8; font-style: italic; cursor: default; }}
+  .lang-group.lang-en {{ display: none; }}
+  body.lang-en .lang-group.lang-id {{ display: none; }}
+  body.lang-en .lang-group.lang-en {{ display: inline; }}
+  #lang-toggle {{ display: inline-flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; margin-bottom: 18px; }}
+  #lang-toggle button {{ border: none; background: #fff; color: #334155; padding: 6px 16px; font-size: 0.9em; cursor: pointer; }}
+  #lang-toggle button.active {{ background: #1d4ed8; color: #fff; }}
   #login-gate {{ max-width: 320px; margin: 80px auto; }}
   #login-gate h1 {{ font-size: 1.3em; }}
   #login-gate label {{ display: block; margin-top: 14px; font-size: 0.9em; color: #334155; }}
@@ -126,6 +152,10 @@ def main():
 <div id="site-content" hidden>
 <h1>Pemrograman Berbasis Objek</h1>
 <p class="sub">RTI253007 (konsep) &amp; RTI253008 (praktikum) &mdash; D-IV Teknik Informatika, Politeknik Negeri Malang. Studi kasus semester: Bank Mini.</p>
+<div id="lang-toggle">
+  <button type="button" id="lang-btn-id" class="active">ID</button>
+  <button type="button" id="lang-btn-en">EN</button>
+</div>
 <ul>
 {links_html}
 </ul>
@@ -162,6 +192,27 @@ def main():
       error.hidden = false;
     }}
   }});
+}})();
+
+(function () {{
+  var LANG_KEY = "oopPagesLang";
+  var btnId = document.getElementById("lang-btn-id");
+  var btnEn = document.getElementById("lang-btn-en");
+
+  function setLang(lang) {{
+    document.body.classList.toggle("lang-en", lang === "en");
+    btnId.classList.toggle("active", lang === "id");
+    btnEn.classList.toggle("active", lang === "en");
+    localStorage.setItem(LANG_KEY, lang);
+  }}
+
+  btnId.addEventListener("click", function () {{ setLang("id"); }});
+  btnEn.addEventListener("click", function () {{ setLang("en"); }});
+
+  var saved = localStorage.getItem(LANG_KEY);
+  if (saved === "en") {{
+    setLang("en");
+  }}
 }})();
 </script>
 </body>

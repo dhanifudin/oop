@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
 """Zip Bank Mini checkpoints under code/bank-mini/pertemuan-NN/ into
-starter zips under code/bank-mini-zips/, so students can download a
-runnable starting point straight from the Pages site instead of needing
-git (this course has none) or a manual hand-off from the Dosen.
+starter and end-code zips under code/bank-mini-zips/, so students can
+download a runnable starting point (or that week's own finished code)
+straight from the Pages site instead of needing git (this course has
+none) or a manual hand-off from the Dosen.
 
-Each meeting's starter zip is the PREVIOUS practicum meeting's checkpoint
-(the state a student should have before opening that meeting's jobsheet),
-not that meeting's own complete/finished code: pertemuan-06-starter.zip
-holds checkpoint 04's files, pertemuan-13-starter.zip holds checkpoint
-11's, and so on across the 01/02/03/04/06/07/09/10/11/13/14/15 sequence
-(05/08/12 are quiz/UTS weeks with no checkpoint). The first practicum
-meeting (01) has no starter: its jobsheet builds the project from
-scratch. This way a meeting's own finished code is never published as
-this course's answer key; it only reappears as the NEXT meeting's
-starter.
+Each meeting's STARTER zip is the PREVIOUS practicum meeting's checkpoint
+(the state a student should have before opening that meeting's jobsheet):
+pertemuan-06-starter.zip holds checkpoint 04's files, pertemuan-13-starter.zip
+holds checkpoint 11's, and so on across the 01/02/03/04/06/07/09/10/11/
+13/14/15 sequence (05/08/12 are quiz/UTS weeks with no checkpoint). The
+first practicum meeting (01) has no starter: its jobsheet builds the
+project from scratch.
+
+Each meeting's END zip is that SAME meeting's own finished checkpoint
+(pertemuan-06-end.zip holds checkpoint 06's files). Published at the
+user's explicit request even though it doubles as that week's answer
+key (a student could skip the jobsheet and just download the end
+state); this is a deliberate policy choice, not an oversight.
 
 Run after scripts/build-checkpoints.py (which scripts/render-all.sh
 already calls). Stdlib only (zipfile), no venv needed.
 
 Each zip wraps its contents in a self-labeled top-level folder
-(bank-mini-pertemuan-NN-starter/...) so a student who downloads several
-weeks into the same Downloads folder gets distinctly named extracted
-folders instead of everything colliding into a bare src/.
+(bank-mini-pertemuan-NN-starter/... or bank-mini-pertemuan-NN-end/...)
+so a student who downloads several weeks into the same Downloads folder
+gets distinctly named extracted folders instead of everything colliding
+into a bare src/.
 """
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -73,6 +78,13 @@ def main():
         top_level = f"bank-mini-pertemuan-{nn}-starter"
         zip_path = OUT / f"pertemuan-{nn}-starter.zip"
         write_zip(zip_path, previous_dir, top_level)
+        written.append(zip_path.relative_to(REPO_ROOT))
+
+    for current_dir in checkpoint_dirs:
+        nn = current_dir.name.removeprefix("pertemuan-")
+        top_level = f"bank-mini-pertemuan-{nn}-end"
+        zip_path = OUT / f"pertemuan-{nn}-end.zip"
+        write_zip(zip_path, current_dir, top_level)
         written.append(zip_path.relative_to(REPO_ROOT))
 
     for path in written:
