@@ -139,7 +139,9 @@ Submit the following according to the format requested by the instructor:
      <!-- TODO(screenshot): mock-up SVG, not a genuine screenshot. Replace with a genuine BankMiniFrame screenshot once display access is available; see conventions/bank-mini.md, section "Verifikasi visual GUI tanpa NetBeans/X server". -->
      ![Mock-up of the BankMiniFrame window displaying the username in its title after logging in as teller2](../assets/uml/p15-window-logged-in.png){width=60%}
 
-  3. Answer briefly (2 to 3 sentences for each question): (a) why do `seedSampleAccountsIfEmpty()` and `seedDefaultUserIfEmpty()` both check for an empty condition before adding data, and what happens if that check is removed? (b) `UserRepository` and `AccountRepository` are two different interfaces, but both follow the same design pattern. Name that pattern, and explain one concrete benefit of following it here.
+  3. Answer briefly (2 to 3 sentences for each question):
+     - (a) why do `seedSampleAccountsIfEmpty()` and `seedDefaultUserIfEmpty()` both check for an empty condition before adding data, and what happens if that check is removed?
+     - (b) `UserRepository` and `AccountRepository` are two different interfaces, but both follow the same design pattern. Name that pattern, and explain one concrete benefit of following it here.
 
 ## E. Grading Criteria
 

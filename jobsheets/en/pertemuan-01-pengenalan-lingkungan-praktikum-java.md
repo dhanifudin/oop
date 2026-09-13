@@ -82,7 +82,9 @@ Submit the following according to the format requested by the instructor:
 - Screenshot of the program output after Step 3.
 - **Independent assignment:**
   1. Change the second line in `Main.java` to display your own name, run it again, and include a screenshot of the result.
-  2. Answer briefly (2 to 3 sentences per question): (a) what is the difference between the compile process and the run process in Java? (b) what happens if a `.java` file's name does not match the public class name inside it?
+  2. Answer briefly (2 to 3 sentences per question):
+     - (a) what is the difference between the compile process and the run process in Java?
+     - (b) what happens if a `.java` file's name does not match the public class name inside it?
 
 ## E. Grading Criteria
 

@@ -99,7 +99,9 @@ Submit the following according to the format requested by the instructor:
 - Screenshot of the `BankMiniFrame` window after running Step 2.
 - **Independent assignment:**
   1. Add a new column to the table, **Type**, displaying `"Savings"` or `"Checking"` according to the account kind (use `instanceof` as learned in Meeting 10).
-  2. Answer briefly (2 to 3 sentences for each question): (a) why does `Bank.getAllAccounts()` return a `Collection<Account>`, rather than printing it directly like `printAllAccounts()`? (b) What would happen to `BankMiniFrame`'s code if `InMemoryAccountRepository` were someday replaced with a different implementation (e.g. connected to a database)? Relate your answer to the Dependency Inversion Principle learned in Meeting 11.
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) why does `Bank.getAllAccounts()` return a `Collection<Account>`, rather than printing it directly like `printAllAccounts()`?
+     - (b) What would happen to `BankMiniFrame`'s code if `InMemoryAccountRepository` were someday replaced with a different implementation (e.g. connected to a database)? Relate your answer to the Dependency Inversion Principle learned in Meeting 11.
 
 ## E. Grading Criteria
 

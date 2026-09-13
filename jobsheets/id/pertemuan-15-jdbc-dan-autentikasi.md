@@ -120,7 +120,7 @@ Diagram berikut merangkum alur aplikasi Bank Mini secara utuh sampai titik ini, 
 
 > ⚠️ **Jika gagal:** apabila login dengan kredensial yang benar tetap ditolak, periksa apakah password yang diketik di-hash dulu lewat `PasswordHasher.hash()` sebelum dibandingkan, bukan dibandingkan langsung dengan `user.getPasswordHash()` (hash tidak akan pernah sama dengan teks polos).
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -139,7 +139,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      <!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
      ![Mock-up jendela BankMiniFrame menampilkan username pada judul setelah login sebagai teller2](../assets/uml/p15-window-logged-in.png){width=60%}
 
-  3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `seedSampleAccountsIfEmpty()` dan `seedDefaultUserIfEmpty()` sama-sama memeriksa kondisi kosong sebelum menambah data, apa yang terjadi bila pengecekan itu dihapus? (b) `UserRepository` dan `AccountRepository` adalah dua interface yang berbeda, tetapi keduanya mengikuti pola desain yang sama. Sebutkan pola tersebut, dan jelaskan satu keuntungan konkret dari mengikutinya di sini.
+  3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa `seedSampleAccountsIfEmpty()` dan `seedDefaultUserIfEmpty()` sama-sama memeriksa kondisi kosong sebelum menambah data, apa yang terjadi bila pengecekan itu dihapus?
+     - (b) `UserRepository` dan `AccountRepository` adalah dua interface yang berbeda, tetapi keduanya mengikuti pola desain yang sama. Sebutkan pola tersebut, dan jelaskan satu keuntungan konkret dari mengikutinya di sini.
 
 ## E. Kriteria Penilaian
 

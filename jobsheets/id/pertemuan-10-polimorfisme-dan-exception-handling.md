@@ -74,7 +74,7 @@ Perbarui `Main.java`:
 
 > ⚠️ **Jika gagal:** apabila `applyInterest()` tidak pernah terpanggil untuk rekening manapun, periksa kembali apakah pengecekan memakai `instanceof InterestBearing` (bukan `instanceof SavingsAccount`), sebab polimorfisme di sini justru sengaja tidak bergantung pada nama kelas konkretnya, hanya pada interface yang diterapkan.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -89,7 +89,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      ![Sketsa AccountNotFoundException dan Bank.findAccount() yang melemparnya](../assets/uml/p10-tugas-accountnotfound.png){width=60%}
 
      Buktikan dengan memanggil `findAccount()` di `Main.java` untuk satu nomor rekening yang ada dan satu yang tidak ada, masing-masing dibungkus `try`/`catch`.
-  3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa mengubah `findAccount()` agar melempar exception, dibandingkan tetap mengembalikan `null`, membuat kode pemanggil lebih aman? (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa perbedaan ini penting apabila suatu hari Bank Mini menambah jenis rekening berbunga baru selain `SavingsAccount`.
+  3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa mengubah `findAccount()` agar melempar exception, dibandingkan tetap mengembalikan `null`, membuat kode pemanggil lebih aman?
+     - (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa perbedaan ini penting apabila suatu hari Bank Mini menambah jenis rekening berbunga baru selain `SavingsAccount`.
 
 ## E. Kriteria Penilaian
 

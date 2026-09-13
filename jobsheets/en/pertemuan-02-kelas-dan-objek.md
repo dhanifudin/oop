@@ -157,7 +157,9 @@ Submit the following according to the format requested by the instructor:
      Demonstrate this by creating two `Account` objects in `Main`, calling `transferTo` from one to the other, then printing both:
 
      ![Main.java testing transferTo between two Account objects](../assets/code/pertemuan-02/p02-tugas-main.png){width=75%}
-  2. Answer briefly (2 to 3 sentences for each question): (a) what is the difference between an object and a reference to an object? (b) precisely when does a class's constructor run?
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) what is the difference between an object and a reference to an object?
+     - (b) precisely when does a class's constructor run?
 
 ## E. Grading Criteria
 

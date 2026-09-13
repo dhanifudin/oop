@@ -75,14 +75,16 @@ Jalankan kembali proyek.
 
 > ⚠️ **Jika gagal:** jika hanya baris pertama yang tampil atau muncul galat `';' expected`, periksa apakah tanda titik koma di akhir setiap pernyataan `System.out.println(...)` sudah lengkap.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 3.
 - **Tugas mandiri:**
   1. Ganti baris kedua pada `Main.java` sehingga menampilkan namamu sendiri, lalu jalankan ulang dan sertakan screenshot hasilnya.
-  2. Jawab singkat (2-3 kalimat per pertanyaan): (a) apa perbedaan antara proses compile dan proses run pada Java? (b) apa yang terjadi jika nama berkas `.java` tidak sama dengan nama class public di dalamnya?
+  2. Jawab singkat (2-3 kalimat per pertanyaan):
+     - (a) apa perbedaan antara proses compile dan proses run pada Java?
+     - (b) apa yang terjadi jika nama berkas `.java` tidak sama dengan nama class public di dalamnya?
 
 ## E. Kriteria Penilaian
 

@@ -57,7 +57,7 @@ Karena constructor kini mewajibkan data lengkap, perbarui pengujian di `Main.jav
 
 > **Catatan.** `accountNumber` sengaja hanya diberi getter, tanpa setter, mengikuti pola atribut read-only dari slide konsep. Nilainya ditetapkan sekali lewat constructor dan tidak pernah berubah lagi.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -70,7 +70,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      Buktikan dengan membuat satu `Account` bersaldo 1000000 dan batas harian 200000 di `Main`, lalu coba tarik 300000 (harus ditolak) dan 150000 (harus berhasil):
 
      ![Main.java menguji dailyWithdrawalLimit](../assets/code/pertemuan-03/p03-tugas-main.png){width=70%}
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa mengembalikan nilai `boolean` dari `deposit()`/`withdraw()` lebih aman dibandingkan tidak memberi tahu pemanggil sama sekali ketika nilainya ditolak? (b) sebutkan satu atribut pada `Account` yang menurutmu sebaiknya dibuat read-only (getter tanpa setter), dan jelaskan alasannya.
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa mengembalikan nilai `boolean` dari `deposit()`/`withdraw()` lebih aman dibandingkan tidak memberi tahu pemanggil sama sekali ketika nilainya ditolak?
+     - (b) sebutkan satu atribut pada `Account` yang menurutmu sebaiknya dibuat read-only (getter tanpa setter), dan jelaskan alasannya.
 
 ## E. Kriteria Penilaian
 

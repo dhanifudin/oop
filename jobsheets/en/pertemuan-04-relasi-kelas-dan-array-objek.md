@@ -77,7 +77,9 @@ Submit the following according to the format requested by the instructor:
      ![Bank.java with findAccountsByOwnerName added](../assets/code/pertemuan-04/p04-tugas-bank.png){width=65%}
 
      Demonstrate this by creating one customer named "Nadia" who holds two `Account` objects, another customer with one `Account`, adding all three to `Bank`, then calling `findAccountsByOwnerName("Nadia")` and printing the count and contents of the result.
-  2. Answer briefly (2 to 3 sentences for each question): (a) why is the `Account`-`Customer` relationship called an association, rather than an aggregation or composition? (b) imagine a `Bank` object is removed from memory. In your view, should the `Account` objects that were added to it be removed along with it, or should they still be able to stand on their own? What does your answer mean for the kind of relationship between `Bank` and `Account`?
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) why is the `Account`-`Customer` relationship called an association, rather than an aggregation or composition?
+     - (b) imagine a `Bank` object is removed from memory. In your view, should the `Account` objects that were added to it be removed along with it, or should they still be able to stand on their own? What does your answer mean for the kind of relationship between `Bank` and `Account`?
 
 ## E. Grading Criteria
 

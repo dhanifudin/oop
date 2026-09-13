@@ -115,7 +115,7 @@ Panggil `configureSelectionListener()` di constructor, SETELAH `loadAccounts()`,
 
 > ⚠️ **Jika gagal:** apabila tombol Deposit/Withdraw tetap bisa diklik walau belum ada baris terpilih, periksa properti **enabled** kedua tombol sudah diatur `false` di Matisse, dan apakah `configureSelectionListener()` benar-benar dipanggil di constructor. Apabila mengklik Cancel pada dialog input jumlah malah menampilkan dialog "Amount must be a number", periksa apakah method memeriksa `input == null` (Cancel) SEBELUM mencoba mem-parse isiannya.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -125,7 +125,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
      ![BankMiniFrame.java, processMonthEndButtonActionPerformed](../assets/code/pertemuan-14/p14-tugas-processmonthend.png){width=68%}
 
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa validasi `NumberFormatException` tetap diperlukan di GUI, padahal dialog input jumlah "seharusnya" hanya diisi angka? (b) Bandingkan bagaimana `InsufficientBalanceException` ditangani di Pertemuan 10 (dicetak ke konsol) dengan di jobsheet ini (ditampilkan sebagai dialog). Apa yang berubah, dan apa yang tetap sama?
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa validasi `NumberFormatException` tetap diperlukan di GUI, padahal dialog input jumlah "seharusnya" hanya diisi angka?
+     - (b) Bandingkan bagaimana `InsufficientBalanceException` ditangani di Pertemuan 10 (dicetak ke konsol) dengan di jobsheet ini (ditampilkan sebagai dialog). Apa yang berubah, dan apa yang tetap sama?
 
 Perhatikan satu hal yang sengaja belum dibahas: siapa pun yang menjalankan `BankMiniFrame` langsung mendapat akses penuh ke seluruh rekening, tanpa login sama sekali. Aplikasi perbankan sungguhan tidak pernah dirilis seperti ini. Pertemuan 15 menutup celah ini dengan menambahkan mekanisme autentikasi yang sesungguhnya, sekaligus alasan konkret pertama mengapa Bank Mini butuh database: kredensial login harus disimpan dan diperiksa dari data yang tersimpan, bukan dari nilai yang ditulis langsung di kode Java.
 

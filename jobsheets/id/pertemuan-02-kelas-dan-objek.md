@@ -144,7 +144,7 @@ Satu kelas dapat menghasilkan banyak objek sekaligus. Ganti isi `Main.java` deng
 
 > ⚠️ **Jika gagal:** `ArrayIndexOutOfBoundsException` menunjukkan bahwa indeks yang diisi tidak tersedia, misalnya `accounts[3]` padahal array tersebut hanya berukuran 3 (indeks yang valid: 0, 1, 2).
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -157,7 +157,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      Buktikan dengan membuat dua objek `Account` di `Main`, memanggil `transferTo` dari salah satunya ke yang lain, lalu mencetak keduanya:
 
      ![Main.java menguji transferTo antar dua Account](../assets/code/pertemuan-02/p02-tugas-main.png){width=75%}
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) apa perbedaan antara objek dengan referensi ke objek? (b) kapan tepatnya konstruktor sebuah kelas dijalankan?
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) apa perbedaan antara objek dengan referensi ke objek?
+     - (b) kapan tepatnya konstruktor sebuah kelas dijalankan?
 
 ## E. Kriteria Penilaian
 

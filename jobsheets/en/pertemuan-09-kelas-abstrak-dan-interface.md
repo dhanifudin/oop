@@ -95,7 +95,9 @@ Submit the following according to the format requested by the instructor:
      ![Sketch of Auditable and CheckingAccount, methods to implement with no body](../assets/uml/p09-tugas-auditable.png){width=60%}
 
      Demonstrate this by calling `auditLog()` on both `CheckingAccount` objects already in `Main.java` and printing the result.
-  2. Answer briefly (2 to 3 sentences for each question): (a) why does `applyInterest()` fit better as interface `InterestBearing`, compared to an abstract method placed directly in `Account`? (b) `SavingsAccount` now has two "contracts" at once, inheriting `Account` (an abstract class) and implementing `InterestBearing` (an interface). What is the fundamental difference between these two kinds of contract?
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) why does `applyInterest()` fit better as interface `InterestBearing`, compared to an abstract method placed directly in `Account`?
+     - (b) `SavingsAccount` now has two "contracts" at once, inheriting `Account` (an abstract class) and implementing `InterestBearing` (an interface). What is the fundamental difference between these two kinds of contract?
 
 ## E. Grading Criteria
 

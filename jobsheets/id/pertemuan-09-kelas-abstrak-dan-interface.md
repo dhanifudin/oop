@@ -84,7 +84,7 @@ Perbarui `Main.java`:
 
 > ⚠️ **Jika gagal:** apabila muncul galat `SavingsAccount is not abstract and does not override abstract method applyInterest()`, periksa apakah `implements InterestBearing` dan isi `applyInterest()` sudah ditambahkan bersamaan; sebuah kelas yang menyatakan `implements` tetap wajib mengimplementasikan seluruh method dari interface tersebut.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -95,7 +95,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      ![Sketsa Auditable dan CheckingAccount, method yang perlu diimplementasikan tanpa isi](../assets/uml/p09-tugas-auditable.png){width=60%}
 
      Buktikan dengan memanggil `auditLog()` pada kedua `CheckingAccount` yang sudah ada di `Main.java` dan mencetak hasilnya.
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `applyInterest()` lebih cocok dideklarasikan sebagai interface `InterestBearing`, dibandingkan sebagai method abstrak langsung di `Account`? (b) `SavingsAccount` sekarang punya dua "kontrak" sekaligus, yaitu mewarisi `Account` (abstract class) dan meng-implement `InterestBearing` (interface). Apa perbedaan mendasar antara kedua jenis kontrak ini?
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa `applyInterest()` lebih cocok dideklarasikan sebagai interface `InterestBearing`, dibandingkan sebagai method abstrak langsung di `Account`?
+     - (b) `SavingsAccount` sekarang punya dua "kontrak" sekaligus, yaitu mewarisi `Account` (abstract class) dan meng-implement `InterestBearing` (interface). Apa perbedaan mendasar antara kedua jenis kontrak ini?
 
 ## E. Kriteria Penilaian
 

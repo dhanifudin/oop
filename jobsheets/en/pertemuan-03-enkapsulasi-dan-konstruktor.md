@@ -70,7 +70,9 @@ Submit the following according to the format requested by the instructor:
      Demonstrate this by creating one `Account` with a balance of 1000000 and a daily limit of 200000 in `Main`, then try withdrawing 300000 (must be rejected) and 150000 (must succeed):
 
      ![Main.java testing dailyWithdrawalLimit](../assets/code/pertemuan-03/p03-tugas-main.png){width=70%}
-  2. Answer briefly (2 to 3 sentences for each question): (a) why is returning a `boolean` value from `deposit()`/`withdraw()` safer than not informing the caller at all when a value is rejected? (b) name one attribute on `Account` that you think should be made read-only (getter without setter), and explain your reasoning.
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) why is returning a `boolean` value from `deposit()`/`withdraw()` safer than not informing the caller at all when a value is rejected?
+     - (b) name one attribute on `Account` that you think should be made read-only (getter without setter), and explain your reasoning.
 
 ## E. Grading Criteria
 

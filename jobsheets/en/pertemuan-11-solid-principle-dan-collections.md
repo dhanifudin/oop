@@ -141,13 +141,9 @@ Update `Main.java`:
 
 ![CheckingAccount.java overriding canWithdraw for overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
 
-Prove it directly from the command line, not just by reading the code:
+Prove it directly by opening `Account.java` and `Bank.java` in your editor, then use Find (Ctrl+F, or Find on NetBeans) to search for the words `SavingsAccount` and `CheckingAccount` in both files:
 
-```bash
-grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id/ac/polinema/Bank.java
-```
-
-> ✅ **Checkpoint:** both `grep` results above show `0`. `Account.java` and `Bank.java` never name either concrete class at all, even though both must process `SavingsAccount` and `CheckingAccount` differently. This is the **Open/Closed Principle**: a new withdrawal rule is simply written through an override, with no change to `Account`/`Bank`.
+> ✅ **Checkpoint:** the search finds no occurrence of `SavingsAccount` or `CheckingAccount` in either `Account.java` or `Bank.java`. Neither file ever names either concrete class at all, even though both must process `SavingsAccount` and `CheckingAccount` differently. This is the **Open/Closed Principle**: a new withdrawal rule is simply written through an override, with no change to `Account`/`Bank`.
 
 `Bank.processMonthEnd()` and `printAllAccounts()` (the Abstract Class/Interface and Polymorphism topics) call `monthlyFee()` and `printInfo()` polymorphically through the `Account` type, trusting that method's contract is always fulfilled by whatever subclass it is:
 
@@ -159,15 +155,11 @@ grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id
 
 ![InterestBearing.java, a small one-method interface](../assets/code/pertemuan-11/p11-04-interestbearing.png){width=45%}
 
-Prove it again from the command line:
+Prove it again the same way, search for the word `InterestBearing` in `SavingsAccount.java` and in `CheckingAccount.java`:
 
-```bash
-grep -c "InterestBearing" src/id/ac/polinema/SavingsAccount.java src/id/ac/polinema/CheckingAccount.java
-```
+> ✅ **Checkpoint:** `InterestBearing` appears in `SavingsAccount.java` (on the `implements` line), but does NOT appear anywhere in `CheckingAccount.java`. This is the **Interface Segregation Principle**: a small, focused interface, with `CheckingAccount` never forced to implement `applyInterest()`, which would make no sense for it.
 
-> ✅ **Checkpoint:** the `grep` result for `SavingsAccount.java` shows `1` (it implements `InterestBearing`), the result for `CheckingAccount.java` shows `0`. This is the **Interface Segregation Principle**: a small, focused interface, with `CheckingAccount` never forced to implement `applyInterest()`, which would make no sense for it.
-
-> ⚠️ **If it fails:** if a `grep` result expected to be `0` instead shows another number, check again whether `Account.java`/`Bank.java` ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since the Inheritance through Polymorphism topics.
+> ⚠️ **If it fails:** if `SavingsAccount`/`CheckingAccount` turn up in `Account.java`/`Bank.java` from the previous step, check again whether either file ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since the Inheritance through Polymorphism topics.
 
 ## D. Assignment and Deliverables
 
@@ -186,7 +178,10 @@ Submit the following according to the format requested by the instructor:
      Prove both of the following from the program's output, with NO change to a single line of `Account.java` or `Bank.java`:
      - **(Open/Closed + Liskov Substitution)** the line `A004 monthly fee: 0.0` appears among `processMonthEnd()`'s other lines, and `A004 - Budi - balance: 2000000.0` followed by `Account type: Business` appears in `printAllAccounts()`, exactly as `SavingsAccount`/`CheckingAccount` were processed earlier.
      - **(Interface Segregation)** NO `A004 interest applied` line appears, since `BusinessAccount` does not implement `InterestBearing`.
-  2. Answer briefly (2 to 3 sentences for each question): (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why. (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence. (c) Sometime later (the Persistence with JDBC and an Authentication Mechanism topic), `InMemoryAccountRepository` will be replaced with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why.
+     - (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence.
+     - (c) Sometime later (the Persistence with JDBC and an Authentication Mechanism topic), `InMemoryAccountRepository` will be replaced with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
 
 ## E. Grading Criteria
 

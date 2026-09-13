@@ -72,7 +72,7 @@ Tanpa mengubah satu baris pun kode `Bank`, kelas ini sudah bisa menyimpan `Savin
 
 > ⚠️ **Jika gagal:** apabila muncul galat `incompatible types` saat `addAccount(acc1)` dipanggil, periksa apakah parameter `addAccount` di `Bank` bertipe `Account`, bukan tipe subclass tertentu.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 

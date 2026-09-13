@@ -89,7 +89,9 @@ Submit the following according to the format requested by the instructor:
      ![Sketch of AccountNotFoundException and the Bank.findAccount() that throws it](../assets/uml/p10-tugas-accountnotfound.png){width=60%}
 
      Prove it by calling `findAccount()` in `Main.java` for one account number that exists and one that does not, each wrapped in `try`/`catch`.
-  3. Answer briefly (2 to 3 sentences for each question): (a) why does changing `findAccount()` to throw an exception, rather than still returning `null`, make the calling code safer? (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why this distinction matters if Bank Mini someday adds a new interest-bearing account kind besides `SavingsAccount`.
+  3. Answer briefly (2 to 3 sentences for each question):
+     - (a) why does changing `findAccount()` to throw an exception, rather than still returning `null`, make the calling code safer?
+     - (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why this distinction matters if Bank Mini someday adds a new interest-bearing account kind besides `SavingsAccount`.
 
 ## E. Grading Criteria
 

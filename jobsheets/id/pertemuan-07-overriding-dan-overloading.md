@@ -88,7 +88,7 @@ Perbarui `Main.java` untuk memanggil versi baru ini:
 
 > ⚠️ **Jika gagal:** apabila muncul galat `reference to deposit is ambiguous`, periksa apakah kedua method `deposit` benar-benar berbeda daftar parameternya (jumlah atau tipe), bukan sekadar berbeda nama parameter.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 

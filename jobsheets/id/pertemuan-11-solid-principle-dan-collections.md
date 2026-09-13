@@ -141,13 +141,9 @@ Perbarui `Main.java`:
 
 ![CheckingAccount.java meng-override canWithdraw untuk overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
 
-Buktikan langsung lewat baris perintah, bukan sekadar membaca kode:
+Buktikan langsung dengan membuka `Account.java` dan `Bank.java` di editor, lalu gunakan fitur Cari (Ctrl+F, atau Find pada NetBeans) untuk mencari kata `SavingsAccount` dan `CheckingAccount` di kedua berkas tersebut:
 
-```bash
-grep -c "SavingsAccount\|CheckingAccount" src/id/ac/polinema/Account.java src/id/ac/polinema/Bank.java
-```
-
-> ✅ **Checkpoint:** kedua hasil `grep` di atas menunjukkan `0`. `Account.java` dan `Bank.java` tidak pernah menyebut nama kelas konkretnya sama sekali, padahal keduanya harus memproses `SavingsAccount` dan `CheckingAccount` secara berbeda. Inilah **Open/Closed Principle**: aturan penarikan baru cukup ditulis lewat override, tanpa mengubah `Account`/`Bank`.
+> ✅ **Checkpoint:** pencarian tidak menemukan satu pun kemunculan `SavingsAccount` maupun `CheckingAccount` di `Account.java` atau `Bank.java`. Kedua berkas ini tidak pernah menyebut nama kelas konkretnya sama sekali, padahal keduanya harus memproses `SavingsAccount` dan `CheckingAccount` secara berbeda. Inilah **Open/Closed Principle**: aturan penarikan baru cukup ditulis lewat override, tanpa mengubah `Account`/`Bank`.
 
 Method `Bank.processMonthEnd()` dan `printAllAccounts()` (topik Abstract Class/Interface dan Polimorfisme) memanggil `monthlyFee()` dan `printInfo()` secara polimorfik lewat tipe `Account`, memercayai kontrak method itu selalu terpenuhi oleh subclass mana pun:
 
@@ -159,17 +155,13 @@ Method `Bank.processMonthEnd()` dan `printAllAccounts()` (topik Abstract Class/I
 
 ![InterestBearing.java, interface kecil satu method](../assets/code/pertemuan-11/p11-04-interestbearing.png){width=45%}
 
-Buktikan lagi lewat baris perintah:
+Buktikan lagi dengan cara yang sama, cari kata `InterestBearing` di `SavingsAccount.java` dan di `CheckingAccount.java`:
 
-```bash
-grep -c "InterestBearing" src/id/ac/polinema/SavingsAccount.java src/id/ac/polinema/CheckingAccount.java
-```
+> ✅ **Checkpoint:** `InterestBearing` muncul di `SavingsAccount.java` (pada baris `implements`), tetapi TIDAK muncul sama sekali di `CheckingAccount.java`. Inilah **Interface Segregation Principle**: interface kecil dan fokus, `CheckingAccount` tidak pernah dipaksa mengimplementasikan `applyInterest()` yang tidak masuk akal baginya.
 
-> ✅ **Checkpoint:** hasil `grep` untuk `SavingsAccount.java` menunjukkan `1` (meng-implement `InterestBearing`), hasil untuk `CheckingAccount.java` menunjukkan `0`. Inilah **Interface Segregation Principle**: interface kecil dan fokus, `CheckingAccount` tidak pernah dipaksa mengimplementasikan `applyInterest()` yang tidak masuk akal baginya.
+> ⚠️ **Jika gagal:** apabila `SavingsAccount`/`CheckingAccount` justru muncul di `Account.java`/`Bank.java` pada langkah sebelumnya, periksa kembali apakah kedua berkas itu pernah menuliskan nama kelas konkret (mis. `if (acc instanceof SavingsAccount)`) alih-alih memakai method polimorfik/pengecekan `instanceof` lewat interface seperti seharusnya sejak topik Inheritance hingga Polimorfisme.
 
-> ⚠️ **Jika gagal:** apabila hasil `grep` yang diharapkan `0` justru menunjukkan angka lain, periksa kembali apakah `Account.java`/`Bank.java` pernah menuliskan nama kelas konkret (mis. `if (acc instanceof SavingsAccount)`) alih-alih memakai method polimorfik/pengecekan `instanceof` lewat interface seperti seharusnya sejak topik Inheritance hingga Polimorfisme.
-
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -186,7 +178,10 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      Buktikan dua hal berikut dari output program, TANPA mengubah satu baris pun `Account.java` atau `Bank.java`:
      - **(Open/Closed + Liskov Substitution)** baris `A004 monthly fee: 0.0` muncul di antara baris `processMonthEnd()` yang lain, dan `A004 - Budi - balance: 2000000.0` diikuti `Account type: Business` muncul di `printAllAccounts()`, persis seperti `SavingsAccount`/`CheckingAccount` diproses sebelumnya.
      - **(Interface Segregation)** TIDAK ADA baris `A004 interest applied` yang muncul, sebab `BusinessAccount` tidak meng-implement `InterestBearing`.
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java`/`Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa. (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa `BusinessAccount` otomatis diperlakukan benar (tidak dikenai bunga) tanpa `Bank.java` perlu tahu apa pun tentang keberadaannya. (c) Suatu saat nanti (topik Persistensi dengan JDBC dan Mekanisme Autentikasi), `InMemoryAccountRepository` akan diganti `JdbcAccountRepository` yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java`/`Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa.
+     - (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa `BusinessAccount` otomatis diperlakukan benar (tidak dikenai bunga) tanpa `Bank.java` perlu tahu apa pun tentang keberadaannya.
+     - (c) Suatu saat nanti (topik Persistensi dengan JDBC dan Mekanisme Autentikasi), `InMemoryAccountRepository` akan diganti `JdbcAccountRepository` yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
 
 ## E. Kriteria Penilaian
 

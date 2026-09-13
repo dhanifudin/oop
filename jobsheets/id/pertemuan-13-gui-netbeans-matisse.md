@@ -92,14 +92,16 @@ Perbarui `Main.java` supaya menjalankan `BankMiniFrame`, bukan lagi mencetak ke 
 
 > ⚠️ **Jika gagal:** apabila tabel tampil kosong, periksa apakah `loadAccounts()` benar-benar dipanggil di constructor SETELAH `seedSampleAccounts()`, dan apakah `accountTable.getModel()` di-cast ke `DefaultTableModel` (bukan `TableModel` biasa, yang tidak memiliki method `addRow`/`setRowCount`).
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot jendela `BankMiniFrame` setelah Langkah 2 dijalankan.
 - **Tugas mandiri:**
   1. Tambahkan satu kolom baru pada tabel, **Type**, menampilkan `"Savings"` atau `"Checking"` sesuai jenis rekening (gunakan `instanceof` seperti dipelajari pada Pertemuan 10).
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `Bank.getAllAccounts()` mengembalikan `Collection<Account>`, bukan langsung mencetaknya seperti `printAllAccounts()`? (b) Apa yang akan terjadi pada kode `BankMiniFrame` apabila suatu hari `InMemoryAccountRepository` diganti implementasi lain (mis. tersambung ke database)? Kaitkan jawabanmu dengan Dependency Inversion Principle yang dipelajari pada Pertemuan 11.
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa `Bank.getAllAccounts()` mengembalikan `Collection<Account>`, bukan langsung mencetaknya seperti `printAllAccounts()`?
+     - (b) Apa yang akan terjadi pada kode `BankMiniFrame` apabila suatu hari `InMemoryAccountRepository` diganti implementasi lain (mis. tersambung ke database)? Kaitkan jawabanmu dengan Dependency Inversion Principle yang dipelajari pada Pertemuan 11.
 
 ## E. Kriteria Penilaian
 

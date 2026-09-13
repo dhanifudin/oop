@@ -96,7 +96,7 @@ Setelah menyelesaikan jobsheet ini, kamu mampu:
 
 ...
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 

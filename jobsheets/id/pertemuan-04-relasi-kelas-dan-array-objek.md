@@ -66,7 +66,7 @@ Perbarui `Main.java` agar membuat dua rekening dan mengelolanya lewat `Bank`:
 
 > ⚠️ **Jika gagal:** apabila `findAccount(...)` selalu mengembalikan `null` walaupun nomor rekeningnya ada, periksa apakah perbandingan menggunakan `.equals(...)`, bukan `==`, karena `==` pada `String` membandingkan referensi, bukan isi teksnya.
 
-## D. Tugas dan Deliverable
+## D. Tugas dan Hasil Kerja
 
 Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
@@ -77,7 +77,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      ![Bank.java dengan tambahan findAccountsByOwnerName](../assets/code/pertemuan-04/p04-tugas-bank.png){width=65%}
 
      Buktikan dengan membuat satu customer bernama "Nadia" yang memiliki dua `Account`, satu customer lain dengan satu `Account`, memasukkan ketiganya ke `Bank`, lalu memanggil `findAccountsByOwnerName("Nadia")` dan mencetak jumlah serta isi hasilnya.
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa relasi `Account`-`Customer` disebut association, bukan aggregation atau composition? (b) bayangkan objek `Bank` dihapus dari memori. Menurutmu, apakah objek `Account` yang pernah ditambahkan ke dalamnya seharusnya ikut terhapus, atau tetap bisa berdiri sendiri? Apa maksud jawabanmu terhadap jenis relasi `Bank`-`Account`?
+  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
+     - (a) mengapa relasi `Account`-`Customer` disebut association, bukan aggregation atau composition?
+     - (b) bayangkan objek `Bank` dihapus dari memori. Menurutmu, apakah objek `Account` yang pernah ditambahkan ke dalamnya seharusnya ikut terhapus, atau tetap bisa berdiri sendiri? Apa maksud jawabanmu terhadap jenis relasi `Bank`-`Account`?
 
 ## E. Kriteria Penilaian
 

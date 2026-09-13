@@ -125,7 +125,9 @@ Submit the following according to the format requested by the instructor:
 
      ![BankMiniFrame.java, processMonthEndButtonActionPerformed](../assets/code/pertemuan-14/p14-tugas-processmonthend.png){width=68%}
 
-  2. Answer briefly (2 to 3 sentences for each question): (a) why is `NumberFormatException` validation still needed in the GUI, even though the amount input dialog "should" only ever be filled with a number? (b) Compare how `InsufficientBalanceException` was handled in Meeting 10 (printed to the console) with how it is handled in this jobsheet (displayed as a dialog). What changed, and what stayed the same?
+  2. Answer briefly (2 to 3 sentences for each question):
+     - (a) why is `NumberFormatException` validation still needed in the GUI, even though the amount input dialog "should" only ever be filled with a number?
+     - (b) Compare how `InsufficientBalanceException` was handled in Meeting 10 (printed to the console) with how it is handled in this jobsheet (displayed as a dialog). What changed, and what stayed the same?
 
 Note one thing deliberately left undiscussed so far: anyone running `BankMiniFrame` gets full access to every account, with no login at all. A real banking application is never released like this. Meeting 15 closes this gap by adding a genuine authentication mechanism, and along with it, the first concrete reason Bank Mini needs a database: login credentials must be stored and checked against stored data, not values written directly in the Java code.
 
