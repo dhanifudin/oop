@@ -71,7 +71,7 @@ Satu hal penting yang mudah terlewat: penyimpanan in-memory "menyimpan" perubaha
 
 ![BankMiniFrame.java, depositButtonActionPerformed dan withdrawButtonActionPerformed memanggil saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-savecalls.png){width=75%}
 
-> ✅ **Checkpoint:** jalankan **Run Project** (F6), lakukan **Deposit** pada salah satu rekening, lalu **tutup aplikasi sepenuhnya** dan jalankan ulang. Saldo yang baru saja diubah tetap tampil, tidak kembali ke nilai awal, bukti bahwa data benar-benar tersimpan di berkas `bankmini.db`, bukan hanya di memori selama aplikasi berjalan.
+> ✅ **Checkpoint:** jalankan **Run Project** (F6), pilih salah satu rekening di tabel, klik **Deposit...**, lalu isi dialog input jumlahnya. Setelah saldo bertambah, **tutup aplikasi sepenuhnya** dan jalankan ulang. Saldo yang baru saja diubah tetap tampil, tidak kembali ke nilai awal, bukti bahwa data benar-benar tersimpan di berkas `bankmini.db`, bukan hanya di memori selama aplikasi berjalan.
 
 > ⚠️ **Jika gagal:** apabila saldo kembali ke nilai awal setiap kali aplikasi dijalankan ulang, periksa dua kemungkinan: (1) `bank.saveAccount(account)` benar-benar dipanggil setelah `account.deposit(amount)`/`account.withdraw(amount)`, bukan hanya `loadAccounts()`; (2) `seedSampleAccountsIfEmpty()` memeriksa `bank.getAllAccounts().isEmpty()` sebelum menambah rekening contoh, bukan menambahkannya tanpa syarat.
 
@@ -109,7 +109,7 @@ Terakhir, `Main.java` menjalankan `LoginFrame` lebih dulu, bukan langsung membuk
 
 ![Main.java menjalankan LoginFrame](../assets/code/pertemuan-15/p15-02-main.png){width=68%}
 
-![Jendela BankMiniFrame setelah login berhasil](../assets/screenshots/pertemuan-15/p15-bankmini-after-login.png){width=60%}
+![Mock-up jendela BankMiniFrame setelah login berhasil](../assets/uml/p14-window-selected.png){width=60%}
 
 Diagram berikut merangkum alur aplikasi Bank Mini secara utuh sampai titik ini, dari `Main.java` sampai transaksi di `BankMiniFrame`:
 
@@ -135,7 +135,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
      ![JdbcUserRepository.java, dua pengguna contoh](../assets/code/pertemuan-15/p15-tugas-seconduser.png){width=68%}
 
-     ![Jendela BankMiniFrame menampilkan username pada judul setelah login sebagai teller2](../assets/screenshots/pertemuan-15/p15-bankmini-tugas-login.png){width=60%}
+     ![Mock-up jendela BankMiniFrame menampilkan username pada judul setelah login sebagai teller2](../assets/uml/p15-window-logged-in.png){width=60%}
 
   3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `seedSampleAccountsIfEmpty()` dan `seedDefaultUserIfEmpty()` sama-sama memeriksa kondisi kosong sebelum menambah data, apa yang terjadi bila pengecekan itu dihapus? (b) `UserRepository` dan `AccountRepository` adalah dua interface yang berbeda, tetapi keduanya mengikuti pola desain yang sama. Sebutkan pola tersebut, dan jelaskan satu keuntungan konkret dari mengikutinya di sini.
 

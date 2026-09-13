@@ -41,5 +41,20 @@ echo "==> jobsheets/assets/uml/p15-persistence-restart.png (from persistence-res
 rsvg-convert -w 1400 "$SRC/application-flow.svg" -o jobsheets/assets/uml/p15-application-flow.png
 echo "==> jobsheets/assets/uml/p15-application-flow.png (from application-flow.svg)"
 
+# GUI mockups (hand-drawn, not real screenshots) for BankMiniFrame's
+# dialog-based Add Account flow and prevention-by-design button states.
+# Real screenshots need a live X display to capture (see
+# conventions/bank-mini.md); this sandbox has none, so these SVG mockups
+# stand in for jobsheets/assets/screenshots/pertemuan-14 and pertemuan-15
+# until real screenshots can be recaptured on a machine with a display.
+rsvg-convert -w 1400 "$SRC/bank-mini-add-account-dialog.svg" -o jobsheets/assets/uml/p14-add-account-dialog.png
+echo "==> jobsheets/assets/uml/p14-add-account-dialog.png (from bank-mini-add-account-dialog.svg)"
+
+rsvg-convert -w 1400 "$SRC/bank-mini-window-selected.svg" -o jobsheets/assets/uml/p14-window-selected.png
+echo "==> jobsheets/assets/uml/p14-window-selected.png (from bank-mini-window-selected.svg)"
+
+rsvg-convert -w 1400 "$SRC/bank-mini-window-logged-in.svg" -o jobsheets/assets/uml/p15-window-logged-in.png
+echo "==> jobsheets/assets/uml/p15-window-logged-in.png (from bank-mini-window-logged-in.svg)"
+
 rsvg-convert -w 1400 "$SRC/login-gate.svg" -o jobsheets/assets/uml/p15-login-gate.png
 echo "==> jobsheets/assets/uml/p15-login-gate.png (from login-gate.svg)"

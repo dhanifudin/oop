@@ -147,7 +147,25 @@ State SETELAH pertemuan tsb, mengikuti pemetaan topik resmi di atas:
   kecil `InterestBearing`/`Auditable`, DIP lewat pengenalan
   `AccountRepository` + `InMemoryAccountRepository` sebagai preview).
 - 13-14: SATU proyek Maven + GUI dibangun berkesinambungan (lihat catatan
-  Matisse di bawah).
+  Matisse di bawah). `BankMiniFrame` HANYA menampilkan `JTable` + satu baris
+  tombol (`Add Account...`, `Deposit...`, `Withdraw...`, `Refresh`,
+  `Process Month End` di tugas); TIDAK ADA form input yang menetap di
+  jendela utama. Tambah rekening lewat `AddAccountDialog` (Pertemuan 14,
+  `JDialog` modal terpisah): nomor rekening dibangkitkan otomatis lewat
+  `Bank.nextAccountNumber()` (`JLabel`, bukan `JTextField`, mencegah
+  duplikat lewat desain, bukan diperiksa-lalu-ditolak setelah diketik).
+  Setor/tarik saldo lewat `JOptionPane.showInputDialog(...)` per aksi
+  (bukan kolom Amount yang menetap); `depositButton`/`withdrawButton`
+  mulai `enabled=false`, disambungkan ke `ListSelectionListener` pada
+  `accountTable` lewat method `configureSelectionListener()` supaya
+  keduanya hanya aktif saat sebuah baris benar-benar terpilih (mencegah
+  klik tanpa rekening lewat desain, bukan lewat dialog peringatan
+  "No account selected" setelah tombol terlanjur diklik). Jangan regresi
+  ke form inline (`formPanel`/`actionsPanel`/`amountField`) atau ke
+  validasi nomor-rekening-duplikat manual saat merevisi deck/jobsheet ini;
+  keduanya sengaja diganti atas permintaan eksplisit pengguna supaya Bank
+  Mini terasa seperti aplikasi nyata yang MENCEGAH galat, bukan hanya
+  melaporkannya.
 - 15 Langkah 1: `JdbcAccountRepository` + SQLite menggantikan
   `InMemoryAccountRepository` (menyambung interface Pertemuan 11, tanpa
   mengubah `Bank.java`), plus `Bank.saveAccount()` (baru) dipanggil ulang
@@ -230,6 +248,21 @@ secara langsung; untuk jalur galat (dialog muncul), cukup percaya pada
 kesamaan strukturnya dengan pola try/catch yang sudah diverifikasi di
 jalur konsol pertemuan sebelumnya, atau jalankan di thread terpisah dengan
 auto-dismiss.
+
+**Teknik ini butuh sebuah X server (nyata atau virtual/Xvfb) berjalan.**
+Sandbox sesi ini TIDAK memilikinya (`No X11 DISPLAY variable was set`,
+tanpa `Xvfb`/`xvfb-run` terpasang, dan menginstal paket sistem baru berada
+di luar wewenang sesi tanpa izin eksplisit), jadi baik `printAll` maupun
+`Robot` sama sekali tidak bisa dipakai di sini, berbeda dari kondisi yang
+terdokumentasi di atas. Pengganti sementara untuk screenshot BankMiniFrame
+pasca revamp dialog Pertemuan 14 (`p14-add-account.png`,
+`p14-deposit-withdraw.png`, `p15-bankmini-after-login.png`,
+`p15-bankmini-tugas-login.png`): mockup SVG tangan
+(`assets/illustrations/src/bank-mini-*.svg`, dirender ke
+`jobsheets/assets/uml/p14-*.png`/`p15-*.png` lewat
+`scripts/render-illustrations.sh`, BUKAN foto asli aplikasi). Bila sesi
+mendatang punya akses X/Xvfb, prioritaskan mengambil screenshot ASLI
+lewat teknik `printAll` di atas dan pensiunkan mockup-mockup ini.
 
 ## Kalau menambah materi di luar cakupan RPS
 

@@ -9,9 +9,6 @@ import id.ac.polinema.repository.InMemoryAccountRepository;
 
 public class BankMiniFrame extends javax.swing.JFrame {
 
-    private static final double DEFAULT_INTEREST_RATE = 0.01;
-    private static final double DEFAULT_OVERDRAFT_LIMIT = 50000;
-
     private Bank bank;
 
     public BankMiniFrame() {
@@ -42,29 +39,12 @@ public class BankMiniFrame extends javax.swing.JFrame {
         }
     }
 
-    private void clearAddAccountFields() {
-        accountNumberField.setText("");
-        ownerField.setText("");
-        phoneField.setText("");
-        initialBalanceField.setText("");
-    }
-
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         accountScrollPane = new javax.swing.JScrollPane();
         accountTable = new javax.swing.JTable();
-        formPanel = new javax.swing.JPanel();
-        accountNumberLabel = new javax.swing.JLabel();
-        accountNumberField = new javax.swing.JTextField();
-        ownerLabel = new javax.swing.JLabel();
-        ownerField = new javax.swing.JTextField();
-        phoneLabel = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
-        typeLabel = new javax.swing.JLabel();
-        accountTypeCombo = new javax.swing.JComboBox<>();
-        initialBalanceLabel = new javax.swing.JLabel();
-        initialBalanceField = new javax.swing.JTextField();
+        buttonsPanel = new javax.swing.JPanel();
         addAccountButton = new javax.swing.JButton();
         refreshButton = new javax.swing.JButton();
 
@@ -81,37 +61,15 @@ public class BankMiniFrame extends javax.swing.JFrame {
         ));
         accountScrollPane.setViewportView(accountTable);
 
-        formPanel.setLayout(new java.awt.GridLayout(3, 4, 6, 6));
+        buttonsPanel.setLayout(new java.awt.GridLayout(1, 2, 6, 6));
 
-        accountNumberLabel.setText("Account Number:");
-        formPanel.add(accountNumberLabel);
-        formPanel.add(accountNumberField);
-
-        ownerLabel.setText("Owner:");
-        formPanel.add(ownerLabel);
-        formPanel.add(ownerField);
-
-        phoneLabel.setText("Phone:");
-        formPanel.add(phoneLabel);
-        formPanel.add(phoneField);
-
-        typeLabel.setText("Type:");
-        formPanel.add(typeLabel);
-        accountTypeCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Savings", "Checking" }));
-        formPanel.add(accountTypeCombo);
-
-        initialBalanceLabel.setText("Initial Balance:");
-        formPanel.add(initialBalanceLabel);
-        formPanel.add(initialBalanceField);
-
-        addAccountButton.setText("Add Account");
+        addAccountButton.setText("Add Account...");
         addAccountButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addAccountButtonActionPerformed(evt);
             }
         });
-        formPanel.add(new javax.swing.JLabel());
-        formPanel.add(addAccountButton);
+        buttonsPanel.add(addAccountButton);
 
         refreshButton.setText("Refresh");
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -119,6 +77,7 @@ public class BankMiniFrame extends javax.swing.JFrame {
                 refreshButtonActionPerformed(evt);
             }
         });
+        buttonsPanel.add(refreshButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,21 +87,16 @@ public class BankMiniFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(accountScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
-                    .addComponent(formPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(refreshButton)))
+                    .addComponent(buttonsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(accountScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                .addComponent(accountScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(formPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(refreshButton)
+                .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -154,59 +108,13 @@ public class BankMiniFrame extends javax.swing.JFrame {
     }
 
     private void addAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        String accountNumber = accountNumberField.getText().trim();
-        String ownerName = ownerField.getText().trim();
-        String phone = phoneField.getText().trim();
-
-        if (accountNumber.isEmpty() || ownerName.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Account number and owner name are required.",
-                    "Invalid input", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        double initialBalance;
-        try {
-            initialBalance = Double.parseDouble(initialBalanceField.getText().trim());
-        } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Initial balance must be a number.",
-                    "Invalid input", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Customer owner = new Customer(ownerName, phone);
-        Account account;
-        if (accountTypeCombo.getSelectedItem().equals("Savings")) {
-            account = new SavingsAccount(accountNumber, owner, initialBalance, DEFAULT_INTEREST_RATE);
-        } else {
-            account = new CheckingAccount(accountNumber, owner, initialBalance, DEFAULT_OVERDRAFT_LIMIT);
-        }
-
-        if (!bank.addAccount(account)) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Account number " + accountNumber + " already exists.",
-                    "Duplicate account", javax.swing.JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        clearAddAccountFields();
+        new AddAccountDialog(this, bank).setVisible(true);
         loadAccounts();
     }
 
     private javax.swing.JScrollPane accountScrollPane;
     private javax.swing.JTable accountTable;
-    private javax.swing.JPanel formPanel;
-    private javax.swing.JLabel accountNumberLabel;
-    private javax.swing.JTextField accountNumberField;
-    private javax.swing.JLabel ownerLabel;
-    private javax.swing.JTextField ownerField;
-    private javax.swing.JLabel phoneLabel;
-    private javax.swing.JTextField phoneField;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JComboBox<String> accountTypeCombo;
-    private javax.swing.JLabel initialBalanceLabel;
-    private javax.swing.JTextField initialBalanceField;
+    private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton addAccountButton;
     private javax.swing.JButton refreshButton;
 

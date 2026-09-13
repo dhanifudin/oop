@@ -115,8 +115,8 @@ Menerima input pengguna dengan aman
 
 - Cara memvalidasi input di titik masuk (boundary): input dari pengguna tidak pernah bisa dipercaya begitu saja
 - Cara menampilkan kegagalan sebagai dialog yang bisa dibaca pengguna, bukan mencetaknya ke konsol atau membiarkan program berhenti paksa
-- Cara membaca baris yang sedang dipilih pada `JTable` untuk menentukan objek mana yang diproses
-- Penerapan pada Bank Mini: form tambah rekening, tombol setor dan tarik saldo pada `BankMiniFrame`
+- Cara membaca baris yang sedang dipilih pada `JTable`, lalu memakainya untuk MENCEGAH aksi tidak valid (menonaktifkan tombol), bukan sekadar menangkapnya setelah terjadi
+- Penerapan pada Bank Mini: dialog tambah rekening dengan nomor otomatis, tombol setor dan tarik saldo pada `BankMiniFrame`
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 14.
@@ -128,7 +128,7 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 - **Sesi 1 (50')**: Validasi input di titik masuk
 - **Sesi 2 (50')**: Baris terpilih pada JTable
-- **Sesi 3 (50')**: Menerapkan form tambah rekening ke Bank Mini
+- **Sesi 3 (50')**: Menerapkan dialog tambah rekening ke Bank Mini
 - **Sesi 4 (50')**: Menerapkan setor dan tarik saldo ke Bank Mini
 
 ---
@@ -175,9 +175,9 @@ Pola yang dipakai sama seperti exception handling di Pertemuan 10: bungkus opera
 ## Contoh Kode: Menangkap NumberFormatException
 
 ```java
-double amount;
+double initialBalance;
 try {
-    amount = Double.parseDouble(amountField.getText().trim());
+    initialBalance = Double.parseDouble(initialBalanceField.getText().trim());
 } catch (NumberFormatException e) {
     // tampilkan dialog, lalu return
 }
@@ -214,7 +214,7 @@ Dialog inilah yang dibaca pengguna, menggantikan pesan galat yang sebelumnya han
 <b>Salah:</b> menampilkan dialog galat lewat <code>JOptionPane.showMessageDialog(...)</code>, lalu tetap melanjutkan kode berikutnya tanpa <code>return;</code>, seolah validasi sudah dianggap "selesai" begitu dialognya tampil.
 </div>
 
-**Benar:** dialog HANYA menampilkan pesan, ia tidak menghentikan alur program dengan sendirinya. Tanpa `return;` setelahnya, kode berikutnya tetap berjalan memakai nilai yang belum tentu valid (mis. variabel `amount` yang gagal di-assign), berisiko menyebabkan exception lain atau data yang salah.
+**Benar:** dialog HANYA menampilkan pesan, ia tidak menghentikan alur program dengan sendirinya. Tanpa `return;` setelahnya, kode berikutnya tetap berjalan memakai nilai yang belum tentu valid (mis. variabel `initialBalance` yang gagal di-assign), berisiko menyebabkan exception lain atau data yang salah.
 
 ---
 
@@ -222,12 +222,12 @@ Dialog inilah yang dibaca pengguna, menggantikan pesan galat yang sebelumnya han
 
 ```java
 try {
-    amount = Double.parseDouble(amountField.getText().trim());
+    initialBalance = Double.parseDouble(initialBalanceField.getText().trim());
 } catch (NumberFormatException e) {
-    JOptionPane.showMessageDialog(this, "Amount must be a number.",
+    JOptionPane.showMessageDialog(this, "Initial balance must be a number.",
             "Invalid input", JOptionPane.ERROR_MESSAGE);
 }
-account.deposit(amount);
+Account account = new SavingsAccount(accountNumber, owner, initialBalance, DEFAULT_INTEREST_RATE);
 ```
 
 Kode ini tidak menulis `return;` di dalam blok `catch`. Jelaskan apa yang bisa salah, lalu sebutkan perbaikannya.
@@ -236,7 +236,7 @@ Kode ini tidak menulis `return;` di dalam blok `catch`. Jelaskan apa yang bisa s
 
 ## Jawaban Latihan
 
-**Masalah:** jika `Double.parseDouble(...)` gagal, `amount` tidak pernah ter-assign (galat kompilasi "variable might not have been initialized"), atau bila sudah punya nilai default sebelumnya, `account.deposit(amount)` tetap dipanggil dengan nilai lama yang tidak dimaksudkan pengguna. **Perbaikan:** tambahkan `return;` di baris terakhir blok `catch`, supaya `account.deposit(amount)` tidak pernah dipanggil ketika input tidak valid.
+**Masalah:** jika `Double.parseDouble(...)` gagal, `initialBalance` tidak pernah ter-assign (galat kompilasi "variable might not have been initialized"), atau bila sudah punya nilai default sebelumnya, `new SavingsAccount(...)` tetap dipanggil dengan nilai lama yang tidak dimaksudkan pengguna. **Perbaikan:** tambahkan `return;` di baris terakhir blok `catch`, supaya rekening baru tidak pernah dibuat memakai `initialBalance` yang tidak valid.
 
 ---
 
@@ -341,33 +341,71 @@ Selanjutnya: Bagian 3 menerapkan validasi input ke form tambah rekening Bank Min
 <!-- _class: divider -->
 
 # Bagian 3
-## Menerapkan Form Tambah Rekening ke Bank Mini
+## Menerapkan Dialog Tambah Rekening ke Bank Mini
 
 Sesi 3 dari 4
 
 ---
 
-## Form Tambah Rekening
+## Dialog Tambah Rekening
 
-![h:260 Form tambah rekening pada BankMiniFrame](../assets/screenshots/pertemuan-14/p14-add-account.png)
+![h:280 Dialog Add Account dengan nomor rekening dibangkitkan otomatis](../assets/illustrations/bank-mini-add-account-dialog.svg)
 
-`BankMiniFrame` kini punya form untuk menambah rekening baru: nomor rekening, nama pemilik, telepon, jenis rekening, dan saldo awal. Sebelum objek `Account` benar-benar dibuat, seluruh isian diperiksa lebih dulu.
+`BankMiniFrame` kini punya sebuah `JDialog` terpisah, `AddAccountDialog`, untuk menambah rekening baru: nomor rekening (dibangkitkan otomatis, tidak diketik), nama pemilik, telepon, jenis rekening, dan saldo awal. Sebelum objek `Account` benar-benar dibuat, seluruh isian yang MASIH bisa diketik diperiksa lebih dulu.
+
+---
+
+## `JDialog`: Jendela Modal
+
+<div class="term-box">
+<code>JFrame</code> cocok untuk jendela utama aplikasi, tetapi kurang tepat untuk form sekali-pakai seperti "tambah rekening": begitu selesai atau dibatalkan, jendelanya semestinya langsung tertutup dan mengembalikan kendali ke jendela pemanggilnya. <code>JDialog</code> dirancang untuk kebutuhan ini. Dialog modal (<code>true</code>) MEMBLOKIR interaksi dengan jendela pemanggilnya selama dialog masih terbuka, persis seperti <code>JOptionPane.showMessageDialog(...)</code> yang sudah dipakai sejak Bagian 1, hanya kali ini tampilannya dirancang sendiri lewat Matisse.
+</div>
+
+---
+
+## Mencegah Duplikat Lewat Desain: Nomor Rekening Otomatis
+
+Versi sebelumnya membiarkan pengguna mengetik nomor rekening sendiri, lalu MEMERIKSA apakah nomornya sudah dipakai. Cara itu tetap membuka peluang galat: pengguna bisa saja tetap mengetik nomor yang bentrok.
+
+<div class="tip-box">
+Pendekatan yang lebih baik: jangan biarkan pengguna mengetik nomor rekening sama sekali. <code>accountNumberValueLabel</code> pada dialog ini adalah sebuah <code>JLabel</code> (bukan <code>JTextField</code>), diisi otomatis dari <code>Bank.nextAccountNumber()</code>. Kelas galat "nomor rekening duplikat" DICEGAH lewat desain, bukan ditangkap setelah terlanjur diketik.
+</div>
+
+---
+
+## Contoh Kode: Bank.nextAccountNumber()
+
+```java
+public String nextAccountNumber() {
+    int max = 0;
+    for (Account acc : repository.findAll()) {
+        String number = acc.getAccountNumber();
+        if (number.length() == 4 && number.charAt(0) == 'A') {
+            max = Math.max(max, Integer.parseInt(number.substring(1)));
+        }
+    }
+    return String.format("A%03d", max + 1);
+}
+```
+
+Nomor rekening tertinggi yang sudah ada dicari lebih dulu, lalu nomor berikutnya dibangkitkan dari situ, mis. `A001`, `A002` menghasilkan `A003`.
 
 ---
 
 ## Contoh Kode: Memeriksa Kolom Wajib
 
 ```java
-String accountNumber = accountNumberField.getText().trim();
 String ownerName = ownerField.getText().trim();
 
-if (accountNumber.isEmpty() || ownerName.isEmpty()) {
+if (ownerName.isEmpty()) {
     JOptionPane.showMessageDialog(this,
-            "Account number and owner name are required.",
+            "Owner name is required.",
             "Invalid input", JOptionPane.ERROR_MESSAGE);
     return;
 }
 ```
+
+Hanya `ownerField` yang wajib diperiksa kosong-tidaknya; `accountNumberValueLabel` tidak pernah kosong maupun salah format, sebab isinya bukan ketikan pengguna.
 
 ---
 
@@ -389,52 +427,46 @@ Pola dari Bagian 1 dipakai persis sama: bungkus `Double.parseDouble(...)` dalam 
 
 ---
 
-## Contoh Kode: Membuat Account Sesuai Jenis yang Dipilih
+## Contoh Kode: Membuat dan Menyimpan Account
 
 ```java
+String accountNumber = accountNumberValueLabel.getText();
 Account account;
 if (accountTypeCombo.getSelectedItem().equals("Savings")) {
     account = new SavingsAccount(accountNumber, owner, initialBalance, DEFAULT_INTEREST_RATE);
 } else {
     account = new CheckingAccount(accountNumber, owner, initialBalance, DEFAULT_OVERDRAFT_LIMIT);
 }
+
+bank.addAccount(account);
+dispose();
 ```
 
-Jenis rekening yang dipilih pada `accountTypeCombo` menentukan subclass `Account` mana yang dibuat, tidak ada yang berbeda dari cara kedua kelas ini dipakai sejak Pertemuan 6.
-
----
-
-## Kesalahan Umum: Tidak Memeriksa Nomor Rekening Duplikat
-
-<div class="warn-box">
-<b>Salah:</b> memanggil <code>bank.addAccount(account)</code> lalu langsung memanggil <code>clearAddAccountFields()</code> dan <code>loadAccounts()</code>, tanpa memeriksa nilai kembalian <code>addAccount(...)</code>.
-</div>
-
-**Benar:** `Bank.addAccount(...)` mengembalikan `false` bila nomor rekening sudah dipakai rekening lain (sejak Pertemuan 11). Nilai kembalian ini wajib diperiksa; bila `false`, tampilkan dialog galat dan `return;`, jangan lanjut membersihkan form seolah rekening berhasil ditambahkan.
+Jenis rekening yang dipilih pada `accountTypeCombo` menentukan subclass `Account` mana yang dibuat, tidak ada yang berbeda dari cara kedua kelas ini dipakai sejak Pertemuan 6. `bank.addAccount(...)` tidak perlu lagi diperiksa nilai kembaliannya seperti versi lama, sebab `nextAccountNumber()` menjamin nomornya selalu baru; `dispose()` menutup dialog, `BankMiniFrame` memuat ulang tabelnya setelahnya.
 
 ---
 
 ## Latihan
 
-Pengguna menambahkan rekening dengan nomor `A001`, yang ternyata sudah dipakai rekening lain di tabel.
+Misalkan `AddAccountDialog` dibuat TIDAK modal (`super(parent, false)`). Pengguna mengklik tombol **Add Account...** dua kali berturut-turut sebelum dialog pertama sempat ditutup, mengisi keduanya, lalu menekan **Save** pada kedua dialog secara cepat.
 
-Apa yang seharusnya ditampilkan aplikasi, dan apa yang TIDAK boleh terjadi pada form maupun tabelnya?
+Apa yang bisa salah? Kaitkan jawabanmu dengan `Bank.nextAccountNumber()`.
 
 ---
 
 ## Jawaban Latihan
 
-Aplikasi menampilkan dialog galat "Account number A001 already exists." lewat `JOptionPane.showMessageDialog(...)`. Yang TIDAK boleh terjadi: form tidak boleh dikosongkan (`clearAddAccountFields()` tidak dipanggil) dan tabel tidak boleh dimuat ulang (`loadAccounts()` tidak dipanggil), sebab tidak ada rekening baru yang benar-benar berhasil ditambahkan.
+Karena tidak modal, `BankMiniFrame` tetap responsif selagi dialog pertama terbuka, sehingga tombol **Add Account...** bisa diklik lagi dan membuka dialog KEDUA. Bila kedua dialog sempat terbuka sebelum salah satunya menyimpan, KEDUANYA memanggil `bank.nextAccountNumber()` saat rekening tertinggi masih sama, menghasilkan nomor rekening yang SAMA persis untuk dua rekening berbeda. Dialog modal (`true`) mencegah ini dengan memblokir interaksi dengan jendela lain, termasuk mengklik tombol **Add Account...** lagi, selama dialog pertama masih terbuka.
 
 ---
 
 ## Rangkuman Bagian 3
 
-- Form tambah rekening memvalidasi kolom wajib dan mem-parse saldo awal, persis pola Bagian 1.
-- Jenis rekening yang dipilih pengguna menentukan subclass `Account` yang dibuat.
-- Nilai kembalian `Bank.addAccount(...)` wajib diperiksa; nomor rekening duplikat harus ditolak dengan dialog, bukan diteruskan seolah berhasil.
+- `AddAccountDialog` adalah jendela modal terpisah; nomor rekening dibangkitkan otomatis lewat `Bank.nextAccountNumber()`, bukan diketik pengguna, mencegah duplikat lewat desain.
+- Validasi kolom wajib dan parsing saldo awal memakai pola yang sama seperti Bagian 1.
+- Sifat modal `JDialog` juga mencegah dua dialog tambah rekening terbuka bersamaan, yang bisa merusak asumsi nomor rekening selalu unik.
 
-Selanjutnya: Bagian 4 menerapkan pola baris-terpilih ke tombol setor dan tarik saldo.
+Selanjutnya: Bagian 4 menerapkan pola baris-terpilih untuk MENCEGAH tombol setor dan tarik saldo diklik tanpa rekening yang dipilih.
 
 ---
 
@@ -449,13 +481,39 @@ Sesi 4 dari 4
 
 ## Setor dan Tarik Saldo
 
-![h:240 Tombol Deposit dan Withdraw pada BankMiniFrame](../assets/screenshots/pertemuan-14/p14-deposit-withdraw.png)
+![h:220 Tombol Deposit dan Withdraw aktif setelah satu baris dipilih](../assets/illustrations/bank-mini-window-selected.svg)
 
-Tombol **Deposit** dan **Withdraw** memakai `getSelectedAccount()`, method bantu yang membaca baris terpilih di tabel lalu mencari objek `Account`-nya lewat `Bank.findAccount()`.
+Tombol **Deposit...** dan **Withdraw...** mulai NONAKTIF (abu-abu). Keduanya baru menyala setelah pengguna memilih satu baris di tabel, lalu memakai `getSelectedAccount()` untuk mencari objek `Account`-nya lewat `Bank.findAccount()`.
 
 <div class="tip-box">
 Tidak satu pun kelas <code>Account</code>, <code>Bank</code>, atau <code>InsufficientBalanceException</code> yang diubah untuk mendukung GUI ini. GUI hanya memanggil method yang sudah ada sejak beberapa pertemuan lalu, lewat cara yang berbeda.
 </div>
+
+---
+
+## Mencegah, Bukan Hanya Menangani: Nonaktifkan Tombol
+
+Versi yang hanya memeriksa `row < 0` lalu menampilkan dialog peringatan ("Select an account first") tetap MEMBIARKAN pengguna mengklik tombol yang belum boleh diklik, baru menanganinya setelah kejadian.
+
+<div class="term-box">
+Pendekatan yang lebih baik: sambungkan status pilihan tabel ke status AKTIF/NONAKTIF tombolnya sendiri lewat <code>ListSelectionListener</code>. Begitu tidak ada baris terpilih, tombol Deposit dan Withdraw dinonaktifkan (<code>setEnabled(false)</code>); pengguna secara FISIK tidak bisa mengkliknya. Galat "belum memilih rekening" dicegah lewat desain antarmuka, bukan ditangkap lewat dialog peringatan setelah tombol terlanjur diklik.
+</div>
+
+---
+
+## Contoh Kode: configureSelectionListener()
+
+```java
+private void configureSelectionListener() {
+    accountTable.getSelectionModel().addListSelectionListener(evt -> {
+        boolean rowSelected = accountTable.getSelectedRow() >= 0;
+        depositButton.setEnabled(rowSelected);
+        withdrawButton.setEnabled(rowSelected);
+    });
+}
+```
+
+Dipanggil sekali di constructor, SETELAH `loadAccounts()`. Satu listener ini mengatur KEDUA tombol sekaligus, setiap kali baris terpilih berubah.
 
 ---
 
@@ -464,15 +522,12 @@ Tidak satu pun kelas <code>Account</code>, <code>Bank</code>, atau <code>Insuffi
 ```java
 private Account getSelectedAccount() {
     int row = accountTable.getSelectedRow();
-    if (row < 0) {
-        return null;
-    }
     String accountNumber = (String) accountTable.getValueAt(row, 0);
     return bank.findAccount(accountNumber);
 }
 ```
 
-Pola dari Bagian 2 (periksa `row < 0`) digabung dengan `Bank.findAccount(...)` yang sudah ada sejak Pertemuan 9.
+Berbeda dari Bagian 2, method ini TIDAK LAGI memeriksa `row < 0`: sebab `depositButton`/`withdrawButton` hanya bisa diklik ketika sebuah baris benar-benar terpilih, `getSelectedRow()` di sini dijamin valid oleh `configureSelectionListener()`.
 
 ---
 
@@ -480,15 +535,25 @@ Pola dari Bagian 2 (periksa `row < 0`) digabung dengan `Bank.findAccount(...)` y
 
 ```java
 Account account = getSelectedAccount();
-if (account == null) {
-    JOptionPane.showMessageDialog(this,
-            "Select an account in the table first.",
-            "No account selected", JOptionPane.WARNING_MESSAGE);
+String input = JOptionPane.showInputDialog(this,
+        "Deposit amount for " + account.getAccountNumber()
+                + " (" + account.getOwner().getName() + "):");
+if (input == null) {
     return;
 }
 ```
 
-`getSelectedAccount()` mengembalikan `null` bila belum ada baris terpilih ATAU nomor rekeningnya tidak ditemukan; keduanya ditangani sekali lewat pengecekan `null` ini.
+`JOptionPane.showInputDialog(...)` menampilkan dialog berisi satu kolom teks, mengembalikan isiannya sebagai `String`, atau `null` bila pengguna menekan Cancel.
+
+---
+
+## Kesalahan Umum: Menyamakan Cancel dengan Isian Kosong
+
+<div class="warn-box">
+<b>Salah:</b> langsung memanggil <code>Double.parseDouble(input.trim())</code> tanpa memeriksa <code>input == null</code> lebih dulu, mengira Cancel akan menghasilkan galat <code>NumberFormatException</code> yang sama seperti isian kosong.
+</div>
+
+**Benar:** menekan Cancel pada `showInputDialog(...)` mengembalikan `null`, BUKAN string kosong `""`. Memanggil `.trim()` pada `null` melempar `NullPointerException`, bukan `NumberFormatException`. Pengecekan `if (input == null) return;` wajib dilakukan SEBELUM blok `try`/`catch` `NumberFormatException`, sebab keduanya adalah kegagalan yang berbeda.
 
 ---
 
@@ -497,7 +562,6 @@ if (account == null) {
 ```java
 try {
     account.withdraw(amount);
-    amountField.setText("");
     loadAccounts();
 } catch (InsufficientBalanceException e) {
     JOptionPane.showMessageDialog(this,
@@ -510,43 +574,33 @@ Persis pola Pertemuan 10: `withdraw()` melempar `InsufficientBalanceException`, 
 
 ---
 
-## Kesalahan Umum: Membersihkan Input Sebelum Operasi Berhasil
-
-<div class="warn-box">
-<b>Salah:</b> menulis <code>amountField.setText(""); account.withdraw(amount);</code>, mengosongkan kolom SEBELUM memastikan <code>withdraw(...)</code> benar-benar berhasil.
-</div>
-
-**Benar:** `amountField.setText("")` dan `loadAccounts()` hanya dipanggil SETELAH `account.withdraw(amount)` selesai tanpa melempar exception, di dalam blok `try` yang sama. Bila `withdraw(...)` gagal, kolom `amountField` tetap berisi nilai yang tadi diketik, supaya pengguna tidak perlu mengetik ulang.
-
----
-
 ## Latihan
 
-`SavingsAccount` dengan saldo Rp 100.000 dipilih di tabel, lalu pengguna mengetik `500000` di kolom Amount dan menekan tombol Withdraw.
+`SavingsAccount` dengan saldo Rp 100.000 dipilih di tabel, lalu pengguna mengklik **Withdraw...**, mengetik `500000` pada dialog input, dan menekan OK.
 
-Apa yang terjadi pada dialog, kolom Amount, dan tabelnya? Jelaskan.
+Apa yang terjadi pada dialog input dan pada tabelnya? Jelaskan alurnya baris demi baris.
 
 ---
 
 ## Jawaban Latihan
 
-`account.withdraw(500000)` melempar `InsufficientBalanceException` (saldo tidak mencukupi). Dialog galat "Withdrawal failed" ditampilkan berisi pesan dari `e.getMessage()`. Kolom `amountField` TETAP berisi `500000`, TIDAK dikosongkan, sebab `setText("")` berada SETELAH `withdraw(...)` di dalam blok `try` yang sama, baris itu tidak pernah tercapai begitu `withdraw(...)` melempar exception. Tabel juga TIDAK dimuat ulang, sebab `loadAccounts()` ada di baris setelahnya, juga tidak pernah tercapai.
+Dialog input SELALU tertutup begitu OK ditekan, sebab `showInputDialog` bukan kolom teks yang menetap di jendela utama. `input` berisi `"500000"`, `Double.parseDouble(...)` berhasil. `account.withdraw(500000)` dipanggil, melempar `InsufficientBalanceException` sebab saldo Rp 100.000 tidak cukup menyisakan `MINIMUM_BALANCE` `SavingsAccount`. Baris `loadAccounts()` TIDAK PERNAH tercapai (dilompati oleh exception), dialog error "Withdrawal failed" muncul menampilkan pesannya, dan tabel tetap menampilkan saldo LAMA, sebab tidak ada perubahan yang berhasil disimpan.
 
 ---
 
 ## Rangkuman Bagian 4
 
-- `getSelectedAccount()` menggabungkan pola baris-terpilih (Bagian 2) dengan `Bank.findAccount()` yang sudah ada sejak Pertemuan 9.
-- `depositButtonActionPerformed` dan `withdrawButtonActionPerformed` sama-sama menangani `account == null` sebelum melanjutkan.
-- Kolom input dan tabel hanya dibersihkan/dimuat ulang SETELAH operasi benar-benar berhasil, bukan sebelum atau tanpa syarat.
+- `configureSelectionListener()` menyambungkan baris terpilih ke status aktif/nonaktif `depositButton`/`withdrawButton`, mencegah klik tanpa rekening terpilih lewat desain, bukan lewat dialog peringatan.
+- `JOptionPane.showInputDialog(...)` mengembalikan `null` (bukan string kosong) bila Cancel ditekan; ini WAJIB diperiksa sebelum `Double.parseDouble(...)`.
+- `withdrawButtonActionPerformed` memakai pola `try`/`catch` yang sama sejak Pertemuan 10 untuk `InsufficientBalanceException`.
 
 ---
 
 ## Rangkuman Pertemuan 14
 
 - Input pengguna divalidasi di titik masuk lewat `try`/`catch`, kegagalannya ditampilkan lewat `JOptionPane`, bukan konsol.
-- `JTable.getSelectedRow()` dan `getValueAt(...)` membaca baris yang sedang dipilih pengguna; indeks `-1` wajib diperiksa dulu.
-- Bank Mini menerapkan keduanya: form tambah rekening tervalidasi, dan tombol setor/tarik saldo memakai baris terpilih lewat `getSelectedAccount()`.
+- Baris terpilih pada `JTable` dipakai untuk MENCEGAH aksi tidak valid lewat `ListSelectionListener` dan `setEnabled(...)`, bukan sekadar menangkapnya setelah tombol terlanjur diklik.
+- Bank Mini menerapkan keduanya: dialog tambah rekening dengan nomor otomatis, dan tombol setor/tarik saldo yang nonaktif sampai sebuah rekening dipilih.
 
 ---
 
@@ -564,4 +618,4 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Diskusi
 
-`depositButtonActionPerformed` dan `withdrawButtonActionPerformed` sama-sama memanggil `getSelectedAccount()` dan menampilkan dialog peringatan bila belum ada baris yang dipilih. Jelaskan dengan kata-katamu sendiri: mengapa validasi "apakah ada baris yang dipilih" ini perlu dilakukan di KEDUA method secara terpisah, dan bagaimana caranya method itu bisa dipakai bersama tanpa menduplikasi logikanya (kaitkan jawabanmu dengan Single Responsibility Principle dari Pertemuan 11).
+`configureSelectionListener()` mengatur status aktif/nonaktif KEDUA tombol (`depositButton` dan `withdrawButton`) sekaligus dari SATU listener, bukan dua listener terpisah di masing-masing tombol. Jelaskan dengan kata-katamu sendiri mengapa pendekatan ini lebih baik dibanding memeriksa `getSelectedRow()` secara terpisah di dalam setiap `depositButtonActionPerformed`/`withdrawButtonActionPerformed` (kaitkan jawabanmu dengan Single Responsibility Principle dari Pertemuan 11).

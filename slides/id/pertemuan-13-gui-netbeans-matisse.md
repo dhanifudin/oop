@@ -277,13 +277,14 @@ Sebelum membuka Matisse, rencanakan dulu form-nya: data apa yang perlu ditampilk
 </div>
 
 ```
-Account Number: [____________]
+Add Account
+Account Number: A003 (otomatis)
 Owner:          [____________]
 Initial Balance:[____________]
-                    [Add Account]
+                 [Save] [Cancel]
 ```
 
-Sketsa sederhana seperti ini sudah cukup untuk menentukan komponen apa saja yang perlu diseret ke Matisse pada Bagian 3, sebelum satu pun komponen benar-benar ditambahkan.
+Sketsa sederhana seperti ini sudah cukup untuk menentukan komponen apa saja yang perlu diseret ke Matisse pada Pertemuan 14 (dialog tambah rekening), sebelum satu pun komponen benar-benar ditambahkan.
 
 ---
 

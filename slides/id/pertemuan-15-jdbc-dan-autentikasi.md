@@ -416,7 +416,6 @@ public void saveAccount(Account account) {
 ```java
 account.deposit(amount);
 bank.saveAccount(account);
-amountField.setText("");
 loadAccounts();
 ```
 

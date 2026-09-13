@@ -29,6 +29,21 @@ public class Bank {
         return repository.findAll();
     }
 
+    public String nextAccountNumber() {
+        int max = 0;
+        for (Account acc : repository.findAll()) {
+            String number = acc.getAccountNumber();
+            if (number.length() == 4 && number.charAt(0) == 'A') {
+                try {
+                    max = Math.max(max, Integer.parseInt(number.substring(1)));
+                } catch (NumberFormatException ignored) {
+                    // account number does not follow the A### pattern, skip it
+                }
+            }
+        }
+        return String.format("A%03d", max + 1);
+    }
+
     public void printAllAccounts() {
         for (Account acc : repository.findAll()) {
             acc.printInfo();
