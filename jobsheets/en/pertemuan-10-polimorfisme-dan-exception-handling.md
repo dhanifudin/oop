@@ -17,7 +17,7 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this meeting continues the `bank-mini` project from Meeting 9.
+- **Project**: this meeting continues the `bank-mini` project from the Abstract Classes and Interfaces topic.
 - **Quick verification** before starting:
   ```bash
   java -version
@@ -64,7 +64,7 @@ Only an account that implements `InterestBearing` needs `applyInterest()`; `Chec
 
 ![Bank.java with method processMonthEnd](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
 
-![Account as an abstract class, SavingsAccount implementing interface InterestBearing](../assets/uml/p09-account-abstract.png){width=72%}
+![Account as an abstract class, SavingsAccount implementing interface InterestBearing](../assets/uml/p10-account-abstract.png){width=72%}
 
 Update `Main.java`:
 
@@ -80,15 +80,13 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the program output after Step 2.
 - **Independent assignment:**
-  1. The bank needs an audit report that only prints accounts implementing `Auditable` (from Meeting 9). Add `Bank.printAuditLog()`, processing every account polymorphically and using `instanceof Auditable` to print `auditLog()` only for the accounts for which it is relevant:
+  1. The bank needs an audit report that only prints accounts implementing `Auditable` (from the Abstract Classes and Interfaces topic). Add `Bank.printAuditLog()`, processing every account polymorphically and using `instanceof Auditable` to print `auditLog()` only for the accounts for which it is relevant. The diagram below is only a sketch of the method to add, NOT finished code; its body is entirely up to you:
 
-     ![Bank.java with method printAuditLog](../assets/code/pertemuan-10/p10-tugas-bank.png){width=68%}
+     ![Sketch of Bank.printAuditLog(), checking Auditable through instanceof](../assets/uml/p10-tugas-auditlog.png){width=55%}
 
-  2. `Bank.findAccount()` has so far returned `null` when an account is not found; the calling code could forget to check for `null` and trigger a `NullPointerException` on the next line. Change it to throw a custom exception `AccountNotFoundException` instead of returning `null`:
+  2. `Bank.findAccount()` has so far returned `null` when an account is not found; the calling code could forget to check for `null` and trigger a `NullPointerException` on the next line. Change it to throw a custom exception `AccountNotFoundException` instead of returning `null`. The diagram below is only a sketch of the structure and the changed method signature, NOT finished code:
 
-     ![AccountNotFoundException.java](../assets/code/pertemuan-10/p10-tugas-accountnotfoundexception.png){width=55%}
-
-     ![Bank.java, findAccount throwing AccountNotFoundException](../assets/code/pertemuan-10/p10-tugas-bank-findaccount.png){width=65%}
+     ![Sketch of AccountNotFoundException and the Bank.findAccount() that throws it](../assets/uml/p10-tugas-accountnotfound.png){width=60%}
 
      Prove it by calling `findAccount()` in `Main.java` for one account number that exists and one that does not, each wrapped in `try`/`catch`.
   3. Answer briefly (2 to 3 sentences for each question): (a) why does changing `findAccount()` to throw an exception, rather than still returning `null`, make the calling code safer? (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why this distinction matters if Bank Mini someday adds a new interest-bearing account kind besides `SavingsAccount`.

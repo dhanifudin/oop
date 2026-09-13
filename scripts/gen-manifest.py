@@ -143,16 +143,18 @@ def rows_p09():
     return [
         (p07("langkah-04"), "Account.java", p09("langkah-01"), "Account.java", "p09-01-account",
          [(1, 3), (58, 59)]),
-        (p04("langkah-02"), "Bank.java", p09("langkah-01"), "Bank.java", "p09-01-bank"),
-        (p07("langkah-02"), "SavingsAccount.java", p09("langkah-01"), "SavingsAccount.java", "p09-01-savingsaccount"),
-        (p07("langkah-03"), "CheckingAccount.java", p09("langkah-01"), "CheckingAccount.java", "p09-01-checkingaccount"),
+        (p04("langkah-02"), "Bank.java", p09("langkah-01"), "Bank.java", "p09-01-bank",
+         [(1, 3), (36, 40)]),
+        (p07("langkah-02"), "SavingsAccount.java", p09("langkah-01"), "SavingsAccount.java", "p09-01-savingsaccount",
+         [(1, 3), (22, 24)]),
+        (p07("langkah-03"), "CheckingAccount.java", p09("langkah-01"), "CheckingAccount.java", "p09-01-checkingaccount",
+         [(1, 4), (21, 24)]),
         (p07("langkah-04"), "Main.java", p09("langkah-01"), "Main.java", "p09-01-main"),
         (None, None, p09("langkah-02"), "InterestBearing.java", "p09-02-interestbearing"),
-        (p09("langkah-01"), "SavingsAccount.java", p09("langkah-02"), "SavingsAccount.java", "p09-02-savingsaccount"),
-        (p09("langkah-01"), "Main.java", p09("langkah-02"), "Main.java", "p09-02-main"),
-        (None, None, p09("tugas"), "Auditable.java", "p09-tugas-auditable"),
-        (p09("langkah-01"), "CheckingAccount.java", p09("tugas"), "CheckingAccount.java", "p09-tugas-checkingaccount",
-         [(1, 3), (26, 29), (36, 36)]),
+        (p09("langkah-01"), "SavingsAccount.java", p09("langkah-02"), "SavingsAccount.java", "p09-02-savingsaccount",
+         [(1, 3), (26, 30)]),
+        (p09("langkah-01"), "Main.java", p09("langkah-02"), "Main.java", "p09-02-main",
+         [(1, 3), (27, 30)]),
         (p09("langkah-02"), "Main.java", p09("tugas"), "Main.java", "p09-tugas-main"),
     ]
 
@@ -170,12 +172,8 @@ def rows_p10():
         (p09("langkah-02"), "Main.java", p10("langkah-01"), "Main.java", "p10-01-main"),
         (p09("langkah-01"), "Bank.java", p10("langkah-02"), "Bank.java", "p10-02-bank",
          [(1, 3), (42, 51)]),
-        (p10("langkah-01"), "Main.java", p10("langkah-02"), "Main.java", "p10-02-main"),
-        (p10("langkah-02"), "Bank.java", p10("tugas"), "Bank.java", "p10-tugas-bank",
-         [(1, 3), (53, 60)]),
-        (None, None, p10("tugas"), "AccountNotFoundException.java", "p10-tugas-accountnotfoundexception"),
-        (p10("langkah-02"), "Bank.java", p10("tugas"), "Bank.java", "p10-tugas-bank-findaccount",
-         [(1, 3), (21, 28)]),
+        (p10("langkah-01"), "Main.java", p10("langkah-02"), "Main.java", "p10-02-main",
+         [(1, 3), (27, 31)]),
     ]
 
 

@@ -17,7 +17,7 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this meeting continues the `bank-mini` project from Meeting 7.
+- **Project**: this meeting continues the `bank-mini` project from the Overriding and Overloading topic.
 - **Quick verification** before starting:
   ```bash
   java -version
@@ -90,11 +90,9 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the program output after Step 2.
 - **Independent assignment:**
-  1. The bank needs an audit trail for accounts at risk of going negative (accounts with overdraft). Add an interface `Auditable`, then apply it to `CheckingAccount`:
+  1. The bank needs an audit trail for accounts at risk of going negative (accounts with overdraft). Add an interface `Auditable`, then apply it to `CheckingAccount`. The diagram below is only a sketch of the method to implement, NOT finished code; the body of `auditLog()` is entirely up to you:
 
-     ![Auditable.java](../assets/code/pertemuan-09/p09-tugas-auditable.png){width=55%}
-
-     ![CheckingAccount.java implementing Auditable](../assets/code/pertemuan-09/p09-tugas-checkingaccount.png){width=65%}
+     ![Sketch of Auditable and CheckingAccount, methods to implement with no body](../assets/uml/p09-tugas-auditable.png){width=60%}
 
      Demonstrate this by calling `auditLog()` on both `CheckingAccount` objects already in `Main.java` and printing the result.
   2. Answer briefly (2 to 3 sentences for each question): (a) why does `applyInterest()` fit better as interface `InterestBearing`, compared to an abstract method placed directly in `Account`? (b) `SavingsAccount` now has two "contracts" at once, inheriting `Account` (an abstract class) and implementing `InterestBearing` (an interface). What is the fundamental difference between these two kinds of contract?

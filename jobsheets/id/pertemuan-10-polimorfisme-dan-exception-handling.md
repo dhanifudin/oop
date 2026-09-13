@@ -17,7 +17,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari Pertemuan 9.
+- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface.
 - **Verifikasi cepat** sebelum memulai:
   ```bash
   java -version
@@ -64,7 +64,7 @@ Hanya rekening yang meng-`implements` `InterestBearing` yang membutuhkan `applyI
 
 ![Bank.java dengan method processMonthEnd](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
 
-![Account sebagai kelas abstrak, SavingsAccount meng-implement interface InterestBearing](../assets/uml/p09-account-abstract.png){width=72%}
+![Account sebagai kelas abstrak, SavingsAccount meng-implement interface InterestBearing](../assets/uml/p10-account-abstract.png){width=72%}
 
 Perbarui `Main.java`:
 
@@ -80,15 +80,13 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 2.
 - **Tugas mandiri:**
-  1. Bank memerlukan laporan audit yang hanya mencetak rekening yang meng-implement `Auditable` (dari Pertemuan 9). Tambahkan `Bank.printAuditLog()`, memproses seluruh rekening secara polimorfik dan memakai `instanceof Auditable` untuk mencetak `auditLog()` hanya pada rekening yang relevan:
+  1. Bank memerlukan laporan audit yang hanya mencetak rekening yang meng-implement `Auditable` (dari topik Kelas Abstrak dan Interface). Tambahkan `Bank.printAuditLog()`, memproses seluruh rekening secara polimorfik dan memakai `instanceof Auditable` untuk mencetak `auditLog()` hanya pada rekening yang relevan. Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
 
-     ![Bank.java dengan method printAuditLog](../assets/code/pertemuan-10/p10-tugas-bank.png){width=68%}
+     ![Sketsa Bank.printAuditLog(), memeriksa Auditable lewat instanceof](../assets/uml/p10-tugas-auditlog.png){width=55%}
 
-  2. `Bank.findAccount()` sejauh ini mengembalikan `null` ketika rekening tidak ditemukan, kode pemanggil bisa lupa memeriksa `null` dan memicu `NullPointerException` di baris berikutnya. Ubah agar melempar exception kustom `AccountNotFoundException` alih-alih mengembalikan `null`:
+  2. `Bank.findAccount()` sejauh ini mengembalikan `null` ketika rekening tidak ditemukan, kode pemanggil bisa lupa memeriksa `null` dan memicu `NullPointerException` di baris berikutnya. Ubah agar melempar exception kustom `AccountNotFoundException` alih-alih mengembalikan `null`. Diagram berikut hanya sketsa struktur dan tanda tangan method yang berubah, BUKAN kode jadi:
 
-     ![AccountNotFoundException.java](../assets/code/pertemuan-10/p10-tugas-accountnotfoundexception.png){width=55%}
-
-     ![Bank.java, findAccount melempar AccountNotFoundException](../assets/code/pertemuan-10/p10-tugas-bank-findaccount.png){width=65%}
+     ![Sketsa AccountNotFoundException dan Bank.findAccount() yang melemparnya](../assets/uml/p10-tugas-accountnotfound.png){width=60%}
 
      Buktikan dengan memanggil `findAccount()` di `Main.java` untuk satu nomor rekening yang ada dan satu yang tidak ada, masing-masing dibungkus `try`/`catch`.
   3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa mengubah `findAccount()` agar melempar exception, dibandingkan tetap mengembalikan `null`, membuat kode pemanggil lebih aman? (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa perbedaan ini penting apabila suatu hari Bank Mini menambah jenis rekening berbunga baru selain `SavingsAccount`.

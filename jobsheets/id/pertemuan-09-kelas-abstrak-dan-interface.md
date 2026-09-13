@@ -17,7 +17,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari Pertemuan 7.
+- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari topik Overriding dan Overloading.
 - **Verifikasi cepat** sebelum memulai:
   ```bash
   java -version
@@ -90,11 +90,9 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 2.
 - **Tugas mandiri:**
-  1. Bank memerlukan jejak audit untuk rekening yang berisiko negatif (rekening dengan overdraft). Tambahkan interface `Auditable`, lalu terapkan pada `CheckingAccount`:
+  1. Bank memerlukan jejak audit untuk rekening yang berisiko negatif (rekening dengan overdraft). Tambahkan interface `Auditable`, lalu terapkan pada `CheckingAccount`. Diagram berikut hanya sketsa method yang perlu diimplementasikan, BUKAN kode jadi, isi `auditLog()` diserahkan sepenuhnya padamu:
 
-     ![Auditable.java](../assets/code/pertemuan-09/p09-tugas-auditable.png){width=55%}
-
-     ![CheckingAccount.java meng-implement Auditable](../assets/code/pertemuan-09/p09-tugas-checkingaccount.png){width=65%}
+     ![Sketsa Auditable dan CheckingAccount, method yang perlu diimplementasikan tanpa isi](../assets/uml/p09-tugas-auditable.png){width=60%}
 
      Buktikan dengan memanggil `auditLog()` pada kedua `CheckingAccount` yang sudah ada di `Main.java` dan mencetak hasilnya.
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `applyInterest()` lebih cocok dideklarasikan sebagai interface `InterestBearing`, dibandingkan sebagai method abstrak langsung di `Account`? (b) `SavingsAccount` sekarang punya dua "kontrak" sekaligus, yaitu mewarisi `Account` (abstract class) dan meng-implement `InterestBearing` (interface). Apa perbedaan mendasar antara kedua jenis kontrak ini?

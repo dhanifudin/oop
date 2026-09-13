@@ -1,0 +1,21 @@
+@startuml p09-tugas-auditable
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+abstract class Account {
+}
+
+interface Auditable {
+  + auditLog() : String
+}
+
+class CheckingAccount {
+  + auditLog() : String
+}
+
+Account <|-- CheckingAccount
+Auditable <|.. CheckingAccount
+@enduml
