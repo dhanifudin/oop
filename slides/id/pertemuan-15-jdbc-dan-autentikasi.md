@@ -17,6 +17,9 @@ style: |
   section.lead h1, section.lead h2, section.lead p {
     color: #fff;
   }
+  section.lead a {
+    color: #bfdbfe;
+  }
   section.divider {
     background: #1d4ed8;
     color: #fff;
@@ -491,7 +494,7 @@ public User findByUsername(String username) {
 
 ![h:220 Jendela LoginFrame kosong sebelum diisi](../assets/screenshots/pertemuan-15/p15-login-screen.png)
 
-`Main.java` kini menjalankan `LoginFrame` lebih dulu, bukan langsung membuka `BankMiniFrame`. `BankMiniFrame` baru terbuka setelah kredensial yang dimasukkan cocok dengan data yang tersimpan di tabel `users`.
+`Main.java` kini menjalankan `LoginFrame` lebih dulu, bukan langsung membuka `BankMiniFrame`, memakai pola `dispose()` + `new NamaFrame().setVisible(true)` dari Pertemuan 13. `BankMiniFrame` baru terbuka setelah kredensial yang dimasukkan cocok dengan data yang tersimpan di tabel `users`.
 
 ---
 
@@ -534,6 +537,14 @@ SHA-256 polos di jobsheet ini murni penyederhanaan untuk latihan. Sistem produks
 
 ---
 
+## Alur Aplikasi Bank Mini Secara Utuh
+
+![h:340 Main.java menjalankan LoginFrame, kredensial tidak valid menampilkan dialog dan tetap di LoginFrame, kredensial valid membuka BankMiniFrame dengan form dan dialog aksinya](../assets/illustrations/application-flow.svg)
+
+Inilah bentuk lengkap alur navigasi antar jendela yang dibangun sejak Pertemuan 13: satu jendela aktif pada satu waktu, berpindah lewat `dispose()` + `new NamaFrame().setVisible(true)`, dengan gerbang login sebagai pemeriksaan sebelum jendela utama boleh diakses.
+
+---
+
 ## Latihan
 
 Pengguna mencoba login dengan username `"admin"` yang TIDAK ADA di tabel `users`.
@@ -570,7 +581,9 @@ Apa yang dikembalikan `userRepository.findByUsername("admin")`, dan pesan apa ya
 
 Deitel, *Java How to Program*, bab JDBC, Security
 
-Oracle Java Tutorials: "JDBC Basics", "MessageDigest Class"
+Oracle Java Tutorials: ["JDBC Basics"](https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html), ["MessageDigest Class"](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/security/MessageDigest.html)
+
+Apache Commons: ["DbUtils: JDBC Utility Component"](https://commons.apache.org/proper/commons-dbutils/)
 
 Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 15
 

@@ -17,6 +17,9 @@ style: |
   section.lead h1, section.lead h2, section.lead p {
     color: #fff;
   }
+  section.lead a {
+    color: #bfdbfe;
+  }
   section.divider {
     background: #1d4ed8;
     color: #fff;
@@ -553,7 +556,7 @@ Apa yang terjadi pada dialog, kolom Amount, dan tabelnya? Jelaskan.
 
 Deitel, *Java How to Program*, bab GUI Components, Exception Handling
 
-Oracle Java Tutorials: "How to Use Tables", "Validating Input"
+Oracle Java Tutorials: ["How to Use Tables"](https://docs.oracle.com/javase/tutorial/uiswing/components/table.html), "Validating Input"
 
 Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 14
 

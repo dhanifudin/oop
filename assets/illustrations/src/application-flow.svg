@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1d4ed8" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrowBlueFlow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrowGreenFlow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowRedFlow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <rect x="370" y="15" width="160" height="50" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+  </g>
+  <text x="450" y="46" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4ed8">Main.java</text>
+
+  <path d="M450,65 L450,100" fill="none" stroke="#1d4ed8" stroke-width="2.2" marker-end="url(#arrowBlueFlow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="350" y="105" width="200" height="60" rx="12" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2.2"/>
+  </g>
+  <text x="450" y="140" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4ed8">LoginFrame</text>
+
+  <path d="M370,165 C300,195 230,215 175,235" fill="none" stroke="#dc2626" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrowRedFlow)"/>
+  <text x="255" y="195" text-anchor="middle" font-size="13.5" fill="#991b1b">tidak valid</text>
+
+  <path d="M530,165 C600,195 660,215 715,235" fill="none" stroke="#16a34a" stroke-width="2.4" marker-end="url(#arrowGreenFlow)"/>
+  <text x="650" y="195" text-anchor="middle" font-size="13.5" fill="#166534">valid</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="65" y="240" width="220" height="70" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2.2"/>
+  </g>
+  <text x="175" y="264" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">Dialog: Invalid</text>
+  <text x="175" y="283" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">username or password</text>
+  <text x="175" y="301" text-anchor="middle" font-size="12" fill="#991b1b">(LoginFrame tetap terbuka)</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="605" y="240" width="220" height="60" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.4"/>
+  </g>
+  <text x="715" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#166534">BankMiniFrame</text>
+
+  <path d="M715,300 L715,335" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#arrowGreenFlow)"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="555" y="340" width="320" height="60" rx="12" fill="#ffffff" stroke="#16a34a" stroke-width="2"/>
+  </g>
+  <text x="715" y="366" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Add Account / Deposit / Withdraw</text>
+  <text x="715" y="386" text-anchor="middle" font-size="12.5" fill="#166534">form dan dialog aksi</text>
+
+  <text x="450" y="30" text-anchor="middle" font-size="12" fill="#64748b"></text>
+</svg>

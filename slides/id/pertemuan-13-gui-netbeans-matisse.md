@@ -17,6 +17,9 @@ style: |
   section.lead h1, section.lead h2, section.lead p {
     color: #fff;
   }
+  section.lead a {
+    color: #bfdbfe;
+  }
   section.divider {
     background: #1d4ed8;
     color: #fff;
@@ -267,6 +270,23 @@ Matisse menyembunyikan detail ini di balik editor visual, tetapi kode yang dihas
 
 ---
 
+## Merencanakan Form Sebelum Membangunnya
+
+<div class="term-box">
+Sebelum membuka Matisse, rencanakan dulu form-nya: data apa yang perlu ditampilkan atau diminta, dan komponen mana yang cocok untuk masing-masing (teks statis pakai <code>JLabel</code>, isian pengguna pakai <code>JTextField</code>, aksi pakai <code>JButton</code>, daftar data pakai <code>JTable</code>).
+</div>
+
+```
+Account Number: [____________]
+Owner:          [____________]
+Initial Balance:[____________]
+                    [Add Account]
+```
+
+Sketsa sederhana seperti ini sudah cukup untuk menentukan komponen apa saja yang perlu diseret ke Matisse pada Bagian 3, sebelum satu pun komponen benar-benar ditambahkan.
+
+---
+
 ## Mengatur Komponen Lewat Panel Properties
 
 Selain menyusun posisi lewat drag-and-drop, Matisse punya panel **Properties** untuk mengatur nilai awal komponen (teks tombol, nama variabel) tanpa menulis kode sama sekali.
@@ -291,6 +311,29 @@ private void initComponents() {
 }
 // </editor-fold>
 ```
+
+---
+
+## Membuka Jendela Lain dari Sebuah Tombol
+
+Sejauh ini baru satu jendela yang pernah dibuat. Aplikasi nyata hampir selalu punya lebih dari satu jendela: jendela login, jendela utama, jendela detail, dan seterusnya.
+
+<div class="term-box">
+Method <code>dispose()</code> menutup jendela SAAT INI dan melepas sumber dayanya. <code>new NamaFrame().setVisible(true)</code> membuat objek jendela lain lalu menampilkannya. Kombinasi keduanya di dalam sebuah event handler adalah pola standar untuk berpindah dari satu jendela ke jendela lain.
+</div>
+
+---
+
+## Contoh Kode: Berpindah ke Jendela Lain
+
+```java
+private void nextButtonActionPerformed(ActionEvent evt) {
+    dispose();
+    new DetailFrame().setVisible(true);
+}
+```
+
+Pola ini dipakai lagi di Pertemuan 15, saat `LoginFrame` berpindah ke `BankMiniFrame` setelah login berhasil.
 
 ---
 
@@ -320,9 +363,9 @@ Apa yang terjadi pada baris yang baru ditambahkan itu? Jelaskan, lalu sebutkan c
 
 ## Rangkuman Bagian 2
 
-- Matisse menyusun layout lewat drag-and-drop, menuliskan kode `GroupLayout`-nya secara otomatis.
-- Kode hasil generate dibungkus blok "Generated Code" dan ditimpa ulang setiap kali desain visual diubah.
-- Kode yang ditulis sendiri (constructor, handler, method bantu) selalu diletakkan di luar blok itu.
+- Rencanakan komponen yang dibutuhkan sebelum membuka Matisse; Matisse menyusun layout lewat drag-and-drop, menuliskan kode `GroupLayout`-nya secara otomatis.
+- Kode hasil generate dibungkus blok "Generated Code" dan ditimpa ulang setiap kali desain visual diubah; kode sendiri selalu ditulis di luar blok itu.
+- Berpindah ke jendela lain memakai `dispose()` diikuti `new NamaFrame().setVisible(true)`, pola yang dipakai lagi di Pertemuan 15 untuk `LoginFrame`.
 
 Selanjutnya: Bagian 3 menerapkan reorganisasi paket ke seluruh kelas Bank Mini yang sudah dibangun.
 
@@ -554,7 +597,9 @@ Sebutkan dua kemungkinan penyebab yang berkaitan dengan URUTAN pemanggilan metho
 
 Deitel, *Java How to Program*, bab GUI Components, Event Handling
 
-Oracle Java Tutorials: "Creating a GUI With Swing", "Writing Event Listeners"
+Oracle Java Tutorials: ["Creating a GUI With Swing"](https://docs.oracle.com/javase/tutorial/uiswing/TOC.html), ["Writing Event Listeners"](https://docs.oracle.com/javase/tutorial/uiswing/events/index.html)
+
+Apache NetBeans: ["Java GUI Applications Learning Trail"](https://netbeans.apache.org/tutorial/main/kb/docs/matisse/) (panduan resmi GUI Builder/Matisse)
 
 Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 13
 
