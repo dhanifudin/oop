@@ -76,6 +76,7 @@ Isi method-method pendukung di tab **Source**:
 
 ![BankMiniFrame.java, addAccountButtonActionPerformed](../assets/code/pertemuan-14/p14-01-bankminiframe-addaccounthandler.png){width=60%}
 
+<!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli (sandbox penulisan tidak punya X server/Xvfb). Ganti dengan screenshot AddAccountDialog sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
 ![Mock-up dialog Add Account dengan nomor rekening A003 terisi otomatis](../assets/uml/p14-add-account-dialog.png){width=55%}
 
 > ✅ **Checkpoint:** jalankan **Run Project** (F6), klik **Add Account...**. Dialog terbuka dengan nomor rekening (mis. `A003`) sudah terisi otomatis dan tidak bisa diketik ulang. Isi nama pemilik dan saldo awal, pilih jenis rekening, lalu klik **Save**. Dialog tertutup dan baris baru muncul di tabel jendela utama.
@@ -107,6 +108,7 @@ Isi kedua method, ditambah satu method bantu untuk membaca rekening yang sedang 
 
 Panggil `configureSelectionListener()` di constructor, SETELAH `loadAccounts()`, supaya listener-nya terpasang sebelum pengguna sempat memilih baris apa pun.
 
+<!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
 ![Mock-up jendela BankMiniFrame dengan satu baris terpilih, tombol Deposit dan Withdraw aktif](../assets/uml/p14-window-selected.png){width=62%}
 
 > ✅ **Checkpoint:** jalankan **Run Project** (F6). Tombol **Deposit...** dan **Withdraw...** tampil abu-abu sampai sebuah baris rekening diklik. Pilih satu baris, kedua tombol menyala; klik **Deposit...**, sebuah dialog input muncul bertuliskan "Deposit amount for A001 (Nadia):"; ketik sebuah angka, saldo pada baris itu bertambah. Coba juga **Withdraw...** dengan jumlah yang melebihi batas rekening tsb (lihat Pertemuan 6-7 untuk aturan tiap jenis rekening): sebuah dialog error muncul menampilkan pesan `InsufficientBalanceException`, bukan program yang berhenti paksa.

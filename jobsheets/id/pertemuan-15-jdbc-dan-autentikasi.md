@@ -109,6 +109,7 @@ Terakhir, `Main.java` menjalankan `LoginFrame` lebih dulu, bukan langsung membuk
 
 ![Main.java menjalankan LoginFrame](../assets/code/pertemuan-15/p15-02-main.png){width=68%}
 
+<!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
 ![Mock-up jendela BankMiniFrame setelah login berhasil](../assets/uml/p14-window-selected.png){width=60%}
 
 Diagram berikut merangkum alur aplikasi Bank Mini secara utuh sampai titik ini, dari `Main.java` sampai transaksi di `BankMiniFrame`:
@@ -135,6 +136,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
      ![JdbcUserRepository.java, dua pengguna contoh](../assets/code/pertemuan-15/p15-tugas-seconduser.png){width=68%}
 
+     <!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
      ![Mock-up jendela BankMiniFrame menampilkan username pada judul setelah login sebagai teller2](../assets/uml/p15-window-logged-in.png){width=60%}
 
   3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan): (a) mengapa `seedSampleAccountsIfEmpty()` dan `seedDefaultUserIfEmpty()` sama-sama memeriksa kondisi kosong sebelum menambah data, apa yang terjadi bila pengecekan itu dihapus? (b) `UserRepository` dan `AccountRepository` adalah dua interface yang berbeda, tetapi keduanya mengikuti pola desain yang sama. Sebutkan pola tersebut, dan jelaskan satu keuntungan konkret dari mengikutinya di sini.
