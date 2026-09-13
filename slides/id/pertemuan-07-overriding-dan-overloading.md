@@ -215,7 +215,7 @@ Pola ini sering dipakai ketika subclass hanya ingin menambahkan sedikit informas
 class Truck extends Vehicle {
     @Override
     public String honk() {
-        return super.honk() + " (klakson besar)";
+        return super.honk() + " (loud horn)";
     }
 }
 ```
@@ -453,7 +453,7 @@ class Account {
     }
 
     public boolean deposit(double amount, String note) {
-        System.out.println("Catatan: " + note);
+        System.out.println("Note: " + note);
         return deposit(amount);
     }
 }
@@ -463,7 +463,7 @@ class Account {
 
 ## Latihan
 
-Panggilan `account.deposit(50000)` dan `account.deposit(50000, "gaji bulanan")` sama-sama valid.
+Panggilan `account.deposit(50000)` dan `account.deposit(50000, "monthly salary")` sama-sama valid.
 
 Method mana yang dipanggil Java untuk masing-masing, dan berdasarkan apa Java memilihnya?
 
@@ -471,7 +471,7 @@ Method mana yang dipanggil Java untuk masing-masing, dan berdasarkan apa Java me
 
 ## Jawaban Latihan
 
-`account.deposit(50000)` memanggil versi satu parameter; `account.deposit(50000, "gaji bulanan")` memanggil versi dua parameter. Java memilih berdasarkan jumlah dan tipe argumen yang diberikan saat pemanggilan, ditentukan sejak kompilasi, bukan saat program berjalan.
+`account.deposit(50000)` memanggil versi satu parameter; `account.deposit(50000, "monthly salary")` memanggil versi dua parameter. Java memilih berdasarkan jumlah dan tipe argumen yang diberikan saat pemanggilan, ditentukan sejak kompilasi, bukan saat program berjalan.
 
 ---
 

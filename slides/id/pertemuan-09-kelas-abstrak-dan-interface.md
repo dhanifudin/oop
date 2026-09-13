@@ -296,7 +296,7 @@ public class Phone implements Chargeable {
     public Phone(String model) { this.model = model; }
 
     @Override
-    public void charge() { System.out.println(model + " sedang diisi daya"); }
+    public void charge() { System.out.println(model + " is charging"); }
 }
 ```
 

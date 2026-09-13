@@ -311,7 +311,7 @@ class Employee {
 
 class Manager extends Employee {
     public String greet() {
-        return "Halo, " + name;  // langsung akses name, protected
+        return "Hello, " + name;  // langsung akses name, protected
     }
 }
 ```

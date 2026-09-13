@@ -295,7 +295,7 @@ Sebuah method melempar (<code>throw</code>) objek exception ketika menemui kondi
 try {
     grade.setScore(150);
 } catch (InvalidScoreException e) {
-    System.out.println("Gagal: " + e.getMessage());
+    System.out.println("Failed: " + e.getMessage());
 }
 ```
 
