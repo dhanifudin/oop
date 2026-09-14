@@ -618,6 +618,19 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ---
 
-## Discussion
+## Assignment: Draw UML Notation
 
-Imagine a `Bank` object is removed from memory. In your view, would the `Account` objects already added to it be removed along with it, or would they still be able to stand on their own, independently? Explain your answer, then conclude: what does that answer mean for the kind of relationship between `Bank` and `Account`, aggregation or composition?
+For each relationship below, draw its class diagram on paper, complete with the correct UML notation (line style, and diamond if applicable). Refer to the "Four Strengths of Relationship" slide for the notation.
+
+1. `Teacher` uses `Chalk` briefly while teaching, never storing it as an attribute.
+2. `Teacher` teaches `Student`; both remain independent objects even if one of them is removed.
+3. `School` stores many `LibraryBook` objects in a list; the books remain even after `School` closes.
+4. `School` creates its own `Classroom` when it is established; if `School` is torn down, `Classroom` disappears along with it.
+
+---
+
+## Assignment: Find Your Own Case Study
+
+Think of one real application or system you have used (not Bank Mini), for example an online shopping app, a game, or a social media app.
+
+Find a pair of classes in it that relate to each other, determine the kind of relationship (dependency, association, aggregation, or composition), then draw its UML notation on paper.

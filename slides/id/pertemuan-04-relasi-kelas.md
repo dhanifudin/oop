@@ -100,6 +100,7 @@ style: |
 <!-- _class: lead -->
 
 # Pemrograman Berbasis Objek
+
 ## RTI253007 &nbsp;|&nbsp; D-IV Teknik Informatika
 
 Pertemuan 4: **Relasi Kelas**
@@ -132,6 +133,7 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 <!-- _class: divider -->
 
 # Bagian 1
+
 ## Dependency dan Association
 
 Sesi 1 dari 4
@@ -246,6 +248,7 @@ Selanjutnya: Bagian 2 membahas dua relasi yang lebih erat lagi, relasi yang meny
 <!-- _class: divider -->
 
 # Bagian 2
+
 ## Aggregation, Composition, dan Notasi UML
 
 Sesi 2 dari 4
@@ -298,12 +301,12 @@ Pada <b>composition</b>, bagian dibuat di dalam pemiliknya dan tidak pernah dibe
 
 ## Notasi UML: Membaca Diagram Relasi
 
-| Relasi | Notasi garis | Contoh |
-|---|---|---|
-| Dependency | putus-putus, panah terbuka | `Printer` &#8674; `File` |
-| Association | penuh, panah terbuka | `Driver` &#8594; `Car` |
+| Relasi      | Notasi garis                          | Contoh                          |
+| ----------- | ------------------------------------- | ------------------------------- |
+| Dependency  | putus-putus, panah terbuka            | `Printer` &#8674; `File`        |
+| Association | penuh, panah terbuka                  | `Driver` &#8594; `Car`          |
 | Aggregation | penuh, diamond KOSONG di sisi pemilik | `Library` &#9671;&#8212; `Book` |
-| Composition | penuh, diamond PENUH di sisi pemilik | `Car` &#9670;&#8212; `Engine` |
+| Composition | penuh, diamond PENUH di sisi pemilik  | `Car` &#9670;&#8212; `Engine`   |
 
 <div class="term-box">
 Diamond SELALU berada di sisi pemilik, bukan di sisi bagian.
@@ -382,6 +385,7 @@ Selanjutnya: semua relasi ini bekerja lewat referensi, bukan salinan objek. Bagi
 <!-- _class: divider -->
 
 # Bagian 3
+
 ## Referensi, Null, dan Array Objek di Memori
 
 Sesi 3 dari 4
@@ -508,6 +512,7 @@ Selanjutnya: Bagian 4 menerapkan seluruh relasi, referensi, dan array ini langsu
 <!-- _class: divider -->
 
 # Bagian 4
+
 ## Menerapkan Relasi Kelas ke Bank Mini
 
 Sesi 4 dari 4
@@ -608,16 +613,29 @@ Bila objek `Customer` (misalnya Nadia) dihapus dari memori sementara `Account` m
 
 # Referensi
 
-Deitel, *Java How to Program*, bab Classes and Objects: Object References
+Deitel, _Java How to Program_, bab Classes and Objects: Object References
 
 Oracle Java Tutorials: "Creating Objects" dan "Using Objects"
 
-Fowler, *UML Distilled*, bab Class Diagrams: Association, Aggregation, Composition
+Fowler, _UML Distilled_, bab Class Diagrams: Association, Aggregation, Composition
 
 Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 4
 
 ---
 
-## Diskusi
+## Tugas: Gambar Notasi UML
 
-Bayangkan objek `Bank` dihapus dari memori. Menurutmu, apakah objek `Account` yang sudah ditambahkan ke dalamnya ikut terhapus, atau tetap bisa berdiri sendiri secara independen? Jelaskan jawabanmu, lalu simpulkan: apa artinya jawaban tersebut terhadap jenis relasi `Bank`-`Account`, aggregation atau composition?
+Untuk setiap relasi berikut, gambarkan diagram kelasnya di kertas, lengkap dengan notasi UML yang tepat (jenis garis, dan diamond bila ada). Notasi acuan ada di slide "Empat Kekuatan Relasi".
+
+1. `Teacher` memakai `Chalk` sebentar saat mengajar, tidak pernah disimpan sebagai atribut.
+2. `Teacher` mengajar `Student`; keduanya tetap ada sebagai objek independen walau salah satu dihapus.
+3. `School` menyimpan banyak `LibraryBook` dalam sebuah daftar; buku-buku itu tetap ada meski `School` ditutup.
+4. `School` membuat `Classroom` miliknya sendiri saat didirikan; kalau `School` dibongkar, `Classroom` ikut hilang.
+
+---
+
+## Tugas: Cari Studi Kasusmu Sendiri
+
+Pikirkan satu aplikasi atau sistem nyata yang pernah kamu pakai (bukan Bank Mini), misalnya aplikasi belanja online, game, atau media sosial.
+
+Temukan satu pasang kelas di dalamnya yang saling berelasi, tentukan jenis relasinya (dependency, association, aggregation, atau composition), lalu gambarkan notasi UML-nya di kertas.
