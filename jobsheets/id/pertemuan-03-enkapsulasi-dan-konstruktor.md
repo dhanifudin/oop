@@ -19,12 +19,6 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
 - **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari Pertemuan 2.
-- **Verifikasi cepat** sebelum memulai:
-  ```bash
-  java -version
-  javac -version
-  ```
-  Apabila keduanya menampilkan nomor versi tanpa galat, proses dapat dilanjutkan.
 
 > **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash

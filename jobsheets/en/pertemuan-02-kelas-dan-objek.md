@@ -20,12 +20,6 @@ After completing this jobsheet, students will be able to:
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
 - **Project**: this meeting continues the `bank-mini` project created in Meeting 1, and directly applies the class and object theory already covered in the concept lecture to `Account`, the first class of the Bank Mini application. All classes remain inside the package `id.ac.polinema` (the standard Java package naming convention: the institution's domain name reversed, so "polinema.ac.id" becomes `id.ac.polinema`).
-- **Quick verification** before starting:
-  ```bash
-  java -version
-  javac -version
-  ```
-  If both display a version number with no errors, the process may proceed.
 
 > **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash

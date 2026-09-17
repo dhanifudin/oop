@@ -68,3 +68,11 @@ repo-internal-nya yang dihapus. Jobsheet 1 masih memakai `cd bank-mini` di
 kotak "Tanpa NetBeans?"-nya karena baris itu untuk MEMBUAT folder proyek
 baru dari nol (`mkdir -p bank-mini/...`), bukan melanjutkan checkpoint
 pertemuan sebelumnya, jadi sengaja dibiarkan.
+
+## Verifikasi cepat hanya untuk alat baru
+
+Bullet "Verifikasi cepat" (`java -version`/`javac -version`, atau
+`mvn -version`) di bagian B hanya muncul pada jobsheet yang memperkenalkan
+alat itu untuk PERTAMA KALINYA: Pertemuan 1 (JDK) dan Pertemuan 13 (Maven).
+Jobsheet lanjutan yang memakai alat yang sama tidak mengulang bullet ini,
+supaya section B tidak terasa berulang tiap minggu.

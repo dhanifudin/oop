@@ -21,12 +21,6 @@ After completing this jobsheet, students will be able to:
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
 - **Project**: this meeting continues the `bank-mini` project from the Polymorphism and Exception Handling topic.
-- **Quick verification** before starting:
-  ```bash
-  java -version
-  javac -version
-  ```
-  If both display a version number with no errors, the process may proceed.
 
 > **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash

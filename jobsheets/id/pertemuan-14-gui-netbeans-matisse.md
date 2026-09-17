@@ -19,10 +19,6 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans.
 - **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dan berkas `BankMiniFrame` dari Pertemuan 13.
-- **Verifikasi cepat** sebelum memulai:
-  ```bash
-  mvn -version
-  ```
 
 > **Tanpa NetBeans?** Langkah desain form dan dialog (memakai GUI Builder) membutuhkan NetBeans. Mahasiswa tanpa NetBeans dapat langsung memakai berkas `BankMiniFrame.java` dan `AddAccountDialog.java` hasil jadi dari checkpoint (lengkap tanpa `.form`), lalu menjalankan `mvn -q compile exec:java`; checkpoint dan tampilan GUI yang dihasilkan tetap sama persis.
 

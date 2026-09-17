@@ -19,10 +19,6 @@ After completing this jobsheet, students will be able to:
 
 - **Tools**: JDK 17 or newer, NetBeans.
 - **Project**: this meeting continues the Maven `bank-mini` project from Meeting 14. Add TWO dependencies to `pom.xml` (right-click the project > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) and Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), which simplify writing JDBC code in Steps 1 and 2.
-- **Quick verification** before starting:
-  ```bash
-  mvn -version
-  ```
 
 > **Without NetBeans?** Add both dependencies below manually to `pom.xml`, inside the `<dependencies>` element:
 > ```xml

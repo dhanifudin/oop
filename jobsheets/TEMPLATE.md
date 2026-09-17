@@ -73,10 +73,13 @@ Setelah menyelesaikan jobsheet ini, kamu mampu:
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor utama). <tambahkan Maven bila pertemuan ini memakai proyek starter>
 - **Kelanjutan kode**: <instruksi NetBeans: buka proyek, atau buat proyek baru>
-- **Verifikasi cepat** sebelum mulai:
-  ```bash
-  <perintah verifikasi>
-  ```
+<!--
+Tambahkan bullet "Verifikasi cepat" (`java -version`/`javac -version`, atau
+`mvn -version`) HANYA bila pertemuan ini memperkenalkan alat baru yang belum
+pernah dipakai jobsheet sebelumnya (mis. JDK di Pertemuan 1, Maven di
+Pertemuan 13). Untuk pertemuan lanjutan yang memakai alat yang sama,
+JANGAN sertakan bullet ini.
+-->
 
 > **Tanpa NetBeans?** <alternatif baris perintah yang setara persis, mis. `javac -d out src/id/ac/polinema/*.java && java -cp out id.ac.polinema.Main`, atau `mvn -q compile exec:java` untuk proyek Maven>. Checkpoint dan output program di jobsheet ini sama persis, apa pun editornya.
 
