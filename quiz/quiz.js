@@ -4,9 +4,11 @@
   // Timer formula: base seconds by difficulty, plus an add-on by question
   // format (reading a code snippet needs more time than a quick recall
   // question). This is the "adjustable timer based on difficulty and
-  // format" the app is built around.
-  var DIFFICULTY_BASE_SECONDS = { easy: 20, medium: 35, hard: 50 };
-  var FORMAT_ADDON_SECONDS = { theory: 0, concept: 10, code: 20 };
+  // format" the app is built around. Calibrated so the full 48-question
+  // bank totals ~60 minutes of countdown time (a 60-minute exam slot):
+  // 3635s = 60.6 min, verified against questions.json.
+  var DIFFICULTY_BASE_SECONDS = { easy: 35, medium: 60, hard: 85 };
+  var FORMAT_ADDON_SECONDS = { theory: 0, concept: 20, code: 35 };
 
   var FORMAT_LABELS = { theory: "Teori", concept: "Konsep", code: "Kode" };
   var DIFFICULTY_LABELS = { easy: "Mudah", medium: "Sedang", hard: "Sulit" };
@@ -32,6 +34,7 @@
       document.querySelectorAll(".meeting-filter")
     );
     el.startError = document.getElementById("start-error");
+    el.estimateLabel = document.getElementById("estimate-label");
     el.btnStart = document.getElementById("btn-start");
 
     el.badgeMeeting = document.getElementById("badge-meeting");
@@ -99,6 +102,38 @@
       });
   }
 
+  function getFilteredPool() {
+    var meetings = getSelectedMeetings();
+    return allQuestions.filter(function (q) {
+      return meetings.indexOf(q.meeting) !== -1;
+    });
+  }
+
+  function updateEstimate() {
+    if (!el.estimateLabel) {
+      return;
+    }
+    if (allQuestions.length === 0) {
+      el.estimateLabel.textContent = "";
+      return;
+    }
+    var pool = getFilteredPool();
+    if (pool.length === 0) {
+      el.estimateLabel.textContent = "Tidak ada soal untuk pilihan ini.";
+      return;
+    }
+    var requestedCount = parseInt(el.inputCount.value, 10) || 0;
+    var count = Math.max(0, Math.min(requestedCount, pool.length));
+    var poolAvgSeconds =
+      pool.reduce(function (sum, q) {
+        return sum + computeTotalSeconds(q);
+      }, 0) / pool.length;
+    var estimatedSeconds = poolAvgSeconds * count;
+    var minutes = Math.round(estimatedSeconds / 60);
+    el.estimateLabel.textContent =
+      "Estimasi durasi: ~" + minutes + " menit untuk " + count + " soal.";
+  }
+
   function handleStart() {
     var meetings = getSelectedMeetings();
     if (meetings.length === 0) {
@@ -107,9 +142,7 @@
       return;
     }
 
-    var pool = allQuestions.filter(function (q) {
-      return meetings.indexOf(q.meeting) !== -1;
-    });
+    var pool = getFilteredPool();
 
     if (pool.length === 0) {
       el.startError.hidden = false;
@@ -117,7 +150,7 @@
       return;
     }
 
-    var requestedCount = parseInt(el.inputCount.value, 10) || 20;
+    var requestedCount = parseInt(el.inputCount.value, 10) || 48;
     var count = Math.min(requestedCount, pool.length);
 
     el.startError.hidden = true;
@@ -274,6 +307,11 @@
     el.btnRestart.addEventListener("click", restartToStart);
     el.btnRestartEnd.addEventListener("click", restartToStart);
 
+    el.inputCount.addEventListener("input", updateEstimate);
+    el.meetingFilters.forEach(function (cb) {
+      cb.addEventListener("change", updateEstimate);
+    });
+
     document.addEventListener("keydown", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
       if (tag === "input") {
@@ -303,6 +341,7 @@
     loadQuestions()
       .then(function (questions) {
         allQuestions = questions;
+        updateEstimate();
       })
       .catch(function (err) {
         el.startError.hidden = false;

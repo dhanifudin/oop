@@ -120,6 +120,13 @@ body {
   font-weight: 700;
 }
 
+.estimate-label {
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 1.05em;
+  margin: 4px 0 0 0;
+}
+
 .btn {
   font-family: inherit;
   font-size: 1.1em;
