@@ -41,15 +41,8 @@ function parseFile(filePath) {
     if (!VALID_DIFFICULTIES.includes(data.difficulty)) {
       throw new Error(`${where}: invalid or missing "difficulty" (${data.difficulty})`);
     }
-    if (!Array.isArray(data.options) || data.options.length !== 4) {
-      throw new Error(`${where}: "options" must be a list of exactly 4 items`);
-    }
-    if (
-      typeof data.correct !== "number" ||
-      data.correct < 0 ||
-      data.correct > 3
-    ) {
-      throw new Error(`${where}: "correct" must be a number 0-3`);
+    if (!data.answer || !String(data.answer).trim()) {
+      throw new Error(`${where}: missing "answer"`);
     }
     if (!data.id) {
       throw new Error(`${where}: missing "id"`);
@@ -67,8 +60,7 @@ function parseFile(filePath) {
       format: data.format,
       difficulty: data.difficulty,
       questionHtml: marked.parse(content.trim()),
-      options: data.options.map((opt) => marked.parseInline(String(opt))),
-      correct: data.correct,
+      answerHtml: marked.parse(String(data.answer)),
       explanationHtml: marked.parse(String(data.explanation)),
     };
   });

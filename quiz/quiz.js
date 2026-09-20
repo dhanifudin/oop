@@ -10,7 +10,6 @@
 
   var FORMAT_LABELS = { theory: "Teori", concept: "Konsep", code: "Kode" };
   var DIFFICULTY_LABELS = { easy: "Mudah", medium: "Sedang", hard: "Sulit" };
-  var OPTION_LETTERS = ["A", "B", "C", "D"];
 
   var allQuestions = [];
   var session = [];
@@ -44,7 +43,8 @@
     el.timerNumber = document.getElementById("timer-number");
 
     el.questionBody = document.getElementById("question-body");
-    el.optionsList = document.getElementById("options-list");
+    el.answerBox = document.getElementById("answer-box");
+    el.answerHtml = document.getElementById("answer-html");
     el.explanationBox = document.getElementById("explanation-box");
     el.explanationHtml = document.getElementById("explanation-html");
 
@@ -143,16 +143,8 @@
 
     el.questionBody.innerHTML = q.questionHtml;
 
-    el.optionsList.innerHTML = "";
-    q.options.forEach(function (optionHtml, index) {
-      var div = document.createElement("div");
-      div.className = "option";
-      div.dataset.index = String(index);
-      div.innerHTML =
-        '<span class="option-letter">' + OPTION_LETTERS[index] + ".</span>" +
-        '<span class="option-text">' + optionHtml + "</span>";
-      el.optionsList.appendChild(div);
-    });
+    el.answerBox.hidden = true;
+    el.answerHtml.innerHTML = q.answerHtml;
 
     el.explanationBox.hidden = true;
     el.explanationHtml.innerHTML = q.explanationHtml;
@@ -238,17 +230,7 @@
     paused = true;
     el.btnReveal.disabled = true;
 
-    var q = session[currentIndex];
-    var optionEls = el.optionsList.querySelectorAll(".option");
-    optionEls.forEach(function (optEl) {
-      var idx = Number(optEl.dataset.index);
-      if (idx === q.correct) {
-        optEl.classList.add("revealed-correct");
-      } else {
-        optEl.classList.add("revealed-wrong");
-      }
-    });
-
+    el.answerBox.hidden = false;
     el.explanationBox.hidden = false;
   }
 
