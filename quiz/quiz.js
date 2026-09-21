@@ -2,20 +2,36 @@
   "use strict";
 
   // Timer formula: base seconds by difficulty, plus an add-on by question
-  // format (reading a code snippet needs more time than a quick recall
-  // question). This is the "adjustable timer based on difficulty and
-  // format" the app is built around. Calibrated so the full 48-question
-  // bank totals ~60 minutes of countdown time (a 60-minute exam slot):
-  // 3635s = 60.6 min, verified against questions.json.
-  var DIFFICULTY_BASE_SECONDS = { easy: 35, medium: 60, hard: 85 };
-  var FORMAT_ADDON_SECONDS = { theory: 0, concept: 20, code: 35 };
+  // format (reading a UML diagram or a code snippet takes longer than a
+  // one-line question). This is the "adjustable timer based on difficulty
+  // and format" the app is built around. Every question is either code
+  // (trace output / compile-runtime judgment) or uml (read a diagram) -
+  // both have a single deterministic answer, no open-ended "why" questions.
+  var DIFFICULTY_BASE_SECONDS = { easy: 35, medium: 55, hard: 80 };
+  var FORMAT_ADDON_SECONDS = { uml: 20, code: 30 };
 
-  var FORMAT_LABELS = { theory: "Teori", concept: "Konsep", code: "Kode" };
-  var DIFFICULTY_LABELS = { easy: "Mudah", medium: "Sedang", hard: "Sulit" };
+  // Shown once before the real session so students see how the timer,
+  // reveal, and navigation controls behave before anything is scored.
+  // Deliberately NOT part of questions.json/the 25-question bank: it asks
+  // a plain definition on purpose (something the real bank never does)
+  // precisely because it's a UI walkthrough, not an exam question.
+  var EXAMPLE_QUESTION = {
+    questionHtml: "<p>(Contoh) Apa itu PBO (Pemrograman Berorientasi Objek)?</p>",
+    answerHtml: "<p>Ini contoh soal untuk berlatih memakai aplikasi kuis, bukan soal yang dinilai.</p>",
+    explanationHtml:
+      "<p>Coba tombol <strong>-10s</strong>/<strong>+10s</strong> untuk mengatur waktu, " +
+      "<strong>Jeda</strong> untuk menjeda hitung mundur, dan <strong>Tampilkan Jawaban</strong> " +
+      "untuk melihat jawaban seperti ini. Soal sesungguhnya TIDAK akan menanyakan definisi seperti " +
+      "ini, semuanya berupa kode atau diagram UML dengan jawaban yang pasti. Tekan tombol di kanan " +
+      "untuk mulai soal nomor 1.</p>",
+  };
+  var EXAMPLE_DURATION_SECONDS = 45;
 
   var allQuestions = [];
   var session = [];
+  var pendingSession = [];
   var currentIndex = 0;
+  var inExample = false;
   var revealed = false;
   var paused = false;
   var remainingMs = 0;
@@ -37,15 +53,14 @@
     el.estimateLabel = document.getElementById("estimate-label");
     el.btnStart = document.getElementById("btn-start");
 
-    el.badgeMeeting = document.getElementById("badge-meeting");
-    el.badgeFormat = document.getElementById("badge-format");
-    el.badgeDifficulty = document.getElementById("badge-difficulty");
     el.progressLabel = document.getElementById("progress-label");
+    el.navStrip = document.getElementById("nav-strip");
 
     el.timerBar = document.getElementById("timer-bar");
     el.timerNumber = document.getElementById("timer-number");
 
     el.questionBody = document.getElementById("question-body");
+    el.reasoningHint = document.getElementById("reasoning-hint");
     el.answerBox = document.getElementById("answer-box");
     el.answerHtml = document.getElementById("answer-html");
     el.explanationBox = document.getElementById("explanation-box");
@@ -64,17 +79,6 @@
     el.screenStart.hidden = name !== "start";
     el.screenQuestion.hidden = name !== "question";
     el.screenEnd.hidden = name !== "end";
-  }
-
-  function shuffle(array) {
-    var result = array.slice();
-    for (var i = result.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = result[i];
-      result[i] = result[j];
-      result[j] = tmp;
-    }
-    return result;
   }
 
   function computeTotalSeconds(question) {
@@ -138,7 +142,7 @@
     var meetings = getSelectedMeetings();
     if (meetings.length === 0) {
       el.startError.hidden = false;
-      el.startError.textContent = "Pilih minimal satu pertemuan.";
+      el.startError.textContent = "Pilih minimal satu kelompok soal.";
       return;
     }
 
@@ -154,27 +158,68 @@
     var count = Math.min(requestedCount, pool.length);
 
     el.startError.hidden = true;
-    session = shuffle(pool).slice(0, count);
-    currentIndex = 0;
+    pendingSession = pool.slice(0, count);
+    startExample();
+  }
+
+  function startExample() {
+    inExample = true;
     showScreen("question");
+    renderExampleQuestion();
+  }
+
+  function renderExampleQuestion() {
+    revealed = false;
+
+    el.progressLabel.textContent = "Contoh soal (latihan, bukan bagian dari 25 soal ujian)";
+    el.navStrip.innerHTML = "";
+
+    el.questionBody.innerHTML = EXAMPLE_QUESTION.questionHtml;
+
+    el.reasoningHint.innerHTML = "";
+    el.reasoningHint.hidden = true;
+
+    el.answerBox.hidden = true;
+    el.answerHtml.innerHTML = EXAMPLE_QUESTION.answerHtml;
+
+    el.explanationBox.hidden = true;
+    el.explanationHtml.innerHTML = EXAMPLE_QUESTION.explanationHtml;
+
+    el.btnReveal.disabled = false;
+    el.btnNext.textContent = "Mulai Soal Nomor 1";
+
+    startTimer(EXAMPLE_DURATION_SECONDS * 1000);
+  }
+
+  function beginRealSession() {
+    inExample = false;
+    el.btnNext.textContent = "Soal Berikutnya";
+    session = pendingSession;
+    currentIndex = 0;
     renderQuestion();
   }
 
-  function renderQuestion() {
+  function renderQuestion(opts) {
+    opts = opts || {};
     var q = session[currentIndex];
     revealed = false;
 
-    el.badgeMeeting.textContent = "Pertemuan " + q.meeting;
-
-    el.badgeFormat.textContent = FORMAT_LABELS[q.format] || q.format;
-    el.badgeFormat.className = "badge badge-format-" + q.format;
-
-    el.badgeDifficulty.textContent = DIFFICULTY_LABELS[q.difficulty] || q.difficulty;
-    el.badgeDifficulty.className = "badge badge-difficulty-" + q.difficulty;
-
-    el.progressLabel.textContent = "Soal " + (currentIndex + 1) + "/" + session.length;
+    el.progressLabel.textContent =
+      "Soal " + (currentIndex + 1) + "/" + session.length + " (" + q.points + " poin)";
+    renderNavStrip();
 
     el.questionBody.innerHTML = q.questionHtml;
+    if (q.twoColumnLayout) {
+      applyTwoColumnCodeLayout(el.questionBody);
+    }
+
+    if (q.reasoningHintHtml) {
+      el.reasoningHint.innerHTML = q.reasoningHintHtml;
+      el.reasoningHint.hidden = false;
+    } else {
+      el.reasoningHint.innerHTML = "";
+      el.reasoningHint.hidden = true;
+    }
 
     el.answerBox.hidden = true;
     el.answerHtml.innerHTML = q.answerHtml;
@@ -185,6 +230,52 @@
     el.btnReveal.disabled = false;
 
     startTimer(computeTotalSeconds(q) * 1000);
+
+    // Jumping via the navigator opens the question for review: timer
+    // visible, but paused until the teacher explicitly resumes it.
+    if (opts.startPaused) {
+      paused = true;
+      el.btnPause.textContent = "Lanjut";
+      updateTimerDisplay();
+    }
+  }
+
+  // Places a question's first two code blocks side by side instead of
+  // stacked, so a two-class-plus-driver question can fit one screen
+  // height instead of needing the full sum of both blocks' heights.
+  function applyTwoColumnCodeLayout(container) {
+    var pres = container.querySelectorAll("pre");
+    if (pres.length < 2) {
+      return;
+    }
+    var wrapper = document.createElement("div");
+    wrapper.className = "two-col-code";
+    pres[0].parentNode.insertBefore(wrapper, pres[0]);
+    wrapper.appendChild(pres[0]);
+    wrapper.appendChild(pres[1]);
+  }
+
+  function renderNavStrip() {
+    el.navStrip.innerHTML = "";
+    session.forEach(function (_q, i) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "nav-tick" + (i === currentIndex ? " nav-tick-current" : "");
+      btn.textContent = String(i + 1);
+      btn.title = "Lompat ke soal " + (i + 1) + " (jeda untuk ditinjau)";
+      btn.addEventListener("click", function () {
+        goToQuestion(i, { startPaused: true });
+      });
+      el.navStrip.appendChild(btn);
+    });
+  }
+
+  function goToQuestion(index, opts) {
+    if (index < 0 || index >= session.length) {
+      return;
+    }
+    currentIndex = index;
+    renderQuestion(opts);
   }
 
   function startTimer(ms) {
@@ -210,6 +301,9 @@
     }
     remainingMs = Math.max(0, remainingMs - 100);
     updateTimerDisplay();
+    if (remainingMs <= 0) {
+      next();
+    }
   }
 
   function updateTimerDisplay() {
@@ -268,6 +362,10 @@
   }
 
   function next() {
+    if (inExample) {
+      beginRealSession();
+      return;
+    }
     currentIndex++;
     if (currentIndex >= session.length) {
       stopTimer();
@@ -279,6 +377,7 @@
 
   function restartToStart() {
     stopTimer();
+    inExample = false;
     showScreen("start");
   }
 
@@ -326,10 +425,6 @@
         }
       } else if (e.key === "r" || e.key === "R") {
         restartToStart();
-      } else if (e.key === "+" || e.key === "=") {
-        adjustTimer(10);
-      } else if (e.key === "-" || e.key === "_") {
-        adjustTimer(-10);
       }
     });
   }

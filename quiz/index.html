@@ -3,17 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kuis Bank Mini - Pertemuan 1-4</title>
+<title>Kuis OOP</title>
 <link rel="stylesheet" href="quiz.css" />
 </head>
 <body>
 
 <div id="app">
-
-  <header id="app-header">
-    <h1>Kuis Bank Mini</h1>
-    <p class="subtitle">Pemrograman Berbasis Objek &middot; Pertemuan 1-4</p>
-  </header>
 
   <section id="screen-start" class="screen">
     <div class="card">
@@ -21,15 +16,15 @@
 
       <div class="field">
         <label for="input-count">Jumlah soal</label>
-        <input type="number" id="input-count" min="1" max="48" value="48" />
+        <input type="number" id="input-count" min="1" max="25" value="25" />
       </div>
 
       <fieldset class="field">
-        <legend>Pertemuan yang disertakan</legend>
-        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="1" checked /> Pertemuan 1</label>
-        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="2" checked /> Pertemuan 2</label>
-        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="3" checked /> Pertemuan 3</label>
-        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="4" checked /> Pertemuan 4</label>
+        <legend>Kelompok soal yang disertakan</legend>
+        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="1" checked /> Kelompok 1</label>
+        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="2" checked /> Kelompok 2</label>
+        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="3" checked /> Kelompok 3</label>
+        <label class="checkbox"><input type="checkbox" class="meeting-filter" value="4" checked /> Kelompok 4</label>
       </fieldset>
 
       <p id="estimate-label" class="estimate-label"></p>
@@ -41,22 +36,29 @@
   </section>
 
   <section id="screen-question" class="screen" hidden>
-    <div class="q-meta">
-      <span id="badge-meeting" class="badge badge-meeting"></span>
-      <span id="badge-format" class="badge"></span>
-      <span id="badge-difficulty" class="badge"></span>
-      <span id="progress-label" class="progress-label"></span>
-    </div>
-
     <div class="timer-wrap">
-      <div id="timer-number" class="timer-number"></div>
+      <div id="nav-strip" class="nav-strip"></div>
+      <div class="timer-readout">
+        <span id="progress-label" class="progress-label"></span>
+        <div class="timer-actions">
+          <button id="btn-timer-minus" class="btn btn-ghost btn-compact" title="Kurangi 10 detik">-10s</button>
+          <button id="btn-pause" class="btn btn-ghost btn-compact" title="Jeda/Lanjut (tombol P)">Jeda</button>
+          <button id="btn-timer-plus" class="btn btn-ghost btn-compact" title="Tambah 10 detik">+10s</button>
+          <button id="btn-reveal" class="btn btn-primary btn-compact" title="Tampilkan jawaban (tombol Spasi)">Tampilkan Jawaban</button>
+          <button id="btn-next" class="btn btn-primary btn-compact" title="Soal berikutnya (tombol Spasi)">Soal Berikutnya</button>
+          <button id="btn-restart" class="btn btn-ghost btn-compact" title="Mulai ulang sesi (tombol R)">Ulangi Sesi</button>
+        </div>
+        <div id="timer-number" class="timer-number"></div>
+      </div>
       <div id="timer-bar" class="timer-bar"></div>
     </div>
 
     <div id="question-body" class="question-body"></div>
 
+    <div id="reasoning-hint" class="reasoning-hint" hidden></div>
+
     <div class="answer-area">
-      <p class="answer-hint">Jawab dalam hati atau di kertas sebelum waktu habis.</p>
+      <p class="answer-hint">Tulis jawabanmu di kertas sebelum waktu habis.</p>
     </div>
 
     <div id="answer-box" class="answer-box" hidden>
@@ -68,21 +70,12 @@
       <div class="explanation-label">Penjelasan</div>
       <div id="explanation-html"></div>
     </div>
-
-    <div class="controls">
-      <button id="btn-timer-minus" class="btn btn-ghost" title="Kurangi 10 detik (tombol -)">-10s</button>
-      <button id="btn-pause" class="btn btn-ghost" title="Jeda/Lanjut (tombol P)">Jeda</button>
-      <button id="btn-timer-plus" class="btn btn-ghost" title="Tambah 10 detik (tombol +)">+10s</button>
-      <button id="btn-reveal" class="btn btn-primary" title="Tampilkan jawaban (tombol Spasi)">Tampilkan Jawaban</button>
-      <button id="btn-next" class="btn btn-primary" title="Soal berikutnya (tombol Spasi)">Soal Berikutnya</button>
-      <button id="btn-restart" class="btn btn-ghost" title="Mulai ulang sesi (tombol R)">Ulangi Sesi</button>
-    </div>
   </section>
 
   <section id="screen-end" class="screen" hidden>
     <div class="card">
       <h2>Kuis Selesai</h2>
-      <p>Terima kasih! Sesi kuis untuk Pertemuan 1-4 sudah selesai.</p>
+      <p>Terima kasih! Sesi kuis sudah selesai.</p>
       <button id="btn-restart-end" class="btn btn-primary btn-large">Mulai Sesi Baru</button>
     </div>
   </section>

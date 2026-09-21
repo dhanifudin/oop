@@ -16,7 +16,7 @@ marked.setOptions({ breaks: true, gfm: true });
 const QUESTIONS_DIR = path.join(__dirname, "..", "questions");
 const OUT_FILE = path.join(__dirname, "..", "questions.json");
 
-const VALID_FORMATS = ["theory", "concept", "code"];
+const VALID_FORMATS = ["uml", "code"];
 const VALID_DIFFICULTIES = ["easy", "medium", "hard"];
 
 function splitBlocks(raw) {
@@ -53,15 +53,21 @@ function parseFile(filePath) {
     if (!data.explanation) {
       throw new Error(`${where}: missing "explanation"`);
     }
+    if (!Number.isInteger(data.points) || data.points <= 0) {
+      throw new Error(`${where}: invalid or missing "points" (${data.points})`);
+    }
 
     return {
       id: String(data.id),
       meeting: Number(data.meeting),
       format: data.format,
       difficulty: data.difficulty,
+      points: data.points,
       questionHtml: marked.parse(content.trim()),
       answerHtml: marked.parse(String(data.answer)),
       explanationHtml: marked.parse(String(data.explanation)),
+      reasoningHintHtml: data.reasoningHint ? marked.parse(String(data.reasoningHint)) : null,
+      twoColumnLayout: Boolean(data.twoColumnLayout),
     };
   });
 }
