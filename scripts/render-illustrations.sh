@@ -53,6 +53,9 @@ echo "==> jobsheets/assets/uml/p14-add-account-dialog.png (from bank-mini-add-ac
 rsvg-convert -w 1400 "$SRC/bank-mini-window-selected.svg" -o jobsheets/assets/uml/p14-window-selected.png
 echo "==> jobsheets/assets/uml/p14-window-selected.png (from bank-mini-window-selected.svg)"
 
+rsvg-convert -w 1400 "$SRC/bank-mini-window-selected.svg" -o jobsheets/assets/uml/p15-window-selected.png
+echo "==> jobsheets/assets/uml/p15-window-selected.png (from bank-mini-window-selected.svg, reused for Pertemuan 15's post-login mock-up)"
+
 rsvg-convert -w 1400 "$SRC/bank-mini-window-logged-in.svg" -o jobsheets/assets/uml/p15-window-logged-in.png
 echo "==> jobsheets/assets/uml/p15-window-logged-in.png (from bank-mini-window-logged-in.svg)"
 

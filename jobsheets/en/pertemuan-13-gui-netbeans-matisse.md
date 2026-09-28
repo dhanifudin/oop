@@ -48,7 +48,7 @@ Move each file into its new package (right-click `src/main/java` > **New > Java 
 
 ![Bank.java with method getAllAccounts](../assets/code/pertemuan-13/p13-01-bank-getall.png){width=60%}
 
-> ✅ **Checkpoint:** after every file is moved and its `import` fixed, run **Run Project** (F6). The output remains identical to Meeting 11 (the `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, `monthly fee`, and A003 transaction history lines).
+> ✅ **Checkpoint:** after every file is moved and its `import` fixed, run **Run Project** (F6). The output remains identical to before, from the SOLID Principle and Collections topic (the `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, `monthly fee`, and A003 transaction history lines).
 
 > ⚠️ **If it fails:** if the error `package id.ac.polinema does not exist` or `cannot find symbol` appears, check whether every moved file has had its `package` declaration updated to match its new location, and whether classes used across packages have been `import`ed.
 
@@ -61,7 +61,7 @@ Move each file into its new package (right-click `src/main/java` > **New > Java 
 > [ Table: Account Number | Owner | Balance ]
 >                                  [ Refresh ]
 > ```
-> The sketch does not need to be neat, it only needs to answer two things: which component (a table for a data list, a button for an action) and where it sits (the button below the table). The more complex the form (see Meeting 14), the more useful it is to plan on paper first before dragging components in Matisse.
+> The sketch does not need to be neat, it only needs to answer two things: which component (a table for a data list, a button for an action) and where it sits (the button below the table). The more complex the form (see the GUI with NetBeans Matisse Part 2 topic), the more useful it is to plan on paper first before dragging components in Matisse.
 
 Follow these steps in NetBeans:
 
@@ -78,7 +78,9 @@ Follow these steps in NetBeans:
 
 Fill in the method NetBeans created, plus a few supporting methods and fields, all in the **Source** tab (outside the gray code block guarded by NetBeans):
 
-![BankMiniFrame.java, constructor and methods loadAccounts/seedSampleAccounts](../assets/code/pertemuan-13/p13-02-bankminiframe-fields.png){width=68%}
+![BankMiniFrame.java, field bank and constructor](../assets/code/pertemuan-13/p13-02-bankminiframe-constructor.png){width=60%}
+
+![BankMiniFrame.java, methods seedSampleAccounts and loadAccounts](../assets/code/pertemuan-13/p13-02-bankminiframe-seedload.png){width=68%}
 
 ![BankMiniFrame.java, refreshButtonActionPerformed](../assets/code/pertemuan-13/p13-02-bankminiframe-handler.png){width=60%}
 
@@ -98,10 +100,10 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the `BankMiniFrame` window after running Step 2.
 - **Independent assignment:**
-  1. Add a new column to the table, **Type**, displaying `"Savings"` or `"Checking"` according to the account kind (use `instanceof` as learned in Meeting 10).
+  1. Add a new column to the table, **Type**, displaying `"Savings"` or `"Checking"` according to the account kind (use `instanceof` as learned in the Polymorphism and Exception Handling topic).
   2. Answer briefly (2 to 3 sentences for each question):
      - (a) why does `Bank.getAllAccounts()` return a `Collection<Account>`, rather than printing it directly like `printAllAccounts()`?
-     - (b) What would happen to `BankMiniFrame`'s code if `InMemoryAccountRepository` were someday replaced with a different implementation (e.g. connected to a database)? Relate your answer to the Dependency Inversion Principle learned in Meeting 11.
+     - (b) What would happen to `BankMiniFrame`'s code if `InMemoryAccountRepository` were someday replaced with a different implementation (e.g. connected to a database)? Relate your answer to the Dependency Inversion Principle learned in the SOLID Principle and Collections topic.
 
 ## E. Grading Criteria
 

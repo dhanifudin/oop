@@ -18,7 +18,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans.
-- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dari Pertemuan 14. Tambahkan DUA dependency pada `pom.xml` (klik kanan proyek > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) dan Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), yang menyederhanakan penulisan kode JDBC pada Langkah 1 dan 2.
+- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dari topik GUI dengan NetBeans Matisse (Bagian 2). Tambahkan DUA dependency pada `pom.xml` (klik kanan proyek > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) dan Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), yang menyederhanakan penulisan kode JDBC pada Langkah 1 dan 2.
 
 > **Tanpa NetBeans?** Tambahkan kedua dependency berikut secara manual ke `pom.xml`, di dalam elemen `<dependencies>`:
 > ```xml
@@ -43,17 +43,27 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 > **Konsep Singkat: Apache Commons DbUtils.** Menulis `Connection`/`PreparedStatement`/`ResultSet` secara manual di setiap method itu berulang dan gampang lupa ditutup. `QueryRunner` dari Apache Commons DbUtils membungkus pola ini: `run.update(sql, params...)` untuk `INSERT`/`UPDATE`/`CREATE TABLE`, `run.query(sql, handler, params...)` untuk `SELECT`, keduanya membuka dan menutup koneksinya sendiri. `QueryRunner` dibuat sekali dari `SQLiteDataSource` (bukan dari `Connection` langsung), sehingga setiap pemanggilan `run.update(...)`/`run.query(...)` otomatis mengambil dan menutup koneksinya sendiri, menghilangkan risiko lupa `close()`.
 
-Sejak Pertemuan 11, `Bank` sudah bergantung pada interface `AccountRepository`, bukan pada implementasi konkretnya secara langsung (Dependency Inversion Principle). Berkat itu, penyimpanan in-memory bisa diganti penyimpanan JDBC hanya dengan menulis implementasi baru, tanpa menyentuh `Bank` sama sekali:
+Sejak topik SOLID Principle dan Collections, `Bank` sudah bergantung pada interface `AccountRepository`, bukan pada implementasi konkretnya secara langsung (Dependency Inversion Principle). Berkat itu, penyimpanan in-memory bisa diganti penyimpanan JDBC hanya dengan menulis implementasi baru, tanpa menyentuh `Bank` sama sekali:
 
-![JdbcAccountRepository.java, constructor dan save](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-save.png){width=75%}
+![JdbcAccountRepository.java, field dan constructor](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-construct.png){width=72%}
 
-![JdbcAccountRepository.java, findByNumber, findAll, dan mapRow](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-find.png){width=75%}
+![JdbcAccountRepository.java, createTableIfNotExists](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-createtable.png){width=72%}
+
+![JdbcAccountRepository.java, save](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-save.png){width=72%}
+
+![JdbcAccountRepository.java, findByNumber dan findAll](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-find.png){width=72%}
+
+![JdbcAccountRepository.java, mapRow](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-maprow.png){width=72%}
+
+![JdbcAccountRepository.java, ResultSetHandler untuk satu baris dan banyak baris](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-handlers.png){width=72%}
 
 `createTableIfNotExists()` dipanggil di constructor, membuat tabel `accounts` otomatis pada kontak pertama ke database, sehingga checkpoint ini tidak membutuhkan langkah setup database terpisah. Kolom `account_type` menyimpan `"SAVINGS"` atau `"CHECKING"` supaya `mapRow()` tahu subclass `Account` mana yang harus dibuat ulang saat membaca baris.
 
 Perbarui `BankMiniFrame` supaya memakai `JdbcAccountRepository`, bukan lagi `InMemoryAccountRepository`:
 
-![BankMiniFrame.java, constructor memakai JdbcAccountRepository](../assets/code/pertemuan-15/p15-01-bankminiframe-constructor.png){width=75%}
+![BankMiniFrame.java, constructor memakai JdbcAccountRepository](../assets/code/pertemuan-15/p15-01-bankminiframe-constructor.png){width=72%}
+
+![BankMiniFrame.java, seedSampleAccountsIfEmpty](../assets/code/pertemuan-15/p15-01-bankminiframe-seedifempty.png){width=72%}
 
 Perhatikan `seedSampleAccountsIfEmpty()`: dua rekening contoh hanya ditambahkan apabila tabel `accounts` masih kosong. Tanpa pengecekan ini, kedua rekening contoh akan ditulis ulang dengan saldo awalnya setiap kali aplikasi dijalankan, menimpa perubahan saldo yang sudah tersimpan dari sesi sebelumnya, persis kebalikan dari tujuan persistensi.
 
@@ -65,7 +75,11 @@ Satu hal penting yang mudah terlewat: penyimpanan in-memory "menyimpan" perubaha
 
 `BankMiniFrame` memanggil `bank.saveAccount(account)` setelah setiap transaksi berhasil:
 
-![BankMiniFrame.java, depositButtonActionPerformed dan withdrawButtonActionPerformed memanggil saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-savecalls.png){width=75%}
+![BankMiniFrame.java, depositButtonActionPerformed memanggil saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-deposithandler.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed, validasi input](../assets/code/pertemuan-15/p15-01-bankminiframe-withdrawhandler-validate.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed memanggil withdraw lalu saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-withdrawhandler-call.png){width=72%}
 
 > ✅ **Checkpoint:** jalankan **Run Project** (F6), pilih salah satu rekening di tabel, klik **Deposit...**, lalu isi dialog input jumlahnya. Setelah saldo bertambah, **tutup aplikasi sepenuhnya** dan jalankan ulang. Saldo yang baru saja diubah tetap tampil, tidak kembali ke nilai awal, bukti bahwa data benar-benar tersimpan di berkas `bankmini.db`, bukan hanya di memori selama aplikasi berjalan.
 
@@ -81,21 +95,25 @@ Bank Mini memakai SHA-256 (tersedia langsung lewat `java.security.MessageDigest`
 
 > ⚠️ **Bukan untuk produksi.** SHA-256 polos (tanpa salt, satu kali hash) mudah diserang lewat rainbow table pada sistem produksi sungguhan. Aplikasi nyata memakai algoritma yang secara khusus dirancang untuk password, seperti bcrypt, Argon2, atau PBKDF2, yang menambahkan salt acak dan sengaja dibuat lambat dihitung. `PasswordHasher` di jobsheet ini murni penyederhanaan untuk latihan, bukan contoh siap pakai.
 
-Mengikuti pola `AccountRepository` yang sudah dipelajari sejak Pertemuan 11 (interface plus implementasi in-memory sebagai preview, baru kemudian versi JDBC), kredensial pengguna memakai struktur yang sama persis:
+Mengikuti pola `AccountRepository` dari topik SOLID Principle dan Collections (interface plus implementasi in-memory sebagai preview, baru kemudian versi JDBC), kredensial pengguna memakai struktur yang sama persis:
 
 ![InMemoryUserRepository.java](../assets/code/pertemuan-15/p15-02-inmemoryuserrepository.png){width=68%}
 
 `InMemoryUserRepository` di atas menunjukkan bahwa `UserRepository` bisa saja diimplementasikan sesederhana `HashMap` untuk keperluan pengujian. Namun karena kredensial harus tetap ada meski aplikasi ditutup, checkpoint ini memakai versi JDBC:
 
-![JdbcUserRepository.java, constructor dan seedDefaultUserIfEmpty](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-seed.png){width=75%}
+![JdbcUserRepository.java, field, constructor, dan createTableIfNotExists](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-setup.png){width=72%}
 
-![JdbcUserRepository.java, save dan findByUsername](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-find.png){width=75%}
+![JdbcUserRepository.java, seedDefaultUserIfEmpty](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-seed.png){width=72%}
+
+![JdbcUserRepository.java, save dan findByUsername](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-find.png){width=72%}
+
+![JdbcUserRepository.java, ResultSetHandler untuk satu baris User](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-handler.png){width=72%}
 
 Buat kelas `LoginFrame` (JFrame biasa, form login: `Username` sebagai `JTextField`, `Password` sebagai **`JPasswordField`**, bukan `JTextField` biasa, sehingga karakter yang diketik tersembunyi sebagai titik) dengan satu tombol **Login**. Isi handler tombolnya:
 
 ![LoginFrame.java, loginButtonActionPerformed](../assets/code/pertemuan-15/p15-02-loginhandler.png){width=75%}
 
-> **Konsep Singkat: Berpindah ke Jendela Lain.** Perhatikan dua baris terakhir pada login yang berhasil: `dispose()` menutup dan melepas sumber daya jendela `LoginFrame` yang sedang aktif, lalu `new BankMiniFrame().setVisible(true)` membuat dan menampilkan jendela baru. Pola `dispose()` diikuti `new NamaFrame().setVisible(true)` inilah cara standar Swing berpindah dari satu jendela ke jendela lain, sudah diperkenalkan sebagai konsep pada Pertemuan 13; `LoginFrame` di sinilah praktik pertamanya benar-benar dipakai, sebab Pertemuan 13-14 hanya pernah membuka satu jendela (`BankMiniFrame`) langsung dari `Main.java`, belum pernah menutup satu jendela untuk membuka jendela lain.
+> **Konsep Singkat: Berpindah ke Jendela Lain.** Perhatikan dua baris terakhir pada login yang berhasil: `dispose()` menutup dan melepas sumber daya jendela `LoginFrame` yang sedang aktif, lalu `new BankMiniFrame().setVisible(true)` membuat dan menampilkan jendela baru. Pola `dispose()` diikuti `new NamaFrame().setVisible(true)` inilah cara standar Swing berpindah dari satu jendela ke jendela lain, sudah diperkenalkan sebagai konsep pada topik GUI dengan NetBeans Matisse (Bagian 1); `LoginFrame` di sinilah praktik pertamanya benar-benar dipakai, sebab kedua bagian topik GUI itu hanya pernah membuka satu jendela (`BankMiniFrame`) langsung dari `Main.java`, belum pernah menutup satu jendela untuk membuka jendela lain.
 
 ![Jendela LoginFrame kosong sebelum diisi](../assets/screenshots/pertemuan-15/p15-login-screen.png){width=55%}
 
@@ -106,7 +124,7 @@ Terakhir, `Main.java` menjalankan `LoginFrame` lebih dulu, bukan langsung membuk
 ![Main.java menjalankan LoginFrame](../assets/code/pertemuan-15/p15-02-main.png){width=68%}
 
 <!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
-![Mock-up jendela BankMiniFrame setelah login berhasil](../assets/uml/p14-window-selected.png){width=60%}
+![Mock-up jendela BankMiniFrame setelah login berhasil](../assets/uml/p15-window-selected.png){width=60%}
 
 Diagram berikut merangkum alur aplikasi Bank Mini secara utuh sampai titik ini, dari `Main.java` sampai transaksi di `BankMiniFrame`:
 
@@ -122,15 +140,11 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot jendela `LoginFrame`, dialog galat percobaan login yang gagal, dan `BankMiniFrame` setelah login berhasil.
 - **Tugas mandiri:**
-  1. Ubah constructor `BankMiniFrame` supaya menerima parameter `username`, lalu tampilkan `"Bank Mini - Logged in as: <username>"` sebagai judul jendela. Sesuaikan `LoginFrame` supaya meneruskan username yang berhasil login ke constructor tersebut:
+  1. Ubah constructor `BankMiniFrame` supaya menerima parameter `username`, lalu tampilkan `"Bank Mini - Logged in as: <username>"` sebagai judul jendela. Sesuaikan `LoginFrame` supaya meneruskan username yang berhasil login ke constructor tersebut (bagian `new BankMiniFrame()` di handler tombol Login). Diagram berikut hanya sketsa constructor yang perlu diubah, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
 
-     ![BankMiniFrame.java, constructor menerima parameter username](../assets/code/pertemuan-15/p15-tugas-bankminiframe-constructor.png){width=75%}
+     ![Sketsa constructor BankMiniFrame yang menerima username](../assets/uml/p15-tugas-bankminiframe-constructor.png){width=45%}
 
-     ![LoginFrame.java, meneruskan username ke BankMiniFrame](../assets/code/pertemuan-15/p15-tugas-loginhandler.png){width=75%}
-
-  2. Tambahkan satu pengguna kedua pada `seedDefaultUserIfEmpty()` (mis. `teller2` dengan password `teller456`):
-
-     ![JdbcUserRepository.java, dua pengguna contoh](../assets/code/pertemuan-15/p15-tugas-seconduser.png){width=68%}
+  2. Tambahkan satu pengguna kedua pada `seedDefaultUserIfEmpty()` (mis. `teller2` dengan password `teller456`), memakai pola `save(...)` yang sama seperti pengguna pertama pada Langkah 2. Hasil yang diharapkan setelah login sebagai pengguna kedua:
 
      <!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
      ![Mock-up jendela BankMiniFrame menampilkan username pada judul setelah login sebagai teller2](../assets/uml/p15-window-logged-in.png){width=60%}

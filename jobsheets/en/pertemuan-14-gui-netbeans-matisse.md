@@ -18,7 +18,7 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans.
-- **Project**: this meeting continues the Maven `bank-mini` project and the `BankMiniFrame` file from Meeting 13.
+- **Project**: this meeting continues the Maven `bank-mini` project and the `BankMiniFrame` file from the GUI with NetBeans Matisse (Part 1) topic.
 
 > **Without NetBeans?** The form and dialog design steps (using the GUI Builder) require NetBeans. Students without NetBeans may use the finished `BankMiniFrame.java` and `AddAccountDialog.java` files from the checkpoint directly (complete, with no `.form`), then run `mvn -q compile exec:java`; the checkpoint and resulting GUI display remain exactly the same.
 
@@ -33,7 +33,7 @@ So far, the two sample accounts have only ever been added through code (`seedSam
 Build the dialog in NetBeans:
 
 1. Right-click package `id.ac.polinema.ui` > **New > Other... > Swing GUI Forms > JDialog Form**. Name the class `AddAccountDialog`.
-2. NetBeans creates the constructor `AddAccountDialog(java.awt.Frame parent, boolean modal)`. In the **Source** tab, change it to accept `Bank` directly and always be modal, the same way Meeting 15 will later change `BankMiniFrame`'s constructor to accept a `username`:
+2. NetBeans creates the constructor `AddAccountDialog(java.awt.Frame parent, boolean modal)`. In the **Source** tab, change it to accept `Bank` directly and always be modal, the same way `BankMiniFrame`'s constructor will later be changed the same way (sometime later, in the Persistence with JDBC and an Authentication Mechanism topic) to accept a `username`:
 
    ```java
    public AddAccountDialog(java.awt.Frame parent, Bank bank) {
@@ -56,7 +56,9 @@ Fill in the handlers in the **Source** tab:
 
 ![AddAccountDialog.java, constructor](../assets/code/pertemuan-14/p14-01-addaccountdialog-constructor.png){width=68%}
 
-![AddAccountDialog.java, saveButtonActionPerformed](../assets/code/pertemuan-14/p14-01-addaccountdialog-savehandler.png){width=72%}
+![AddAccountDialog.java, saveButtonActionPerformed validating the fields](../assets/code/pertemuan-14/p14-01-addaccountdialog-validate.png){width=72%}
+
+![AddAccountDialog.java, saveButtonActionPerformed creating and saving the Account](../assets/code/pertemuan-14/p14-01-addaccountdialog-build.png){width=72%}
 
 Note: `accountNumberValueLabel` is a `JLabel` (not a `JTextField`), so the account number CANNOT be edited by the user. With the number always coming from `Bank.nextAccountNumber()`, there is no way for the user to type a number that collides with another account; the class of error "duplicate account number" is prevented by design, rather than checked and rejected after it has already been typed.
 
@@ -68,7 +70,9 @@ Now update `BankMiniFrame` so the **Add Account...** button opens this dialog, i
 
 Fill in the supporting methods in the **Source** tab:
 
-![BankMiniFrame.java, constructor, seedSampleAccounts, loadAccounts](../assets/code/pertemuan-14/p14-01-bankminiframe-fields.png){width=68%}
+![BankMiniFrame.java, field bank and constructor](../assets/code/pertemuan-14/p14-01-bankminiframe-constructor.png){width=60%}
+
+![BankMiniFrame.java, methods seedSampleAccounts and loadAccounts](../assets/code/pertemuan-14/p14-01-bankminiframe-seedload.png){width=68%}
 
 ![BankMiniFrame.java, addAccountButtonActionPerformed](../assets/code/pertemuan-14/p14-01-bankminiframe-addaccounthandler.png){width=60%}
 
@@ -100,14 +104,16 @@ Fill in both methods, plus one helper method to read the currently selected acco
 
 ![BankMiniFrame.java, depositButtonActionPerformed](../assets/code/pertemuan-14/p14-02-deposithandler.png){width=72%}
 
-![BankMiniFrame.java, withdrawButtonActionPerformed](../assets/code/pertemuan-14/p14-02-withdrawhandler.png){width=72%}
+![BankMiniFrame.java, withdrawButtonActionPerformed validating the input](../assets/code/pertemuan-14/p14-02-withdrawhandler-validate.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed calling withdraw](../assets/code/pertemuan-14/p14-02-withdrawhandler-call.png){width=60%}
 
 Call `configureSelectionListener()` in the constructor, AFTER `loadAccounts()`, so its listener is installed before the user has any chance to select a row.
 
 <!-- TODO(screenshot): mock-up SVG, not a genuine screenshot. Replace with a genuine BankMiniFrame screenshot once display access is available; see conventions/bank-mini.md, section "Verifikasi visual GUI tanpa NetBeans/X server". -->
 ![Mock-up of the BankMiniFrame window with one row selected, Deposit and Withdraw buttons active](../assets/uml/p14-window-selected.png){width=62%}
 
-> ✅ **Checkpoint:** run **Run Project** (F6). The **Deposit...** and **Withdraw...** buttons appear gray until an account row is clicked. Select one row, both buttons turn active; click **Deposit...**, an input dialog appears reading "Deposit amount for A001 (Nadia):"; type a number, that row's balance increases. Also try **Withdraw...** with an amount exceeding that account's limit (see Meeting 6-7 for each account kind's rule): an error dialog appears displaying the `InsufficientBalanceException` message, not the program halting forcibly.
+> ✅ **Checkpoint:** run **Run Project** (F6). The **Deposit...** and **Withdraw...** buttons appear gray until an account row is clicked. Select one row, both buttons turn active; click **Deposit...**, an input dialog appears reading "Deposit amount for A001 (Nadia):"; type a number, that row's balance increases. Also try **Withdraw...** with an amount exceeding that account's limit (see the Inheritance and Overriding/Overloading topics for each account kind's rule): an error dialog appears displaying the `InsufficientBalanceException` message, not the program halting forcibly.
 
 > ⚠️ **If it fails:** if the Deposit/Withdraw buttons can still be clicked even with no row selected, check whether both buttons' **enabled** property is set to `false` in Matisse, and whether `configureSelectionListener()` is genuinely called in the constructor. If clicking Cancel on the amount input dialog instead displays an "Amount must be a number" dialog, check whether the method checks `input == null` (Cancel) BEFORE trying to parse its contents.
 
@@ -117,15 +123,15 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the `BankMiniFrame` window after Step 2, including one failed Withdraw attempt (error dialog shown).
 - **Independent assignment:**
-  1. Add a **Process Month End** button (extend `buttonsPanel` to rows = 1, columns = 5), calling `bank.processMonthEnd()` (from Meeting 10) then displaying a confirmation dialog "Month-end processing complete.":
+  1. Add a **Process Month End** button (extend `buttonsPanel` to rows = 1, columns = 5), calling `bank.processMonthEnd()` (from the Polymorphism and Exception Handling topic) then displaying a confirmation dialog "Month-end processing complete." The diagram below is only a sketch of the method to add, NOT finished code; its body is entirely up to you:
 
-     ![BankMiniFrame.java, processMonthEndButtonActionPerformed](../assets/code/pertemuan-14/p14-tugas-processmonthend.png){width=68%}
+     ![Sketch of BankMiniFrame.processMonthEndButtonActionPerformed, calling Bank.processMonthEnd](../assets/uml/p14-tugas-processmonthend.png){width=55%}
 
   2. Answer briefly (2 to 3 sentences for each question):
      - (a) why is `NumberFormatException` validation still needed in the GUI, even though the amount input dialog "should" only ever be filled with a number?
-     - (b) Compare how `InsufficientBalanceException` was handled in Meeting 10 (printed to the console) with how it is handled in this jobsheet (displayed as a dialog). What changed, and what stayed the same?
+     - (b) Compare how `InsufficientBalanceException` was handled in the Polymorphism and Exception Handling topic (printed to the console) with how it is handled in this jobsheet (displayed as a dialog). What changed, and what stayed the same?
 
-Note one thing deliberately left undiscussed so far: anyone running `BankMiniFrame` gets full access to every account, with no login at all. A real banking application is never released like this. Meeting 15 closes this gap by adding a genuine authentication mechanism, and along with it, the first concrete reason Bank Mini needs a database: login credentials must be stored and checked against stored data, not values written directly in the Java code.
+Note one thing deliberately left undiscussed so far: anyone running `BankMiniFrame` gets full access to every account, with no login at all. A real banking application is never released like this. The Persistence with JDBC and an Authentication Mechanism topic closes this gap by adding a genuine authentication mechanism, and along with it, the first concrete reason Bank Mini needs a database: login credentials must be stored and checked against stored data, not values written directly in the Java code.
 
 ## E. Grading Criteria
 

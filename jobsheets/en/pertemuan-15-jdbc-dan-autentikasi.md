@@ -18,7 +18,7 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans.
-- **Project**: this meeting continues the Maven `bank-mini` project from Meeting 14. Add TWO dependencies to `pom.xml` (right-click the project > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) and Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), which simplify writing JDBC code in Steps 1 and 2.
+- **Project**: this meeting continues the Maven `bank-mini` project from the GUI with NetBeans Matisse (Part 2) topic. Add TWO dependencies to `pom.xml` (right-click the project > **Properties > Libraries > Add Dependency**): SQLite JDBC Driver (`org.xerial:sqlite-jdbc:3.45.1.0`) and Apache Commons DbUtils (`commons-dbutils:commons-dbutils:1.8.1`), which simplify writing JDBC code in Steps 1 and 2.
 
 > **Without NetBeans?** Add both dependencies below manually to `pom.xml`, inside the `<dependencies>` element:
 > ```xml
@@ -43,17 +43,27 @@ After completing this jobsheet, students will be able to:
 
 > **Concept Brief: Apache Commons DbUtils.** Writing `Connection`/`PreparedStatement`/`ResultSet` manually in every method is repetitive and easy to forget to close. `QueryRunner` from Apache Commons DbUtils wraps this pattern: `run.update(sql, params...)` for `INSERT`/`UPDATE`/`CREATE TABLE`, `run.query(sql, handler, params...)` for `SELECT`, both opening and closing their own connection. `QueryRunner` is built once from a `SQLiteDataSource` (not directly from a `Connection`), so every call to `run.update(...)`/`run.query(...)` automatically fetches and closes its own connection, removing the risk of forgetting `close()`.
 
-Since Meeting 11, `Bank` has already depended on the `AccountRepository` interface, not directly on its concrete implementation (Dependency Inversion Principle). Thanks to that, in-memory storage can be replaced with JDBC storage just by writing a new implementation, with no change to `Bank` at all:
+Since the SOLID Principle and Collections topic, `Bank` has already depended on the `AccountRepository` interface, not directly on its concrete implementation (Dependency Inversion Principle). Thanks to that, in-memory storage can be replaced with JDBC storage just by writing a new implementation, with no change to `Bank` at all:
 
-![JdbcAccountRepository.java, constructor and save](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-save.png){width=75%}
+![JdbcAccountRepository.java, fields and constructor](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-construct.png){width=72%}
 
-![JdbcAccountRepository.java, findByNumber, findAll, and mapRow](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-find.png){width=75%}
+![JdbcAccountRepository.java, createTableIfNotExists](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-createtable.png){width=72%}
+
+![JdbcAccountRepository.java, save](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-save.png){width=72%}
+
+![JdbcAccountRepository.java, findByNumber and findAll](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-find.png){width=72%}
+
+![JdbcAccountRepository.java, mapRow](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-maprow.png){width=72%}
+
+![JdbcAccountRepository.java, ResultSetHandler for one row and many rows](../assets/code/pertemuan-15/p15-01-jdbcaccountrepository-handlers.png){width=72%}
 
 `createTableIfNotExists()` is called in the constructor, creating the `accounts` table automatically on first contact with the database, so this checkpoint needs no separate database setup step. Column `account_type` stores `"SAVINGS"` or `"CHECKING"` so `mapRow()` knows which `Account` subclass to recreate when reading a row.
 
 Update `BankMiniFrame` to use `JdbcAccountRepository`, no longer `InMemoryAccountRepository`:
 
-![BankMiniFrame.java, constructor using JdbcAccountRepository](../assets/code/pertemuan-15/p15-01-bankminiframe-constructor.png){width=75%}
+![BankMiniFrame.java, constructor using JdbcAccountRepository](../assets/code/pertemuan-15/p15-01-bankminiframe-constructor.png){width=72%}
+
+![BankMiniFrame.java, seedSampleAccountsIfEmpty](../assets/code/pertemuan-15/p15-01-bankminiframe-seedifempty.png){width=72%}
 
 Note `seedSampleAccountsIfEmpty()`: the two sample accounts are only added if the `accounts` table is still empty. Without this check, both sample accounts would be rewritten with their initial balance every time the application runs, overwriting any balance change already saved from a previous session, exactly the opposite of what persistence is for.
 
@@ -65,7 +75,11 @@ One important thing easy to miss: in-memory storage "saves" a change automatical
 
 `BankMiniFrame` calls `bank.saveAccount(account)` after every successful transaction:
 
-![BankMiniFrame.java, depositButtonActionPerformed and withdrawButtonActionPerformed calling saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-savecalls.png){width=75%}
+![BankMiniFrame.java, depositButtonActionPerformed calling saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-deposithandler.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed, input validation](../assets/code/pertemuan-15/p15-01-bankminiframe-withdrawhandler-validate.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed calling withdraw then saveAccount](../assets/code/pertemuan-15/p15-01-bankminiframe-withdrawhandler-call.png){width=72%}
 
 > ✅ **Checkpoint:** run **Run Project** (F6), select one of the accounts in the table, click **Deposit...**, then fill in the amount input dialog. After the balance increases, **close the application completely** and run it again. The balance just changed still shows, not reverting to its original value, proof that the data is genuinely stored in the `bankmini.db` file, not merely in memory while the application runs.
 
@@ -81,21 +95,25 @@ Bank Mini uses SHA-256 (available directly through `java.security.MessageDigest`
 
 > ⚠️ **Not for production.** Plain SHA-256 (no salt, a single hash pass) is easily attacked through a rainbow table on a genuine production system. A real application uses an algorithm specifically designed for passwords, such as bcrypt, Argon2, or PBKDF2, which add a random salt and are deliberately made slow to compute. `PasswordHasher` in this jobsheet is purely a simplification for practice, not a ready-to-use example.
 
-Following the `AccountRepository` pattern already learned since Meeting 11 (an interface plus an in-memory implementation as a preview, followed by a JDBC version), user credentials use the exact same structure:
+Following the `AccountRepository` pattern from the SOLID Principle and Collections topic (an interface plus an in-memory implementation as a preview, followed by a JDBC version), user credentials use the exact same structure:
 
 ![InMemoryUserRepository.java](../assets/code/pertemuan-15/p15-02-inmemoryuserrepository.png){width=68%}
 
 `InMemoryUserRepository` above shows that `UserRepository` could be implemented as simply as a `HashMap` for testing purposes. But since credentials must still exist even after the application closes, this checkpoint uses the JDBC version:
 
-![JdbcUserRepository.java, constructor and seedDefaultUserIfEmpty](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-seed.png){width=75%}
+![JdbcUserRepository.java, fields, constructor, and createTableIfNotExists](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-setup.png){width=72%}
 
-![JdbcUserRepository.java, save and findByUsername](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-find.png){width=75%}
+![JdbcUserRepository.java, seedDefaultUserIfEmpty](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-seed.png){width=72%}
+
+![JdbcUserRepository.java, save and findByUsername](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-find.png){width=72%}
+
+![JdbcUserRepository.java, ResultSetHandler for one User row](../assets/code/pertemuan-15/p15-02-jdbcuserrepository-handler.png){width=72%}
 
 Build a class `LoginFrame` (an ordinary JFrame, a login form: `Username` as a `JTextField`, `Password` as a **`JPasswordField`**, not a plain `JTextField`, so the typed characters are hidden as dots) with one **Login** button. Fill in the button's handler:
 
 ![LoginFrame.java, loginButtonActionPerformed](../assets/code/pertemuan-15/p15-02-loginhandler.png){width=75%}
 
-> **Concept Brief: Switching to Another Window.** Note the last two lines on a successful login: `dispose()` closes and releases the resources of the currently active `LoginFrame` window, then `new BankMiniFrame().setVisible(true)` creates and displays a new window. This `dispose()` followed by `new SomeFrame().setVisible(true)` pattern is Swing's standard way of switching from one window to another, already introduced as a concept in Meeting 13; `LoginFrame` here is where it is genuinely put into practice for the first time, since Meetings 13-14 only ever opened one window (`BankMiniFrame`) directly from `Main.java`, never closing one window to open another.
+> **Concept Brief: Switching to Another Window.** Note the last two lines on a successful login: `dispose()` closes and releases the resources of the currently active `LoginFrame` window, then `new BankMiniFrame().setVisible(true)` creates and displays a new window. This `dispose()` followed by `new SomeFrame().setVisible(true)` pattern is Swing's standard way of switching from one window to another, already introduced as a concept in the GUI with NetBeans Matisse (Part 1) topic; `LoginFrame` here is where it is genuinely put into practice for the first time, since both parts of that GUI topic only ever opened one window (`BankMiniFrame`) directly from `Main.java`, never closing one window to open another.
 
 ![An empty LoginFrame window before being filled in](../assets/screenshots/pertemuan-15/p15-login-screen.png){width=55%}
 
@@ -106,7 +124,7 @@ Finally, `Main.java` runs `LoginFrame` first, instead of opening `BankMiniFrame`
 ![Main.java running LoginFrame](../assets/code/pertemuan-15/p15-02-main.png){width=68%}
 
 <!-- TODO(screenshot): mock-up SVG, not a genuine screenshot. Replace with a genuine BankMiniFrame screenshot once display access is available; see conventions/bank-mini.md, section "Verifikasi visual GUI tanpa NetBeans/X server". -->
-![Mock-up of the BankMiniFrame window after a successful login](../assets/uml/p14-window-selected.png){width=60%}
+![Mock-up of the BankMiniFrame window after a successful login](../assets/uml/p15-window-selected.png){width=60%}
 
 The following diagram summarizes the complete Bank Mini application flow up to this point, from `Main.java` to a transaction in `BankMiniFrame`:
 
@@ -122,15 +140,11 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the `LoginFrame` window, the error dialog from a failed login attempt, and `BankMiniFrame` after a successful login.
 - **Independent assignment:**
-  1. Change `BankMiniFrame`'s constructor to accept a `username` parameter, then display `"Bank Mini - Logged in as: <username>"` as the window title. Adjust `LoginFrame` to pass the successfully logged-in username to that constructor:
+  1. Change `BankMiniFrame`'s constructor to accept a `username` parameter, then display `"Bank Mini - Logged in as: <username>"` as the window title. Adjust `LoginFrame` to pass the successfully logged-in username to that constructor (the `new BankMiniFrame()` part of the Login button handler). The diagram below is only a sketch of the constructor to change, NOT finished code; its body is entirely up to you:
 
-     ![BankMiniFrame.java, constructor accepting a username parameter](../assets/code/pertemuan-15/p15-tugas-bankminiframe-constructor.png){width=75%}
+     ![Sketch of the BankMiniFrame constructor accepting a username](../assets/uml/p15-tugas-bankminiframe-constructor.png){width=45%}
 
-     ![LoginFrame.java, passing the username to BankMiniFrame](../assets/code/pertemuan-15/p15-tugas-loginhandler.png){width=75%}
-
-  2. Add a second user in `seedDefaultUserIfEmpty()` (e.g. `teller2` with password `teller456`):
-
-     ![JdbcUserRepository.java, two sample users](../assets/code/pertemuan-15/p15-tugas-seconduser.png){width=68%}
+  2. Add a second user in `seedDefaultUserIfEmpty()` (e.g. `teller2` with password `teller456`), using the same `save(...)` pattern as the first user in Step 2. The expected result after logging in as the second user:
 
      <!-- TODO(screenshot): mock-up SVG, not a genuine screenshot. Replace with a genuine BankMiniFrame screenshot once display access is available; see conventions/bank-mini.md, section "Verifikasi visual GUI tanpa NetBeans/X server". -->
      ![Mock-up of the BankMiniFrame window displaying the username in its title after logging in as teller2](../assets/uml/p15-window-logged-in.png){width=60%}

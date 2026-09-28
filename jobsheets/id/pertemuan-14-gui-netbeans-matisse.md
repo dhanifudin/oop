@@ -18,7 +18,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans.
-- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dan berkas `BankMiniFrame` dari Pertemuan 13.
+- **Proyek**: pertemuan ini melanjutkan proyek Maven `bank-mini` dan berkas `BankMiniFrame` dari topik GUI dengan NetBeans Matisse (Bagian 1).
 
 > **Tanpa NetBeans?** Langkah desain form dan dialog (memakai GUI Builder) membutuhkan NetBeans. Mahasiswa tanpa NetBeans dapat langsung memakai berkas `BankMiniFrame.java` dan `AddAccountDialog.java` hasil jadi dari checkpoint (lengkap tanpa `.form`), lalu menjalankan `mvn -q compile exec:java`; checkpoint dan tampilan GUI yang dihasilkan tetap sama persis.
 
@@ -33,7 +33,7 @@ Sejauh ini, dua rekening contoh hanya ditambahkan lewat kode (`seedSampleAccount
 Buat dialognya di NetBeans:
 
 1. Klik kanan paket `id.ac.polinema.ui` > **New > Other... > Swing GUI Forms > JDialog Form**. Beri nama kelas `AddAccountDialog`.
-2. NetBeans membuatkan constructor `AddAccountDialog(java.awt.Frame parent, boolean modal)`. Pada tab **Source**, ubah agar menerima `Bank` langsung dan selalu modal, sebagaimana Pertemuan 15 nanti akan mengubah constructor `BankMiniFrame` dengan cara serupa untuk menerima `username`:
+2. NetBeans membuatkan constructor `AddAccountDialog(java.awt.Frame parent, boolean modal)`. Pada tab **Source**, ubah agar menerima `Bank` langsung dan selalu modal, sebagaimana suatu saat nanti (topik Persistensi dengan JDBC dan Mekanisme Autentikasi) constructor `BankMiniFrame` akan diubah dengan cara serupa untuk menerima `username`:
 
    ```java
    public AddAccountDialog(java.awt.Frame parent, Bank bank) {
@@ -56,7 +56,9 @@ Isi handler-nya di tab **Source**:
 
 ![AddAccountDialog.java, constructor](../assets/code/pertemuan-14/p14-01-addaccountdialog-constructor.png){width=68%}
 
-![AddAccountDialog.java, saveButtonActionPerformed](../assets/code/pertemuan-14/p14-01-addaccountdialog-savehandler.png){width=72%}
+![AddAccountDialog.java, saveButtonActionPerformed memvalidasi isian](../assets/code/pertemuan-14/p14-01-addaccountdialog-validate.png){width=72%}
+
+![AddAccountDialog.java, saveButtonActionPerformed membuat dan menyimpan Account](../assets/code/pertemuan-14/p14-01-addaccountdialog-build.png){width=72%}
 
 Perhatikan: `accountNumberValueLabel` sebuah `JLabel` (bukan `JTextField`), sehingga nomor rekening TIDAK BISA diedit pengguna. Dengan nomor selalu berasal dari `Bank.nextAccountNumber()`, tidak ada cara bagi pengguna untuk mengetikkan nomor yang bentrok dengan rekening lain; kelas galat "nomor rekening duplikat" dicegah lewat desain, bukan diperiksa lalu ditolak setelah terlanjur diketik.
 
@@ -68,7 +70,9 @@ Sekarang perbarui `BankMiniFrame` supaya tombol **Add Account...** membuka dialo
 
 Isi method-method pendukung di tab **Source**:
 
-![BankMiniFrame.java, constructor, seedSampleAccounts, loadAccounts](../assets/code/pertemuan-14/p14-01-bankminiframe-fields.png){width=68%}
+![BankMiniFrame.java, field bank dan constructor](../assets/code/pertemuan-14/p14-01-bankminiframe-constructor.png){width=60%}
+
+![BankMiniFrame.java, method seedSampleAccounts dan loadAccounts](../assets/code/pertemuan-14/p14-01-bankminiframe-seedload.png){width=68%}
 
 ![BankMiniFrame.java, addAccountButtonActionPerformed](../assets/code/pertemuan-14/p14-01-bankminiframe-addaccounthandler.png){width=60%}
 
@@ -100,14 +104,16 @@ Isi kedua method, ditambah satu method bantu untuk membaca rekening yang sedang 
 
 ![BankMiniFrame.java, depositButtonActionPerformed](../assets/code/pertemuan-14/p14-02-deposithandler.png){width=72%}
 
-![BankMiniFrame.java, withdrawButtonActionPerformed](../assets/code/pertemuan-14/p14-02-withdrawhandler.png){width=72%}
+![BankMiniFrame.java, withdrawButtonActionPerformed memvalidasi isian](../assets/code/pertemuan-14/p14-02-withdrawhandler-validate.png){width=72%}
+
+![BankMiniFrame.java, withdrawButtonActionPerformed memanggil withdraw](../assets/code/pertemuan-14/p14-02-withdrawhandler-call.png){width=60%}
 
 Panggil `configureSelectionListener()` di constructor, SETELAH `loadAccounts()`, supaya listener-nya terpasang sebelum pengguna sempat memilih baris apa pun.
 
 <!-- TODO(screenshot): mock-up SVG, bukan tangkapan layar asli. Ganti dengan screenshot BankMiniFrame sungguhan begitu ada akses ke display; lihat conventions/bank-mini.md bagian "Verifikasi visual GUI tanpa NetBeans/X server". -->
 ![Mock-up jendela BankMiniFrame dengan satu baris terpilih, tombol Deposit dan Withdraw aktif](../assets/uml/p14-window-selected.png){width=62%}
 
-> ✅ **Checkpoint:** jalankan **Run Project** (F6). Tombol **Deposit...** dan **Withdraw...** tampil abu-abu sampai sebuah baris rekening diklik. Pilih satu baris, kedua tombol menyala; klik **Deposit...**, sebuah dialog input muncul bertuliskan "Deposit amount for A001 (Nadia):"; ketik sebuah angka, saldo pada baris itu bertambah. Coba juga **Withdraw...** dengan jumlah yang melebihi batas rekening tsb (lihat Pertemuan 6-7 untuk aturan tiap jenis rekening): sebuah dialog error muncul menampilkan pesan `InsufficientBalanceException`, bukan program yang berhenti paksa.
+> ✅ **Checkpoint:** jalankan **Run Project** (F6). Tombol **Deposit...** dan **Withdraw...** tampil abu-abu sampai sebuah baris rekening diklik. Pilih satu baris, kedua tombol menyala; klik **Deposit...**, sebuah dialog input muncul bertuliskan "Deposit amount for A001 (Nadia):"; ketik sebuah angka, saldo pada baris itu bertambah. Coba juga **Withdraw...** dengan jumlah yang melebihi batas rekening tsb (lihat topik Inheritance dan Overriding/Overloading untuk aturan tiap jenis rekening): sebuah dialog error muncul menampilkan pesan `InsufficientBalanceException`, bukan program yang berhenti paksa.
 
 > ⚠️ **Jika gagal:** apabila tombol Deposit/Withdraw tetap bisa diklik walau belum ada baris terpilih, periksa properti **enabled** kedua tombol sudah diatur `false` di Matisse, dan apakah `configureSelectionListener()` benar-benar dipanggil di constructor. Apabila mengklik Cancel pada dialog input jumlah malah menampilkan dialog "Amount must be a number", periksa apakah method memeriksa `input == null` (Cancel) SEBELUM mencoba mem-parse isiannya.
 
@@ -117,15 +123,15 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot jendela `BankMiniFrame` setelah Langkah 2, termasuk satu percobaan Withdraw yang gagal (dialog error tampil).
 - **Tugas mandiri:**
-  1. Tambahkan tombol **Process Month End** (perluas `buttonsPanel` menjadi rows = 1, columns = 5), memanggil `bank.processMonthEnd()` (dari Pertemuan 10) lalu menampilkan dialog konfirmasi "Month-end processing complete.":
+  1. Tambahkan tombol **Process Month End** (perluas `buttonsPanel` menjadi rows = 1, columns = 5), memanggil `bank.processMonthEnd()` (dari topik Polimorfisme dan Exception Handling) lalu menampilkan dialog konfirmasi "Month-end processing complete.". Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
 
-     ![BankMiniFrame.java, processMonthEndButtonActionPerformed](../assets/code/pertemuan-14/p14-tugas-processmonthend.png){width=68%}
+     ![Sketsa BankMiniFrame.processMonthEndButtonActionPerformed, memanggil Bank.processMonthEnd](../assets/uml/p14-tugas-processmonthend.png){width=55%}
 
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
      - (a) mengapa validasi `NumberFormatException` tetap diperlukan di GUI, padahal dialog input jumlah "seharusnya" hanya diisi angka?
-     - (b) Bandingkan bagaimana `InsufficientBalanceException` ditangani di Pertemuan 10 (dicetak ke konsol) dengan di jobsheet ini (ditampilkan sebagai dialog). Apa yang berubah, dan apa yang tetap sama?
+     - (b) Bandingkan bagaimana `InsufficientBalanceException` ditangani pada topik Polimorfisme dan Exception Handling (dicetak ke konsol) dengan di jobsheet ini (ditampilkan sebagai dialog). Apa yang berubah, dan apa yang tetap sama?
 
-Perhatikan satu hal yang sengaja belum dibahas: siapa pun yang menjalankan `BankMiniFrame` langsung mendapat akses penuh ke seluruh rekening, tanpa login sama sekali. Aplikasi perbankan sungguhan tidak pernah dirilis seperti ini. Pertemuan 15 menutup celah ini dengan menambahkan mekanisme autentikasi yang sesungguhnya, sekaligus alasan konkret pertama mengapa Bank Mini butuh database: kredensial login harus disimpan dan diperiksa dari data yang tersimpan, bukan dari nilai yang ditulis langsung di kode Java.
+Perhatikan satu hal yang sengaja belum dibahas: siapa pun yang menjalankan `BankMiniFrame` langsung mendapat akses penuh ke seluruh rekening, tanpa login sama sekali. Aplikasi perbankan sungguhan tidak pernah dirilis seperti ini. Topik Persistensi dengan JDBC dan Mekanisme Autentikasi menutup celah ini dengan menambahkan mekanisme autentikasi yang sesungguhnya, sekaligus alasan konkret pertama mengapa Bank Mini butuh database: kredensial login harus disimpan dan diperiksa dari data yang tersimpan, bukan dari nilai yang ditulis langsung di kode Java.
 
 ## E. Kriteria Penilaian
 

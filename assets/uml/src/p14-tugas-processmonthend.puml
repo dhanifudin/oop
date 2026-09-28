@@ -1,0 +1,17 @@
+@startuml p14-tugas-processmonthend
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Bank {
+  + processMonthEnd() : void
+}
+
+class BankMiniFrame {
+  + processMonthEndButtonActionPerformed(evt : ActionEvent) : void
+}
+
+BankMiniFrame ..> Bank : calls
+@enduml

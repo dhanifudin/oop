@@ -48,7 +48,7 @@ Pindahkan setiap berkas ke paket barunya (klik kanan `src/main/java` > **New > J
 
 ![Bank.java dengan method getAllAccounts](../assets/code/pertemuan-13/p13-01-bank-getall.png){width=60%}
 
-> ✅ **Checkpoint:** setelah seluruh berkas dipindah dan `import`-nya diperbaiki, jalankan **Run Project** (F6). Output tetap identik dengan Pertemuan 11 (baris `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, `monthly fee`, dan riwayat transaksi A003).
+> ✅ **Checkpoint:** setelah seluruh berkas dipindah dan `import`-nya diperbaiki, jalankan **Run Project** (F6). Output tetap identik dengan sebelumnya, dari topik SOLID Principle dan Collections (baris `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, `monthly fee`, dan riwayat transaksi A003).
 
 > ⚠️ **Jika gagal:** apabila muncul galat `package id.ac.polinema does not exist` atau `cannot find symbol`, periksa apakah setiap berkas yang dipindah sudah diperbarui deklarasi `package`-nya sesuai lokasi barunya, dan apakah kelas yang dipakai lintas paket sudah di-`import`.
 
@@ -61,7 +61,7 @@ Pindahkan setiap berkas ke paket barunya (klik kanan `src/main/java` > **New > J
 > [ Tabel: Account Number | Owner | Balance ]
 >                                  [ Refresh ]
 > ```
-> Sketsa tidak perlu rapi, cukup menjawab dua hal: komponen apa (tabel untuk daftar data, tombol untuk aksi) dan di mana letaknya (tombol di bawah tabel). Semakin kompleks form-nya (lihat Pertemuan 14), semakin terasa manfaat merencanakan dulu di atas kertas sebelum mulai menyeret komponen di Matisse.
+> Sketsa tidak perlu rapi, cukup menjawab dua hal: komponen apa (tabel untuk daftar data, tombol untuk aksi) dan di mana letaknya (tombol di bawah tabel). Semakin kompleks form-nya (lihat topik GUI dengan NetBeans Matisse Bagian 2), semakin terasa manfaat merencanakan dulu di atas kertas sebelum mulai menyeret komponen di Matisse.
 
 Ikuti langkah berikut di NetBeans:
 
@@ -78,7 +78,9 @@ Ikuti langkah berikut di NetBeans:
 
 Isi method yang dibuatkan NetBeans, ditambah beberapa method dan field pendukung, semuanya di tab **Source** (di luar blok kode abu-abu yang dijaga NetBeans):
 
-![BankMiniFrame.java, constructor dan method loadAccounts/seedSampleAccounts](../assets/code/pertemuan-13/p13-02-bankminiframe-fields.png){width=68%}
+![BankMiniFrame.java, field bank dan constructor](../assets/code/pertemuan-13/p13-02-bankminiframe-constructor.png){width=60%}
+
+![BankMiniFrame.java, method seedSampleAccounts dan loadAccounts](../assets/code/pertemuan-13/p13-02-bankminiframe-seedload.png){width=68%}
 
 ![BankMiniFrame.java, refreshButtonActionPerformed](../assets/code/pertemuan-13/p13-02-bankminiframe-handler.png){width=60%}
 
@@ -98,10 +100,10 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot jendela `BankMiniFrame` setelah Langkah 2 dijalankan.
 - **Tugas mandiri:**
-  1. Tambahkan satu kolom baru pada tabel, **Type**, menampilkan `"Savings"` atau `"Checking"` sesuai jenis rekening (gunakan `instanceof` seperti dipelajari pada Pertemuan 10).
+  1. Tambahkan satu kolom baru pada tabel, **Type**, menampilkan `"Savings"` atau `"Checking"` sesuai jenis rekening (gunakan `instanceof` seperti dipelajari pada topik Polimorfisme dan Exception Handling).
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
      - (a) mengapa `Bank.getAllAccounts()` mengembalikan `Collection<Account>`, bukan langsung mencetaknya seperti `printAllAccounts()`?
-     - (b) Apa yang akan terjadi pada kode `BankMiniFrame` apabila suatu hari `InMemoryAccountRepository` diganti implementasi lain (mis. tersambung ke database)? Kaitkan jawabanmu dengan Dependency Inversion Principle yang dipelajari pada Pertemuan 11.
+     - (b) Apa yang akan terjadi pada kode `BankMiniFrame` apabila `InMemoryAccountRepository` suatu hari diganti implementasi lain (mis. tersambung ke database)? Kaitkan jawabanmu dengan Dependency Inversion Principle yang dipelajari pada topik SOLID Principle dan Collections.
 
 ## E. Kriteria Penilaian
 
