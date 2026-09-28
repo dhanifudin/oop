@@ -110,11 +110,12 @@ Passing a class's traits down to another class
 
 ## What You Will Learn
 
-- Why similar code across several classes should be combined into one, rather than copied repeatedly
-- How a new class inherits the capabilities of an existing class, and the step-by-step order in which it gets constructed
-- The levels of access between classes, and how inheritance can stack in layers all the way up to the root of every class in Java
-- When a class should genuinely become a specific kind of another class, and when it should not
-- Applying all of these concepts to distinguish between account types in Bank Mini
+- Why similar code belongs in one place instead of being copied repeatedly
+- How a new class inherits an existing one, and the order in which it is constructed
+- Access levels, multilevel inheritance up to `Object`, and what is not inherited
+- Upcasting and downcasting: when a subclass object may be held as its superclass
+- When a class should genuinely be a specific kind of another class, and when not
+- Designing one small class hierarchy from start to finish
 
 <div class="tip-box">
 Hands-on practice for today's material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 6.
@@ -127,7 +128,7 @@ Hands-on practice for today's material is available in the Practicum: Object-Ori
 - **Session 1 (50')**: The concept of inheritance, superclass and subclass
 - **Session 2 (50')**: Constructors, `super(...)`, `protected`, and multilevel inheritance
 - **Session 3 (50')**: When inheritance should be used
-- **Session 4 (50')**: Applying inheritance to Bank Mini
+- **Session 4 (50')**: Synthesis case study, designing a library collection hierarchy
 
 ---
 
@@ -153,7 +154,7 @@ The same code, copied into many places, is one sign of a design that needs impro
 ## Superclass and Subclass
 
 <div class="term-box">
-<b>Inheritance</b> lets a class (called a <b>subclass</b>) inherit attributes and methods from another class (called a <b>superclass</b>), so the same code only needs to be written once in the superclass, then shared by all of its subclasses.
+<b>Inheritance</b> lets a class (called a <b>subclass</b>) inherit attributes and methods from another class (called a <b>superclass</b>), so the same code only needs to be written once in the superclass, then shared by all of its subclasses. A superclass is also called a <b>parent class</b> or <b>base class</b>; a subclass is also called a <b>child class</b> or <b>derived class</b>.
 </div>
 
 ---
@@ -172,7 +173,7 @@ Inheritance eliminates this source of bugs by making sure the same code exists i
 
 ![h:280 Sedan and Truck each inherit from Vehicle](../assets/illustrations/inheritance-tree.svg)
 
-The keyword `extends` states this relationship in Java: `class Sedan extends Vehicle` means `Sedan` is a subclass of `Vehicle`, its superclass.
+The keyword `extends` states this relationship in Java: `class Sedan extends Vehicle` means `Sedan` is a subclass of `Vehicle`, its superclass. In a UML class diagram this relationship is drawn as a hollow-triangle arrow (generalization) that always points from the subclass to the superclass, read as "`Sedan` is-a `Vehicle`".
 
 ---
 
@@ -196,6 +197,22 @@ class Sedan extends Vehicle {
 ![h:280 The Sedan subclass inherits every member of Vehicle, plus its own](../assets/illustrations/inherited-members.svg)
 
 A subclass automatically has every attribute and method (that is not `private`) belonging to its superclass, plus any new attributes and methods written in the subclass itself.
+
+---
+
+## One Superclass Only
+
+<div class="term-box">
+Java allows only <b>one</b> <code>extends</code> per class (single inheritance). One superclass may have many subclasses (<code>Vehicle</code> is inherited by <code>Sedan</code>, <code>Truck</code>, <code>Bus</code>), but one subclass may not have two superclasses at once.
+</div>
+
+```java
+class Sedan extends Vehicle, Truck { }   // compile error
+```
+
+<div class="tip-box">
+The need to "combine capabilities from several sources" is solved through interfaces, the topic of Meeting 9.
+</div>
 
 ---
 
@@ -228,6 +245,7 @@ Automatically has (from `Vehicle`): attribute `name` and method `getName()`. Mus
 - Inheritance makes a subclass inherit its superclass's attributes and methods, avoiding code duplication between similar classes.
 - The keyword `extends` states the subclass-superclass relationship in Java.
 - Inherited members are automatically available in a subclass; only new members, or ones deliberately changed, need to be written.
+- A class can `extends` only one superclass; one superclass may be inherited by many subclasses.
 
 Next: Part 2 covers how a constructor works when a subclass is created.
 
@@ -236,7 +254,7 @@ Next: Part 2 covers how a constructor works when a subclass is created.
 <!-- _class: divider -->
 
 # Part 2
-## Constructors, super(...), and Visibility
+## Constructors, super(...), and Access Modifiers
 
 Session 2 of 4
 
@@ -272,6 +290,18 @@ class Sedan extends Vehicle {
 
 ---
 
+## What Is Not Inherited
+
+<div class="term-box">
+<b>Constructors are not inherited.</b> That is why every subclass writes its own constructor, then passes the superclass's data along through <code>super(...)</code>, rather than relying on <code>Vehicle</code>'s constructor "coming down" into <code>Sedan</code>.
+</div>
+
+<div class="warn-box">
+<b><code>private</code> members cannot be accessed directly.</b> <code>Vehicle</code>'s <code>name</code> attribute still exists inside every <code>Sedan</code> object, but code in <code>Sedan</code> may not touch it directly: use a getter (<code>getName()</code>) or change it to <code>protected</code>, covered next.
+</div>
+
+---
+
 ## Execution Order When super(...) Chains
 
 ![h:260 The order in which super(...) calls happen, and the order in which constructor bodies actually run](../assets/illustrations/constructor-chain.svg)
@@ -292,9 +322,9 @@ A call to <code>super(...)</code>, if written, must always be the first statemen
 
 ---
 
-## The `protected` Keyword and Multilevel Inheritance
+## The `protected` Keyword
 
-![h:320 Four visibility levels in Java](../assets/illustrations/protected-visibility.svg)
+![h:320 Four access modifier levels in Java](../assets/illustrations/protected-visibility.svg)
 
 <div class="term-box">
 <code>protected</code> sits between default (same package only) and <code>public</code>: a member marked <code>protected</code> is accessible to a subclass, even one in a different package.
@@ -326,11 +356,25 @@ A subclass may itself be further derived into a superclass for yet another subcl
 
 ---
 
+## Inherited from Object: toString() and equals()
+
+Because every class is rooted at `Object`, every object automatically has `toString()`, `equals()`, and `hashCode()` without writing them at all:
+
+```java
+Sedan civic = new Sedan("Civic");
+System.out.println(civic);           // Sedan@1b6d3586
+System.out.println(civic.toString()); // same, println calls toString()
+```
+
+The default `toString()` is just the class name plus a hash code, which is where the "odd" output above comes from. Giving it a more meaningful form means rewriting this inherited method, the topic of Meeting 7.
+
+---
+
 ## Class Diagram: Employee, Manager, Director
 
 ![h:280 Employee as the superclass, with Manager and Director stacked below it](../assets/uml/p06-employee-multilevel.png)
 
-`name` is marked `#` (protected) so `Manager` and `Director` can access it directly. `describe()` is marked `{final}`: this method is deliberately not allowed to be overridden, so its output format stays consistent across every kind of employee.
+`name` is marked `#` (protected) so `Manager` and `Director` can access it directly. `describe()` is marked `{final}`: this method is deliberately not allowed to be overridden, so its output format stays consistent across every kind of employee. A class can also be marked `final` (for example, `String`) so that it cannot be extended at all.
 
 ---
 
@@ -363,6 +407,7 @@ What happens when this code is compiled? Explain why.
 - A subclass's constructor always calls its superclass's constructor first through `super(...)`, either explicitly or implicitly.
 - `super(...)`, if written, must be the first line; a superclass with no no-argument constructor forces it to be explicit.
 - `protected` opens access to a subclass across packages; inheritance can stack in multiple levels, rooted at `Object`.
+- Every class inherits `toString()`/`equals()` from `Object`; constructors are not inherited.
 
 Next: Part 3 covers when inheritance should be used, and when it should be avoided.
 
@@ -447,89 +492,177 @@ For each pair below, determine **is-a** or **has-a**:
 - Forced inheritance creates a rigid dependency: a subclass inherits every member of its superclass, relevant or not.
 - Similar code alone is not sufficient reason to choose inheritance.
 
-Next: Part 4 applies inheritance to `Account` in Bank Mini.
+Next: Part 4 brings all of these concepts together in one case study, designing a library collection hierarchy from scratch.
 
 ---
 
 <!-- _class: divider -->
 
 # Part 4
-## Applying Inheritance to Bank Mini
+## Synthesis Case Study: A Library Collection Hierarchy
 
 Session 4 of 4
 
 ---
 
-## SavingsAccount and CheckingAccount
+## From Requirements to a Hierarchy
 
-![h:280 Account as the superclass, SavingsAccount and CheckingAccount as subclasses](../assets/uml/p06-account-hierarchy.png)
+A library stores books, DVDs, and magazines. All of them have a title, a publication year, a checked-out-or-not status, and the exact same check-out and return actions. Each also has its own extra data: page count for a book, running time for a DVD, issue number for a magazine.
 
-Both subclasses add their own attribute (`interestRate` and `overdraftLimit`) and their own new method (`printAccountType()`), while still inheriting `deposit()`, `withdraw()`, and `printInfo()` from `Account` as-is, none of them rewritten yet.
+Apply the "is-a" test from Part 3: a `Book` is a kind of `LibraryItem` (yes), a `Dvd` is a kind of `LibraryItem` (yes). By contrast, a `Library` owns many `LibraryItem` objects, it is not a kind of one, so that relationship is "has-a", not inheritance.
+
+<div class="warn-box">
+Shared attributes alone are no reason to use <code>extends</code>. Only once the "is-a" test sounds natural may that shared part be lifted into a superclass.
+</div>
 
 ---
 
-## Code Example: SavingsAccount Adds an Attribute
+## Class Diagram: LibraryItem, Book, Dvd, Magazine
+
+![h:280 LibraryItem as the superclass, with Book, Dvd, and Magazine as subclasses](../assets/uml/p06-libraryitem-hierarchy.png)
+
+`title` and `year` are marked `#` (protected) so subclasses may use them directly. `checkOut()`, `returnItem()`, `loanDays()`, and `describe()` are written once in `LibraryItem`, then inherited as-is by all three subclasses. Each subclass also provides a getter for its extra attribute (`getPages()`, `getDurationMinutes()`, `getIssueNumber()`).
+
+---
+
+## Code Example: The LibraryItem Superclass
 
 ```java
-class SavingsAccount extends Account {
-    private double interestRate;
+class LibraryItem {
+    protected String title;
+    protected int year;
+    private boolean available = true;
 
-    public SavingsAccount(String accountNumber, Customer owner,
-            double balance, double interestRate) {
-        super(accountNumber, owner, balance);
-        this.interestRate = interestRate;
+    public LibraryItem(String title, int year) { this.title = title; this.year = year; }
+    public int loanDays() { return 14; }
+}
+```
+
+---
+
+## Code Example: Book Adds an Attribute
+
+```java
+class Book extends LibraryItem {
+    private int pages;
+
+    public Book(String title, int year, int pages) {
+        super(title, year);  // the LibraryItem part is built first
+        this.pages = pages;
     }
 }
 ```
+
+<div class="tip-box">
+<code>Dvd</code> and <code>Magazine</code> follow exactly the same pattern: <code>super(title, year)</code> on the first line, then fill in their own attribute.
+</div>
+
+---
+
+## Upcasting: A Subclass Object as a Superclass Object
+
+<div class="term-box">
+Because <code>Book</code> is-a <code>LibraryItem</code>, the statement <code>LibraryItem item = new Book("Dune", 1965, 412);</code> is valid. Storing a subclass object in a variable of the superclass type is called <b>upcasting</b>; it happens automatically with no extra syntax because it is always safe. Through a variable of type <code>LibraryItem</code> only <code>LibraryItem</code>'s members are visible: <code>item.loanDays()</code> is allowed, <code>item.getPages()</code> is not.
+</div>
+
+The reverse, `Book b = new LibraryItem("Dune", 1965);`, is a compile error: not every `LibraryItem` is a `Book`.
+
+<div class="tip-box">
+This is what lets one array or collection of type <code>LibraryItem</code> hold every kind of item at once. What happens when an inherited method is rewritten by a subclass is the topic of Polymorphism (Meeting 10).
+</div>
+
+---
+
+## Downcasting: Back to the Subclass Type
+
+<div class="term-box">
+The opposite direction, from a variable of the superclass type to the subclass type, is called <b>downcasting</b>. It must be written explicitly with parentheses, because it is NOT always safe: the compiler cannot guarantee that the object behind the variable really is that subclass.
+</div>
+
+```java
+LibraryItem item = new Book("Dune", 1965, 412);
+Book book = (Book) item;                 // explicit downcast
+System.out.println(book.getPages());     // 412
+
+LibraryItem other = new Dvd("Inception", 2010, 148);
+Book wrong = (Book) other;               // compiles, fails at run time
+```
+
+<div class="warn-box">
+The last line throws a <code>ClassCastException</code> at run time, because the object is actually a <code>Dvd</code>. Always check first: <code>if (item instanceof Book) { Book b = (Book) item; }</code>. The shorter form (pattern matching) is covered in the Polymorphism topic (Meeting 10).
+</div>
+
+---
+
+## Code Example: One Collection for Every Kind
+
+```java
+LibraryItem[] items = {
+    new Book("Dune", 1965, 412),
+    new Dvd("Inception", 2010, 148),
+    new Magazine("Tempo", 2024, 12)
+};
+for (LibraryItem item : items) {
+    System.out.println(item.title + ": " + item.loanDays() + " days");
+}
+```
+
+All three output lines end with `14 days`, since every one of them uses the exact same inherited `loanDays()`.
 
 ---
 
 ## An Inherited Method May Not Fit Every Subclass
 
 <div class="term-box">
-<code>CheckingAccount</code> inherits <code>withdraw()</code>, which only allows a withdrawal up to the available balance, even though <code>overdraftLimit</code> should let this account be withdrawn from beyond its balance. A new attribute alone is not enough: a subclass also needs a way to rewrite inherited behavior.
+<code>Dvd</code> inherits <code>loanDays()</code>, which always returns 14 days, even though the library wants DVDs to be loaned for only 7 days. Adding a <code>durationMinutes</code> attribute changes nothing about that. A new attribute alone is not enough: a subclass also needs a way to rewrite inherited behavior.
 </div>
 
 <div class="tip-box">
-This is exactly what Meeting 7 solves through overriding: a subclass rewrites a superclass's method to give it different behavior, without changing <code>Account</code>'s or <code>Bank</code>'s code at all.
+This is exactly what Meeting 7 solves through overriding: a subclass rewrites a superclass's method to give it different behavior, without changing <code>LibraryItem</code>'s code at all.
 </div>
 
 ---
 
-## Common Mistake: Forgetting to Pass Data Through super(...)
+## Common Mistake: Accessing a Superclass's private Attribute from a Subclass
 
 <div class="warn-box">
-<b>Wrong:</b> writing a <code>SavingsAccount</code> constructor that only fills in <code>interestRate</code>, without calling <code>super(accountNumber, owner, balance)</code>, hoping the three inherited attributes still get filled in correctly.
+<b>Wrong:</b> <code>LibraryItem</code> declares <code>private String title</code>, then <code>Book</code> writes <code>return title + " (" + pages + " pages)"</code>. Compilation fails: <code>title has private access in LibraryItem</code>.
 </div>
 
-**Correct:** without a `super(...)` that passes along the real values, `accountNumber`, `owner`, and `balance` silently stay empty (their default values), not an error that is immediately visible. `SavingsAccount` must pass all three through `super(...)`.
+**Correct:** `private` members are inherited, but they may not be accessed directly from a subclass. Change it to `protected` (as in the diagram), or provide a `getTitle()` getter in `LibraryItem` and call that from `Book`.
 
 ---
 
 ## Exercise
 
-`CheckingAccount` adds an attribute `overdraftLimit`, following the same pattern as `SavingsAccount`.
-
-Write the correct constructor signature (name and parameter list) for `CheckingAccount`, complete with its `super(...)` call.
+1. Write the complete `Magazine` class: it inherits `LibraryItem`, adds an `issueNumber` attribute, and has a constructor that calls `super(...)`.
+2. `Library` and `LibraryItem`: is the relationship **is-a** or **has-a**? Explain briefly.
+3. `LibraryItem item = new Magazine("Tempo", 2024, 12);` May `item.loanDays()` be called? May `item.getIssueNumber()` be called? How can it be called safely?
 
 ---
 
 ## Exercise Answer
 
 ```java
-public CheckingAccount(String accountNumber, Customer owner,
-        double balance, double overdraftLimit) {
-    super(accountNumber, owner, balance);
-    this.overdraftLimit = overdraftLimit;
+class Magazine extends LibraryItem {
+    private int issueNumber;
+
+    public Magazine(String title, int year, int issueNumber) {
+        super(title, year);
+        this.issueNumber = issueNumber;
+    }
 }
 ```
+
+**has-a**: a `Library` owns many `LibraryItem` objects, it is not a special kind of one. `item.loanDays()` is allowed, since it is a `LibraryItem` member; `item.getIssueNumber()` is not, since a `Magazine` member is not visible through a variable of type `LibraryItem`. Safe way: `if (item instanceof Magazine) { ((Magazine) item).getIssueNumber(); }`.
 
 ---
 
 ## Part 4 Summary
 
-- `SavingsAccount` and `CheckingAccount` add their own attributes, while still inheriting every `Account` method as-is.
-- A subclass's constructor must pass its superclass's data through `super(...)`, not fill it in separately itself.
+- Test "is-a" first, then `extends`: `Book`, `Dvd`, and `Magazine` pass, `Library` does not.
+- Shared members are written once in the superclass; a subclass only adds its own through a constructor that calls `super(...)`.
+- A subclass object may be stored in a variable or collection of the superclass type; only the superclass's members are visible through that variable. Upcasting is automatic and always safe; downcasting is explicit and must be guarded by `instanceof`.
 - An inherited method may not fit every subclass; rewriting its behavior is the topic of Meeting 7 (overriding).
 
 ---
@@ -539,7 +672,8 @@ public CheckingAccount(String accountNumber, Customer owner,
 - Inheritance makes a subclass inherit its superclass's attributes and methods through `extends`, avoiding code duplication.
 - A subclass's constructor always calls its superclass's constructor first through `super(...)`, which must be the first line.
 - `protected` opens access to a subclass across packages; inheritance can stack in multiple levels, rooted at `Object`.
-- Choose inheritance only for a genuinely natural "is-a" relationship; Bank Mini applies it through `SavingsAccount` and `CheckingAccount`.
+- Java allows only one superclass; constructors are not inherited; upcasting is automatic, downcasting is explicit and guarded by `instanceof`.
+- Choose inheritance only for a genuinely natural "is-a" relationship; the `LibraryItem` hierarchy shows all of these concepts working together in one design.
 
 ---
 
@@ -557,4 +691,4 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ## Discussion
 
-Look again at the `SavingsAccount` and `CheckingAccount` you just built: should either of them also have its own subclasses (for example, splitting `SavingsAccount` further into a fixed-interest kind and a tiered-interest kind)? Give one example of a subclass you think would make sense, along with its new attribute, or explain why further splitting is not needed for Bank Mini.
+The library wants to add audiobooks, `AudioBook`, which have a `durationMinutes` (like `Dvd`) as well as a `narrator` (the reader's name). Should it be `AudioBook extends Book`, `AudioBook extends Dvd`, or `AudioBook extends LibraryItem` directly? Apply the "is-a" question, then state which attributes are inherited and which must be written by hand in your chosen design.

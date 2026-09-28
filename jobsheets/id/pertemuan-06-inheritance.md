@@ -32,6 +32,10 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 Proyek `bank-mini` dari Pertemuan 4 dilanjutkan pada pertemuan ini. Sejauh ini hanya ada satu jenis rekening, `Account`. Bank Mini yang sesungguhnya melayani beberapa jenis rekening dengan sifat masing-masing, tanpa menulis ulang `accountNumber`, `owner`, `balance`, `deposit()`, atau `withdraw()` dari nol. Tambahkan kelas `SavingsAccount` yang mewarisi seluruhnya dari `Account` lewat `extends`, ditambah atribut dan method barunya sendiri:
 
+![Diagram kelas Account, SavingsAccount, dan CheckingAccount](../assets/uml/p06-account-hierarchy.png){width=70%}
+
+Kedua subclass pada diagram hanya menambah satu atribut dan satu method masing-masing; `deposit()`, `withdraw()`, dan `printInfo()` tetap milik `Account` dan diwarisi apa adanya. Mulai dari `SavingsAccount`:
+
 ![SavingsAccount.java](../assets/code/pertemuan-06/p06-01-savingsaccount.png){width=65%}
 
 Constructor `SavingsAccount` memanggil `super(accountNumber, owner, balance)` di baris pertama untuk membangun bagian yang diwarisi dari `Account`, baru kemudian mengisi `interestRate` miliknya sendiri. Perbarui `Main.java` untuk mengujinya:
@@ -52,7 +56,7 @@ Perbarui `Main.java` untuk menguji kedua jenis rekening:
 
 ![Main.java menguji SavingsAccount dan CheckingAccount](../assets/code/pertemuan-06/p06-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** program mencetak empat baris. Dua baris pertama untuk `acc1` (sama seperti Langkah 1), lalu `A002 - Sari - balance: 200000.0` dan `Account type: Checking, overdraft limit: 50000.0`. Perhatikan bahwa saldo `acc2` tetap 200000.0, penarikan 230000 ditolak, karena `withdraw()` yang diwarisi dari `Account` hanya mengizinkan penarikan sebesar saldo yang tersedia, dan belum tahu cara memakai `overdraftLimit`. Ini bukan galat, melainkan hal yang sengaja diamati; alasannya dibahas di Pertemuan 7.
+> ✅ **Checkpoint:** program mencetak empat baris. Dua baris pertama untuk `acc1` (sama seperti Langkah 1), lalu `A002 - Sari - balance: 200000.0` dan `Account type: Checking, overdraft limit: 50000.0`. Perhatikan bahwa saldo `acc2` tetap 200000.0, penarikan 230000 ditolak, karena `withdraw()` yang diwarisi dari `Account` hanya mengizinkan penarikan sebesar saldo yang tersedia, dan belum tahu cara memakai `overdraftLimit`. Ini bukan galat, melainkan hal yang sengaja diamati: atribut baru saja tidak cukup, subclass juga butuh cara menulis ulang perilaku yang diwarisi, dan itulah yang diselesaikan lewat overriding pada Pertemuan 7.
 
 > ⚠️ **Jika gagal:** apabila `overdraftLimit` tidak pernah tersimpan dengan benar, periksa apakah nama parameter constructor tidak keliru tertukar urutannya dengan `balance`.
 
@@ -78,6 +82,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
      Buktikan dengan membuat satu `BusinessAccount`, memasukkannya ke `Bank` bersama rekening lain, lalu memanggil `printAllAccounts()` dan `printAccountType()` miliknya.
   2. Jawab secara singkat (2-3 kalimat): `Bank.printAllAccounts()` belum bisa menampilkan info khusus tiap jenis rekening (bunga, limit overdraft, atau biaya bulanan), padahal method `printAccountType()` sudah ada di setiap subclass. Mengapa demikian, dan apa yang menurutmu perlu diubah agar `printAllAccounts()` bisa menampilkannya secara otomatis?
+  3. Jawab secara singkat (2-3 kalimat): apakah `SavingsAccount` sebaiknya dipecah lagi menjadi subclass (misalnya jenis dengan bunga tetap dan jenis dengan bunga berjenjang)? Beri satu contoh subclass yang menurutmu masuk akal beserta atribut barunya, atau jelaskan mengapa pemecahan lebih lanjut belum diperlukan untuk Bank Mini.
 
 ## E. Kriteria Penilaian
 

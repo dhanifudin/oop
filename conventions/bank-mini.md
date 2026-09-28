@@ -201,7 +201,11 @@ Pertemuan 6 sengaja TIDAK memperkenalkan overriding sama sekali, subclass
 hanya menambah atribut dan method baru; ini membuat keterbatasan warisan
 (mis. `overdraftLimit` belum memengaruhi apa pun karena `withdraw()` yang
 diwarisi masih pakai aturan generik) terlihat konkret sebagai motivasi
-overriding di Pertemuan 7, bukan sekadar diceritakan.
+overriding di Pertemuan 7, bukan sekadar diceritakan. Sejak dek Pertemuan 6
+tidak lagi punya Bagian Bank Mini (lihat pengecualian di [[slides]]),
+keterbatasan ini ditunjukkan generik di slide (`Dvd` mewarisi `loanDays()`
+yang selalu 14 hari) dan konkret di jobsheet (`overdraftLimit` diabaikan
+`withdraw()` warisan); keduanya harus tetap ada.
 
 ## GUI Pertemuan 13-14: NetBeans Matisse
 

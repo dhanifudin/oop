@@ -32,6 +32,10 @@ After completing this jobsheet, students will be able to:
 
 The `bank-mini` project from Meeting 4 continues in this meeting. So far there is only one account type, `Account`. A real Bank Mini serves several account types, each with its own traits, without rewriting `accountNumber`, `owner`, `balance`, `deposit()`, or `withdraw()` from scratch. Add a class `SavingsAccount` that inherits all of this from `Account` through `extends`, plus its own new attribute and method:
 
+![Class diagram of Account, SavingsAccount, and CheckingAccount](../assets/uml/p06-account-hierarchy.png){width=70%}
+
+Each subclass in the diagram adds only one attribute and one method of its own; `deposit()`, `withdraw()`, and `printInfo()` remain `Account`'s and are inherited as-is. Start with `SavingsAccount`:
+
 ![SavingsAccount.java](../assets/code/pertemuan-06/p06-01-savingsaccount.png){width=65%}
 
 `SavingsAccount`'s constructor calls `super(accountNumber, owner, balance)` as its first line to build the part inherited from `Account`, then fills in its own `interestRate`. Update `Main.java` to test it:
@@ -52,7 +56,7 @@ Update `Main.java` to test both account types:
 
 ![Main.java testing SavingsAccount and CheckingAccount](../assets/code/pertemuan-06/p06-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program prints four lines. The first two lines are for `acc1` (same as Step 1), then `A002 - Sari - balance: 200000.0` and `Account type: Checking, overdraft limit: 50000.0`. Notice that `acc2`'s balance stays at 200000.0, a withdrawal of 230000 is rejected, since the `withdraw()` inherited from `Account` only allows a withdrawal up to the available balance, and does not yet know how to use `overdraftLimit`. This is not an error, but something deliberately observed; the reason is covered in Meeting 7.
+> ✅ **Checkpoint:** the program prints four lines. The first two lines are for `acc1` (same as Step 1), then `A002 - Sari - balance: 200000.0` and `Account type: Checking, overdraft limit: 50000.0`. Notice that `acc2`'s balance stays at 200000.0, a withdrawal of 230000 is rejected, since the `withdraw()` inherited from `Account` only allows a withdrawal up to the available balance, and does not yet know how to use `overdraftLimit`. This is not an error, but something deliberately observed: a new attribute alone is not enough, a subclass also needs a way to rewrite inherited behavior, and that is exactly what overriding solves in Meeting 7.
 
 > ⚠️ **If it fails:** if `overdraftLimit` never gets stored correctly, check whether the constructor parameter names got swapped with `balance` by mistake.
 
@@ -78,6 +82,7 @@ Submit the following according to the format requested by the instructor:
 
      Demonstrate this by creating one `BusinessAccount`, adding it to `Bank` alongside the other accounts, then calling its `printAllAccounts()` and `printAccountType()`.
   2. Answer briefly (2 to 3 sentences): `Bank.printAllAccounts()` cannot yet display each account type's specific information (interest rate, overdraft limit, or monthly fee), even though a `printAccountType()` method already exists in each subclass. Why is that, and what do you think needs to change so `printAllAccounts()` can display it automatically?
+  3. Answer briefly (2 to 3 sentences): should `SavingsAccount` be split further into subclasses (for example, a fixed-interest kind and a tiered-interest kind)? Give one example of a subclass you think would make sense, along with its new attribute, or explain why further splitting is not yet needed for Bank Mini.
 
 ## E. Grading Criteria
 

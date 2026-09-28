@@ -1,0 +1,44 @@
+@startuml p06-libraryitem-hierarchy
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class LibraryItem {
+  # title : String
+  # year : int
+  - available : boolean
+  --
+  + LibraryItem(title : String, year : int)
+  + checkOut() : boolean
+  + returnItem() : void
+  + loanDays() : int
+  + describe() : String
+}
+
+class Book {
+  - pages : int
+  --
+  + Book(title : String, year : int, pages : int)
+  + getPages() : int
+}
+
+class Dvd {
+  - durationMinutes : int
+  --
+  + Dvd(title : String, year : int, durationMinutes : int)
+  + getDurationMinutes() : int
+}
+
+class Magazine {
+  - issueNumber : int
+  --
+  + Magazine(title : String, year : int, issueNumber : int)
+  + getIssueNumber() : int
+}
+
+LibraryItem <|-- Book
+LibraryItem <|-- Dvd
+LibraryItem <|-- Magazine
+@enduml

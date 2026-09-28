@@ -32,6 +32,10 @@
   diterjemahkan jadi "tanda tangan" (arti harfiahnya beda total, hanya
   berarti tanda tangan tulisan tangan dalam bahasa Indonesia sehari-hari,
   membingungkan di konteks method).
+- Pakai istilah yang lazim di kalangan programmer Indonesia: **"error"** (bukan
+  "galat") dan **"output"** (bukan "keluaran"). Dek Pertemuan 6 sudah memakai
+  "error"/"output"; dek dan jobsheet lain masih memakai "galat" sampai ada
+  permintaan eksplisit untuk penyeragaman se-repo.
 - Sebutan dosen memakai **"Dosen"** saja, tidak ada "asisten/Asisten".
 - **Tidak ada git di jobsheet.** OOP adalah fokus mata kuliah ini, bukan
   version control. Jangan tambahkan langkah `git init`/branch/commit ke

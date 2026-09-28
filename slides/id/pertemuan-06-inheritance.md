@@ -110,11 +110,12 @@ Menurunkan sifat sebuah kelas ke kelas lain
 
 ## Yang Akan Kamu Pelajari
 
-- Mengapa kode yang mirip di beberapa kelas sebaiknya digabung jadi satu, bukan disalin berulang-ulang
-- Cara sebuah kelas baru mewarisi kemampuan kelas yang sudah ada, dan urutan proses pembuatannya tahap demi tahap
-- Tingkatan hak akses antar kelas, dan bagaimana pewarisan bisa berlapis-lapis hingga ke akar seluruh kelas di Java
-- Kapan sebuah kelas sebaiknya benar-benar menjadi jenis khusus dari kelas lain, dan kapan sebaiknya tidak
-- Penerapan seluruh konsep ini untuk membedakan jenis-jenis rekening di Bank Mini
+- Mengapa kode mirip sebaiknya digabung di satu tempat, bukan disalin berulang
+- Cara kelas baru mewarisi kelas lama, dan urutan pembuatannya tahap demi tahap
+- Hak akses antar kelas, pewarisan bertingkat sampai `Object`, dan yang tidak diwariskan
+- Upcasting dan downcasting: kapan objek subclass boleh dipegang sebagai superclass
+- Kapan sebuah kelas sebaiknya menjadi jenis khusus dari kelas lain, dan kapan tidak
+- Merancang satu hierarki kelas kecil dari awal sampai akhir
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 6.
@@ -127,7 +128,7 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 - **Sesi 1 (50')**: Konsep inheritance, superclass dan subclass
 - **Sesi 2 (50')**: Constructor, `super(...)`, `protected`, dan inheritance bertingkat
 - **Sesi 3 (50')**: Kapan sebaiknya memakai inheritance
-- **Sesi 4 (50')**: Menerapkan inheritance ke Bank Mini
+- **Sesi 4 (50')**: Studi kasus sintesis, merancang hierarki koleksi perpustakaan
 
 ---
 
@@ -142,7 +143,7 @@ Sesi 1 dari 4
 
 ## Dari Kelas yang Mirip
 
-Bayangkan kelas `Sedan` dan `Truck` ditulis terpisah, padahal keduanya sama-sama punya atribut nama dan method untuk mendapatkan nama tersebut. Menyalin kode yang sama ke kedua kelas membuat program sulit dirawat: perubahan pada satu kelas harus diulang secara manual di kelas lainnya.
+Bayangkan kelas `Sedan` dan `Truck` ditulis terpisah, padahal keduanya sama-sama punya atribut `name` dan method `getName()`. Menyalin kode yang sama ke kedua kelas membuat program sulit dipelihara: setiap perubahan harus diulang secara manual di kelas lainnya.
 
 <div class="warn-box">
 Kode yang sama, disalin ke banyak tempat, adalah salah satu tanda desain yang perlu diperbaiki.
@@ -153,17 +154,17 @@ Kode yang sama, disalin ke banyak tempat, adalah salah satu tanda desain yang pe
 ## Superclass dan Subclass
 
 <div class="term-box">
-<b>Inheritance</b> memungkinkan sebuah kelas (disebut <b>subclass</b>) mewarisi atribut dan method dari kelas lain (disebut <b>superclass</b>), sehingga kode yang sama cukup ditulis satu kali di superclass, lalu dipakai bersama oleh subclass-subclassnya.
+<b>Inheritance</b> memungkinkan sebuah kelas (disebut <b>subclass</b>) mewarisi atribut dan method dari kelas lain (disebut <b>superclass</b>), sehingga kode yang sama cukup ditulis satu kali di superclass, lalu dipakai bersama oleh subclass-subclassnya. Superclass juga disebut <b>parent class</b> atau <b>base class</b>; subclass disebut <b>child class</b> atau <b>derived class</b>.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan `Sedan` dan `Truck` ditulis terpisah selama bertahun-tahun, lalu ditemukan bug pada method `getName()`-nya. Programmer memperbaiki bug itu di `Sedan`, tetapi lupa melakukan hal yang sama di `Truck`, karena keduanya adalah salinan kode yang terpisah. Kode yang seharusnya identik tetapi perlahan "berbeda" karena hanya sebagian salinan yang diperbarui adalah salah satu sumber bug paling umum di proyek nyata.
+Bayangkan `Sedan` dan `Truck` ditulis terpisah selama bertahun-tahun, lalu ditemukan bug pada method `getName()`-nya. Programmer memperbaiki bug itu di `Sedan`, tetapi lupa melakukan hal yang sama di `Truck`, karena keduanya adalah salinan kode yang terpisah. Kode yang seharusnya identik lambat laun berbeda karena hanya sebagian salinan yang diperbarui; ini salah satu sumber bug paling umum di proyek nyata.
 
 <div class="term-box">
-Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya ada di satu tempat, yaitu superclass. Namun inheritance adalah alat yang kuat sekaligus mudah disalahgunakan: memaksakan hubungan "is-a" yang sebenarnya tidak alami justru menciptakan ketergantungan yang kaku antar kelas. Pertemuan 11 (SOLID) membahas disiplin lebih lanjut soal kapan inheritance sebaiknya dihindari.
+Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya ada di satu tempat, yaitu superclass. Namun inheritance adalah alat yang kuat sekaligus mudah disalahgunakan: memaksakan hubungan "is-a" yang sebenarnya tidak alami justru menciptakan ketergantungan yang kaku antar kelas. Pertemuan 11 (SOLID) membahas aturan lebih lanjut tentang kapan inheritance sebaiknya dihindari.
 </div>
 
 ---
@@ -172,7 +173,7 @@ Inheritance menghilangkan sumber bug ini dengan memastikan kode yang sama hanya 
 
 ![h:280 Sedan dan Truck masing-masing mewarisi dari Vehicle](../assets/illustrations/inheritance-tree.svg)
 
-Kata kunci `extends` menyatakan hubungan ini dalam Java: `class Sedan extends Vehicle` berarti `Sedan` adalah subclass dari `Vehicle`, superclass-nya.
+Kata kunci `extends` menyatakan hubungan ini dalam Java: `class Sedan extends Vehicle` berarti `Sedan` adalah subclass dari `Vehicle`, superclass-nya. Pada diagram kelas UML, hubungan ini digambar sebagai panah berujung segitiga kosong (generalization) yang selalu menunjuk dari subclass ke superclass, dibaca "`Sedan` is-a `Vehicle`".
 
 ---
 
@@ -199,13 +200,29 @@ Subclass otomatis memiliki seluruh atribut dan method (yang tidak bersifat `priv
 
 ---
 
+## Satu Superclass Saja
+
+<div class="term-box">
+Java hanya mengizinkan <b>satu</b> <code>extends</code> per kelas (single inheritance). Satu superclass boleh punya banyak subclass (<code>Vehicle</code> diwarisi <code>Sedan</code>, <code>Truck</code>, <code>Bus</code>), tetapi satu subclass tidak boleh punya dua superclass sekaligus.
+</div>
+
+```java
+class Sedan extends Vehicle, Truck { }   // error compile
+```
+
+<div class="tip-box">
+Kebutuhan mewarisi perilaku dari beberapa sumber sekaligus dipenuhi lewat interface, topik Pertemuan 9.
+</div>
+
+---
+
 ## Kesalahan Umum: Mengira Semua Anggota Harus Ditulis Ulang
 
 <div class="warn-box">
-<b>Salah:</b> menulis ulang <code>getName()</code> di dalam <code>Sedan</code> padahal isinya persis sama dengan milik <code>Vehicle</code>, karena mengira subclass "belum benar-benar punya" method itu sebelum dituliskan sendiri.
+<b>Salah:</b> menulis ulang <code>getName()</code> di dalam <code>Sedan</code> padahal isinya persis sama dengan milik <code>Vehicle</code>, karena mengira subclass belum memiliki method itu sebelum dituliskan sendiri.
 </div>
 
-**Benar:** `Sedan` otomatis mewarisi `getName()` apa adanya begitu `extends Vehicle` dituliskan. Menulis ulang tanpa perubahan apa pun hanya menciptakan duplikasi yang seharusnya dihindari, persis masalah yang coba diselesaikan inheritance.
+**Benar:** `Sedan` otomatis mewarisi `getName()` apa adanya begitu `extends Vehicle` dituliskan. Menulis ulang tanpa perubahan apa pun hanya menciptakan duplikasi, justru masalah yang ingin dihilangkan oleh inheritance.
 
 ---
 
@@ -228,6 +245,7 @@ Otomatis dimiliki (dari `Vehicle`): atribut `name` dan method `getName()`. Harus
 - Inheritance membuat subclass mewarisi atribut dan method superclass, menghindari duplikasi kode antar kelas yang mirip.
 - Kata kunci `extends` menyatakan hubungan subclass-superclass di Java.
 - Anggota yang diwarisi otomatis tersedia di subclass; hanya anggota baru atau yang sengaja diubah yang perlu ditulis.
+- Satu kelas hanya bisa `extends` satu superclass; satu superclass boleh diwarisi banyak subclass.
 
 Selanjutnya: Bagian 2 masuk ke bagaimana constructor bekerja saat sebuah subclass dibuat.
 
@@ -236,7 +254,7 @@ Selanjutnya: Bagian 2 masuk ke bagaimana constructor bekerja saat sebuah subclas
 <!-- _class: divider -->
 
 # Bagian 2
-## Constructor, super(...), dan Visibilitas
+## Constructor, super(...), dan Access Modifier
 
 Sesi 2 dari 4
 
@@ -272,6 +290,18 @@ class Sedan extends Vehicle {
 
 ---
 
+## Yang Tidak Ikut Diwariskan
+
+<div class="term-box">
+<b>Constructor tidak diwariskan.</b> Itulah sebabnya setiap subclass menulis constructornya sendiri, lalu meneruskan data milik superclass lewat <code>super(...)</code>, bukan mengandalkan constructor <code>Vehicle</code> diwariskan ke <code>Sedan</code>.
+</div>
+
+<div class="warn-box">
+<b>Anggota <code>private</code> tidak bisa diakses langsung.</b> Atribut <code>name</code> milik <code>Vehicle</code> tetap ada di dalam setiap objek <code>Sedan</code>, tetapi kode di <code>Sedan</code> tidak boleh menyentuhnya langsung: pakai getter (<code>getName()</code>) atau ubah ke <code>protected</code>, dibahas berikutnya.
+</div>
+
+---
+
 ## Urutan Eksekusi Ketika super(...) Berantai
 
 ![h:260 Urutan pemanggilan super(...) dan urutan constructor body benar-benar dijalankan](../assets/illustrations/constructor-chain.svg)
@@ -287,14 +317,14 @@ Urutan ini menjamin bagian milik superclass sudah lengkap terbentuk sebelum subc
 </div>
 
 <div class="warn-box">
-Pemanggilan <code>super(...)</code>, bila dituliskan, wajib menjadi pernyataan pertama di dalam constructor. Java akan menampilkan galat compile bila <code>super(...)</code> diletakkan setelah pernyataan lain.
+Pemanggilan <code>super(...)</code>, bila dituliskan, wajib menjadi pernyataan pertama di dalam constructor. Java menampilkan error compile bila <code>super(...)</code> diletakkan setelah pernyataan lain.
 </div>
 
 ---
 
-## Kata Kunci `protected` dan Inheritance Bertingkat
+## Kata Kunci `protected`
 
-![h:320 Empat tingkat visibilitas di Java](../assets/illustrations/protected-visibility.svg)
+![h:320 Empat tingkat access modifier di Java](../assets/illustrations/protected-visibility.svg)
 
 <div class="term-box">
 <code>protected</code> berada di antara default (hanya satu package) dan <code>public</code>: anggota bertanda <code>protected</code> dapat diakses subclass, bahkan bila berada di package berbeda.
@@ -326,11 +356,25 @@ Sebuah subclass boleh diturunkan lagi menjadi superclass bagi subclass yang lain
 
 ---
 
+## Warisan dari Object: toString() dan equals()
+
+Karena semua kelas berakar pada `Object`, setiap objek otomatis punya `toString()`, `equals()`, dan `hashCode()` tanpa menuliskannya sama sekali:
+
+```java
+Sedan civic = new Sedan("Civic");
+System.out.println(civic);           // Sedan@1b6d3586
+System.out.println(civic.toString()); // sama, println memanggil toString()
+```
+
+Implementasi bawaan `toString()` hanya nama kelas ditambah hash code; itulah asal output di atas. Memberi bentuk yang lebih bermakna berarti menulis ulang method warisan ini, topik Pertemuan 7.
+
+---
+
 ## Diagram Kelas: Employee, Manager, Director
 
 ![h:280 Employee sebagai superclass, Manager dan Director bertingkat di bawahnya](../assets/uml/p06-employee-multilevel.png)
 
-`name` bertanda `#` (protected) sehingga `Manager` dan `Director` dapat mengaksesnya secara langsung. `describe()` bertanda `{final}`: method ini sengaja tidak boleh di-override, supaya format keluarannya konsisten untuk seluruh jenis pegawai.
+`name` bertanda `#` (protected) sehingga `Manager` dan `Director` dapat mengaksesnya secara langsung. `describe()` bertanda `{final}`: method ini sengaja tidak boleh di-override, supaya format output-nya konsisten untuk seluruh jenis pegawai. Sebuah kelas juga bisa ditandai `final` (contoh: `String`) supaya tidak dapat diturunkan sama sekali.
 
 ---
 
@@ -340,7 +384,7 @@ Sebuah subclass boleh diturunkan lagi menjadi superclass bagi subclass yang lain
 <b>Salah:</b> menulis pernyataan lain (misalnya mengisi atribut sendiri) sebelum memanggil <code>super(...)</code> di dalam constructor subclass.
 </div>
 
-**Benar:** `super(...)`, bila dituliskan, harus selalu jadi baris pertama, tanpa terkecuali. Java menampilkan galat compile begitu aturan ini dilanggar, bukan sekadar peringatan.
+**Benar:** `super(...)`, bila dituliskan, harus selalu jadi baris pertama, tanpa terkecuali. Java menampilkan error compile begitu aturan ini dilanggar, bukan sekadar peringatan.
 
 ---
 
@@ -363,6 +407,7 @@ Apa yang terjadi ketika kode ini dikompilasi? Jelaskan alasannya.
 - Constructor subclass selalu memanggil constructor superclass lebih dulu lewat `super(...)`, eksplisit atau implisit.
 - `super(...)`, bila dituliskan, wajib jadi baris pertama; superclass yang tidak punya constructor tanpa parameter memaksanya menjadi wajib eksplisit.
 - `protected` membuka akses ke subclass lintas package; inheritance bisa bertingkat, berakar pada `Object`.
+- Setiap kelas mewarisi `toString()`/`equals()` dari `Object`; constructor tidak diwariskan.
 
 Selanjutnya: Bagian 3 membahas kapan inheritance sebaiknya dipakai, dan kapan sebaiknya dihindari.
 
@@ -382,14 +427,14 @@ Sesi 3 dari 4
 ![h:280 Uji cepat: baca relasinya, apakah lebih cocok is-a atau has-a](../assets/illustrations/is-a-vs-has-a.svg)
 
 <div class="warn-box">
-Inheritance sering dipakai secara keliru hanya karena dua kelas kebetulan punya beberapa atribut yang sama. Selalu uji dulu apakah relasinya benar-benar "is-a"; bila tidak terdengar wajar, relasi ("has-a", dibahas Pertemuan 4) biasanya pilihan yang lebih tepat.
+Inheritance sering dipakai secara keliru hanya karena dua kelas kebetulan punya beberapa atribut yang sama. Selalu uji dulu apakah relasinya benar-benar "is-a"; bila tidak terdengar wajar, relasi has-a (Pertemuan 4) biasanya pilihan yang lebih tepat.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Memaksakan inheritance pada relasi yang sebenarnya "has-a" menciptakan ketergantungan yang kaku. Subclass mewarisi SELURUH anggota superclass, termasuk yang tidak relevan atau bahkan membingungkan, dan setiap perubahan pada superclass otomatis merambat ke semua subclass-nya, termasuk yang tidak seharusnya terpengaruh.
+Memaksakan inheritance pada relasi yang sebenarnya "has-a" menciptakan ketergantungan yang kaku. Subclass mewarisi seluruh anggota superclass, termasuk yang tidak relevan atau bahkan membingungkan, dan setiap perubahan pada superclass otomatis merambat ke semua subclass-nya, termasuk yang tidak seharusnya terpengaruh.
 
 <div class="term-box">
 Pada aplikasi besar, inheritance yang salah tempat membuat hierarki kelas menjadi kaku dan sulit diubah: menambah satu method baru di superclass bisa diam-diam memengaruhi puluhan subclass yang sebenarnya tidak membutuhkannya.
@@ -403,7 +448,7 @@ Pada aplikasi besar, inheritance yang salah tempat membuat hierarki kelas menjad
 // Salah: Car bukan jenis Engine, dipaksakan jadi inheritance
 class Car extends Engine { ... }
 
-// Benar: relasi (composition), seperti dibahas Pertemuan 4
+// Benar: composition (Pertemuan 4)
 class Car {
     private Engine engine;
 }
@@ -417,7 +462,7 @@ class Car {
 <b>Salah:</b> membuat <code>Truck extends Sedan</code> semata-mata karena keduanya kebetulan punya method yang mirip, padahal Truck bukan jenis Sedan.
 </div>
 
-**Benar:** kesamaan kode saja tidak cukup untuk memilih inheritance. Kalau relasinya tidak benar-benar "is-a", kesamaan kode sebaiknya diselesaikan dengan cara lain (misalnya kelas pembantu yang dipakai bersama), bukan dengan memaksakan hierarki subclass-superclass.
+**Benar:** kesamaan kode saja tidak cukup untuk memilih inheritance. Kalau relasinya tidak benar-benar "is-a", kesamaan kode sebaiknya diselesaikan dengan cara lain (misalnya kelas helper yang dipakai bersama), bukan dengan memaksakan hierarki subclass-superclass.
 
 ---
 
@@ -425,19 +470,19 @@ class Car {
 
 Untuk tiap pasangan berikut, tentukan **is-a** atau **has-a**:
 
-1. `Sedan` dan `Mobil`
-2. `Mobil` dan `GPS`
+1. `Sedan` dan `Car`
+2. `Car` dan `GPS`
 3. `Manager` dan `Employee`
-4. `Restoran` dan `Menu`
+4. `Restaurant` dan `Menu`
 
 ---
 
 ## Jawaban Latihan
 
-1. **is-a**, `Sedan` adalah jenis khusus dari `Mobil`.
-2. **has-a**, `Mobil` memiliki `GPS`, bukan jenis dari `GPS`.
+1. **is-a**, `Sedan` adalah jenis khusus dari `Car`.
+2. **has-a**, `Car` memiliki `GPS`, bukan jenis dari `GPS`.
 3. **is-a**, `Manager` adalah jenis khusus dari `Employee` (seperti dibahas Bagian 2).
-4. **has-a**, `Restoran` memiliki `Menu`, bukan jenis dari `Menu`.
+4. **has-a**, `Restaurant` memiliki `Menu`, bukan jenis dari `Menu`.
 
 ---
 
@@ -447,89 +492,177 @@ Untuk tiap pasangan berikut, tentukan **is-a** atau **has-a**:
 - Inheritance yang dipaksakan menciptakan ketergantungan kaku: subclass mewarisi seluruh anggota superclass, relevan maupun tidak.
 - Kesamaan kode semata bukan alasan cukup untuk memilih inheritance.
 
-Selanjutnya: Bagian 4 menerapkan inheritance ke `Account` di Bank Mini.
+Selanjutnya: Bagian 4 menggabungkan seluruh konsep ini dalam satu studi kasus, merancang hierarki koleksi perpustakaan dari awal.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 4
-## Menerapkan Inheritance ke Bank Mini
+## Studi Kasus Sintesis: Hierarki Koleksi Perpustakaan
 
 Sesi 4 dari 4
 
 ---
 
-## SavingsAccount dan CheckingAccount
+## Dari Kebutuhan ke Hierarki
 
-![h:280 Account sebagai superclass, SavingsAccount dan CheckingAccount sebagai subclass](../assets/uml/p06-account-hierarchy.png)
+Sebuah perpustakaan menyimpan buku, DVD, dan majalah. Semuanya punya judul, tahun terbit, status sedang dipinjam atau tidak, serta operasi pinjam dan kembali yang sama persis. Masing-masing juga punya data tambahannya sendiri: jumlah halaman untuk buku, durasi untuk DVD, nomor edisi untuk majalah.
 
-Kedua subclass ini menambahkan atributnya sendiri (`interestRate` dan `overdraftLimit`) serta method barunya sendiri (`printAccountType()`), sambil tetap mewarisi `deposit()`, `withdraw()`, dan `printInfo()` dari `Account` apa adanya, belum ada satu pun yang ditulis ulang.
+Uji "is-a" dari Bagian 3: `Book` adalah jenis `LibraryItem` (ya), `Dvd` adalah jenis `LibraryItem` (ya). Sebaliknya, `Library` memiliki banyak `LibraryItem`, bukan jenis darinya, jadi relasinya "has-a", bukan inheritance.
+
+<div class="warn-box">
+Kesamaan atribut saja bukan alasan memakai <code>extends</code>. Baru setelah uji "is-a" terdengar wajar, kesamaan itu boleh diangkat ke superclass.
+</div>
 
 ---
 
-## Contoh Kode: SavingsAccount Menambah Atribut
+## Diagram Kelas: LibraryItem, Book, Dvd, Magazine
+
+![h:280 LibraryItem sebagai superclass, dengan Book, Dvd, dan Magazine sebagai subclass](../assets/uml/p06-libraryitem-hierarchy.png)
+
+`title` dan `year` bertanda `#` (protected) supaya subclass boleh memakainya langsung. `checkOut()`, `returnItem()`, `loanDays()`, dan `describe()` ditulis satu kali di `LibraryItem`, lalu diwarisi apa adanya oleh ketiga subclass. Tiap subclass juga menyediakan getter untuk atribut tambahannya (`getPages()`, `getDurationMinutes()`, `getIssueNumber()`).
+
+---
+
+## Contoh Kode: Superclass LibraryItem
 
 ```java
-class SavingsAccount extends Account {
-    private double interestRate;
+class LibraryItem {
+    protected String title;
+    protected int year;
+    private boolean available = true;
 
-    public SavingsAccount(String accountNumber, Customer owner,
-            double balance, double interestRate) {
-        super(accountNumber, owner, balance);
-        this.interestRate = interestRate;
+    public LibraryItem(String title, int year) { this.title = title; this.year = year; }
+    public int loanDays() { return 14; }
+}
+```
+
+---
+
+## Contoh Kode: Book Menambah Atribut
+
+```java
+class Book extends LibraryItem {
+    private int pages;
+
+    public Book(String title, int year, int pages) {
+        super(title, year);  // bagian LibraryItem dibangun dulu
+        this.pages = pages;
     }
 }
 ```
+
+<div class="tip-box">
+<code>Dvd</code> dan <code>Magazine</code> mengikuti pola yang sama persis: <code>super(title, year)</code> di baris pertama, lalu mengisi atributnya sendiri.
+</div>
+
+---
+
+## Upcasting: Objek Subclass sebagai Objek Superclass
+
+<div class="term-box">
+Karena <code>Book</code> is-a <code>LibraryItem</code>, pernyataan <code>LibraryItem item = new Book("Dune", 1965, 412);</code> valid. Menyimpan objek subclass ke variabel bertipe superclass disebut <b>upcasting</b>, terjadi otomatis tanpa sintaks tambahan karena selalu aman. Lewat variabel bertipe <code>LibraryItem</code> hanya anggota <code>LibraryItem</code> yang terlihat: <code>item.loanDays()</code> boleh, <code>item.getPages()</code> tidak.
+</div>
+
+Kebalikannya, `Book b = new LibraryItem("Dune", 1965);` error compile: tidak semua `LibraryItem` adalah `Book`.
+
+<div class="tip-box">
+Inilah yang membuat satu array atau koleksi bertipe <code>LibraryItem</code> bisa menampung semua jenis koleksi sekaligus. Apa yang terjadi saat method warisan ditulis ulang oleh subclass adalah topik Polimorfisme (Pertemuan 10).
+</div>
+
+---
+
+## Downcasting: Kembali ke Tipe Subclass
+
+<div class="term-box">
+Arah sebaliknya, dari variabel bertipe superclass ke tipe subclass, disebut <b>downcasting</b>. Harus ditulis eksplisit dengan tanda kurung, karena tidak selalu aman: compiler tidak bisa memastikan objek yang sebenarnya dirujuk memang subclass itu.
+</div>
+
+```java
+LibraryItem item = new Book("Dune", 1965, 412);
+Book book = (Book) item;                 // downcasting, eksplisit
+System.out.println(book.getPages());     // 412
+
+LibraryItem other = new Dvd("Inception", 2010, 148);
+Book wrong = (Book) other;               // lolos compile, gagal saat dijalankan
+```
+
+<div class="warn-box">
+Baris terakhir melempar <code>ClassCastException</code> saat program berjalan, sebab objeknya sebenarnya <code>Dvd</code>. Selalu periksa dulu: <code>if (item instanceof Book) { Book b = (Book) item; }</code>. Bentuk yang lebih ringkas, pattern matching, dibahas pada topik Polimorfisme (Pertemuan 10).
+</div>
+
+---
+
+## Contoh Kode: Satu Koleksi untuk Semua Jenis
+
+```java
+LibraryItem[] items = {
+    new Book("Dune", 1965, 412),
+    new Dvd("Inception", 2010, 148),
+    new Magazine("Tempo", 2024, 12)
+};
+for (LibraryItem item : items) {
+    System.out.println(item.title + ": " + item.loanDays() + " days");
+}
+```
+
+Ketiga baris output berakhir dengan `14 days`, sebab semuanya memakai `loanDays()` warisan yang sama.
 
 ---
 
 ## Method Warisan Belum Tentu Cocok untuk Semua Subclass
 
 <div class="term-box">
-<code>CheckingAccount</code> mewarisi <code>withdraw()</code> yang hanya membolehkan penarikan sebesar saldo yang tersedia, padahal <code>overdraftLimit</code> seharusnya membuat rekening ini bisa ditarik melebihi saldo. Atribut baru saja tidak cukup: subclass juga perlu cara untuk menulis ulang perilaku yang diwarisi.
+<code>Dvd</code> mewarisi <code>loanDays()</code> yang selalu mengembalikan 14 hari, padahal perpustakaan ingin DVD hanya boleh dipinjam 7 hari. Menambah atribut <code>durationMinutes</code> saja tidak mengubah apa pun. Atribut baru saja tidak cukup: subclass juga perlu cara untuk menulis ulang perilaku yang diwarisi.
 </div>
 
 <div class="tip-box">
-Inilah yang akan diselesaikan Pertemuan 7 lewat overriding: subclass menulis ulang method superclass untuk memberi perilaku yang berbeda, tanpa mengubah kode <code>Account</code> maupun <code>Bank</code> sama sekali.
+Inilah yang akan diselesaikan Pertemuan 7 lewat overriding: subclass menulis ulang method superclass untuk memberi perilaku yang berbeda, tanpa mengubah kode <code>LibraryItem</code> sama sekali.
 </div>
 
 ---
 
-## Kesalahan Umum: Lupa Meneruskan Data lewat super(...)
+## Kesalahan Umum: Mengakses Atribut private Superclass dari Subclass
 
 <div class="warn-box">
-<b>Salah:</b> menulis constructor <code>SavingsAccount</code> yang hanya mengisi <code>interestRate</code>, tanpa memanggil <code>super(accountNumber, owner, balance)</code>, berharap ketiga atribut warisan itu tetap terisi dengan benar.
+<b>Salah:</b> <code>LibraryItem</code> mendeklarasikan <code>private String title</code>, lalu <code>Book</code> menulis <code>return title + " (" + pages + " pages)"</code>. Kompilasi gagal: <code>title has private access in LibraryItem</code>.
 </div>
 
-**Benar:** tanpa `super(...)` yang meneruskan nilai sesungguhnya, `accountNumber`, `owner`, dan `balance` diam-diam tetap kosong (nilai bawaan), bukan galat yang langsung terlihat. `SavingsAccount` wajib meneruskan ketiganya lewat `super(...)`.
+**Benar:** anggota `private` memang diwarisi, tetapi tidak boleh diakses langsung dari subclass. Ubah ke `protected` (seperti pada diagram), atau sediakan getter `getTitle()` di `LibraryItem` dan panggil itu dari `Book`.
 
 ---
 
 ## Latihan
 
-`CheckingAccount` menambahkan atribut `overdraftLimit`, mengikuti pola yang sama seperti `SavingsAccount`.
-
-Tuliskan signature (nama dan daftar parameter) constructor `CheckingAccount` yang tepat, lengkap dengan pemanggilan `super(...)`-nya.
+1. Tuliskan kelas `Magazine` lengkap: mewarisi `LibraryItem`, menambah atribut `issueNumber`, dengan constructor yang memanggil `super(...)`.
+2. `Library` dan `LibraryItem`: relasinya **is-a** atau **has-a**? Jelaskan singkat.
+3. `LibraryItem item = new Magazine("Tempo", 2024, 12);` Apakah `item.loanDays()` boleh dipanggil? Apakah `item.getIssueNumber()` boleh dipanggil? Bagaimana cara memanggilnya dengan aman?
 
 ---
 
 ## Jawaban Latihan
 
 ```java
-public CheckingAccount(String accountNumber, Customer owner,
-        double balance, double overdraftLimit) {
-    super(accountNumber, owner, balance);
-    this.overdraftLimit = overdraftLimit;
+class Magazine extends LibraryItem {
+    private int issueNumber;
+
+    public Magazine(String title, int year, int issueNumber) {
+        super(title, year);
+        this.issueNumber = issueNumber;
+    }
 }
 ```
+
+**has-a**: `Library` memiliki banyak `LibraryItem`, bukan jenis khusus darinya. `item.loanDays()` boleh, sebab anggota `LibraryItem`; `item.getIssueNumber()` tidak, sebab anggota `Magazine` tidak terlihat lewat variabel bertipe `LibraryItem`. Cara aman: `if (item instanceof Magazine) { ((Magazine) item).getIssueNumber(); }`.
 
 ---
 
 ## Rangkuman Bagian 4
 
-- `SavingsAccount` dan `CheckingAccount` menambahkan atributnya sendiri, sambil tetap mewarisi seluruh method `Account` apa adanya.
-- Constructor subclass wajib meneruskan data milik superclass lewat `super(...)`, bukan mengisinya sendiri secara terpisah.
+- Uji "is-a" dulu, baru `extends`: `Book`, `Dvd`, dan `Magazine` lolos, `Library` tidak.
+- Anggota bersama ditulis satu kali di superclass; subclass hanya menambah miliknya sendiri lewat constructor yang memanggil `super(...)`.
+- Objek subclass boleh disimpan dalam variabel atau koleksi bertipe superclass; hanya anggota superclass yang terlihat lewat variabel itu. Upcasting otomatis dan selalu aman; downcasting eksplisit dan wajib dijaga `instanceof`.
 - Method warisan belum tentu cocok untuk semua subclass; menulis ulang perilakunya adalah topik Pertemuan 7 (overriding).
 
 ---
@@ -539,7 +672,8 @@ public CheckingAccount(String accountNumber, Customer owner,
 - Inheritance membuat subclass mewarisi atribut dan method superclass lewat `extends`, menghindari duplikasi kode.
 - Constructor subclass selalu memanggil constructor superclass lebih dulu lewat `super(...)`, wajib jadi baris pertama.
 - `protected` membuka akses ke subclass lintas package; inheritance bisa bertingkat, berakar pada `Object`.
-- Pilih inheritance hanya untuk relasi "is-a" yang benar-benar alami; Bank Mini menerapkannya lewat `SavingsAccount` dan `CheckingAccount`.
+- Java hanya mengizinkan satu superclass; constructor tidak diwariskan; upcasting otomatis, downcasting eksplisit dan dijaga `instanceof`.
+- Pilih inheritance hanya untuk relasi "is-a" yang benar-benar alami; hierarki `LibraryItem` menunjukkan seluruh konsep ini bekerja bersama dalam satu desain.
 
 ---
 
@@ -557,4 +691,4 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Diskusi
 
-Perhatikan kembali `SavingsAccount` dan `CheckingAccount` yang baru saja kamu bangun: apakah keduanya sebaiknya juga punya subclass masing-masing (misalnya `SavingsAccount` dipecah lagi menjadi jenis dengan bunga tetap dan bunga berjenjang)? Beri satu contoh subclass yang menurutmu masuk akal beserta atribut barunya, atau jelaskan mengapa pemecahan lebih lanjut tidak diperlukan untuk Bank Mini.
+Perpustakaan ingin menambah koleksi buku audio, `AudioBook`, yang punya `durationMinutes` (seperti `Dvd`) sekaligus `narrator` (nama pembaca). Sebaiknya `AudioBook extends Book`, `AudioBook extends Dvd`, atau `AudioBook extends LibraryItem` langsung? Uji dengan pertanyaan "is-a", lalu sebutkan atribut mana yang diwarisi dan mana yang harus ditulis sendiri pada pilihanmu.

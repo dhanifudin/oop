@@ -89,6 +89,25 @@ yang murni generik. Ini pengecualian khusus untuk dek ini saja, bukan
 pola baku: jangan hapus Bagian Bank Mini dek lain kecuali ada permintaan
 eksplisit yang sama.
 
+**Pengecualian sengaja di Pertemuan 6**: sama seperti Pertemuan 11, dek ini
+TIDAK punya Bagian "Menerapkan ke Bank Mini", atas permintaan eksplisit
+pengguna ("avoid to mention on Bank Mini case study... the Bank Mini
+implementation will be explained at jobsheet"). Bagian 4 diisi studi kasus
+sintesis generik hierarki koleksi perpustakaan
+(`LibraryItem`/`Book`/`Dvd`/`Magazine`, UML `p06-libraryitem-hierarchy`)
+yang menggabungkan is-a, `extends`, `super(...)`, `protected`, dan teaser
+"method warisan belum tentu cocok" (`loanDays()` 14 hari untuk DVD) tanpa
+nama kelas Bank Mini. Jobsheet Pertemuan 6 TETAP Bank-Mini-only dan kini
+membawa UML `p06-account-hierarchy` serta pelajaran umum yang sama lewat
+`overdraftLimit`. Dek ini juga sengaja memuat checklist konsep inheritance
+yang wajib ada (jangan dihapus saat revisi): notasi generalization UML,
+sinonim parent/child dan base/derived, single inheritance (satu `extends`),
+apa yang tidak diwariskan (constructor, akses langsung ke `private`),
+warisan `toString()`/`equals()` dari `Object`, `final class`, upcasting
+(otomatis) dan downcasting (eksplisit, `ClassCastException`, dijaga
+`instanceof` klasik; pattern matching tetap di Pertemuan 10). Pengecualian ini khusus dek ini saja: jangan hapus Bagian
+Bank Mini dek lain kecuali ada permintaan eksplisit yang sama.
+
 ## Bahaya tersembunyi di kelas `divider`
 
 Blok CSS `section.divider h1` mengatur warna putih, tapi aturan global
