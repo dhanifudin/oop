@@ -105,8 +105,11 @@ sinonim parent/child dan base/derived, single inheritance (satu `extends`),
 apa yang tidak diwariskan (constructor, akses langsung ke `private`),
 warisan `toString()`/`equals()` dari `Object`, `final class`, upcasting
 (otomatis) dan downcasting (eksplisit, `ClassCastException`, dijaga
-`instanceof` klasik; pattern matching tetap di Pertemuan 10). Pengecualian ini khusus dek ini saja: jangan hapus Bagian
-Bank Mini dek lain kecuali ada permintaan eksplisit yang sama.
+`instanceof` klasik; pattern matching tetap di Pertemuan 10). Slide "Diskusi" penutup dek ini juga
+diganti dua slide "Tugas" (hierarki perpustakaan `AudioBook`, lalu studi
+kasus pilihan mahasiswa sendiri), mengikuti pola Pertemuan 4, atas
+permintaan eksplisit pengguna. Pengecualian ini khusus dek ini saja: jangan
+hapus Bagian Bank Mini dek lain kecuali ada permintaan eksplisit yang sama.
 
 ## Bahaya tersembunyi di kelas `divider`
 

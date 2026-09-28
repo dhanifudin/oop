@@ -689,6 +689,16 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Diskusi
+## Tugas: Hierarki Koleksi Perpustakaan
 
-Perpustakaan ingin menambah koleksi buku audio, `AudioBook`, yang punya `durationMinutes` (seperti `Dvd`) sekaligus `narrator` (nama pembaca). Sebaiknya `AudioBook extends Book`, `AudioBook extends Dvd`, atau `AudioBook extends LibraryItem` langsung? Uji dengan pertanyaan "is-a", lalu sebutkan atribut mana yang diwarisi dan mana yang harus ditulis sendiri pada pilihanmu.
+Perpustakaan ingin menambah koleksi buku audio, `AudioBook`, yang punya `durationMinutes` (seperti `Dvd`) sekaligus `narrator` (nama pembaca). Sebaiknya `AudioBook extends Book`, `AudioBook extends Dvd`, atau `AudioBook extends LibraryItem` langsung?
+
+Uji dengan pertanyaan "is-a", tuliskan pilihanmu beserta alasannya, lalu gambarkan diagram kelasnya di kertas: sebutkan atribut dan method mana yang diwarisi, dan mana yang harus ditulis sendiri di `AudioBook`.
+
+---
+
+## Tugas: Cari Studi Kasusmu Sendiri
+
+Pikirkan satu aplikasi atau sistem nyata yang pernah kamu pakai (bukan perpustakaan, bukan Bank Mini), misalnya aplikasi transportasi online, game, atau media sosial.
+
+Temukan satu superclass dengan dua atau tiga subclass di dalamnya yang lolos uji "is-a". Gambarkan diagram kelasnya di kertas (anggota bersama di superclass, anggota tambahan di tiap subclass, panah generalization yang tepat), lalu tunjukkan satu method warisan yang perilakunya sebaiknya berbeda di salah satu subclass, sebagai bahan pembuka Pertemuan 7.

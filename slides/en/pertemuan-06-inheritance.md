@@ -689,6 +689,16 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ---
 
-## Discussion
+## Assignment: The Library Collection Hierarchy
 
-The library wants to add audiobooks, `AudioBook`, which have a `durationMinutes` (like `Dvd`) as well as a `narrator` (the reader's name). Should it be `AudioBook extends Book`, `AudioBook extends Dvd`, or `AudioBook extends LibraryItem` directly? Apply the "is-a" question, then state which attributes are inherited and which must be written by hand in your chosen design.
+The library wants to add audiobooks, `AudioBook`, which have a `durationMinutes` (like `Dvd`) as well as a `narrator` (the reader's name). Should it be `AudioBook extends Book`, `AudioBook extends Dvd`, or `AudioBook extends LibraryItem` directly?
+
+Apply the "is-a" question, write down your choice with its reasoning, then draw the class diagram on paper: state which attributes and methods are inherited, and which must be written in `AudioBook` itself.
+
+---
+
+## Assignment: Find Your Own Case Study
+
+Think of one real application or system you have used (not a library, not Bank Mini), for example a ride-hailing app, a game, or a social media platform.
+
+Find one superclass with two or three subclasses inside it that pass the "is-a" test. Draw its class diagram on paper (shared members in the superclass, extra members in each subclass, the correct generalization arrows), then point out one inherited method whose behavior should differ in one of the subclasses, as a lead-in to Meeting 7.
