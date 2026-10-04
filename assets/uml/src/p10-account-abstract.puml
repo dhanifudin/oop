@@ -10,7 +10,7 @@ abstract class Account {
   - owner : Customer
   - balance : double
   --
-  + withdraw(amount : double) : boolean
+  + withdraw(amount : double) : void
   # canWithdraw(amount : double) : boolean
   + printInfo() : void
   + {abstract} monthlyFee() : double

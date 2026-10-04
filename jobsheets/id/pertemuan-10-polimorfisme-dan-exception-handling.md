@@ -11,13 +11,13 @@
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
-1. Mendeklarasikan exception kustom dan menerapkan `throw`/`try`/`catch` untuk menangani kondisi galat tanpa menghentikan program secara paksa.
-2. Menulis method yang memanfaatkan polimorfisme, termasuk pengecekan `instanceof` dengan pattern matching, untuk memproses objek dari berbagai subclass lewat satu titik kode yang sama.
+1. Membuat exception sendiri, lalu memakai `throw`, `try`, dan `catch` untuk menangani kegagalan tanpa menghentikan program.
+2. Menulis method yang memproses objek dari berbagai subclass lewat satu perulangan (polimorfisme), termasuk memeriksa kemampuan objek dengan `instanceof`.
 
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface.
+- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface. Proyek itu sudah berisi `Account` abstrak dengan `monthlyFee()`, serta interface `InterestBearing` yang diterapkan `SavingsAccount`.
 
 > **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
@@ -30,43 +30,84 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: withdraw() Melempar InsufficientBalanceException
 
-> **Konsep Singkat: Exception Handling.** Ketika sebuah method menemui kondisi yang tidak bisa ditangani secara wajar (misalnya saldo tidak mencukupi untuk sebuah penarikan), method itu bisa melempar (`throw`) sebuah objek exception, menghentikan eksekusinya saat itu juga. Kode pemanggil membungkus pemanggilan method dalam blok `try`, lalu menangani exception yang mungkin dilempar lewat blok `catch`. Sebuah exception kustom dibuat dengan mendeklarasikan kelas yang meng-`extends` `Exception`. Contoh generik: `Grade.setScore(150)` melempar `InvalidScoreException` alih-alih diam-diam membatasi nilainya, sehingga kode pemanggil tahu persis ada yang salah dan wajib menanganinya.
+> **Konsep Singkat: Exception.** Bayangkan alarm kebakaran: saat ada masalah, alarm berbunyi dan kegiatan berhenti sampai ada yang menanganinya. Exception bekerja seperti itu. Method yang menemukan masalah melempar (`throw`) sebuah objek exception, lalu berhenti saat itu juga. Kode pemanggil menaruh pemanggilan itu di dalam blok `try`, dan menyiapkan rencana cadangan di blok `catch`. Exception buatan sendiri cukup berupa kelas yang `extends Exception`.
 
-![Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png){width=60%}
+**Tujuan langkah ini:** membuat penarikan yang gagal tidak bisa lagi lewat diam-diam.
 
-Sejauh ini, `withdraw()` diam-diam mengembalikan `false` ketika penarikan gagal, kode pemanggil bisa saja lupa memeriksa nilai kembaliannya dan melanjutkan seolah penarikan berhasil. Ubah kontrak `withdraw()` supaya melempar exception alih-alih mengembalikan boolean. Tambahkan kelas exception kustom:
+Saat ini `withdraw()` mengembalikan `false` ketika penarikan gagal. Pemanggil bisa lupa memeriksa nilai itu, lalu melanjutkan seolah penarikan berhasil. Diagram berikut adalah hasil yang dituju langkah ini:
+
+![InsufficientBalanceException sebagai subclass Exception, dilempar oleh Account](../assets/uml/p10-insufficientbalance-exception.png){width=60%}
+
+Cara membaca diagram: `InsufficientBalanceException` adalah subclass dari `Exception`. Panah putus-putus berlabel "throws" berarti `withdraw()` di `Account` bisa melempar exception itu. Tipe kembalian `withdraw()` kini `void`, bukan `boolean`.
+
+1. Buat berkas baru `InsufficientBalanceException.java`:
 
 ![InsufficientBalanceException.java](../assets/code/pertemuan-10/p10-01-insufficientbalanceexception.png){width=55%}
 
+2. Buka `Account.java`. Ubah `withdraw()` supaya melempar exception ketika `canWithdraw()` bernilai `false`:
+
 ![Account.java, withdraw melempar InsufficientBalanceException](../assets/code/pertemuan-10/p10-01-account.png){width=65%}
 
-Perbarui `Main.java` untuk membungkus pemanggilan `withdraw()` dalam `try`/`catch`:
+3. Perbarui `Main.java`. Bungkus tiap pemanggilan `withdraw()` dengan `try`/`catch`:
 
 ![Main.java menguji withdraw yang melempar exception](../assets/code/pertemuan-10/p10-01-main.png){width=70%}
 
-> ✅ **Checkpoint:** program mencetak `Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0`, diikuti `Withdrawal succeeded, new balance: 70000.0`.
+**Output yang diharapkan:**
 
-> ⚠️ **Jika gagal:** apabila muncul galat compile `unreported exception InsufficientBalanceException; must be caught or declared to be thrown`, periksa apakah pemanggilan `withdraw()` di `Main.java` sudah dibungkus blok `try`/`catch`, bukan dipanggil langsung seperti sebelumnya.
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+```
 
-### Langkah 2: processMonthEnd(), Polimorfisme lewat instanceof
+**Mengapa demikian?**
 
-> **Konsep Singkat: Polimorfisme.** Ketika sebuah array atau koleksi bertipe superclass (atau interface) menyimpan objek dari berbagai subclass, satu pemanggilan method yang sama, misalnya `s.area()` pada tiap elemen `Shape[] shapes`, otomatis menjalankan versi milik objek yang sebenarnya saat program berjalan, bukan versi yang dideklarasikan di tipe variabelnya. Inilah polimorfisme: satu titik kode, perilaku yang berbeda-beda tergantung objek yang menerimanya. Kadang kode tetap perlu tahu tipe konkret suatu objek, misalnya untuk memanggil kemampuan yang hanya dimiliki sebagian subclass; `instanceof` dengan pattern matching (`if (obj instanceof TipeTertentu variabel)`) memeriksa sekaligus melakukan downcasting dengan aman dalam satu langkah.
+- Saldo A003 adalah 100000 dengan saldo minimum 50000. Penarikan 70000 ditolak `canWithdraw()`, jadi `withdraw()` melempar exception. Blok `catch` mencetak pesannya lewat `e.getMessage()`.
+- Exception dilempar sebelum baris `balance -= amount` dijalankan, jadi saldo tetap 100000.
+- Penarikan kedua, 30000, diizinkan. Saldo menjadi 70000, dan baris "succeeded" di dalam `try` ikut dijalankan.
+
+> ✅ **Checkpoint:** output program sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila muncul error `unreported exception InsufficientBalanceException; must be caught or declared to be thrown`, periksa apakah setiap pemanggilan `withdraw()` di `Main.java` sudah berada di dalam blok `try`/`catch`.
+
+### Langkah 2: processMonthEnd(), Polimorfisme dan instanceof
+
+> **Konsep Singkat: Polimorfisme.** Seorang pelatih berteriak "mulai!": perenang mulai berenang, pelari mulai berlari. Perintahnya satu, tiap atlet menjalankannya dengan caranya sendiri. Polimorfisme bekerja seperti itu: satu pemanggilan method yang sama menjalankan versi milik objek yang menerimanya. Bila kode perlu tahu apakah sebuah objek punya kemampuan tertentu, pakai `instanceof`. Bentuk `if (obj instanceof Tipe nama)` memeriksa sekaligus menyediakan variabel `nama` yang siap dipakai.
 
 ![Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/uml/p10-polymorphic-dispatch.png){width=68%}
 
-Hanya rekening yang meng-`implements` `InterestBearing` yang membutuhkan `applyInterest()`, `CheckingAccount` tidak. Tambahkan `processMonthEnd()` pada `Bank`, memproses seluruh rekening secara polimorfik lewat `monthlyFee()`, dan memakai `instanceof` untuk menerapkan bunga hanya pada rekening yang relevan:
+**Tujuan langkah ini:** memproses semua rekening di akhir bulan lewat satu perulangan, tanpa cabang `if` untuk tiap jenis rekening.
 
-![Bank.java dengan method processMonthEnd](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
+Semua rekening punya biaya bulanan (`monthlyFee()`). Hanya rekening yang `InterestBearing` yang menerima bunga:
 
 ![Account sebagai kelas abstrak, SavingsAccount meng-implement interface InterestBearing](../assets/uml/p10-account-abstract.png){width=72%}
 
-Perbarui `Main.java`:
+1. Buka `Bank.java`. Tambahkan method `processMonthEnd()`:
 
-![Main.java memanggil processMonthEnd](../assets/code/pertemuan-10/p10-02-main.png){width=70%}
+![Bank.java dengan method processMonthEnd](../assets/code/pertemuan-10/p10-02-bank.png){width=68%}
 
-> ✅ **Checkpoint:** program menambahkan baris `A001 interest applied, new balance: 505000.0`, `A001 monthly fee: 0.0`, `A002 monthly fee: 15000.0`, `A003 interest applied, new balance: 71400.0`, `A003 monthly fee: 0.0` setelah baris dari Langkah 1.
+2. Tambahkan pemanggilannya di akhir `Main.java`:
 
-> ⚠️ **Jika gagal:** apabila `applyInterest()` tidak pernah terpanggil untuk rekening manapun, periksa kembali apakah pengecekan memakai `instanceof InterestBearing` (bukan `instanceof SavingsAccount`), sebab polimorfisme di sini justru sengaja tidak bergantung pada nama kelas konkretnya, hanya pada interface yang diterapkan.
+![Main.java memanggil processMonthEnd](../assets/code/pertemuan-10/p10-02-main.png){width=45%}
+
+**Output yang diharapkan:** dua baris dari Langkah 1 tetap sama, diikuti lima baris baru:
+
+```text
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+```
+
+**Mengapa demikian?**
+
+- `monthlyFee()` dipanggil untuk ketiga rekening. Rekening tabungan menjawab 0.0, rekening giro menjawab 15000.0. Itulah polimorfisme: satu pemanggilan, jawaban mengikuti objeknya.
+- Baris "interest applied" hanya muncul untuk A001 dan A003, sebab hanya keduanya yang `InterestBearing`. A002 adalah rekening giro, jadi dilewati.
+- Bunga A001 adalah 1% dari 500000. Bunga A003 adalah 2% dari 70000.
+
+> ✅ **Checkpoint:** lima baris terakhir output sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila tidak ada baris "interest applied" sama sekali, periksa apakah pengecekannya memakai `instanceof InterestBearing`, dan apakah `SavingsAccount` menyatakan `implements InterestBearing`.
 
 ## D. Tugas dan Hasil Kerja
 
@@ -74,18 +115,19 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 2.
 - **Tugas mandiri:**
-  1. Bank memerlukan laporan audit yang hanya mencetak rekening yang meng-implement `Auditable` (dari topik Kelas Abstrak dan Interface). Tambahkan `Bank.printAuditLog()`, memproses seluruh rekening secara polimorfik dan memakai `instanceof Auditable` untuk mencetak `auditLog()` hanya pada rekening yang relevan. Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
+  1. Bank memerlukan laporan audit untuk rekening yang `Auditable` (interface dari topik Kelas Abstrak dan Interface). Tambahkan `Bank.printAuditLog()`: satu perulangan atas semua rekening, yang mencetak `auditLog()` hanya untuk rekening yang `Auditable`. Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
 
      ![Sketsa Bank.printAuditLog(), memeriksa Auditable lewat instanceof](../assets/uml/p10-tugas-auditlog.png){width=55%}
 
-  2. `Bank.findAccount()` sejauh ini mengembalikan `null` ketika rekening tidak ditemukan, kode pemanggil bisa lupa memeriksa `null` dan memicu `NullPointerException` di baris berikutnya. Ubah agar melempar exception kustom `AccountNotFoundException` alih-alih mengembalikan `null`. Diagram berikut hanya sketsa struktur dan tanda tangan method yang berubah, BUKAN kode jadi:
+     Hasilmu benar apabila hanya rekening giro yang tercetak, dan pengecekannya memakai `instanceof Auditable`, bukan nama kelas.
+  2. `Bank.findAccount()` mengembalikan `null` ketika rekening tidak ditemukan. Pemanggil bisa lupa memeriksa `null`. Ubah supaya method itu melempar exception `AccountNotFoundException`. Diagram berikut hanya sketsa struktur dan signature yang berubah, BUKAN kode jadi:
 
      ![Sketsa AccountNotFoundException dan Bank.findAccount() yang melemparnya](../assets/uml/p10-tugas-accountnotfound.png){width=60%}
 
-     Buktikan dengan memanggil `findAccount()` di `Main.java` untuk satu nomor rekening yang ada dan satu yang tidak ada, masing-masing dibungkus `try`/`catch`.
-  3. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
-     - (a) mengapa mengubah `findAccount()` agar melempar exception, dibandingkan tetap mengembalikan `null`, membuat kode pemanggil lebih aman?
-     - (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa perbedaan ini penting apabila suatu hari Bank Mini menambah jenis rekening berbunga baru selain `SavingsAccount`.
+     Buktikan lewat `Main.java`: panggil `findAccount()` untuk satu nomor rekening yang ada dan satu yang tidak ada, masing-masing di dalam `try`/`catch`. Hasilmu benar apabila nomor yang tidak ada menghasilkan pesan dari blok `catch`, dan program tetap berjalan sampai selesai.
+  3. Jawab secara singkat (1-2 kalimat untuk masing-masing pertanyaan):
+     - (a) Mengapa melempar exception lebih aman daripada mengembalikan `null` pada `findAccount()`?
+     - (b) Mengapa `processMonthEnd()` memeriksa `instanceof InterestBearing`, bukan `instanceof SavingsAccount`?
 
 ## E. Kriteria Penilaian
 

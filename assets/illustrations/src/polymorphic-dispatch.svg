@@ -21,7 +21,7 @@
 
   <rect x="165" y="165" width="220" height="60" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
   <text x="275" y="188" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">[0] Circle</text>
-  <text x="275" y="210" text-anchor="middle" font-size="15.4" fill="#64748b">radius = 3</text>
+  <text x="275" y="210" text-anchor="middle" font-size="15.4" fill="#64748b">radius = 2</text>
 
   <rect x="455" y="165" width="220" height="60" rx="12" fill="#ffffff" stroke="#1d4ed8" stroke-width="2.5"/>
   <text x="565" y="188" text-anchor="middle" font-size="17.6" font-weight="700" fill="#1d4ed8">[1] Square</text>
@@ -40,7 +40,7 @@
   </g>
   <text x="275" y="308" text-anchor="middle" font-size="16.9" font-weight="700" fill="#166534">Circle.area()</text>
   <text x="275" y="332" text-anchor="middle" font-size="15.4" fill="#166534">3.14 &#215; radius&#178;</text>
-  <text x="275" y="358" text-anchor="middle" font-size="15.4" fill="#166534">= 28.3</text>
+  <text x="275" y="358" text-anchor="middle" font-size="15.4" fill="#166534">= 12.56</text>
 
   <g filter="url(#softShadow)">
     <rect x="440" y="283" width="250" height="100" rx="14" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.2"/>

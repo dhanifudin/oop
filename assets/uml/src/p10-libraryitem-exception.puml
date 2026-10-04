@@ -1,0 +1,40 @@
+@startuml p10-libraryitem-exception
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Exception {
+}
+
+class ItemNotAvailableException {
+}
+
+abstract class LibraryItem {
+  # title : String
+  - available : boolean
+  --
+  + checkOut() : void
+  + {abstract} lateFeePerDay() : int
+}
+
+interface Playable {
+  + play() : void
+}
+
+class Book {
+  + lateFeePerDay() : int
+}
+
+class Dvd {
+  + lateFeePerDay() : int
+  + play() : void
+}
+
+Exception <|-- ItemNotAvailableException
+LibraryItem ..> ItemNotAvailableException : throws
+LibraryItem <|-- Book
+LibraryItem <|-- Dvd
+Playable <|.. Dvd
+@enduml

@@ -140,6 +140,22 @@ abstrak, `monthlyFee()`, `InterestBearing`, tugas `Auditable`) hanya ada di
 jobsheet, bersama UML `p09-account-monthlyfee` dan `p09-account-abstract`.
 Fitur interface lanjutan (default method, konstanta) sengaja tidak dibahas.
 
+**Pengecualian sengaja di Pertemuan 10**: sama seperti Pertemuan 6, 7, dan
+9 (permintaan eksplisit pengguna: "do the same for pertemuan 10"), dek ini
+generik tanpa Bagian Bank Mini dan memakai gaya penyampaian pemula. Bagian
+1 polimorfisme dan `instanceof` (`Shape`), Bagian 2 exception bawaan dengan
+`try`/`catch` (`ArrayIndexOutOfBoundsException`), Bagian 3 melempar
+exception sendiri (`Grade`/`InvalidScoreException`, `throw`/`throws`),
+Bagian 4 studi kasus `LibraryItem` (denda polimorfik, `instanceof Playable`,
+`checkOut()` melempar `ItemNotAvailableException`, UML
+`p10-libraryitem-exception`), ditutup dua slide "Tugas". Bank Mini
+(`InsufficientBalanceException`, `processMonthEnd()`, tugas `printAuditLog`
+dan `AccountNotFoundException`) hanya ada di jobsheet. Sengaja tidak
+dibahas: `finally`, multi-catch, perbedaan checked/unchecked secara formal
+(cukup "exception yang `extends Exception` wajib ditangani"). Angka contoh
+di slide sudah dicek lewat Java sungguhan: lingkaran memakai radius 2
+(12.56) karena radius 3 mencetak 28.259999999999998.
+
 ## Bahaya tersembunyi di kelas `divider`
 
 Blok CSS `section.divider h1` mengatur warna putih, tapi aturan global

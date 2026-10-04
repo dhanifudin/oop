@@ -104,29 +104,30 @@ style: |
 
 Meeting 10: **Polymorphism and Exception Handling**
 
-One point of code, many behaviors; failure that cannot be ignored
+One command, many behaviors; failures that must not be kept silent
 
 ---
 
 ## What You Will Learn
 
-- How one identical method call runs a different behavior depending on the object receiving it, decided while the program is running
-- How to check a type while also downcasting safely, for when code still needs to know an object's concrete type
-- How to make a failure impossible to silently ignore, through `throw`, `try`/`catch`, and custom exceptions
-- Application to Bank Mini: `withdraw()` throwing `InsufficientBalanceException`, `Bank.processMonthEnd()` processing accounts polymorphically
+- How one method call produces different behavior (polymorphism)
+- How to check an object's kind safely through `instanceof`
+- How to handle problems while the program runs through `try` and `catch`
+- How to create and throw your own exception through `throw`
+- Applying all of it to one case study
 
 <div class="tip-box">
-Programming exercises for today's material are available in the Practicum: Object-Oriented Programming jobsheet (RTI253008), Meeting 10.
+Hands-on practice for today's material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 10.
 </div>
 
 ---
 
 ## Today's Session Map
 
-- **Session 1 (50')**: Polymorphism, one method call, many behaviors
-- **Session 2 (50')**: Exception handling, failure that cannot be ignored
-- **Session 3 (50')**: Applying exception handling to Bank Mini
-- **Session 4 (50')**: Applying polymorphism to Bank Mini
+- **Session 1 (50')**: Polymorphism and `instanceof`
+- **Session 2 (50')**: Exception handling with `try` and `catch`
+- **Session 3 (50')**: Throwing your own exception
+- **Session 4 (50')**: Case study, the library collection
 
 ---
 
@@ -139,114 +140,154 @@ Session 1 of 4
 
 ---
 
-## One Array, Different Kinds of Objects
+## The Problem: One Branch for Each Kind
 
-Imagine `Shape[] shapes` holding a mix of `Circle` and `Square`. Without polymorphism, code computing each element's area must check its kind one by one: `if (s instanceof Circle) { ... } else if (s instanceof Square) { ... }`, each branch calling a different area formula.
+```java
+for (Shape s : shapes) {
+    if (s instanceof Circle) { /* circle formula */ }
+    else if (s instanceof Square) { /* square formula */ }
+    // a new kind? add another branch
+}
+```
 
-<div class="warn-box">
-Every time a new shape kind is added, this <code>if</code>/<code>else</code> branch must be tracked down and extended, everywhere this kind of code was ever written.
+Every time a new kind of shape appears, another `if` branch must be added. Code like this can be scattered across many places.
+
+---
+
+## What Is Polymorphism?
+
+A coach shouts "go!". The swimmer starts swimming, the runner starts running. There is one command, and each athlete carries it out in their own way.
+
+<div class="term-box">
+<b>Polymorphism</b> means one and the same method call runs the version belonging to the object that receives it. That version is chosen while the program runs.
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine an e-commerce application with dozens of product kinds (books, electronics, groceries), each with its own way of computing shipping cost. Without polymorphism, the method that processes an order contains dozens of branches: `if (product instanceof Book) ... else if (product instanceof Electronics) ...`. Adding one new product kind means finding and changing EVERY such method across the entire application; missing just one becomes a bug that only surfaces once a customer complains about a wrong shipping charge.
+An online store has dozens of product kinds. Each kind computes its shipping cost in its own way. Without polymorphism, every new kind means finding and changing all the `if` branches across the application. Miss just one, and a customer's shipping cost is wrong.
 
 <div class="term-box">
-Polymorphism flips this responsibility around: the calling code simply calls <code>product.calculateShippingCost()</code>, and the object itself knows how to compute it. Adding a new product kind never changes a single line of existing code, in line with the Open/Closed Principle discussed further in Meeting 11.
+With polymorphism, the calling code simply writes <code>product.shippingCost()</code>. The object itself knows how to compute it. Adding a new kind does not change old code.
 </div>
 
 ---
 
-## Dynamic Dispatch: Decided While the Program Runs
+## One Call, Two Results
 
-![h:280 One call to area() resolved differently while the program runs](../assets/illustrations/polymorphic-dispatch.svg)
+![h:300 One call to area() resolved differently while the program runs](../assets/illustrations/polymorphic-dispatch.svg)
 
-<div class="term-box">
-<b>Polymorphism</b> is the ability of one identical method call, invoked through a superclass or interface type, to run the version belonging to the object's actual runtime type (<i>dynamic dispatch</i>). This mechanism has actually been at work ever since method overriding was studied in Meeting 7; here it is given its formal name.
-</div>
+The call `s.area()` is written only once. For a `Circle`, Java runs the circle formula. For a `Square`, Java runs the square formula.
 
 ---
 
-## Code Example: One Call, Different Behavior
+## Code Example: No `if` at All
 
 ```java
-Shape[] shapes = { new Circle("c1", 3), new Square("s1", 4) };
+Shape[] shapes = { new Circle("c1", 2), new Square("s1", 4) };
 
 for (Shape s : shapes) {
-    System.out.println(s.area());
+    System.out.println(s.area());   // one line for every kind
 }
 ```
 
-The exact same `s.area()` prints `28.27` for the first element and `16.0` for the second; `Shape[]` never needs to know each element's concrete kind.
+---
+
+## Trace It Step by Step
+
+1. First pass: `s` holds a `Circle` object. Java runs `Circle`'s `area()`: 3.14 x 2 x 2.
+2. Second pass: `s` holds a `Square` object. Java runs `Square`'s `area()`: 4 x 4.
+
+```
+12.56
+16.0
+```
+
+The variable's type is always `Shape`. What decides the result is the object.
 
 ---
 
-## When Knowing the Concrete Type Is Still Needed
+## Three Ingredients of Polymorphism
 
-Sometimes code still needs to check an object's concrete type, for instance to call a capability that only some subclasses have (not the whole superclass). Imagine `Circle` has an extra method `getRadius()` that neither `Shape` nor `Square` has.
+1. A family relationship: `extends` or `implements`.
+2. Subclasses fill in or override the same method.
+3. The object is held through a variable of the superclass or interface type.
 
-<div class="term-box">
-<code>instanceof</code> with <i>pattern matching</i> (<code>if (obj instanceof SpecificType variable)</code>) checks an object's type while also immediately providing a variable of that specific type, replacing the old approach that required a separate manual cast after the check.
-</div>
-
-<div class="warn-box">
-Too much <code>instanceof</code> checking concrete types one by one is a sign polymorphism has not been used fully. Use <code>instanceof</code> sparingly, especially to check an <i>interface</i> only some subclasses implement, as shown in Part 4.
+<div class="tip-box">
+You have already learned all three in the Inheritance, Overriding, and Abstract Classes and Interfaces topics. Polymorphism is what they produce together.
 </div>
 
 ---
 
-## Code Example: Pattern Matching with `instanceof`
+## Checking an Object's Kind: `instanceof`
+
+Sometimes code needs to know the object's kind, for example to call a method only `Circle` has. It is like a clerk checking a membership card before giving a special service.
+
+```java
+if (s instanceof Circle) {
+    Circle c = (Circle) s;   // downcasting
+    System.out.println(c.getRadius());
+}
+```
+
+---
+
+## Code Example: A Shorter `instanceof`
 
 ```java
 for (Shape s : shapes) {
-    if (s instanceof Circle c) {
+    if (s instanceof Circle c) {              // check, then get variable c right away
         System.out.println("radius: " + c.getRadius());
     }
 }
 ```
 
-`c` is immediately typed as `Circle`, with no separate manual cast; this block only runs for elements that are genuinely `Circle`.
+This form is called pattern matching. Its output is `radius: 2.0`, only for the element that really is a `Circle`.
 
 ---
 
-## Common Mistake: if/else When Polymorphism Would Do
+## Common Mistake: `if` Where Polymorphism Would Do
 
 <div class="warn-box">
-<b>Wrong:</b> manually writing <code>if (s instanceof Circle) area = 3.14 * r * r; else if (s instanceof Square) area = side * side;</code> inside a loop, even though <code>Circle</code> and <code>Square</code> already both override <code>area()</code>.
+<b>Wrong:</b> checking <code>instanceof Circle</code> then <code>instanceof Square</code> to compute an area, even though both already have <code>area()</code>.
 </div>
 
-**Right:** simply call `s.area()`. `Shape[]` automatically calls the version belonging to the object's actual kind through dynamic dispatch; the calling code does not need to know the concrete type at all.
+**Correct:** simply call `s.area()`. Use `instanceof` only for a capability that not every subclass has.
 
 ---
 
 ## Exercise
 
+`Circle.area()` computes 3.14 x radius x radius. `Square.area()` computes side x side. Predict the output of this program:
+
 ```java
-Shape[] shapes = { new Circle("c1", 2), new Square("s1", 5) };
+Shape[] shapes = { new Square("s1", 5), new Circle("c1", 1) };
 for (Shape s : shapes) {
     System.out.println(s.area());
 }
 ```
 
-Predict the two lines this code prints (`Circle.area()` computes `Math.PI * radius * radius`, `Square.area()` computes `side * side`).
-
 ---
 
 ## Exercise Answer
 
-The first line prints **`12.566370614359172`** (`Math.PI * 2 * 2`), the second prints **`25.0`** (`5 * 5`). The exact same `s.area()` is called for both elements, but each runs the `area()` version belonging to its own concrete type.
+```
+25.0
+3.14
+```
+
+The first element is a `Square`, so 5 x 5. The second element is a `Circle`, so 3.14 x 1 x 1. The output order follows the order of the objects in the array.
 
 ---
 
 ## Part 1 Summary
 
-- Polymorphism makes one identical method call run the version belonging to the object's actual runtime type (dynamic dispatch).
-- `instanceof` with pattern matching checks a type while also providing a variable of that specific type, used sparingly whenever code genuinely needs to know the concrete type.
-- Code that branches `if`/`else` on type even though the method is already polymorphic is a sign polymorphism has not been used fully.
+- Polymorphism: one method call, and the version that runs follows the object.
+- The calling code needs no `if` branch for each kind of object.
+- `instanceof` is used sparingly, for a capability that not every subclass has.
 
-Next: Part 2 covers exception handling, how to make a failure impossible to simply ignore.
+Next: Part 2 covers what happens when a program meets a problem while running.
 
 ---
 
@@ -259,251 +300,394 @@ Session 2 of 4
 
 ---
 
-## When a Failure Is Silently Left Alone
+## The Problem: The Program Stops Abruptly
 
-Meeting 3 showed `Grade.setScore()` silently clamping a score outside the 0-100 range instead of rejecting it. This approach is convenient, but the caller never knows the score it sent was actually changed silently.
+```java
+int[] scores = { 80, 90 };
+System.out.println(scores[5]);   // index 5 does not exist
+System.out.println("done");      // never runs
+```
 
-<div class="warn-box">
-A failure silently left alone can create a bug that only surfaces long after the real cause occurred, in a place entirely different from its source.
+The program stops at the second line with the message `ArrayIndexOutOfBoundsException`. The line after it does not run.
+
+---
+
+## What Is an Exception?
+
+Picture a fire alarm. When there is a problem, the alarm sounds and every activity stops until someone deals with it.
+
+<div class="term-box">
+An <b>exception</b> is an object that signals a problem while the program runs. If nothing handles it, the program stops.
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine a system that silently ignores invalid input instead of firmly rejecting it, for instance a negative transfer amount rounded down to zero with no notice. A few weeks later, the team discovers an unbalanced financial report, but the cause has long since been buried among thousands of other transactions, extremely hard to trace back to the actual line of code at fault.
+A finance system silently turns a wrong transfer amount into zero, with no notice. A few weeks later the financial report does not balance. The cause is already buried among thousands of transactions and is very hard to trace.
 
 <div class="term-box">
-An exception makes a failure impossible to simply ignore: for a <i>checked exception</i>, the compiler forces the calling code to handle it explicitly. The problem surfaces right at the point it occurs, instead of sneaking silently into a distant, hard-to-trace part of the program.
+An exception makes a problem surface exactly where it happens. A problem can no longer slip through silently.
 </div>
 
 ---
 
-## throw, try, catch
-
-![h:280 An exception halts the method that threw it and propagates upward until caught](../assets/illustrations/exception-throw-catch.svg)
+## `try` and `catch`: Try, and Prepare a Backup Plan
 
 <div class="term-box">
-A method throws (<code>throw</code>) an exception object when it encounters a condition it cannot handle reasonably, halting its own execution right there. The calling code wraps the call in a <code>try</code> block, then handles any exception that may be thrown through a <code>catch</code> block.
+Code that might have a problem goes inside a <code>try</code> block. If an exception occurs, the rest of the <code>try</code> block is skipped and the <code>catch</code> block runs. After that the program continues as usual.
 </div>
 
 ---
 
-## Code Example: Handling an Exception with `try`/`catch`
+## Code Example: Catching an Exception
 
 ```java
 try {
-    grade.setScore(150);
-} catch (InvalidScoreException e) {
+    System.out.println(scores[5]);
+    System.out.println("this line is skipped");
+} catch (ArrayIndexOutOfBoundsException e) {
     System.out.println("Failed: " + e.getMessage());
 }
+System.out.println("done");
 ```
 
-If `setScore(150)` throws `InvalidScoreException`, the rest of the `try` block is skipped immediately and execution jumps to `catch`; the program keeps running afterward.
-
 ---
 
-## Building a Custom Exception
+## Trace It Step by Step
 
-![h:280 Exception, InvalidScoreException, and the Grade that throws it](../assets/uml/p10-invalidscore-exception.png)
+1. `scores[5]` fails. Java creates an exception object.
+2. The rest of the `try` block is skipped.
+3. The `catch` block runs. `e.getMessage()` holds the explanation of the problem.
+4. The program continues at the line after `try`/`catch`.
 
-<div class="term-box">
-A custom exception is built by declaring a class that <code>extends</code> <code>Exception</code>, usually containing only a constructor that forwards the error message to its superclass constructor through <code>super(message)</code>. The class name itself already explains the kind of failure that occurred, far clearer than a mere <code>boolean</code> or <code>null</code> value.
-</div>
-
----
-
-## Code Example: Declaring a Custom Exception
-
-```java
-public class InvalidScoreException extends Exception {
-    public InvalidScoreException(String message) {
-        super(message);
-    }
-}
+```
+Failed: Index 5 out of bounds for length 2
+done
 ```
 
-Just one constructor forwarding the message to `super(...)`; `Exception` already provides the entire base behavior.
-
 ---
 
-## Common Mistake: Forgetting `try`/`catch` for a Checked Exception
+## Common Mistake: An Empty `catch` Block
 
 <div class="warn-box">
-<b>Wrong:</b> calling <code>grade.setScore(150);</code> directly with no <code>try</code>/<code>catch</code> wrapper, assuming the exception only needs handling if it actually happens.
+<b>Wrong:</b> writing <code>catch (Exception e) { }</code> with nothing inside, just so the program does not stop.
 </div>
 
-**Right:** the compiler displays the error `unreported exception InvalidScoreException; must be caught or declared to be thrown`. `InvalidScoreException` is a checked exception, required to be handled through `try`/`catch` or declared through `throws` on the calling method, before the code can even compile.
+**Correct:** an empty `catch` block hides the problem. At least print `e.getMessage()`, so someone knows that something failed.
 
 ---
 
 ## Exercise
 
+Predict the output of this program:
+
 ```java
-public void updateGrade(Grade grade, int newScore) {
-    grade.setScore(newScore);
+int[] data = { 1, 2, 3 };
+try {
+    System.out.println(data[0]);
+    System.out.println(data[9]);
+    System.out.println("end of try");
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("caught");
 }
 ```
-
-`setScore(int)` is declared `throws InvalidScoreException`. Does this `updateGrade` code compile? Explain, then state one way to fix it.
 
 ---
 
 ## Exercise Answer
 
-**No, it does not compile.** `setScore(int)` is a checked exception, and `updateGrade` calls it with neither `try`/`catch` nor `throws`, so the compiler displays the error `unreported exception`. Fix: add `throws InvalidScoreException` to `updateGrade`'s signature, or wrap the call `grade.setScore(newScore)` in a `try`/`catch` block.
+```
+1
+caught
+```
+
+`data[0]` succeeds and prints 1. `data[9]` fails, so `"end of try"` is skipped and the `catch` block runs.
 
 ---
 
 ## Part 2 Summary
 
-- An exception makes a failure impossible to simply ignore; a checked exception is forced by the compiler to be handled explicitly.
-- `throw` throws an exception object and immediately halts the method; `try`/`catch` catches it and handles it in the calling code.
-- A custom exception is built with `extends Exception`; the class name itself explains the kind of failure that occurred.
+- An exception is an object that signals a problem while the program runs.
+- Risky code goes in `try`; its backup plan goes in `catch`.
+- Do not leave a `catch` block empty.
 
-Next: Part 3 applies exception handling to Bank Mini's `withdraw()`.
+Next: Part 3 covers how to throw an exception from a method we write ourselves.
 
 ---
 
 <!-- _class: divider -->
 
 # Part 3
-## Applying Exception Handling to Bank Mini
+## Throwing Your Own Exception
 
 Session 3 of 4
 
 ---
 
-## withdraw() Throws InsufficientBalanceException
-
-![h:280 Exception, InsufficientBalanceException, and the Account that throws it](../assets/uml/p10-insufficientbalance-exception.png)
-
-So far, `withdraw()` has silently returned `false` when the balance was insufficient, exactly the risk discussed in Part 2. `withdraw()` now throws `InsufficientBalanceException`; the calling code is required to handle it through `try`/`catch`, and can no longer simply forget to check the result.
-
----
-
-## Code Example: `withdraw()` Throws an Exception
+## The Problem: A Failure Kept Silent
 
 ```java
-public void withdraw(double amount) throws InsufficientBalanceException {
-    if (!canWithdraw(amount)) {
-        throw new InsufficientBalanceException(
-                accountNumber + ": insufficient balance");
+class Grade {
+    private int score;
+    public void setScore(int score) {
+        if (score > 100) { score = 100; }   // silently changed
+        this.score = score;
     }
-    balance -= amount;
 }
 ```
 
-`canWithdraw()` (the hook from Meeting 7) is used exactly as it was; only the way its failure is handled has changed.
+`setScore(150)` does not reject the wrong value. The value is changed to 100, and the caller never finds out.
 
 ---
 
-## Common Mistake: Empty Catch Block
+## `throw`: Raising a Hand and Reporting
 
-<div class="warn-box">
-<b>Wrong:</b> writing <code>try { account.withdraw(500000); } catch (InsufficientBalanceException e) {}</code>, leaving the <code>catch</code> block empty with no handling at all.
+A clerk who finds a wrong form does not quietly fix it. They raise a hand and report it, and their work stops right there.
+
+<div class="term-box">
+<code>throw</code> throws an exception object. The method stops at once, and the problem is handed to the calling code.
 </div>
 
-**Right:** an empty `catch` block recreates exactly the problem Part 2 set out to solve, the failure is silently left alone, only now wrapped in `try`/`catch` so the compiler stops complaining. At minimum, print or log `e.getMessage()`, or display a notice to the user.
+---
+
+## The Journey of an Exception
+
+![h:300 An exception halts the method that throws it and is passed upward until it is caught](../assets/illustrations/exception-throw-catch.svg)
+
+The exception is thrown inside `setScore(150)`, then travels up to the calling code until a `catch` block catches it.
+
+---
+
+## Code Example: An Exception of Your Own
+
+```java
+class InvalidScoreException extends Exception {
+    public InvalidScoreException(String message) {
+        super(message);   // the message is stored by Exception
+    }
+}
+```
+
+Just `extends Exception` and one constructor. The class name already explains the kind of problem.
+
+---
+
+## Exceptions in a Class Diagram
+
+![h:260 Exception, InvalidScoreException, and the Grade that throws it](../assets/uml/p10-invalidscore-exception.png)
+
+`InvalidScoreException` is a subclass of `Exception`. The dashed arrow labeled "throws" means `Grade` can throw that exception.
+
+---
+
+## Code Example: `setScore()` Throws an Exception
+
+```java
+public void setScore(int score) throws InvalidScoreException {
+    if (score < 0 || score > 100) {
+        throw new InvalidScoreException("Score must be 0-100: " + score);
+    }
+    this.score = score;
+}
+```
+
+The word `throws` in the signature tells the caller that this method can fail.
+
+---
+
+## Trace It Step by Step
+
+```java
+try {
+    grade.setScore(150);
+    System.out.println("saved");
+} catch (InvalidScoreException e) {
+    System.out.println("Failed: " + e.getMessage());
+}
+```
+
+1. `setScore(150)` finds a value outside 0-100, then throws an exception.
+2. The line `this.score = score` does not run. The old value stays safe.
+3. `"saved"` is skipped, the `catch` block runs.
+
+Output: `Failed: Score must be 0-100: 150`
+
+---
+
+## Exceptions That Must Be Handled
+
+<div class="term-box">
+An exception that <code>extends Exception</code> must be handled. The caller has two choices: wrap the call in <code>try</code>/<code>catch</code>, or pass it on by writing <code>throws</code> on its own method.
+</div>
+
+If neither is done, the compiler rejects the code.
+
+---
+
+## Common Mistake: Forgetting `try`/`catch`
+
+<div class="warn-box">
+<b>Wrong:</b> calling <code>grade.setScore(150);</code> as it is, with no <code>try</code>/<code>catch</code> and no <code>throws</code>.
+</div>
+
+**Correct:** the compiler reports the error `unreported exception InvalidScoreException; must be caught or declared to be thrown`. Wrap that call in `try`/`catch`.
 
 ---
 
 ## Exercise
 
-A `SavingsAccount` with a `balance` of Rp 100,000 and a minimum balance of Rp 50,000 calls `withdraw(70000)`.
+`setScore(int)` is declared `throws InvalidScoreException`. Decide **valid** or **error**:
 
-What happens? Explain through `canWithdraw()`, then state whether `balance` changes.
+1. `grade.setScore(90);` with no `try`/`catch`, inside an ordinary `main`.
+2. `try { grade.setScore(90); } catch (InvalidScoreException e) { System.out.println(e.getMessage()); }`
+3. `void update(Grade g) throws InvalidScoreException { g.setScore(90); }`
 
 ---
 
 ## Exercise Answer
 
-**`InsufficientBalanceException` is thrown.** `canWithdraw(70000)` checks `balance - amount >= 50000`; with `balance` at 100000, the result is 30000, less than 50000, so `canWithdraw()` returns `false`. `withdraw()` throws the exception BEFORE the line `balance -= amount` ever runs, so `balance` stays at 100000, unchanged.
+1. **Error.** Even though 90 is a correct value, the compiler still requires handling.
+2. **Valid.** The call is wrapped in `try`/`catch`.
+3. **Valid.** The method `update` passes the exception on through `throws`.
 
 ---
 
 ## Part 3 Summary
 
-- `withdraw()` throws `InsufficientBalanceException` instead of silently returning `false`; the calling code is required to handle it.
-- The exception is thrown BEFORE `balance` is changed, so a failed withdrawal never leaves `Account` in an inconsistent state.
-- An empty `catch` block recreates the problem of a silently ignored failure; an exception must still be handled meaningfully, not just enough to keep the compiler quiet.
+- `throw` throws an exception and stops the method at once.
+- An exception of your own only needs `extends Exception` and one constructor.
+- `throws` in the signature requires the caller to use `try`/`catch` or pass it on.
 
-Next: Part 4 applies polymorphism to `Bank.processMonthEnd()`.
+Next: Part 4 uses polymorphism and exceptions on the library collection.
 
 ---
 
 <!-- _class: divider -->
 
 # Part 4
-## Applying Polymorphism to Bank Mini
+## Case Study: The Library Collection
 
 Session 4 of 4
 
 ---
 
-## processMonthEnd(): Polymorphism in Bank Mini
+## Back to the Library
 
-![h:280 Account as an abstract class, SavingsAccount implementing interface InterestBearing](../assets/uml/p09-account-abstract.png)
+`LibraryItem` is already abstract, and `Dvd` is already `Playable`. There are three new needs:
 
-`Bank.processMonthEnd()` processes every account polymorphically through `monthlyFee()`. Only an account that implements `InterestBearing` receives `applyInterest()`, checked through `instanceof InterestBearing`, not `instanceof SavingsAccount`, so any new kind of interest-bearing account is automatically processed too, without changing this code at all.
+1. Print every item's late fee with no `if` branch for each kind.
+2. Play only the items that can be played.
+3. Reject a loan of an item that is already on loan, with a clear message.
+
+Number 1 uses polymorphism. Number 2 uses `instanceof`. Number 3 uses an exception.
 
 ---
 
-## Code Example: `processMonthEnd()` Processes Every Account
+## Class Diagram: The Collection and Its Exception
+
+![h:300 Abstract LibraryItem with checkOut throwing ItemNotAvailableException, Book, Dvd, and Playable](../assets/uml/p10-libraryitem-exception.png)
+
+`ItemNotAvailableException` is a subclass of `Exception`. The "throws" arrow shows that `checkOut()` in `LibraryItem` can throw it.
+
+---
+
+## Trace It: Late Fees and Playback
 
 ```java
-public void processMonthEnd() {
-    for (int i = 0; i < count; i++) {
-        Account acc = accounts[i];
-        if (acc instanceof InterestBearing bearing) {
-            bearing.applyInterest();
-        }
-        System.out.println(acc.monthlyFee());
-    }
+for (LibraryItem item : items) {      // items holds Book "Dune" and Dvd "Inception"
+    System.out.println(item.title + ": " + item.lateFeePerDay());
+    if (item instanceof Playable p) { p.play(); }
 }
 ```
 
-`acc.monthlyFee()` is called polymorphically for EVERY account; `applyInterest()` only for those that implement `InterestBearing`.
+```
+Dune: 1000
+Inception: 5000
+Playing Inception
+```
+
+`lateFeePerDay()` is called for every item. `play()` is only for those that are `Playable`.
 
 ---
 
-## Common Mistake: Checking the Concrete Class, Not the Interface
+## Code Example: `checkOut()` Throws an Exception
+
+```java
+public void checkOut() throws ItemNotAvailableException {
+    if (!available) {
+        throw new ItemNotAvailableException(title + " is already on loan");
+    }
+    available = false;
+}
+```
+
+---
+
+## Trace It: Borrowing Twice
+
+```java
+Book dune = new Book("Dune");
+try {
+    dune.checkOut();
+    dune.checkOut();
+    System.out.println("borrowed twice");
+} catch (ItemNotAvailableException e) {
+    System.out.println("Failed: " + e.getMessage());
+}
+```
+
+The first call succeeds. The second call throws an exception, so `"borrowed twice"` is skipped. Output: `Failed: Dune is already on loan`
+
+---
+
+## Common Mistake: Checking the Class, Not the Capability
 
 <div class="warn-box">
-<b>Wrong:</b> writing <code>if (acc instanceof SavingsAccount)</code> to decide when to call <code>applyInterest()</code>, assuming this is the same as checking <code>InterestBearing</code>.
+<b>Wrong:</b> writing <code>if (item instanceof Dvd)</code> to decide when to call <code>play()</code>.
 </div>
 
-**Right:** checking `instanceof InterestBearing` (not `instanceof SavingsAccount`) means a NEW kind of interest-bearing account is automatically processed too, without changing `processMonthEnd()` at all. Checking the concrete class forces this method to be changed again every time a new interest-bearing account kind appears.
+**Correct:** check `instanceof Playable`. If an `AudioBook` that is also `Playable` is added later, it gets played right away without changing the loop code.
 
 ---
 
 ## Exercise
 
-Bank Mini adds `BusinessAccount` (the independent assignment from Meeting 6), a business account that does not earn interest at all, so it does not implement `InterestBearing`.
-
-Does `processMonthEnd()` call `applyInterest()` for `BusinessAccount`? Explain through its `instanceof` check.
+1. `items` holds a `Magazine` "Tempo" (fee 500) and a `Dvd` "Inception" (fee 5000). Predict the output of the loop on the slide "Trace It: Late Fees and Playback".
+2. Can `dune.checkOut();` with no `try`/`catch` be compiled? Yes or no?
 
 ---
 
 ## Exercise Answer
 
-**No.** `processMonthEnd()` checks `acc instanceof InterestBearing`, and `BusinessAccount` does not implement `InterestBearing`. This check evaluates to `false` for `BusinessAccount`, so `applyInterest()` is skipped; only `acc.monthlyFee()` is still called for every account, `BusinessAccount` included.
+```
+Tempo: 500
+Inception: 5000
+Playing Inception
+```
+
+**No.** `checkOut()` is declared `throws ItemNotAvailableException`, so its caller must use `try`/`catch` or `throws`.
 
 ---
 
 ## Part 4 Summary
 
-- `processMonthEnd()` calls `monthlyFee()` polymorphically for every account, with no need to know its concrete kind.
-- `instanceof InterestBearing` decides when `applyInterest()` is called, not `instanceof SavingsAccount`, so a new interest-bearing account kind is automatically processed too.
-- Polymorphism and exception handling both let `Bank` grow (new account kinds, new failures) without changing existing code.
+- One loop prints every item's late fee, with no `if` branch per kind.
+- `instanceof Playable` checks a capability, not a class name.
+- `checkOut()` throws an exception, so a double loan cannot slip through silently.
 
 ---
 
 ## Meeting 10 Summary
 
-- Polymorphism makes one identical method call run the version belonging to the object's actual runtime type; `instanceof` with pattern matching is used sparingly whenever code still needs to know the concrete type.
-- An exception makes a failure impossible to simply ignore; a checked exception is forced by the compiler to be handled through `try`/`catch`, and a custom exception is built through `extends Exception`.
-- Bank Mini uses both: `withdraw()` throws `InsufficientBalanceException`, `processMonthEnd()` processes every account polymorphically through `instanceof InterestBearing`.
+| | Polymorphism | Exception Handling |
+|---|---|---|
+| Problem it solves | an `if` branch for each kind of object | failures kept silent |
+| Keywords | `@Override`, `instanceof` | `try`, `catch`, `throw`, `throws` |
+| What decides | the actual object | the method that finds the problem |
+| Today's examples | `s.area()`, `item.lateFeePerDay()` | `setScore()`, `checkOut()` |
+
+Both let a program grow larger without changing old code.
 
 ---
 
@@ -511,14 +695,29 @@ Does `processMonthEnd()` call `applyInterest()` for `BusinessAccount`? Explain t
 
 # References
 
-Deitel, *Java How to Program*, chapters on Exception Handling, Polymorphism, Interfaces
+Deitel, *Java How to Program*, the Polymorphism and Interfaces, Exception Handling chapters
 
 Oracle Java Tutorials: "Polymorphism", "Exceptions"
 
-Programming exercises for this material are available in the Practicum: Object-Oriented Programming jobsheet (RTI253008), Meeting 10
+Hands-on practice for this material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 10
 
 ---
 
-## Discussion
+## Assignment: The Library Collection
 
-`processMonthEnd()` checks `instanceof InterestBearing`, not `instanceof SavingsAccount`, so a new interest-bearing account kind is automatically processed too without changing this method. Explain in your own words: what would happen (and what code would need to change) if that check were written as `instanceof SavingsAccount`, and Bank Mini then added a new interest-bearing account kind named `DepositAccount`?
+The library adds a rule: a member (`Member`) may borrow at most 3 items.
+
+1. Create an exception `LoanLimitExceededException`. Write its class declaration.
+2. Write the signature of a method `borrow(LibraryItem item)` in `Member` that can throw that exception.
+3. Write a `try`/`catch` snippet that calls `borrow(...)` and prints a message when it fails.
+4. Draw the class diagram on paper, complete with the "throws" arrow.
+
+---
+
+## Assignment: Your Own Case Study
+
+Reuse the class hierarchy from the previous meetings' assignment (the application you chose yourself).
+
+1. Write one loop that calls the same method on several kinds of objects, with no `if` branch. Write the output you expect.
+2. Pick one method that can fail. Create your own exception for it, then write the `try`/`catch` of its caller.
+3. Update your class diagram on paper.

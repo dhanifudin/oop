@@ -104,16 +104,17 @@ style: |
 
 Pertemuan 10: **Polimorfisme dan Exception Handling**
 
-Satu titik kode, banyak perilaku; kegagalan yang tidak bisa diabaikan
+Satu perintah, banyak perilaku; kegagalan yang tidak boleh didiamkan
 
 ---
 
 ## Yang Akan Kamu Pelajari
 
-- Cara satu pemanggilan method yang sama menjalankan perilaku berbeda tergantung objek penerimanya, ditentukan saat program berjalan
-- Cara memeriksa sekaligus melakukan downcasting yang aman ketika kode tetap butuh tahu tipe konkret suatu objek
-- Cara membuat kegagalan yang mustahil diabaikan begitu saja, lewat `throw`, `try`/`catch`, dan exception kustom
-- Penerapan pada Bank Mini: `withdraw()` melempar `InsufficientBalanceException`, `Bank.processMonthEnd()` memproses rekening secara polimorfik
+- Cara satu pemanggilan method menghasilkan perilaku berbeda (polimorfisme)
+- Cara memeriksa jenis objek dengan aman lewat `instanceof`
+- Cara menangani masalah saat program berjalan lewat `try` dan `catch`
+- Cara membuat dan melempar exception sendiri lewat `throw`
+- Penerapan semuanya pada satu studi kasus
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 10.
@@ -123,10 +124,10 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Peta Sesi Hari Ini
 
-- **Sesi 1 (50')**: Polimorfisme, satu pemanggilan method, banyak perilaku
-- **Sesi 2 (50')**: Exception handling, kegagalan yang tidak bisa diabaikan
-- **Sesi 3 (50')**: Menerapkan exception handling ke Bank Mini
-- **Sesi 4 (50')**: Menerapkan polimorfisme ke Bank Mini
+- **Sesi 1 (50')**: Polimorfisme dan `instanceof`
+- **Sesi 2 (50')**: Exception handling dengan `try` dan `catch`
+- **Sesi 3 (50')**: Melempar exception sendiri
+- **Sesi 4 (50')**: Studi kasus, koleksi perpustakaan
 
 ---
 
@@ -139,114 +140,154 @@ Sesi 1 dari 4
 
 ---
 
-## Satu Array, Berbagai Jenis Objek
+## Masalah: Satu Cabang untuk Tiap Jenis
 
-Bayangkan `Shape[] shapes` menyimpan campuran `Circle` dan `Square`. Tanpa polimorfisme, kode yang menghitung luas tiap elemen harus memeriksa jenisnya satu per satu: `if (s instanceof Circle) { ... } else if (s instanceof Square) { ... }`, masing-masing cabang memanggil rumus luas yang berbeda.
+```java
+for (Shape s : shapes) {
+    if (s instanceof Circle) { /* rumus lingkaran */ }
+    else if (s instanceof Square) { /* rumus persegi */ }
+    // ada jenis baru? tambah cabang lagi
+}
+```
 
-<div class="warn-box">
-Setiap kali ditambahkan jenis bentuk baru, cabang <code>if</code>/<code>else</code> ini harus dicari dan ditambahi lagi, di setiap tempat kode semacam ini pernah ditulis.
+Setiap ada jenis bentuk baru, cabang `if` harus ditambah. Kode seperti ini bisa tersebar di banyak tempat.
+
+---
+
+## Apa Itu Polimorfisme?
+
+Seorang pelatih berteriak "mulai!". Perenang mulai berenang, pelari mulai berlari. Perintahnya satu, tiap atlet menjalankannya dengan caranya sendiri.
+
+<div class="term-box">
+<b>Polimorfisme</b> berarti satu pemanggilan method yang sama menjalankan versi milik objek yang menerimanya. Versi itu dipilih saat program berjalan.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan aplikasi e-commerce dengan puluhan jenis produk (buku, elektronik, makanan), masing-masing punya cara sendiri menghitung ongkos kirim. Tanpa polimorfisme, method yang memproses pesanan berisi puluhan cabang `if (product instanceof Book) ... else if (product instanceof Electronics) ...`. Menambah satu jenis produk baru berarti mencari dan mengubah SETIAP method semacam ini di seluruh aplikasi, satu saja terlewat menjadi bug yang baru ketahuan saat pelanggan komplain ongkos kirimnya salah.
+Sebuah toko online punya puluhan jenis produk. Tiap jenis menghitung ongkos kirim dengan caranya sendiri. Tanpa polimorfisme, setiap jenis baru berarti mencari dan mengubah semua cabang `if` di seluruh aplikasi. Satu saja terlewat, ongkos kirim pelanggan salah.
 
 <div class="term-box">
-Polimorfisme membalik tanggung jawab ini: kode pemanggil cukup memanggil <code>product.calculateShippingCost()</code>, objek itu sendiri yang tahu cara menghitungnya. Menambah jenis produk baru tidak pernah mengubah satu baris pun kode yang sudah ada, sejalan dengan Open/Closed Principle yang dibahas lebih lanjut pada Pertemuan 11.
+Dengan polimorfisme, kode pemanggil cukup menulis <code>product.shippingCost()</code>. Objeknya sendiri yang tahu cara menghitungnya. Menambah jenis baru tidak mengubah kode lama.
 </div>
 
 ---
 
-## Dynamic Dispatch: Diputuskan Saat Program Berjalan
+## Satu Pemanggilan, Dua Hasil
 
-![h:280 Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/illustrations/polymorphic-dispatch.svg)
+![h:300 Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/illustrations/polymorphic-dispatch.svg)
 
-<div class="term-box">
-<b>Polimorfisme</b> adalah kemampuan satu pemanggilan method yang sama, dipanggil lewat tipe superclass atau interface, untuk menjalankan versi milik objek yang sebenarnya saat program berjalan (<i>dynamic dispatch</i>). Mekanisme ini sebenarnya sudah bekerja sejak method overriding dipelajari di Pertemuan 7, di sini diberi nama formalnya.
-</div>
+Pemanggilan `s.area()` hanya ditulis satu kali. Untuk `Circle`, Java menjalankan rumus lingkaran. Untuk `Square`, Java menjalankan rumus persegi.
 
 ---
 
-## Contoh Kode: Satu Pemanggilan, Perilaku Berbeda
+## Contoh Kode: Tanpa `if` Sama Sekali
 
 ```java
-Shape[] shapes = { new Circle("c1", 3), new Square("s1", 4) };
+Shape[] shapes = { new Circle("c1", 2), new Square("s1", 4) };
 
 for (Shape s : shapes) {
-    System.out.println(s.area());
+    System.out.println(s.area());   // satu baris untuk semua jenis
 }
 ```
 
-`s.area()` yang sama persis mencetak `28.27` untuk elemen pertama dan `16.0` untuk elemen kedua, `Shape[]` tidak pernah perlu tahu jenis konkret tiap elemennya.
+---
+
+## Telusuri Langkah demi Langkah
+
+1. Putaran pertama: `s` memegang objek `Circle`. Java menjalankan `area()` milik `Circle`: 3.14 x 2 x 2.
+2. Putaran kedua: `s` memegang objek `Square`. Java menjalankan `area()` milik `Square`: 4 x 4.
+
+```
+12.56
+16.0
+```
+
+Tipe variabelnya selalu `Shape`. Yang menentukan hasil adalah objeknya.
 
 ---
 
-## Kapan Tetap Butuh Tahu Tipe Konkret
+## Tiga Bahan Polimorfisme
 
-Kadang kode tetap perlu memeriksa tipe konkret suatu objek, misalnya untuk memanggil kemampuan yang hanya dimiliki sebagian subclass (bukan seluruh superclass). Bayangkan `Circle` punya method tambahan `getRadius()` yang tidak dimiliki `Shape` maupun `Square`.
+1. Ada hubungan keluarga: `extends` atau `implements`.
+2. Subclass mengisi atau meng-override method yang sama.
+3. Objek dipegang lewat variabel bertipe superclass atau interface.
 
-<div class="term-box">
-<code>instanceof</code> dengan <i>pattern matching</i> (<code>if (obj instanceof TipeTertentu variabel)</code>) memeriksa tipe objek sekaligus langsung menyediakan variabel bertipe spesifik itu, menggantikan cara lama yang memerlukan casting manual terpisah setelah pengecekan.
-</div>
-
-<div class="warn-box">
-Terlalu banyak <code>instanceof</code> yang memeriksa tipe konkret satu per satu adalah tanda polimorfisme belum dimanfaatkan sepenuhnya. Gunakan <code>instanceof</code> secukupnya, terutama untuk memeriksa <i>interface</i> yang hanya diterapkan sebagian subclass, seperti dicontohkan pada Bagian 4.
+<div class="tip-box">
+Ketiga bahan ini sudah kamu pelajari pada topik Inheritance, Overriding, serta Kelas Abstrak dan Interface. Polimorfisme adalah hasil gabungannya.
 </div>
 
 ---
 
-## Contoh Kode: Pattern Matching dengan `instanceof`
+## Memeriksa Jenis Objek: `instanceof`
+
+Kadang kode perlu tahu jenis objeknya, misalnya untuk memanggil method yang hanya dimiliki `Circle`. Ibarat petugas yang memeriksa kartu anggota sebelum memberi layanan khusus.
+
+```java
+if (s instanceof Circle) {
+    Circle c = (Circle) s;   // downcasting
+    System.out.println(c.getRadius());
+}
+```
+
+---
+
+## Contoh Kode: `instanceof` yang Lebih Ringkas
 
 ```java
 for (Shape s : shapes) {
-    if (s instanceof Circle c) {
+    if (s instanceof Circle c) {              // periksa, lalu langsung dapat variabel c
         System.out.println("radius: " + c.getRadius());
     }
 }
 ```
 
-`c` langsung bertipe `Circle`, tanpa casting manual terpisah; blok ini hanya berjalan untuk elemen yang benar-benar `Circle`.
+Bentuk ini disebut pattern matching. Output-nya `radius: 2.0`, hanya untuk elemen yang benar-benar `Circle`.
 
 ---
 
-## Kesalahan Umum: if/else Padahal Bisa Polimorfik
+## Kesalahan Umum: `if` Padahal Bisa Polimorfik
 
 <div class="warn-box">
-<b>Salah:</b> menulis <code>if (s instanceof Circle) area = 3.14 * r * r; else if (s instanceof Square) area = side * side;</code> secara manual di dalam loop, padahal <code>Circle</code> dan <code>Square</code> sudah sama-sama meng-override <code>area()</code>.
+<b>Salah:</b> memeriksa <code>instanceof Circle</code> lalu <code>instanceof Square</code> untuk menghitung luas, padahal keduanya sudah punya <code>area()</code>.
 </div>
 
-**Benar:** cukup panggil `s.area()`. `Shape[]` otomatis memanggil versi milik objek yang sebenarnya lewat dynamic dispatch, kode pemanggil tidak perlu tahu jenis konkretnya sama sekali.
+**Benar:** cukup panggil `s.area()`. Pakai `instanceof` hanya untuk kemampuan yang tidak dimiliki semua subclass.
 
 ---
 
 ## Latihan
 
+`Circle.area()` menghitung 3.14 x radius x radius. `Square.area()` menghitung side x side. Tebak output program berikut:
+
 ```java
-Shape[] shapes = { new Circle("c1", 2), new Square("s1", 5) };
+Shape[] shapes = { new Square("s1", 5), new Circle("c1", 1) };
 for (Shape s : shapes) {
     System.out.println(s.area());
 }
 ```
 
-Prediksi output dua baris yang dicetak kode ini (`Circle.area()` menghitung `Math.PI * radius * radius`, `Square.area()` menghitung `side * side`).
-
 ---
 
 ## Jawaban Latihan
 
-Baris pertama mencetak **`12.566370614359172`** (`Math.PI * 2 * 2`), baris kedua mencetak **`25.0`** (`5 * 5`). `s.area()` yang sama persis dipanggil untuk kedua elemen, tetapi masing-masing menjalankan versi `area()` milik tipe konkretnya sendiri.
+```
+25.0
+3.14
+```
+
+Elemen pertama adalah `Square`, jadi 5 x 5. Elemen kedua adalah `Circle`, jadi 3.14 x 1 x 1. Urutan output mengikuti urutan objek di dalam array.
 
 ---
 
 ## Rangkuman Bagian 1
 
-- Polimorfisme membuat satu pemanggilan method yang sama menjalankan versi milik objek yang sebenarnya saat program berjalan (dynamic dispatch).
-- `instanceof` dengan pattern matching memeriksa tipe sekaligus menyediakan variabel bertipe spesifik, dipakai secukupnya saat kode memang butuh tahu tipe konkret.
-- Kode yang bercabang `if`/`else` berdasarkan tipe padahal method-nya sudah polimorfik adalah tanda polimorfisme belum dimanfaatkan sepenuhnya.
+- Polimorfisme: satu pemanggilan method, versi yang dijalankan mengikuti objeknya.
+- Kode pemanggil tidak perlu cabang `if` untuk tiap jenis objek.
+- `instanceof` dipakai seperlunya, untuk kemampuan yang tidak dimiliki semua subclass.
 
-Selanjutnya: Bagian 2 membahas exception handling, cara membuat kegagalan mustahil diabaikan begitu saja.
+Selanjutnya: Bagian 2 membahas apa yang terjadi ketika program menemui masalah saat berjalan.
 
 ---
 
@@ -259,251 +300,394 @@ Sesi 2 dari 4
 
 ---
 
-## Ketika Kegagalan Didiamkan Begitu Saja
+## Masalah: Program Berhenti Mendadak
 
-Pertemuan 3 menunjukkan `Grade.setScore()` yang diam-diam membatasi (<i>clamp</i>) nilai di luar jangkauan 0-100, alih-alih menolaknya. Cara ini praktis, tetapi pemanggil tidak pernah tahu bahwa nilai yang dikirimnya sebenarnya diubah secara diam-diam.
+```java
+int[] scores = { 80, 90 };
+System.out.println(scores[5]);   // indeks 5 tidak ada
+System.out.println("done");      // tidak pernah dijalankan
+```
 
-<div class="warn-box">
-Kegagalan yang didiamkan begitu saja bisa menimbulkan bug yang baru terlihat jauh setelah penyebab sebenarnya terjadi, di tempat yang sama sekali berbeda dari sumbernya.
+Program berhenti di baris kedua dengan pesan `ArrayIndexOutOfBoundsException`. Baris sesudahnya tidak dijalankan.
+
+---
+
+## Apa Itu Exception?
+
+Bayangkan alarm kebakaran. Saat ada masalah, alarm berbunyi dan semua kegiatan berhenti sampai ada yang menanganinya.
+
+<div class="term-box">
+<b>Exception</b> adalah objek yang menandakan ada masalah saat program berjalan. Bila tidak ada yang menanganinya, program berhenti.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan sebuah sistem yang diam-diam mengabaikan input tidak valid alih-alih menolaknya secara tegas, misalnya jumlah transfer negatif yang dibulatkan menjadi nol tanpa pemberitahuan. Beberapa minggu kemudian, tim menemukan laporan keuangan yang tidak seimbang, tetapi penyebabnya sudah lama tenggelam di antara ribuan transaksi lain, sangat sulit ditelusuri kembali ke baris kode yang sebenarnya bermasalah.
+Sebuah sistem keuangan diam-diam mengubah jumlah transfer yang salah menjadi nol, tanpa pemberitahuan. Beberapa minggu kemudian laporan keuangan tidak seimbang. Penyebabnya sudah tenggelam di antara ribuan transaksi dan sangat sulit dilacak.
 
 <div class="term-box">
-Exception membuat kegagalan mustahil diabaikan begitu saja: untuk <i>checked exception</i>, compiler memaksa kode pemanggil menanganinya secara eksplisit. Masalah terungkap tepat di titik ia terjadi, bukan menyusup diam-diam ke bagian program yang jauh dan sulit dilacak.
+Exception membuat masalah muncul tepat di tempat ia terjadi. Masalah tidak bisa lagi lewat diam-diam.
 </div>
 
 ---
 
-## throw, try, catch
-
-![h:280 Sebuah exception menghentikan method yang melemparnya dan diteruskan ke atas hingga tertangkap](../assets/illustrations/exception-throw-catch.svg)
+## `try` dan `catch`: Coba, dan Siapkan Rencana Cadangan
 
 <div class="term-box">
-Sebuah method melempar (<code>throw</code>) objek exception ketika menemui kondisi yang tidak bisa ditangani secara wajar, menghentikan eksekusinya saat itu juga. Kode pemanggil membungkus pemanggilan dalam blok <code>try</code>, lalu menangani exception yang mungkin dilempar lewat blok <code>catch</code>.
+Kode yang mungkin bermasalah ditaruh di dalam blok <code>try</code>. Bila exception terjadi, sisa blok <code>try</code> dilewati dan blok <code>catch</code> yang dijalankan. Setelah itu program lanjut seperti biasa.
 </div>
 
 ---
 
-## Contoh Kode: Menangani Exception dengan `try`/`catch`
+## Contoh Kode: Menangkap Exception
 
 ```java
 try {
-    grade.setScore(150);
-} catch (InvalidScoreException e) {
+    System.out.println(scores[5]);
+    System.out.println("this line is skipped");
+} catch (ArrayIndexOutOfBoundsException e) {
     System.out.println("Failed: " + e.getMessage());
 }
+System.out.println("done");
 ```
 
-Bila `setScore(150)` melempar `InvalidScoreException`, sisa blok `try` langsung dilewati dan eksekusi lompat ke `catch`, program tetap berjalan setelahnya.
-
 ---
 
-## Membuat Exception Kustom
+## Telusuri Langkah demi Langkah
 
-![h:280 Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png)
+1. `scores[5]` gagal. Java membuat objek exception.
+2. Sisa blok `try` dilewati.
+3. Blok `catch` dijalankan. `e.getMessage()` berisi penjelasan masalahnya.
+4. Program lanjut ke baris setelah `try`/`catch`.
 
-<div class="term-box">
-Exception kustom dibuat dengan mendeklarasikan kelas yang meng-<code>extends</code> <code>Exception</code>, biasanya hanya berisi konstruktor yang meneruskan pesan galat ke konstruktor superclass-nya lewat <code>super(pesan)</code>. Nama kelasnya sendiri sudah menjelaskan jenis kegagalan yang terjadi, jauh lebih jelas dibandingkan sekadar nilai <code>boolean</code> atau <code>null</code>.
-</div>
-
----
-
-## Contoh Kode: Mendeklarasikan Exception Kustom
-
-```java
-public class InvalidScoreException extends Exception {
-    public InvalidScoreException(String message) {
-        super(message);
-    }
-}
+```
+Failed: Index 5 out of bounds for length 2
+done
 ```
 
-Cukup satu konstruktor yang meneruskan pesan ke `super(...)`; `Exception` sudah menyediakan seluruh perilaku dasarnya.
-
 ---
 
-## Kesalahan Umum: Lupa `try`/`catch` untuk Checked Exception
+## Kesalahan Umum: Blok `catch` Kosong
 
 <div class="warn-box">
-<b>Salah:</b> memanggil <code>grade.setScore(150);</code> langsung tanpa membungkusnya dalam <code>try</code>/<code>catch</code>, mengira exception hanya perlu ditangani kalau benar-benar terjadi.
+<b>Salah:</b> menulis <code>catch (Exception e) { }</code> tanpa isi apa pun, supaya program tidak berhenti.
 </div>
 
-**Benar:** compiler menampilkan galat `unreported exception InvalidScoreException; must be caught or declared to be thrown`. `InvalidScoreException` adalah checked exception, wajib ditangani lewat `try`/`catch` atau dideklarasikan lewat `throws` pada method pemanggil, sebelum kode bisa dikompilasi sama sekali.
+**Benar:** blok `catch` kosong menyembunyikan masalah. Setidaknya cetak `e.getMessage()`, supaya ada yang tahu bahwa sesuatu gagal.
 
 ---
 
 ## Latihan
 
+Tebak output program berikut:
+
 ```java
-public void updateGrade(Grade grade, int newScore) {
-    grade.setScore(newScore);
+int[] data = { 1, 2, 3 };
+try {
+    System.out.println(data[0]);
+    System.out.println(data[9]);
+    System.out.println("end of try");
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("caught");
 }
 ```
-
-`setScore(int)` dideklarasikan `throws InvalidScoreException`. Apakah kode `updateGrade` ini bisa dikompilasi? Jelaskan, lalu sebutkan satu cara memperbaikinya.
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak bisa.** `setScore(int)` adalah checked exception, `updateGrade` memanggilnya tanpa `try`/`catch` maupun `throws`, sehingga compiler menampilkan galat `unreported exception`. Perbaikan: tambahkan `throws InvalidScoreException` pada signature `updateGrade`, atau bungkus pemanggilan `grade.setScore(newScore)` dalam blok `try`/`catch`.
+```
+1
+caught
+```
+
+`data[0]` berhasil dan mencetak 1. `data[9]` gagal, jadi `"end of try"` dilewati dan blok `catch` dijalankan.
 
 ---
 
 ## Rangkuman Bagian 2
 
-- Exception membuat kegagalan mustahil diabaikan begitu saja, checked exception dipaksa compiler untuk ditangani secara eksplisit.
-- `throw` melempar objek exception dan langsung menghentikan method, `try`/`catch` menangkap dan menanganinya di kode pemanggil.
-- Exception kustom dibuat dengan `extends Exception`, nama kelasnya sendiri menjelaskan jenis kegagalan yang terjadi.
+- Exception adalah objek yang menandakan masalah saat program berjalan.
+- Kode berisiko ditaruh di `try`; rencana cadangannya di `catch`.
+- Jangan biarkan blok `catch` kosong.
 
-Selanjutnya: Bagian 3 menerapkan exception handling ke `withdraw()` Bank Mini.
+Selanjutnya: Bagian 3 membahas cara melempar exception dari method yang kita tulis sendiri.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 3
-## Menerapkan Exception Handling ke Bank Mini
+## Melempar Exception Sendiri
 
 Sesi 3 dari 4
 
 ---
 
-## withdraw() Melempar InsufficientBalanceException
-
-![h:280 Exception, InsufficientBalanceException, dan Account yang melemparnya](../assets/uml/p10-insufficientbalance-exception.png)
-
-Sejauh ini, `withdraw()` diam-diam mengembalikan `false` ketika saldo tidak mencukupi, persis risiko yang dibahas pada Bagian 2. `withdraw()` kini melempar `InsufficientBalanceException`, kode pemanggil wajib menanganinya lewat `try`/`catch`, tidak bisa lagi lupa memeriksa hasilnya.
-
----
-
-## Contoh Kode: `withdraw()` Melempar Exception
+## Masalah: Kegagalan yang Didiamkan
 
 ```java
-public void withdraw(double amount) throws InsufficientBalanceException {
-    if (!canWithdraw(amount)) {
-        throw new InsufficientBalanceException(
-                accountNumber + ": insufficient balance");
+class Grade {
+    private int score;
+    public void setScore(int score) {
+        if (score > 100) { score = 100; }   // diam-diam diubah
+        this.score = score;
     }
-    balance -= amount;
 }
 ```
 
-`canWithdraw()` (hook dari Pertemuan 7) tetap dipakai apa adanya, hanya cara menangani kegagalannya yang berubah.
+`setScore(150)` tidak menolak nilai yang salah. Nilai itu diubah menjadi 100, dan pemanggilnya tidak pernah tahu.
 
 ---
 
-## Kesalahan Umum: Catch Block Kosong
+## `throw`: Mengangkat Tangan dan Melapor
 
-<div class="warn-box">
-<b>Salah:</b> menulis <code>try { account.withdraw(500000); } catch (InsufficientBalanceException e) {}</code>, blok <code>catch</code> dibiarkan kosong tanpa penanganan apa pun.
+Seorang petugas yang menemukan formulir salah tidak memperbaikinya diam-diam. Ia mengangkat tangan dan melapor, lalu pekerjaannya berhenti di situ.
+
+<div class="term-box">
+<code>throw</code> melempar sebuah objek exception. Method berhenti saat itu juga, dan masalahnya diserahkan kepada kode pemanggil.
 </div>
 
-**Benar:** blok `catch` kosong menciptakan ulang persis masalah yang ingin dipecahkan Bagian 2, kegagalan didiamkan begitu saja, hanya sekarang dibungkus `try`/`catch` supaya compiler tidak lagi mengeluh. Setidaknya cetak atau catat `e.getMessage()`, atau tampilkan pemberitahuan ke pengguna.
+---
+
+## Perjalanan Sebuah Exception
+
+![h:300 Sebuah exception menghentikan method yang melemparnya dan diteruskan ke atas hingga tertangkap](../assets/illustrations/exception-throw-catch.svg)
+
+Exception dilempar di dalam `setScore(150)`, lalu naik ke kode pemanggil sampai ada blok `catch` yang menangkapnya.
+
+---
+
+## Contoh Kode: Exception Buatan Sendiri
+
+```java
+class InvalidScoreException extends Exception {
+    public InvalidScoreException(String message) {
+        super(message);   // pesan disimpan oleh Exception
+    }
+}
+```
+
+Cukup `extends Exception` dan satu constructor. Nama kelasnya sudah menjelaskan jenis masalahnya.
+
+---
+
+## Exception pada Diagram Kelas
+
+![h:260 Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png)
+
+`InvalidScoreException` adalah subclass dari `Exception`. Panah putus-putus berlabel "throws" berarti `Grade` bisa melempar exception itu.
+
+---
+
+## Contoh Kode: `setScore()` Melempar Exception
+
+```java
+public void setScore(int score) throws InvalidScoreException {
+    if (score < 0 || score > 100) {
+        throw new InvalidScoreException("Score must be 0-100: " + score);
+    }
+    this.score = score;
+}
+```
+
+Kata `throws` pada signature memberi tahu pemanggil bahwa method ini bisa gagal.
+
+---
+
+## Telusuri Langkah demi Langkah
+
+```java
+try {
+    grade.setScore(150);
+    System.out.println("saved");
+} catch (InvalidScoreException e) {
+    System.out.println("Failed: " + e.getMessage());
+}
+```
+
+1. `setScore(150)` menemukan nilai di luar 0-100, lalu melempar exception.
+2. Baris `this.score = score` tidak dijalankan. Nilai lama tetap aman.
+3. `"saved"` dilewati, blok `catch` dijalankan.
+
+Output: `Failed: Score must be 0-100: 150`
+
+---
+
+## Exception yang Wajib Ditangani
+
+<div class="term-box">
+Exception yang <code>extends Exception</code> wajib ditangani. Pemanggil punya dua pilihan: membungkus pemanggilan dengan <code>try</code>/<code>catch</code>, atau meneruskannya dengan menulis <code>throws</code> pada method-nya sendiri.
+</div>
+
+Bila keduanya tidak dilakukan, compiler menolak kode itu.
+
+---
+
+## Kesalahan Umum: Lupa `try`/`catch`
+
+<div class="warn-box">
+<b>Salah:</b> memanggil <code>grade.setScore(150);</code> begitu saja, tanpa <code>try</code>/<code>catch</code> dan tanpa <code>throws</code>.
+</div>
+
+**Benar:** compiler menampilkan error `unreported exception InvalidScoreException; must be caught or declared to be thrown`. Bungkus pemanggilan itu dengan `try`/`catch`.
 
 ---
 
 ## Latihan
 
-`SavingsAccount` dengan `balance` Rp 100.000 dan saldo minimum Rp 50.000 memanggil `withdraw(70000)`.
+`setScore(int)` dideklarasikan `throws InvalidScoreException`. Tentukan **valid** atau **error**:
 
-Apa yang terjadi? Jelaskan lewat `canWithdraw()`, lalu sebutkan apakah `balance` berubah.
+1. `grade.setScore(90);` tanpa `try`/`catch`, di dalam `main` biasa.
+2. `try { grade.setScore(90); } catch (InvalidScoreException e) { System.out.println(e.getMessage()); }`
+3. `void update(Grade g) throws InvalidScoreException { g.setScore(90); }`
 
 ---
 
 ## Jawaban Latihan
 
-**`InsufficientBalanceException` dilempar.** `canWithdraw(70000)` mengecek `balance - amount >= 50000`, dengan `balance` 100000 hasilnya 30000, kurang dari 50000, sehingga `canWithdraw()` mengembalikan `false`. `withdraw()` melempar exception SEBELUM baris `balance -= amount` sempat dijalankan, `balance` tetap 100000, tidak berubah sama sekali.
+1. **Error.** Walaupun 90 nilai yang benar, compiler tetap mewajibkan penanganan.
+2. **Valid.** Pemanggilan dibungkus `try`/`catch`.
+3. **Valid.** Method `update` meneruskan exception lewat `throws`.
 
 ---
 
 ## Rangkuman Bagian 3
 
-- `withdraw()` melempar `InsufficientBalanceException` alih-alih diam-diam mengembalikan `false`, kode pemanggil wajib menanganinya.
-- Exception dilempar SEBELUM `balance` diubah, kegagalan penarikan tidak pernah meninggalkan `Account` dalam keadaan tidak konsisten.
-- Blok `catch` kosong menciptakan ulang masalah kegagalan yang didiamkan, exception tetap wajib ditangani secara berarti, bukan hanya supaya compiler diam.
+- `throw` melempar exception dan menghentikan method saat itu juga.
+- Exception buatan sendiri cukup `extends Exception` dengan satu constructor.
+- `throws` pada signature mewajibkan pemanggil memakai `try`/`catch` atau meneruskannya.
 
-Selanjutnya: Bagian 4 menerapkan polimorfisme ke `Bank.processMonthEnd()`.
+Selanjutnya: Bagian 4 memakai polimorfisme dan exception pada koleksi perpustakaan.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 4
-## Menerapkan Polimorfisme ke Bank Mini
+## Studi Kasus: Koleksi Perpustakaan
 
 Sesi 4 dari 4
 
 ---
 
-## processMonthEnd(): Polimorfisme pada Bank Mini
+## Kembali ke Perpustakaan
 
-![h:280 Account sebagai kelas abstrak, SavingsAccount meng-implement interface InterestBearing](../assets/uml/p09-account-abstract.png)
+`LibraryItem` sudah abstrak, dan `Dvd` sudah `Playable`. Ada tiga kebutuhan baru:
 
-`Bank.processMonthEnd()` memproses seluruh rekening secara polimorfik lewat `monthlyFee()`. Hanya rekening yang meng-implement `InterestBearing` yang mendapat `applyInterest()`, diperiksa lewat `instanceof InterestBearing`, bukan `instanceof SavingsAccount`, sehingga rekening berbunga jenis baru pun otomatis ikut terproses tanpa mengubah kode ini sama sekali.
+1. Mencetak denda semua koleksi tanpa cabang `if` untuk tiap jenis.
+2. Memutar hanya koleksi yang bisa diputar.
+3. Menolak peminjaman koleksi yang sedang dipinjam, dengan pesan yang jelas.
+
+Nomor 1 memakai polimorfisme. Nomor 2 memakai `instanceof`. Nomor 3 memakai exception.
 
 ---
 
-## Contoh Kode: `processMonthEnd()` Memproses Tiap Rekening
+## Diagram Kelas: Koleksi dan Exception-nya
+
+![h:300 LibraryItem abstrak dengan checkOut yang melempar ItemNotAvailableException, Book, Dvd, dan Playable](../assets/uml/p10-libraryitem-exception.png)
+
+`ItemNotAvailableException` adalah subclass dari `Exception`. Panah "throws" menunjukkan `checkOut()` di `LibraryItem` bisa melemparnya.
+
+---
+
+## Telusuri: Denda dan Pemutaran
 
 ```java
-public void processMonthEnd() {
-    for (int i = 0; i < count; i++) {
-        Account acc = accounts[i];
-        if (acc instanceof InterestBearing bearing) {
-            bearing.applyInterest();
-        }
-        System.out.println(acc.monthlyFee());
-    }
+for (LibraryItem item : items) {      // items berisi Book "Dune" dan Dvd "Inception"
+    System.out.println(item.title + ": " + item.lateFeePerDay());
+    if (item instanceof Playable p) { p.play(); }
 }
 ```
 
-`acc.monthlyFee()` dipanggil polimorfik untuk SEMUA rekening; `applyInterest()` hanya untuk yang meng-implement `InterestBearing`.
+```
+Dune: 1000
+Inception: 5000
+Playing Inception
+```
+
+`lateFeePerDay()` dipanggil untuk semua koleksi. `play()` hanya untuk yang `Playable`.
 
 ---
 
-## Kesalahan Umum: Memeriksa Kelas Konkret, Bukan Interface
+## Contoh Kode: `checkOut()` Melempar Exception
+
+```java
+public void checkOut() throws ItemNotAvailableException {
+    if (!available) {
+        throw new ItemNotAvailableException(title + " is already on loan");
+    }
+    available = false;
+}
+```
+
+---
+
+## Telusuri: Meminjam Dua Kali
+
+```java
+Book dune = new Book("Dune");
+try {
+    dune.checkOut();
+    dune.checkOut();
+    System.out.println("borrowed twice");
+} catch (ItemNotAvailableException e) {
+    System.out.println("Failed: " + e.getMessage());
+}
+```
+
+Pemanggilan pertama berhasil. Pemanggilan kedua melempar exception, jadi `"borrowed twice"` dilewati. Output: `Failed: Dune is already on loan`
+
+---
+
+## Kesalahan Umum: Memeriksa Kelas, Bukan Kemampuan
 
 <div class="warn-box">
-<b>Salah:</b> menulis <code>if (acc instanceof SavingsAccount)</code> untuk memutuskan kapan memanggil <code>applyInterest()</code>, mengira ini sama saja dengan memeriksa <code>InterestBearing</code>.
+<b>Salah:</b> menulis <code>if (item instanceof Dvd)</code> untuk memutuskan kapan memanggil <code>play()</code>.
 </div>
 
-**Benar:** memeriksa `instanceof InterestBearing` (bukan `instanceof SavingsAccount`) berarti rekening berbunga jenis BARU otomatis ikut terproses tanpa mengubah `processMonthEnd()` sama sekali. Memeriksa kelas konkret memaksa method ini diubah lagi setiap kali ada jenis rekening berbunga baru.
+**Benar:** periksa `instanceof Playable`. Bila nanti ada `AudioBook` yang juga `Playable`, koleksi itu langsung ikut diputar tanpa mengubah kode perulangan.
 
 ---
 
 ## Latihan
 
-Bank Mini menambahkan `BusinessAccount` (tugas mandiri Pertemuan 6), rekening bisnis yang sama sekali tidak berbunga, jadi tidak meng-implement `InterestBearing`.
-
-Apakah `processMonthEnd()` memanggil `applyInterest()` untuk `BusinessAccount`? Jelaskan lewat pengecekan `instanceof`-nya.
+1. `items` berisi `Magazine` "Tempo" (denda 500) dan `Dvd` "Inception" (denda 5000). Tebak output perulangan pada slide "Telusuri: Denda dan Pemutaran".
+2. Apakah `dune.checkOut();` tanpa `try`/`catch` bisa dikompilasi? Ya atau tidak?
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak.** `processMonthEnd()` memeriksa `acc instanceof InterestBearing`, dan `BusinessAccount` tidak meng-implement `InterestBearing`. Pengecekan ini bernilai `false` untuk `BusinessAccount`, sehingga `applyInterest()` dilewati, hanya `acc.monthlyFee()` yang tetap dipanggil untuk seluruh rekening termasuk `BusinessAccount`.
+```
+Tempo: 500
+Inception: 5000
+Playing Inception
+```
+
+**Tidak.** `checkOut()` dideklarasikan `throws ItemNotAvailableException`, jadi pemanggilnya wajib memakai `try`/`catch` atau `throws`.
 
 ---
 
 ## Rangkuman Bagian 4
 
-- `processMonthEnd()` memanggil `monthlyFee()` secara polimorfik untuk seluruh rekening, tanpa perlu tahu jenis konkretnya.
-- `instanceof InterestBearing` memutuskan kapan `applyInterest()` dipanggil, bukan `instanceof SavingsAccount`, supaya rekening berbunga baru otomatis ikut terproses.
-- Polimorfisme dan exception handling sama-sama membuat `Bank` bisa tumbuh (jenis rekening baru, kegagalan baru) tanpa mengubah kode yang sudah ada.
+- Satu perulangan mencetak denda semua koleksi, tanpa cabang `if` per jenis.
+- `instanceof Playable` memeriksa kemampuan, bukan nama kelas.
+- `checkOut()` melempar exception, sehingga peminjaman ganda tidak bisa lewat diam-diam.
 
 ---
 
 ## Rangkuman Pertemuan 10
 
-- Polimorfisme membuat satu pemanggilan method yang sama menjalankan versi milik objek yang sebenarnya saat program berjalan; `instanceof` dengan pattern matching dipakai secukupnya saat kode tetap butuh tahu tipe konkret.
-- Exception membuat kegagalan mustahil diabaikan begitu saja; checked exception dipaksa compiler untuk ditangani lewat `try`/`catch`, exception kustom dibuat lewat `extends Exception`.
-- Bank Mini memakai keduanya: `withdraw()` melempar `InsufficientBalanceException`, `processMonthEnd()` memproses seluruh rekening secara polimorfik lewat `instanceof InterestBearing`.
+| | Polimorfisme | Exception Handling |
+|---|---|---|
+| Masalah yang diselesaikan | cabang `if` untuk tiap jenis objek | kegagalan yang didiamkan |
+| Kata kunci | `@Override`, `instanceof` | `try`, `catch`, `throw`, `throws` |
+| Yang menentukan | objek yang sebenarnya | method yang menemukan masalah |
+| Contoh hari ini | `s.area()`, `item.lateFeePerDay()` | `setScore()`, `checkOut()` |
+
+Keduanya membuat program bisa bertambah besar tanpa mengubah kode lama.
 
 ---
 
@@ -511,7 +695,7 @@ Apakah `processMonthEnd()` memanggil `applyInterest()` untuk `BusinessAccount`? 
 
 # Referensi
 
-Deitel, *Java How to Program*, bab Exception Handling, Polymorphism, Interfaces
+Deitel, *Java How to Program*, bab Polymorphism and Interfaces, Exception Handling
 
 Oracle Java Tutorials: "Polymorphism", "Exceptions"
 
@@ -519,6 +703,21 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Diskusi
+## Tugas: Koleksi Perpustakaan
 
-`processMonthEnd()` memeriksa `instanceof InterestBearing`, bukan `instanceof SavingsAccount`, supaya jenis rekening berbunga baru otomatis ikut terproses tanpa mengubah method ini. Jelaskan dengan kata-katamu sendiri: apa yang akan terjadi (dan kode apa yang harus diubah) apabila pengecekan itu ditulis sebagai `instanceof SavingsAccount`, lalu Bank Mini menambahkan jenis rekening berbunga baru bernama `DepositAccount`?
+Perpustakaan menambah aturan: seorang anggota (`Member`) hanya boleh meminjam paling banyak 3 koleksi.
+
+1. Buat exception `LoanLimitExceededException`. Tuliskan deklarasi kelasnya.
+2. Tuliskan signature method `borrow(LibraryItem item)` di `Member` yang bisa melempar exception itu.
+3. Tuliskan potongan `try`/`catch` yang memanggil `borrow(...)` dan mencetak pesan bila gagal.
+4. Gambarkan diagram kelasnya di kertas, lengkap dengan panah "throws".
+
+---
+
+## Tugas: Studi Kasusmu Sendiri
+
+Pakai kembali hierarki kelas dari tugas pertemuan sebelumnya (aplikasi pilihanmu sendiri).
+
+1. Tulis satu perulangan yang memanggil method yang sama pada beberapa jenis objek, tanpa cabang `if`. Tuliskan output yang kamu harapkan.
+2. Pilih satu method yang bisa gagal. Buat exception sendiri untuknya, lalu tuliskan `try`/`catch` pemanggilnya.
+3. Perbarui diagram kelasmu di kertas.
