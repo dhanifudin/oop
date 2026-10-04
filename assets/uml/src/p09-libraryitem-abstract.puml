@@ -1,0 +1,36 @@
+@startuml p09-libraryitem-abstract
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+abstract class LibraryItem {
+  # title : String
+  --
+  + LibraryItem(title : String)
+  + {abstract} lateFeePerDay() : int
+}
+
+interface Playable {
+  + play() : void
+}
+
+class Book {
+  + lateFeePerDay() : int
+}
+
+class Dvd {
+  + lateFeePerDay() : int
+  + play() : void
+}
+
+class Magazine {
+  + lateFeePerDay() : int
+}
+
+LibraryItem <|-- Book
+LibraryItem <|-- Dvd
+LibraryItem <|-- Magazine
+Playable <|.. Dvd
+@enduml

@@ -128,6 +128,18 @@ versi yang dijalankan, `super.method(...)`, tiga aturan override, `final`,
 `toString()`, overloading method dan constructor (`this(...)`), tabel
 perbandingan override vs overload, overload yang dikira override.
 
+**Pengecualian sengaja di Pertemuan 9**: sama seperti Pertemuan 6 dan 7
+(permintaan eksplisit pengguna: "do the same for pertemuan 9"), dek ini
+generik tanpa Bagian Bank Mini dan memakai gaya penyampaian pemula. Bagian
+1 kelas abstrak (`Shape`/`Circle`/`Square`), Bagian 2 interface
+(`Chargeable`/`Phone`/`ElectricCar`), Bagian 3 cara memilih keduanya dan
+memakainya bersama, Bagian 4 studi kasus `LibraryItem` yang menjadi abstrak
+(`lateFeePerDay()`) plus interface `Playable` (UML
+`p09-libraryitem-abstract`), ditutup dua slide "Tugas". Bank Mini (`Account`
+abstrak, `monthlyFee()`, `InterestBearing`, tugas `Auditable`) hanya ada di
+jobsheet, bersama UML `p09-account-monthlyfee` dan `p09-account-abstract`.
+Fitur interface lanjutan (default method, konstanta) sengaja tidak dibahas.
+
 ## Bahaya tersembunyi di kelas `divider`
 
 Blok CSS `section.divider h1` mengatur warna putih, tapi aturan global

@@ -104,17 +104,17 @@ style: |
 
 Pertemuan 9: **Kelas Abstrak dan Interface**
 
-Mendeklarasikan kontrak yang wajib dipenuhi subclass
+Kelas yang belum lengkap, dan kontrak kemampuan
 
 ---
 
 ## Yang Akan Kamu Pelajari
 
-- Cara mencegah sebuah kelas diinstansiasi langsung ketika ia hanya masuk akal sebagai superclass
-- Cara mewajibkan setiap subclass menyediakan perilakunya sendiri, dideteksi compiler, bukan ditemukan belakangan
-- Cara mendeklarasikan kontrak kemampuan yang berlaku lintas hierarki kelas yang tidak berkerabat
-- Kapan memilih kelas abstrak dan kapan memilih interface untuk kebutuhan yang sama
-- Penerapan pada Bank Mini: `Account` menjadi abstract, interface `InterestBearing` untuk rekening berbunga
+- Cara membuat superclass yang tidak boleh dibuat objeknya (kelas abstrak)
+- Cara mewajibkan tiap subclass mengisi sebuah method (method abstrak)
+- Cara memberi satu kemampuan yang sama ke kelas yang tidak berkerabat (interface)
+- Cara memilih antara kelas abstrak dan interface
+- Penerapan keduanya pada satu studi kasus
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 9.
@@ -124,10 +124,10 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Peta Sesi Hari Ini
 
-- **Sesi 1 (50')**: Kelas abstrak, superclass yang tidak boleh diinstansiasi
-- **Sesi 2 (50')**: Interface, kontrak lintas hierarki kelas
-- **Sesi 3 (50')**: Menerapkan kelas abstrak ke Bank Mini
-- **Sesi 4 (50')**: Menerapkan interface ke Bank Mini
+- **Sesi 1 (50')**: Kelas abstrak dan method abstrak
+- **Sesi 2 (50')**: Interface
+- **Sesi 3 (50')**: Kelas abstrak atau interface?
+- **Sesi 4 (50')**: Studi kasus, koleksi perpustakaan
 
 ---
 
@@ -140,117 +140,139 @@ Sesi 1 dari 4
 
 ---
 
-## Superclass yang Tidak Boleh Diinstansiasi
+## Masalah: Objek yang Tidak Masuk Akal
 
-Bayangkan kelas `Shape` sebagai superclass umum untuk `Circle` dan `Square`. Setiap bentuk pasti punya luas, tetapi rumus luasnya berbeda-beda tergantung jenis bentuknya. Tidak ada satu "bentuk generik" yang masuk akal untuk diinstansiasi langsung, `Shape` hanya masuk akal sebagai superclass.
+```java
+class Shape {
+    public double area() { return 0; }   // luas bentuk apa?
+}
+
+Shape s = new Shape();
+System.out.println(s.area());   // 0.0
+```
+
+Lingkaran punya luas. Persegi punya luas. "Bentuk umum" tidak punya rumus luas, tetapi Java tetap mengizinkan objeknya dibuat.
+
+---
+
+## Apa Itu Kelas Abstrak?
+
+Bayangkan resep dasar kue yang satu langkahnya masih kosong: "isi sesuai selera". Resep itu belum bisa dimasak sebelum langkah kosongnya diisi.
+
+<div class="term-box">
+<b>Kelas abstrak</b> adalah kelas yang belum lengkap. Objeknya tidak boleh dibuat lewat <code>new</code>. Kelas ini hanya dipakai sebagai superclass.
+</div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan sebuah framework GUI dipakai oleh ratusan aplikasi berbeda: setiap komponen wajib tahu cara menggambar dirinya sendiri, tetapi "komponen generik" yang belum tahu cara menggambar apa pun tidak pernah boleh benar-benar dibuat. Tanpa cara memastikan hal ini, sebuah objek yang belum lengkap bisa saja lolos dibuat, dan galatnya baru muncul jauh kemudian, saat method yang belum diimplementasikan itu benar-benar dipanggil pengguna.
+Sebuah library tampilan dipakai ratusan aplikasi. Setiap komponen wajib tahu cara menggambar dirinya. Tanpa kelas abstrak, komponen yang belum tahu cara menggambar bisa lolos dibuat, dan kesalahannya baru terlihat saat aplikasi dipakai pengguna.
 
 <div class="term-box">
-Kelas abstrak memindahkan kesalahan ini dari saat program berjalan ke saat program dikompilasi: subclass yang belum mengimplementasikan seluruh method abstrak warisannya tidak akan pernah bisa diinstansiasi sama sekali, compiler yang menolaknya, bukan pengguna aplikasi yang menemukannya belakangan. Inilah sebabnya kelas abstrak menjadi fondasi banyak framework dan library besar, dari GUI toolkit sampai driver database.
+Kelas abstrak memindahkan kesalahan itu ke saat kompilasi. Compiler yang menolaknya, bukan pengguna yang menemukannya.
 </div>
 
 ---
 
-## Kelas Abstrak
+## Method Abstrak: Langkah Kosong yang Wajib Diisi
 
 <div class="term-box">
-<b>Kelas abstrak</b> (<code>abstract class</code>) tidak boleh diinstansiasi langsung lewat <code>new</code>, ia hanya boleh menjadi superclass. Dideklarasikan dengan kata kunci <code>abstract</code> pada kelasnya.
+<b>Method abstrak</b> hanya punya signature, tanpa isi. Setiap subclass wajib mengisinya lewat overriding. Bila belum diisi, subclass itu tidak bisa dikompilasi.
 </div>
+
+Method abstrak hanya boleh ditulis di dalam kelas abstrak.
 
 ---
 
-## Contoh Kode: Mendeklarasikan `abstract class Shape`
+## Contoh Kode: `abstract class Shape`
 
 ```java
-public abstract class Shape {
+abstract class Shape {
     private String label;
-
     public Shape(String label) { this.label = label; }
 
-    public abstract double area();
+    public String getLabel() { return label; }   // method biasa, diwarisi
+    public abstract double area();               // method abstrak, tanpa isi
 }
 ```
 
-`new Shape("bentuk")` akan ditolak compiler, `Shape` hanya boleh dijadikan superclass.
+Sekarang `new Shape("x")` ditolak compiler: `Shape is abstract; cannot be instantiated`.
 
 ---
 
-## Method Abstrak
+## Kelas Abstrak pada Diagram Kelas
 
-![h:320 Shape sebagai kelas abstrak, Circle dan Square mengimplementasikan area()](../assets/uml/p09-shape-abstract.png)
+![h:260 Shape sebagai kelas abstrak, Circle dan Square mengisi area()](../assets/uml/p09-shape-abstract.png)
 
-<div class="term-box">
-<b>Method abstrak</b> hanya dideklarasikan signature-nya (nama, parameter, tipe kembalian), tanpa isi sama sekali. Setiap subclass konkret (yang bisa diinstansiasi) wajib menyediakan isinya sendiri, atau compiler akan menampilkan galat.
-</div>
+Nama kelas abstrak dan method abstrak ditulis miring. `area()` muncul lagi di `Circle` dan `Square`, artinya kedua subclass mengisinya.
 
 ---
 
-## Contoh Kode: `Circle` Mengimplementasikan `area()`
+## Contoh Kode: `Circle` Mengisi `area()`
 
 ```java
-public class Circle extends Shape {
+class Circle extends Shape {
     private double radius;
-
-    public Circle(String label, double radius) {
-        super(label);
-        this.radius = radius;
-    }
+    public Circle(String label, double radius) { super(label); this.radius = radius; }
 
     @Override
-    public double area() { return Math.PI * radius * radius; }
+    public double area() { return 3.14 * radius * radius; }   // langkah kosong diisi
 }
 ```
 
 ---
 
-## Subclass Konkret vs Kelas Abstrak
+## Telusuri Langkah demi Langkah
 
-<div class="warn-box">
-Sebuah subclass dari kelas abstrak tetap ikut menjadi abstrak (dan tidak bisa diinstansiasi) apabila ia belum mengimplementasikan seluruh method abstrak warisannya. Hanya subclass yang sudah mengimplementasikan semuanya yang menjadi kelas konkret.
-</div>
+```java
+Shape s = new Circle("small circle", 2);
+System.out.println(s.getLabel() + ": " + s.area());
+```
 
-<div class="tip-box">
-Kelas abstrak boleh tetap memiliki method biasa (dengan isi lengkap) selain method abstraknya, persis seperti superclass pada umumnya. Subclass mewarisi method biasa itu apa adanya, sama seperti inheritance yang sudah dipelajari sebelumnya.
-</div>
+1. Objeknya adalah `Circle`. Variabelnya boleh bertipe `Shape`.
+2. `getLabel()` tidak ditulis di `Circle`, jadi versi warisan dari `Shape` yang dijalankan.
+3. `area()` ditulis di `Circle`, jadi versi `Circle` yang dijalankan: 3.14 x 2 x 2.
+
+Output: `small circle: 12.56`
 
 ---
 
-## Kesalahan Umum: Lupa Mengimplementasikan Method Abstrak
+## Kesalahan Umum: Lupa Mengisi Method Abstrak
 
 <div class="warn-box">
-<b>Salah:</b> menulis <code>class Square extends Shape</code> tanpa meng-override <code>area()</code>, mengira ini sudah cukup karena <code>Square</code> "kan jelas punya luas".
+<b>Salah:</b> menulis <code>class Square extends Shape { }</code> tanpa mengisi <code>area()</code>.
 </div>
 
-**Benar:** compiler menampilkan galat `Square is not abstract and does not override abstract method area()`. `Square` ikut menjadi abstrak (tidak bisa diinstansiasi) sampai `area()` benar-benar diimplementasikan.
+**Benar:** compiler menampilkan error `Square is not abstract and does not override abstract method area()`. Isi `area()` di `Square`, lalu kelas itu bisa dipakai.
 
 ---
 
 ## Latihan
 
-Diberi `abstract class Shape` dengan method abstrak `area()`. Kelas `Triangle extends Shape` tidak meng-override `area()` sama sekali.
+`Shape` adalah kelas abstrak dengan method abstrak `area()`. Tentukan **valid** atau **error**:
 
-Apakah `new Triangle("segitiga", 3, 4)` bisa dikompilasi? Jelaskan.
+1. `Shape s = new Shape("x");`
+2. `class Square extends Shape { }` (tanpa `area()`)
+3. `Shape s = new Circle("c", 1);`
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak bisa.** `Triangle` belum mengimplementasikan method abstrak `area()` yang diwarisi dari `Shape`, sehingga `Triangle` ikut menjadi abstrak secara otomatis. Compiler menolak instansiasi kelas abstrak mana pun, termasuk `Triangle`, sampai `area()` diimplementasikan.
+1. **Error.** Objek kelas abstrak tidak boleh dibuat.
+2. **Error.** `Square` belum mengisi method abstrak `area()`.
+3. **Valid.** Objeknya `Circle`, kelas yang sudah lengkap. Variabelnya boleh bertipe `Shape`.
 
 ---
 
 ## Rangkuman Bagian 1
 
-- Kelas abstrak tidak boleh diinstansiasi langsung, hanya boleh menjadi superclass.
-- Method abstrak hanya mendeklarasikan signature-nya; subclass konkret wajib mengimplementasikan isinya.
-- Subclass yang belum mengimplementasikan seluruh method abstrak warisannya ikut menjadi abstrak.
+- Kelas abstrak belum lengkap: objeknya tidak boleh dibuat, hanya dipakai sebagai superclass.
+- Method abstrak tidak punya isi; setiap subclass wajib mengisinya.
+- Kelas abstrak tetap boleh punya atribut, constructor, dan method biasa.
 
-Selanjutnya: Bagian 2 membahas interface, kontrak serupa yang berlaku lintas hierarki kelas yang sama sekali tidak berkerabat.
+Selanjutnya: Bagian 2 membahas interface, kontrak untuk kelas yang tidak berkerabat.
 
 ---
 
@@ -263,61 +285,147 @@ Sesi 2 dari 4
 
 ---
 
-## Kontrak Lintas Hierarki Kelas
+## Masalah: Tidak Berkerabat, Tetapi Punya Kemampuan Sama
 
-Bayangkan `Phone` dan `ElectricCar`, dua kelas yang sama sekali tidak berkerabat (satu alat komunikasi, satu kendaraan), tetapi keduanya sama-sama "bisa diisi daya". Tidak ada satu superclass masuk akal yang bisa mewadahi kemampuan ini lewat inheritance biasa.
+```java
+class Phone { }         // alat komunikasi
+class ElectricCar { }   // kendaraan
+```
+
+Ponsel dan mobil listrik sama-sama bisa diisi daya. Keduanya tidak punya superclass yang masuk akal: ponsel bukan kendaraan, mobil bukan alat komunikasi.
+
+---
+
+## Apa Itu Interface?
+
+Bayangkan port USB-C. Benda apa pun yang punya port itu bisa diisi daya dengan charger yang sama, entah ponsel, laptop, atau lampu.
 
 <div class="term-box">
-<b>Interface</b> mendeklarasikan kontrak method (signature tanpa isi) yang wajib dipenuhi kelas mana pun yang menyatakan <code>implements</code> terhadapnya, tanpa mewajibkan hubungan <code>extends</code> sama sekali.
+<b>Interface</b> adalah daftar method tanpa isi. Kelas yang menyatakan <code>implements</code> berjanji mengisi semua method itu.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan sebuah tim besar membangun sistem pembayaran: satu tim menulis kode yang memproses pembayaran, tim lain menulis implementasi untuk kartu kredit, tim lain lagi untuk e-wallet, dan ada pula tim yang menulis pengujian otomatis. Tanpa kontrak yang jelas, ketiga tim itu harus terus-menerus berkoordinasi setiap kali ada perubahan kecil pada salah satu bagian.
+Satu tim menulis kode pemroses pembayaran. Tim lain menulis kartu kredit, tim lain menulis e-wallet. Tanpa kontrak yang jelas, setiap perubahan kecil memaksa semua tim berkoordinasi ulang.
 
 <div class="term-box">
-Interface memungkinkan tim yang memproses pembayaran bergantung hanya pada kontrak (method apa saja yang tersedia), bukan pada implementasi konkretnya. Implementasi boleh berubah, ditambah, atau bahkan diganti dengan versi tiruan untuk pengujian (disebut mock), tanpa mengubah kode yang memakainya. Prinsip inilah yang mendasari salah satu prinsip SOLID, Dependency Inversion Principle, dibahas lebih lanjut pada Pertemuan 11.
+Dengan interface, kode pemroses cukup mengenal kontraknya. Implementasi boleh ditambah atau diganti tanpa mengubah kode yang memakainya. Prinsip ini dibahas lagi pada Pertemuan 11.
 </div>
 
 ---
 
-## Contoh Kode: `Phone` Meng-implement `Chargeable`
+## Contoh Kode: `Chargeable` dan `Phone`
 
 ```java
-public interface Chargeable {
-    void charge();
+interface Chargeable {
+    void charge();   // tanpa isi
 }
 
-public class Phone implements Chargeable {
-    private String model;
-
-    public Phone(String model) { this.model = model; }
-
+class Phone implements Chargeable {
     @Override
-    public void charge() { System.out.println(model + " is charging"); }
+    public void charge() { System.out.println("Phone is charging"); }
 }
 ```
 
 ---
 
-## Dua Kelas Tak Berkerabat, Satu Kontrak
+## Interface pada Diagram Kelas
 
-![h:300 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
+![h:280 Chargeable diimplementasikan Phone dan ElectricCar](../assets/uml/p09-chargeable.png)
 
-`Phone` dan `ElectricCar` tidak berbagi superclass apa pun selain `Object`, tetapi keduanya sama-sama wajib menyediakan `charge()` karena sama-sama menyatakan `implements Chargeable`.
+Nama interface juga ditulis miring. Bedanya ada pada panahnya: bergaris putus-putus, menunjuk dari kelas ke interface yang diimplementasikan.
+
+---
+
+## Telusuri: Satu Kontrak, Dua Kelas
+
+```java
+Chargeable[] devices = { new Phone(), new ElectricCar() };
+for (Chargeable d : devices) {
+    d.charge();
+}
+```
+
+```
+Phone is charging
+Car is charging
+```
+
+Perulangan hanya mengenal `Chargeable`. Tiap objek menjalankan `charge()` miliknya sendiri.
 
 ---
 
 ## Satu Kelas, Banyak Interface
 
-<div class="term-box">
-Berbeda dari kelas abstrak (sebuah kelas hanya boleh <code>extends</code> satu superclass), sebuah kelas boleh meng-<code>implements</code> banyak interface sekaligus. Interface cocok dipakai untuk kemampuan tambahan yang berlaku lintas hierarki kelas yang berbeda-beda.
-</div>
+Seseorang hanya punya satu ibu kandung, tetapi boleh punya banyak sertifikat keahlian.
+
+```java
+class Phone implements Chargeable, Connectable {
+    @Override public void charge() { System.out.println("Phone is charging"); }
+    @Override public void connect() { System.out.println("Phone is online"); }
+}
+```
+
+Sebuah kelas hanya boleh `extends` satu superclass, tetapi boleh `implements` banyak interface.
+
+---
+
+## Kesalahan Umum: Memakai `extends` untuk Interface
 
 <div class="warn-box">
-Kelas yang menyatakan <code>implements</code> terhadap sebuah interface wajib mengimplementasikan seluruh method di dalamnya. Melewatkan satu saja akan membuat compiler menampilkan galat.
+<b>Salah:</b> menulis <code>class Phone extends Chargeable</code>.
+</div>
+
+**Benar:** kelas memakai `implements` untuk interface, dan `extends` untuk superclass. Kode di atas gagal dikompilasi.
+
+---
+
+## Latihan
+
+`Chargeable` punya method `charge()`. `Connectable` punya method `connect()`. Tentukan **valid** atau **error**:
+
+1. `class Laptop extends Chargeable { ... }`
+2. `class Laptop implements Chargeable { }` (tanpa `charge()`)
+3. `class Laptop implements Chargeable, Connectable` dengan `charge()` dan `connect()` terisi
+
+---
+
+## Jawaban Latihan
+
+1. **Error.** Interface dipakai dengan `implements`, bukan `extends`.
+2. **Error.** `Laptop` berjanji mengisi `charge()`, tetapi belum mengisinya.
+3. **Valid.** Satu kelas boleh `implements` banyak interface, asal semua method terisi.
+
+---
+
+## Rangkuman Bagian 2
+
+- Interface adalah daftar method tanpa isi, dipakai lewat `implements`.
+- Kelas yang tidak berkerabat bisa memakai interface yang sama.
+- Satu kelas boleh `implements` banyak interface.
+
+Selanjutnya: Bagian 3 membahas cara memilih antara kelas abstrak dan interface.
+
+---
+
+<!-- _class: divider -->
+
+# Bagian 3
+## Kelas Abstrak atau Interface?
+
+Sesi 3 dari 4
+
+---
+
+## Dua Pertanyaan Sederhana
+
+1. Apakah kelas-kelas ini satu keluarga, dan berbagi atribut atau method yang sama? Pakai **kelas abstrak**.
+2. Apakah ini kemampuan tambahan yang bisa dimiliki kelas apa pun? Pakai **interface**.
+
+<div class="tip-box">
+Kelas abstrak menjawab "ini jenis apa?". Interface menjawab "ini bisa melakukan apa?".
 </div>
 
 ---
@@ -326,190 +434,229 @@ Kelas yang menyatakan <code>implements</code> terhadap sebuah interface wajib me
 
 | | Kelas Abstrak | Interface |
 |---|---|---|
-| Kata kunci | `extends` | `implements` |
-| Jumlah per kelas | Hanya satu | Boleh banyak sekaligus |
-| Atribut dan method biasa | Boleh punya | Tidak (hanya kontrak method) |
-| Cocok dipakai untuk | Superclass yang masuk akal bagi seluruh subclass | Kemampuan lintas hierarki kelas yang berbeda-beda |
+| Kata kunci di subclass | `extends` | `implements` |
+| Jumlah per kelas | hanya satu | boleh banyak |
+| Isinya | atribut, method biasa, method abstrak | daftar method tanpa isi |
+| Maknanya | "adalah jenis dari" | "bisa melakukan" |
 
 ---
 
-## Kesalahan Umum: Memakai `extends` untuk Interface
-
-<div class="warn-box">
-<b>Salah:</b> menulis <code>class Phone extends Chargeable</code>, mengira interface diperlakukan sama seperti superclass biasa.
-</div>
-
-**Benar:** kelas menyatakan hubungan ke interface lewat `implements`, bukan `extends`. `extends Chargeable` menyebabkan galat compile, sebab `Chargeable` bukan kelas yang bisa diwarisi lewat inheritance.
-
----
-
-## Latihan
-
-Untuk tiap kebutuhan berikut, tentukan **kelas abstrak** atau **interface** yang lebih cocok:
-
-1. `Vehicle` sebagai superclass umum `Car`, `Motorcycle`, dan `Truck`, dengan atribut `speed` yang dipakai bersama.
-2. Kemampuan "bisa dibandingkan" (`compareTo()`), diterapkan pada `Student`, `Product`, dan `Invoice`, tiga kelas yang tidak berkerabat.
-
----
-
-## Jawaban Latihan
-
-1. **Kelas abstrak.** `Car`, `Motorcycle`, dan `Truck` memang berkerabat lewat `Vehicle`, dan butuh atribut bersama (`speed`) yang tidak bisa dideklarasikan interface.
-2. **Interface.** `Student`, `Product`, dan `Invoice` sama sekali tidak berkerabat; masing-masing tetap butuh superclass-nya sendiri, `implements` interface tidak membatasi itu.
-
----
-
-## Rangkuman Bagian 2
-
-- Interface mendeklarasikan kontrak method tanpa isi, wajib dipenuhi lewat `implements`.
-- Sebuah kelas boleh meng-implements banyak interface, berbeda dari kelas abstrak yang hanya boleh di-extends satu.
-- Interface cocok untuk kemampuan lintas hierarki kelas yang tidak berkerabat; kelas abstrak cocok untuk superclass yang masuk akal bagi seluruh subclass.
-
-Selanjutnya: Bagian 3 menerapkan kelas abstrak ke `Account` Bank Mini.
-
----
-
-<!-- _class: divider -->
-
-# Bagian 3
-## Menerapkan Kelas Abstrak ke Bank Mini
-
-Sesi 3 dari 4
-
----
-
-## Account Menjadi Kelas Abstrak
-
-Tidak ada satu pun `Account` polos yang pernah dibuat langsung di Bank Mini, semua instansiasi selalu berupa `SavingsAccount` atau `CheckingAccount`. Ini pertanda bahwa `Account` sebaiknya menjadi kelas abstrak, dengan method abstrak `monthlyFee()` yang wajib diimplementasikan setiap jenis rekening dengan besaran biayanya masing-masing.
-
-![h:280 Account abstract dengan method abstrak monthlyFee, SavingsAccount dan CheckingAccount mengimplementasikannya masing-masing](../assets/uml/p09-account-monthlyfee.png)
-
----
-
-## Contoh Kode: `monthlyFee()` Berbeda Tiap Jenis Rekening
+## Contoh Kode: Keduanya Dipakai Bersama
 
 ```java
-public class SavingsAccount extends Account {
-    @Override
-    public double monthlyFee() { return 0; }
+abstract class Vehicle {
+    public abstract String honk();
 }
 
-public class CheckingAccount extends Account {
-    @Override
-    public double monthlyFee() { return MONTHLY_FEE; }
+class ElectricCar extends Vehicle implements Chargeable {
+    @Override public String honk() { return "Beep!"; }
+    @Override public void charge() { System.out.println("Car is charging"); }
 }
 ```
 
-`SavingsAccount` bebas biaya bulanan, `CheckingAccount` menanggung biaya tetap, keduanya wajib menyediakan `monthlyFee()` sendiri karena `Account` mendeklarasikannya sebagai method abstrak.
+---
+
+## Telusuri: Satu Objek, Dua Peran
+
+```java
+ElectricCar car = new ElectricCar();
+Vehicle v = car;        // car adalah Vehicle
+Chargeable c = car;     // car bisa diisi daya
+System.out.println(v.honk());
+c.charge();
+```
+
+Output: `Beep!` lalu `Car is charging`. Objeknya satu, tetapi bisa dipegang lewat dua tipe variabel.
 
 ---
 
-## Kesalahan Umum: Kode Lama Membuat `Account` Langsung
+## Kesalahan Umum: Kemampuan Khusus Ditaruh di Superclass
 
 <div class="warn-box">
-<b>Salah:</b> kode dari pertemuan sebelumnya yang masih menulis <code>new Account("A1", owner, 0)</code> langsung, tanpa lewat <code>SavingsAccount</code> atau <code>CheckingAccount</code>.
+<b>Salah:</b> menambah <code>abstract void charge()</code> ke <code>Vehicle</code>. Akibatnya <code>Bicycle</code> ikut wajib mengisi <code>charge()</code>, padahal sepeda tidak punya baterai.
 </div>
 
-**Benar:** setelah `Account` menjadi abstract, baris kode itu gagal dikompilasi (`Account is abstract; cannot be instantiated`). Ini perubahan yang disengaja: `Account` polos memang tidak pernah seharusnya ada di Bank Mini.
+**Benar:** kemampuan yang hanya dimiliki sebagian subclass dijadikan interface. Hanya kelas yang butuh yang menyatakan `implements Chargeable`.
 
 ---
 
 ## Latihan
 
-`BusinessAccount` (tugas mandiri Pertemuan 6) juga `extends Account`, tetapi belum pernah mengimplementasikan `monthlyFee()`.
+Pilih **kelas abstrak** atau **interface**:
 
-Apa yang terjadi kalau seseorang mencoba `new BusinessAccount(...)` sekarang, setelah `Account` menjadi abstract? Jelaskan.
+1. `Animal` sebagai induk `Cat` dan `Dog`, dengan atribut `name` yang dipakai bersama.
+2. Kemampuan "bisa dicetak" (`print()`) untuk `Invoice`, `Photo`, dan `Ticket`.
+3. `Employee` sebagai induk `Manager` dan `Staff`, dengan atribut `baseSalary` yang dipakai bersama.
 
 ---
 
 ## Jawaban Latihan
 
-**Gagal dikompilasi.** `BusinessAccount` mewarisi method abstrak `monthlyFee()` dari `Account` tetapi belum mengimplementasikannya, sehingga `BusinessAccount` ikut menjadi abstrak. Perbaikannya: tambahkan `@Override public double monthlyFee()` di `BusinessAccount` dengan besaran biaya yang sesuai.
+1. **Kelas abstrak.** `Cat` dan `Dog` satu keluarga dan berbagi atribut `name`.
+2. **Interface.** `Invoice`, `Photo`, dan `Ticket` tidak berkerabat; "bisa dicetak" adalah kemampuan tambahan.
+3. **Kelas abstrak.** `Manager` dan `Staff` satu keluarga dan berbagi atribut `baseSalary`.
 
 ---
 
 ## Rangkuman Bagian 3
 
-- `Account` menjadi abstract class dengan method abstrak `monthlyFee()`, mencegah instansiasi `Account` polos sama sekali.
-- `SavingsAccount` dan `CheckingAccount` wajib mengimplementasikan `monthlyFee()` masing-masing sesuai aturan biayanya.
-- Subclass lama yang belum mengimplementasikan `monthlyFee()` (mis. `BusinessAccount`) ikut menjadi abstrak sampai diperbaiki.
+- Satu keluarga dengan atribut bersama: kelas abstrak.
+- Kemampuan tambahan untuk kelas apa pun: interface.
+- Satu kelas boleh `extends` satu kelas abstrak sekaligus `implements` beberapa interface.
 
-Selanjutnya: Bagian 4 menerapkan interface untuk kemampuan yang hanya dimiliki sebagian jenis rekening.
+Selanjutnya: Bagian 4 memakai keduanya pada koleksi perpustakaan.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 4
-## Menerapkan Interface ke Bank Mini
+## Studi Kasus: Koleksi Perpustakaan
 
 Sesi 4 dari 4
 
 ---
 
-## InterestBearing, Interface untuk Rekening Berbunga
+## Kembali ke Perpustakaan
 
-![h:300 Account sebagai kelas abstrak, SavingsAccount meng-implement interface InterestBearing](../assets/uml/p09-account-abstract.png)
+Pada pertemuan sebelumnya, `Book`, `Dvd`, dan `Magazine` mewarisi `LibraryItem`. Ada tiga hal yang belum beres:
 
-Hanya rekening yang menghasilkan bunga yang membutuhkan `applyInterest()`, `CheckingAccount` tidak membutuhkannya sama sekali. Daripada menambah method itu ke `Account` (yang berarti seluruh subclass mewarisinya, termasuk yang tidak relevan), method ini dideklarasikan sebagai interface `InterestBearing` tersendiri, hanya diterapkan pada `SavingsAccount`.
+1. `new LibraryItem("?")` masih bisa dibuat, padahal tidak ada "koleksi umum" di rak.
+2. Tiap jenis koleksi punya denda keterlambatan sendiri, tetapi tidak ada yang mewajibkannya.
+3. Hanya DVD yang bisa diputar. Buku dan majalah tidak.
+
+Nomor 1 dan 2 diselesaikan dengan kelas abstrak. Nomor 3 diselesaikan dengan interface.
 
 ---
 
-## Contoh Kode: `SavingsAccount` Meng-implement `InterestBearing`
+## Diagram Kelas: Kelas Abstrak dan Interface Bersama
+
+![h:300 LibraryItem abstrak dengan lateFeePerDay, tiga subclass mengisinya, Dvd juga mengimplementasikan Playable](../assets/uml/p09-libraryitem-abstract.png)
+
+`lateFeePerDay()` abstrak di `LibraryItem`, lalu diisi ketiga subclass. Hanya `Dvd` yang punya panah putus-putus ke `Playable`.
+
+---
+
+## Contoh Kode: `LibraryItem` Menjadi Abstrak
 
 ```java
-public interface InterestBearing {
-    void applyInterest();
-}
+abstract class LibraryItem {
+    protected String title;
+    public LibraryItem(String title) { this.title = title; }
 
-public class SavingsAccount extends Account implements InterestBearing {
-    @Override
-    public void applyInterest() {
-        double interest = getBalance() * interestRate;
-        deposit(interest);
-    }
+    public abstract int lateFeePerDay();   // wajib diisi tiap jenis koleksi
 }
 ```
 
 ---
 
-## Kesalahan Umum: Menaruh `applyInterest()` di `Account`
+## Contoh Kode: `Book` Mengisi `lateFeePerDay()`
+
+```java
+class Book extends LibraryItem {
+    public Book(String title) { super(title); }
+
+    @Override
+    public int lateFeePerDay() { return 1000; }
+}
+```
+
+`Dvd` mengikuti pola yang sama, dengan denda 5000 per hari.
+
+---
+
+## Contoh Kode: `Dvd` Juga `Playable`
+
+```java
+interface Playable {
+    void play();
+}
+
+class Dvd extends LibraryItem implements Playable {
+    public Dvd(String title) { super(title); }
+    @Override public int lateFeePerDay() { return 5000; }
+    @Override public void play() { System.out.println("Playing " + title); }
+}
+```
+
+---
+
+## Telusuri: Denda Tiap Koleksi
+
+```java
+LibraryItem[] items = { new Book("Dune"), new Dvd("Inception") };
+for (LibraryItem item : items) {
+    System.out.println(item.title + ": " + item.lateFeePerDay());
+}
+```
+
+```
+Dune: 1000
+Inception: 5000
+```
+
+Tiap objek menjalankan `lateFeePerDay()` miliknya. `new LibraryItem("?")` kini ditolak compiler.
+
+---
+
+## Kesalahan Umum: `play()` Ditaruh di `LibraryItem`
 
 <div class="warn-box">
-<b>Salah:</b> menambahkan <code>abstract void applyInterest()</code> langsung ke <code>Account</code>, mengira ini lebih sederhana daripada membuat interface baru.
+<b>Salah:</b> menambah <code>abstract void play()</code> ke <code>LibraryItem</code>. Akibatnya <code>Book</code> dan <code>Magazine</code> wajib mengisi <code>play()</code>, padahal keduanya tidak bisa diputar.
 </div>
 
-**Benar:** `CheckingAccount` sama sekali tidak berbunga, memaksanya mengimplementasikan `applyInterest()` (walau isinya kosong atau melempar galat) hanya karena mewarisi `Account`. Interface `InterestBearing` yang terpisah menghindari ini, kemampuan yang tidak relevan tidak perlu dipaksakan ke seluruh subclass.
+**Benar:** `play()` ditaruh di interface `Playable`. Hanya `Dvd` yang menyatakan `implements Playable`.
 
 ---
 
 ## Latihan
 
-`BusinessAccount` (tugas mandiri Pertemuan 6) adalah rekening bisnis tanpa bunga sama sekali.
+1. Lengkapi supaya denda majalah 500 per hari:
 
-Perlukah `BusinessAccount` meng-implement `InterestBearing`? Jelaskan alasanmu.
+```java
+class Magazine ________ LibraryItem {
+    public Magazine(String title) { super(title); }
+    @Override
+    public int lateFeePerDay() { return ___; }
+}
+```
+
+2. Perlukah `Magazine` menyatakan `implements Playable`? Ya atau tidak?
 
 ---
 
 ## Jawaban Latihan
 
-**Tidak perlu.** `InterestBearing` hanya relevan untuk rekening yang benar-benar menghasilkan bunga. `BusinessAccount` tidak berbunga, memaksanya meng-implement `InterestBearing` berarti menyediakan `applyInterest()` yang tidak pernah punya makna nyata, persis kesalahan umum yang baru dibahas.
+```java
+class Magazine extends LibraryItem {
+    public Magazine(String title) { super(title); }
+    @Override
+    public int lateFeePerDay() { return 500; }
+}
+```
+
+**Tidak.** Majalah tidak bisa diputar, jadi tidak perlu berjanji mengisi `play()`.
 
 ---
 
 ## Rangkuman Bagian 4
 
-- Interface `InterestBearing` mendeklarasikan `applyInterest()`, hanya diterapkan pada rekening yang benar-benar berbunga.
-- `SavingsAccount` mewarisi `Account` lewat `extends` sekaligus meng-implement `InterestBearing` lewat `implements`, dua jenis kontrak berbeda sekaligus.
-- Kemampuan yang tidak relevan bagi seluruh subclass lebih cocok jadi interface terpisah daripada dipaksakan lewat superclass.
+- `LibraryItem` menjadi abstrak: objek "koleksi umum" tidak bisa lagi dibuat.
+- `lateFeePerDay()` abstrak, sehingga tiap jenis koleksi wajib menentukan dendanya.
+- `Playable` adalah interface: hanya `Dvd` yang memakainya.
 
 ---
 
 ## Rangkuman Pertemuan 9
 
-- Kelas abstrak mencegah instansiasi langsung dan mewajibkan subclass konkret mengimplementasikan method abstraknya.
-- Interface mendeklarasikan kontrak method tanpa isi, berlaku lintas hierarki kelas yang tidak berkerabat, dan sebuah kelas boleh meng-implements banyak sekaligus.
-- Bank Mini memakai keduanya: `Account` menjadi abstract lewat `monthlyFee()`, dan `InterestBearing` sebagai interface tambahan untuk rekening berbunga.
+| | Kelas Abstrak | Interface |
+|---|---|---|
+| Dipakai untuk | satu keluarga kelas | kemampuan tambahan |
+| Kata kunci | `extends` (hanya satu) | `implements` (boleh banyak) |
+| Isinya | atribut, method biasa, method abstrak | daftar method tanpa isi |
+| Contoh hari ini | `Shape`, `LibraryItem` | `Chargeable`, `Playable` |
+
+Keduanya memindahkan kesalahan ke saat kompilasi: method yang belum diisi langsung ditolak compiler.
 
 ---
 
@@ -517,7 +664,7 @@ Perlukah `BusinessAccount` meng-implement `InterestBearing`? Jelaskan alasanmu.
 
 # Referensi
 
-Deitel, *Java How to Program*, bab Object-Oriented Programming: Creating Abstract Superclasses and Concrete Subclasses, Interfaces
+Deitel, *Java How to Program*, bab Object-Oriented Programming: Polymorphism and Interfaces
 
 Oracle Java Tutorials: "Abstract Methods and Classes", "Interfaces"
 
@@ -525,6 +672,20 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Diskusi
+## Tugas: Koleksi Perpustakaan
 
-`SavingsAccount` sekarang punya dua "kontrak" sekaligus: mewarisi `Account` (kelas abstrak) lewat `extends`, dan meng-implement `InterestBearing` (interface) lewat `implements`. Jelaskan dengan kata-katamu sendiri apa perbedaan mendasar antara kedua jenis kontrak ini, lalu berikan satu contoh kemampuan baru (selain bunga) yang menurutmu lebih cocok dideklarasikan sebagai interface baru dibandingkan ditambahkan langsung ke `Account`.
+Perpustakaan menambah `AudioBook` (buku audio) dan aturan baru: hanya buku dan majalah yang pinjamannya bisa diperpanjang.
+
+1. `AudioBook` adalah jenis koleksi yang bisa diputar. Tuliskan baris deklarasi kelasnya (`class AudioBook ...`).
+2. Buat interface `Renewable` dengan satu method. Kelas mana saja yang menyatakan `implements Renewable`?
+3. Gambarkan diagram kelas lengkapnya di kertas, dengan panah yang tepat untuk `extends` dan `implements`.
+
+---
+
+## Tugas: Studi Kasusmu Sendiri
+
+Pakai kembali hierarki kelas dari tugas pertemuan sebelumnya (aplikasi pilihanmu sendiri).
+
+1. Jadikan superclass-nya kelas abstrak, dengan satu method abstrak yang wajib diisi tiap subclass.
+2. Tambahkan satu interface untuk kemampuan yang hanya dimiliki sebagian subclass.
+3. Perbarui diagram kelasmu di kertas, lalu jelaskan dalam satu kalimat mengapa kemampuan itu dijadikan interface.

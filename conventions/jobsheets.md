@@ -76,3 +76,17 @@ Bullet "Verifikasi cepat" (`java -version`/`javac -version`, atau
 alat itu untuk PERTAMA KALINYA: Pertemuan 1 (JDK) dan Pertemuan 13 (Maven).
 Jobsheet lanjutan yang memakai alat yang sama tidak mengulang bullet ini,
 supaya section B tidak terasa berulang tiap minggu.
+
+## Gambar tetap di tempatnya (tidak melayang)
+
+`jobsheets/assets/header.tex` memuat `\usepackage{float}` dan
+`\floatplacement{figure}{H}`, sehingga setiap gambar dicetak persis di
+posisi ia dirujuk. Tanpa ini LaTeX memindahkan gambar ke atas halaman
+berikutnya: langkah bernomor ("3. Perbarui Main.java:") tertinggal di satu
+halaman, sementara gambar kodenya dan blok "Output yang diharapkan" muncul
+tidak berurutan di halaman berikutnya (bug nyata yang baru terlihat lewat
+render per halaman jobsheet Pertemuan 9). Konsekuensinya: gambar yang tidak
+muat di sisa halaman meninggalkan ruang kosong di bawah halaman tsb; itu
+disengaja, urutan baca lebih penting daripada kerapatan halaman. Jangan
+hapus kedua baris ini.
+

@@ -104,17 +104,17 @@ style: |
 
 Meeting 9: **Abstract Classes and Interfaces**
 
-Declaring a contract a subclass must fulfill
+Classes that are not yet complete, and contracts of capability
 
 ---
 
 ## What You Will Learn
 
-- How to prevent a class from being instantiated directly when it only makes sense as a superclass
-- How to require every subclass to provide its own behavior, caught by the compiler rather than discovered later
-- How to declare a capability contract that applies across unrelated class hierarchies
-- When to choose an abstract class and when to choose an interface for the same need
-- Applying this to Bank Mini: `Account` becomes abstract, an `InterestBearing` interface for interest-bearing accounts
+- How to make a superclass whose objects may not be created (abstract class)
+- How to require every subclass to fill in a method (abstract method)
+- How to give the same capability to classes that are unrelated (interface)
+- How to choose between an abstract class and an interface
+- Applying both to one case study
 
 <div class="tip-box">
 Hands-on practice for today's material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 9.
@@ -124,10 +124,10 @@ Hands-on practice for today's material is available in the Practicum: Object-Ori
 
 ## Today's Session Map
 
-- **Session 1 (50')**: Abstract classes, a superclass that must not be instantiated
-- **Session 2 (50')**: Interfaces, a contract across class hierarchies
-- **Session 3 (50')**: Applying an abstract class to Bank Mini
-- **Session 4 (50')**: Applying an interface to Bank Mini
+- **Session 1 (50')**: Abstract classes and abstract methods
+- **Session 2 (50')**: Interfaces
+- **Session 3 (50')**: Abstract class or interface?
+- **Session 4 (50')**: Case study, the library collection
 
 ---
 
@@ -140,117 +140,139 @@ Session 1 of 4
 
 ---
 
-## A Superclass That Must Not Be Instantiated
+## The Problem: An Object That Makes No Sense
 
-Imagine a class `Shape` as a general superclass for `Circle` and `Square`. Every shape definitely has an area, but the area formula differs depending on the kind of shape. There is no "generic shape" that makes sense to instantiate directly, `Shape` only makes sense as a superclass.
+```java
+class Shape {
+    public double area() { return 0; }   // area of what shape?
+}
+
+Shape s = new Shape();
+System.out.println(s.area());   // 0.0
+```
+
+A circle has an area. A square has an area. A "general shape" has no area formula, yet Java still lets its object be created.
+
+---
+
+## What Is an Abstract Class?
+
+Picture a basic cake recipe with one step still blank: "fill to taste". That recipe cannot be cooked until the blank step is filled in.
+
+<div class="term-box">
+An <b>abstract class</b> is a class that is not yet complete. Its objects may not be created through <code>new</code>. It is used only as a superclass.
+</div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine a GUI framework used by hundreds of different applications: every component must know how to draw itself, but a "generic component" that does not yet know how to draw anything should never actually be created. Without a way to guarantee this, an incomplete object could slip through and be created, with the error only surfacing much later, once a user actually calls the method that was never implemented.
+A display library is used by hundreds of applications. Every component must know how to draw itself. Without abstract classes, a component that does not yet know how to draw could still be created, and the mistake would only show up when a user runs the application.
 
 <div class="term-box">
-An abstract class moves this mistake from runtime to compile time: a subclass that has not implemented all of its inherited abstract methods can never be instantiated at all, caught by the compiler rather than discovered later by an application's user. This is why abstract classes form the foundation of many major frameworks and libraries, from GUI toolkits to database drivers.
+An abstract class moves that mistake to compile time. The compiler rejects it, rather than a user discovering it.
 </div>
 
 ---
 
-## Abstract Classes
+## Abstract Methods: A Blank Step That Must Be Filled
 
 <div class="term-box">
-An <b>abstract class</b> (<code>abstract class</code>) must not be instantiated directly through <code>new</code>, it may only serve as a superclass. Declared with the <code>abstract</code> keyword on the class itself.
+An <b>abstract method</b> has only a signature, with no body. Every subclass must fill it in through overriding. Until it is filled in, that subclass cannot be compiled.
 </div>
+
+An abstract method may only be written inside an abstract class.
 
 ---
 
-## Code Example: Declaring `abstract class Shape`
+## Code Example: `abstract class Shape`
 
 ```java
-public abstract class Shape {
+abstract class Shape {
     private String label;
-
     public Shape(String label) { this.label = label; }
 
-    public abstract double area();
+    public String getLabel() { return label; }   // ordinary method, inherited
+    public abstract double area();               // abstract method, no body
 }
 ```
 
-`new Shape("shape")` is rejected by the compiler, `Shape` may only be used as a superclass.
+Now `new Shape("x")` is rejected by the compiler: `Shape is abstract; cannot be instantiated`.
 
 ---
 
-## Abstract Methods
+## Abstract Classes in a Class Diagram
 
-![h:320 Shape as an abstract class, Circle and Square implementing area()](../assets/uml/p09-shape-abstract.png)
+![h:260 Shape as an abstract class, Circle and Square filling in area()](../assets/uml/p09-shape-abstract.png)
 
-<div class="term-box">
-An <b>abstract method</b> only declares its signature (name, parameters, return type), with no body at all. Every concrete subclass (one that can be instantiated) must provide its own body, or the compiler raises an error.
-</div>
+The names of an abstract class and an abstract method are written in italics. `area()` appears again in `Circle` and `Square`, meaning both subclasses fill it in.
 
 ---
 
-## Code Example: `Circle` Implementing `area()`
+## Code Example: `Circle` Fills In `area()`
 
 ```java
-public class Circle extends Shape {
+class Circle extends Shape {
     private double radius;
-
-    public Circle(String label, double radius) {
-        super(label);
-        this.radius = radius;
-    }
+    public Circle(String label, double radius) { super(label); this.radius = radius; }
 
     @Override
-    public double area() { return Math.PI * radius * radius; }
+    public double area() { return 3.14 * radius * radius; }   // blank step filled in
 }
 ```
 
 ---
 
-## Concrete Subclass vs Abstract Class
+## Trace It Step by Step
 
-<div class="warn-box">
-A subclass of an abstract class remains abstract itself (and cannot be instantiated) as long as it has not implemented every one of its inherited abstract methods. Only a subclass that has implemented all of them becomes a concrete class.
-</div>
+```java
+Shape s = new Circle("small circle", 2);
+System.out.println(s.getLabel() + ": " + s.area());
+```
 
-<div class="tip-box">
-An abstract class may still have ordinary methods (with a full body) alongside its abstract methods, exactly like an ordinary superclass. A subclass inherits those ordinary methods as-is, just like the inheritance already covered before.
-</div>
+1. The object is a `Circle`. Its variable may be of type `Shape`.
+2. `getLabel()` is not written in `Circle`, so the version inherited from `Shape` runs.
+3. `area()` is written in `Circle`, so `Circle`'s version runs: 3.14 x 2 x 2.
+
+Output: `small circle: 12.56`
 
 ---
 
-## Common Mistake: Forgetting to Implement an Abstract Method
+## Common Mistake: Forgetting to Fill In an Abstract Method
 
 <div class="warn-box">
-<b>Wrong:</b> writing <code>class Square extends Shape</code> without overriding <code>area()</code>, thinking this is enough since <code>Square</code> "obviously has an area".
+<b>Wrong:</b> writing <code>class Square extends Shape { }</code> without filling in <code>area()</code>.
 </div>
 
-**Correct:** the compiler raises the error `Square is not abstract and does not override abstract method area()`. `Square` remains abstract (cannot be instantiated) until `area()` is actually implemented.
+**Correct:** the compiler reports the error `Square is not abstract and does not override abstract method area()`. Fill in `area()` in `Square`, and the class becomes usable.
 
 ---
 
 ## Exercise
 
-Given `abstract class Shape` with abstract method `area()`. Class `Triangle extends Shape` does not override `area()` at all.
+`Shape` is an abstract class with an abstract method `area()`. Decide **valid** or **error**:
 
-Can `new Triangle("triangle", 3, 4)` be compiled? Explain.
+1. `Shape s = new Shape("x");`
+2. `class Square extends Shape { }` (without `area()`)
+3. `Shape s = new Circle("c", 1);`
 
 ---
 
 ## Exercise Answer
 
-**No, it cannot.** `Triangle` has not implemented the abstract method `area()` inherited from `Shape`, so `Triangle` automatically remains abstract as well. The compiler rejects instantiating any abstract class, including `Triangle`, until `area()` is implemented.
+1. **Error.** An object of an abstract class may not be created.
+2. **Error.** `Square` has not filled in the abstract method `area()`.
+3. **Valid.** The object is a `Circle`, a complete class. Its variable may be of type `Shape`.
 
 ---
 
 ## Part 1 Summary
 
-- An abstract class must not be instantiated directly, it may only serve as a superclass.
-- An abstract method only declares its signature; a concrete subclass must implement its body.
-- A subclass that has not implemented all of its inherited abstract methods remains abstract itself.
+- An abstract class is not yet complete: its objects may not be created, it is used only as a superclass.
+- An abstract method has no body; every subclass must fill it in.
+- An abstract class may still have attributes, constructors, and ordinary methods.
 
-Next: Part 2 covers interfaces, a similar contract that applies across class hierarchies that are not related at all.
+Next: Part 2 covers interfaces, a contract for classes that are unrelated.
 
 ---
 
@@ -263,61 +285,147 @@ Session 2 of 4
 
 ---
 
-## A Contract Across Class Hierarchies
+## The Problem: Unrelated, Yet Sharing One Capability
 
-Imagine `Phone` and `ElectricCar`, two classes that are not related at all (one a communication device, one a vehicle), yet both are "chargeable". There is no sensible single superclass that could hold this capability through ordinary inheritance.
+```java
+class Phone { }         // communication device
+class ElectricCar { }   // vehicle
+```
+
+A phone and an electric car can both be charged. They have no sensible superclass: a phone is not a vehicle, a car is not a communication device.
+
+---
+
+## What Is an Interface?
+
+Picture a USB-C port. Anything that has that port can be charged with the same charger, whether it is a phone, a laptop, or a lamp.
 
 <div class="term-box">
-An <b>interface</b> declares a method contract (a signature with no body) that any class stating <code>implements</code> against it must fulfill, without requiring an <code>extends</code> relationship at all.
+An <b>interface</b> is a list of methods with no bodies. A class that declares <code>implements</code> promises to fill in all of those methods.
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine a large team building a payment system: one team writes the code that processes payments, another team writes the credit card implementation, yet another writes the e-wallet implementation, and there is also a team writing automated tests. Without a clear contract, these three teams would have to constantly coordinate every time one part changes even slightly.
+One team writes the payment-processing code. Another team writes credit cards, another writes e-wallets. Without a clear contract, every small change forces all teams to coordinate again.
 
 <div class="term-box">
-An interface lets the team processing payments depend only on the contract (which methods are available), not on the concrete implementation. The implementation can change, be added to, or even be swapped for a fake version for testing (called a mock), without changing the code that uses it. This principle is what underlies one of the SOLID principles, the Dependency Inversion Principle, covered further in Meeting 11.
+With an interface, the processing code only needs to know the contract. Implementations may be added or replaced without changing the code that uses them. This principle returns in Meeting 11.
 </div>
 
 ---
 
-## Code Example: `Phone` Implementing `Chargeable`
+## Code Example: `Chargeable` and `Phone`
 
 ```java
-public interface Chargeable {
-    void charge();
+interface Chargeable {
+    void charge();   // no body
 }
 
-public class Phone implements Chargeable {
-    private String model;
-
-    public Phone(String model) { this.model = model; }
-
+class Phone implements Chargeable {
     @Override
-    public void charge() { System.out.println(model + " is charging"); }
+    public void charge() { System.out.println("Phone is charging"); }
 }
 ```
 
 ---
 
-## Two Unrelated Classes, One Contract
+## Interfaces in a Class Diagram
 
-![h:300 Chargeable implemented by Phone and ElectricCar, two separate hierarchies](../assets/uml/p09-chargeable.png)
+![h:280 Chargeable implemented by Phone and ElectricCar](../assets/uml/p09-chargeable.png)
 
-`Phone` and `ElectricCar` share no superclass other than `Object`, yet both must provide `charge()` since both state `implements Chargeable`.
+An interface's name is also written in italics. The difference is in the arrow: it is dashed, pointing from the class to the interface it implements.
+
+---
+
+## Trace It: One Contract, Two Classes
+
+```java
+Chargeable[] devices = { new Phone(), new ElectricCar() };
+for (Chargeable d : devices) {
+    d.charge();
+}
+```
+
+```
+Phone is charging
+Car is charging
+```
+
+The loop only knows `Chargeable`. Each object runs its own `charge()`.
 
 ---
 
 ## One Class, Many Interfaces
 
-<div class="term-box">
-Unlike an abstract class (a class may only <code>extends</code> one superclass), a class may <code>implements</code> many interfaces at once. An interface is well suited to an extra capability that applies across a variety of different class hierarchies.
-</div>
+A person has only one birth mother, but may hold many skill certificates.
+
+```java
+class Phone implements Chargeable, Connectable {
+    @Override public void charge() { System.out.println("Phone is charging"); }
+    @Override public void connect() { System.out.println("Phone is online"); }
+}
+```
+
+A class may `extends` only one superclass, but may `implements` many interfaces.
+
+---
+
+## Common Mistake: Using `extends` for an Interface
 
 <div class="warn-box">
-A class that states <code>implements</code> against an interface must implement every method inside it. Missing even one causes the compiler to raise an error.
+<b>Wrong:</b> writing <code>class Phone extends Chargeable</code>.
+</div>
+
+**Correct:** a class uses `implements` for an interface, and `extends` for a superclass. The code above fails to compile.
+
+---
+
+## Exercise
+
+`Chargeable` has a method `charge()`. `Connectable` has a method `connect()`. Decide **valid** or **error**:
+
+1. `class Laptop extends Chargeable { ... }`
+2. `class Laptop implements Chargeable { }` (without `charge()`)
+3. `class Laptop implements Chargeable, Connectable` with `charge()` and `connect()` filled in
+
+---
+
+## Exercise Answer
+
+1. **Error.** An interface is used with `implements`, not `extends`.
+2. **Error.** `Laptop` promises to fill in `charge()`, but has not done so.
+3. **Valid.** One class may `implements` many interfaces, as long as every method is filled in.
+
+---
+
+## Part 2 Summary
+
+- An interface is a list of methods with no bodies, used through `implements`.
+- Unrelated classes can use the same interface.
+- One class may `implements` many interfaces.
+
+Next: Part 3 covers how to choose between an abstract class and an interface.
+
+---
+
+<!-- _class: divider -->
+
+# Part 3
+## Abstract Class or Interface?
+
+Session 3 of 4
+
+---
+
+## Two Simple Questions
+
+1. Are these classes one family, sharing the same attributes or methods? Use an **abstract class**.
+2. Is this an extra capability that any class could have? Use an **interface**.
+
+<div class="tip-box">
+An abstract class answers "what kind of thing is this?". An interface answers "what can this do?".
 </div>
 
 ---
@@ -326,190 +434,229 @@ A class that states <code>implements</code> against an interface must implement 
 
 | | Abstract Class | Interface |
 |---|---|---|
-| Keyword | `extends` | `implements` |
-| Count per class | Only one | May have many at once |
-| Ordinary attributes and methods | May have them | No (only a method contract) |
-| Well suited for | A superclass that makes sense for every subclass | A capability across a variety of class hierarchies |
+| Keyword in the subclass | `extends` | `implements` |
+| Number per class | only one | may be many |
+| Contents | attributes, ordinary methods, abstract methods | a list of methods with no bodies |
+| Meaning | "is a kind of" | "can do" |
 
 ---
 
-## Common Mistake: Using `extends` for an Interface
-
-<div class="warn-box">
-<b>Wrong:</b> writing <code>class Phone extends Chargeable</code>, thinking an interface is treated the same as an ordinary superclass.
-</div>
-
-**Correct:** a class states its relationship to an interface through `implements`, not `extends`. `extends Chargeable` causes a compile error, since `Chargeable` is not a class that can be inherited from through ordinary inheritance.
-
----
-
-## Exercise
-
-For each need below, determine which fits better, an **abstract class** or an **interface**:
-
-1. `Vehicle` as a general superclass for `Car`, `Motorcycle`, and `Truck`, with a shared attribute `speed`.
-2. The capability "comparable" (`compareTo()`), applied to `Student`, `Product`, and `Invoice`, three unrelated classes.
-
----
-
-## Exercise Answer
-
-1. **Abstract class.** `Car`, `Motorcycle`, and `Truck` are indeed related through `Vehicle`, and need a shared attribute (`speed`) that an interface cannot declare.
-2. **Interface.** `Student`, `Product`, and `Invoice` are not related at all; each still needs its own superclass, and implementing an interface does not restrict that.
-
----
-
-## Part 2 Summary
-
-- An interface declares a method contract with no body, which must be fulfilled through `implements`.
-- A class may implement many interfaces at once, unlike an abstract class, which may only be extended from one.
-- An interface fits a capability across unrelated class hierarchies; an abstract class fits a superclass that makes sense for every subclass.
-
-Next: Part 3 applies an abstract class to Bank Mini's `Account`.
-
----
-
-<!-- _class: divider -->
-
-# Part 3
-## Applying an Abstract Class to Bank Mini
-
-Session 3 of 4
-
----
-
-## Account Becomes an Abstract Class
-
-Not a single plain `Account` has ever been created directly in Bank Mini, every instantiation has always been a `SavingsAccount` or a `CheckingAccount`. This is a sign that `Account` should become an abstract class, with an abstract method `monthlyFee()` that every account type must implement with its own fee amount.
-
-![h:280 Account abstract with abstract method monthlyFee, SavingsAccount and CheckingAccount each implementing it](../assets/uml/p09-account-monthlyfee.png)
-
----
-
-## Code Example: `monthlyFee()` Differing by Account Type
+## Code Example: Both Used Together
 
 ```java
-public class SavingsAccount extends Account {
-    @Override
-    public double monthlyFee() { return 0; }
+abstract class Vehicle {
+    public abstract String honk();
 }
 
-public class CheckingAccount extends Account {
-    @Override
-    public double monthlyFee() { return MONTHLY_FEE; }
+class ElectricCar extends Vehicle implements Chargeable {
+    @Override public String honk() { return "Beep!"; }
+    @Override public void charge() { System.out.println("Car is charging"); }
 }
 ```
 
-`SavingsAccount` has no monthly fee, `CheckingAccount` carries a fixed fee, both must provide their own `monthlyFee()` since `Account` declares it as an abstract method.
+---
+
+## Trace It: One Object, Two Roles
+
+```java
+ElectricCar car = new ElectricCar();
+Vehicle v = car;        // car is a Vehicle
+Chargeable c = car;     // car can be charged
+System.out.println(v.honk());
+c.charge();
+```
+
+Output: `Beep!` then `Car is charging`. There is one object, but it can be held through two variable types.
 
 ---
 
-## Common Mistake: Old Code Creating an Account Directly
+## Common Mistake: A Special Capability Put in the Superclass
 
 <div class="warn-box">
-<b>Wrong:</b> code from an earlier meeting that still writes <code>new Account("A1", owner, 0)</code> directly, without going through <code>SavingsAccount</code> or <code>CheckingAccount</code>.
+<b>Wrong:</b> adding <code>abstract void charge()</code> to <code>Vehicle</code>. As a result <code>Bicycle</code> must also fill in <code>charge()</code>, even though a bicycle has no battery.
 </div>
 
-**Correct:** once `Account` becomes abstract, that line of code fails to compile (`Account is abstract; cannot be instantiated`). This is a deliberate change: a plain `Account` was never really meant to exist in Bank Mini.
+**Correct:** a capability that only some subclasses have becomes an interface. Only the classes that need it declare `implements Chargeable`.
 
 ---
 
 ## Exercise
 
-`BusinessAccount` (the independent assignment from Meeting 6) also `extends Account`, but has never implemented `monthlyFee()`.
+Choose **abstract class** or **interface**:
 
-What happens if someone tries `new BusinessAccount(...)` now, after `Account` has become abstract? Explain.
+1. `Animal` as the parent of `Cat` and `Dog`, with a shared attribute `name`.
+2. The capability "can be printed" (`print()`) for `Invoice`, `Photo`, and `Ticket`.
+3. `Employee` as the parent of `Manager` and `Staff`, with a shared attribute `baseSalary`.
 
 ---
 
 ## Exercise Answer
 
-**It fails to compile.** `BusinessAccount` inherits the abstract method `monthlyFee()` from `Account` but has not implemented it, so `BusinessAccount` remains abstract as well. The fix: add `@Override public double monthlyFee()` in `BusinessAccount` with the appropriate fee amount.
+1. **Abstract class.** `Cat` and `Dog` are one family and share the attribute `name`.
+2. **Interface.** `Invoice`, `Photo`, and `Ticket` are unrelated; "can be printed" is an extra capability.
+3. **Abstract class.** `Manager` and `Staff` are one family and share the attribute `baseSalary`.
 
 ---
 
 ## Part 3 Summary
 
-- `Account` becomes an abstract class with abstract method `monthlyFee()`, preventing a plain `Account` from ever being instantiated.
-- `SavingsAccount` and `CheckingAccount` must each implement `monthlyFee()` according to their own fee rule.
-- An older subclass that has not implemented `monthlyFee()` (such as `BusinessAccount`) remains abstract until fixed.
+- One family with shared attributes: abstract class.
+- An extra capability for any class: interface.
+- One class may `extends` one abstract class and `implements` several interfaces at once.
 
-Next: Part 4 applies an interface to a capability that only some account types have.
+Next: Part 4 uses both on the library collection.
 
 ---
 
 <!-- _class: divider -->
 
 # Part 4
-## Applying an Interface to Bank Mini
+## Case Study: The Library Collection
 
 Session 4 of 4
 
 ---
 
-## InterestBearing, an Interface for Interest-Bearing Accounts
+## Back to the Library
 
-![h:300 Account as an abstract class, SavingsAccount implementing the InterestBearing interface](../assets/uml/p09-account-abstract.png)
+In the previous meetings, `Book`, `Dvd`, and `Magazine` inherited from `LibraryItem`. Three things are still unresolved:
 
-Only an account that earns interest needs `applyInterest()`, `CheckingAccount` does not need it at all. Rather than adding that method to `Account` (which would mean every subclass inherits it, including ones for which it is irrelevant), this method is declared as its own interface `InterestBearing`, applied only to `SavingsAccount`.
+1. `new LibraryItem("?")` can still be created, even though no "general item" sits on a shelf.
+2. Each kind of item has its own late fee, but nothing requires it.
+3. Only a DVD can be played. Books and magazines cannot.
+
+Numbers 1 and 2 are solved with an abstract class. Number 3 is solved with an interface.
 
 ---
 
-## Code Example: `SavingsAccount` Implementing `InterestBearing`
+## Class Diagram: Abstract Class and Interface Together
+
+![h:300 Abstract LibraryItem with lateFeePerDay, three subclasses filling it in, Dvd also implementing Playable](../assets/uml/p09-libraryitem-abstract.png)
+
+`lateFeePerDay()` is abstract in `LibraryItem`, then filled in by all three subclasses. Only `Dvd` has a dashed arrow to `Playable`.
+
+---
+
+## Code Example: `LibraryItem` Becomes Abstract
 
 ```java
-public interface InterestBearing {
-    void applyInterest();
-}
+abstract class LibraryItem {
+    protected String title;
+    public LibraryItem(String title) { this.title = title; }
 
-public class SavingsAccount extends Account implements InterestBearing {
-    @Override
-    public void applyInterest() {
-        double interest = getBalance() * interestRate;
-        deposit(interest);
-    }
+    public abstract int lateFeePerDay();   // must be filled in by each kind of item
 }
 ```
 
 ---
 
-## Common Mistake: Putting `applyInterest()` in `Account`
+## Code Example: `Book` Fills In `lateFeePerDay()`
+
+```java
+class Book extends LibraryItem {
+    public Book(String title) { super(title); }
+
+    @Override
+    public int lateFeePerDay() { return 1000; }
+}
+```
+
+`Dvd` follows the same pattern, with a fee of 5000 per day.
+
+---
+
+## Code Example: `Dvd` Is Also `Playable`
+
+```java
+interface Playable {
+    void play();
+}
+
+class Dvd extends LibraryItem implements Playable {
+    public Dvd(String title) { super(title); }
+    @Override public int lateFeePerDay() { return 5000; }
+    @Override public void play() { System.out.println("Playing " + title); }
+}
+```
+
+---
+
+## Trace It: The Late Fee of Each Item
+
+```java
+LibraryItem[] items = { new Book("Dune"), new Dvd("Inception") };
+for (LibraryItem item : items) {
+    System.out.println(item.title + ": " + item.lateFeePerDay());
+}
+```
+
+```
+Dune: 1000
+Inception: 5000
+```
+
+Each object runs its own `lateFeePerDay()`. `new LibraryItem("?")` is now rejected by the compiler.
+
+---
+
+## Common Mistake: `play()` Put in `LibraryItem`
 
 <div class="warn-box">
-<b>Wrong:</b> adding <code>abstract void applyInterest()</code> directly to <code>Account</code>, thinking this is simpler than creating a new interface.
+<b>Wrong:</b> adding <code>abstract void play()</code> to <code>LibraryItem</code>. As a result <code>Book</code> and <code>Magazine</code> must fill in <code>play()</code>, even though neither can be played.
 </div>
 
-**Correct:** `CheckingAccount` earns no interest at all, forcing it to implement `applyInterest()` (whether with an empty body or one that throws an error) purely because it inherits `Account`. A separate `InterestBearing` interface avoids this, an irrelevant capability does not need to be forced onto every subclass.
+**Correct:** `play()` goes in the interface `Playable`. Only `Dvd` declares `implements Playable`.
 
 ---
 
 ## Exercise
 
-`BusinessAccount` (the independent assignment from Meeting 6) is a business account with no interest at all.
+1. Complete the code so a magazine's fee is 500 per day:
 
-Does `BusinessAccount` need to implement `InterestBearing`? Explain your reasoning.
+```java
+class Magazine ________ LibraryItem {
+    public Magazine(String title) { super(title); }
+    @Override
+    public int lateFeePerDay() { return ___; }
+}
+```
+
+2. Does `Magazine` need to declare `implements Playable`? Yes or no?
 
 ---
 
 ## Exercise Answer
 
-**No, it does not.** `InterestBearing` is only relevant for an account that genuinely earns interest. `BusinessAccount` earns no interest, forcing it to implement `InterestBearing` would mean providing an `applyInterest()` that never has any real meaning, exactly the common mistake just covered.
+```java
+class Magazine extends LibraryItem {
+    public Magazine(String title) { super(title); }
+    @Override
+    public int lateFeePerDay() { return 500; }
+}
+```
+
+**No.** A magazine cannot be played, so it need not promise to fill in `play()`.
 
 ---
 
 ## Part 4 Summary
 
-- Interface `InterestBearing` declares `applyInterest()`, applied only to an account that genuinely earns interest.
-- `SavingsAccount` inherits `Account` through `extends` while also implementing `InterestBearing` through `implements`, two different kinds of contract at once.
-- A capability irrelevant to every subclass fits better as a separate interface than being forced through a superclass.
+- `LibraryItem` becomes abstract: a "general item" object can no longer be created.
+- `lateFeePerDay()` is abstract, so each kind of item must decide its own fee.
+- `Playable` is an interface: only `Dvd` uses it.
 
 ---
 
 ## Meeting 9 Summary
 
-- An abstract class prevents direct instantiation and requires a concrete subclass to implement its abstract methods.
-- An interface declares a method contract with no body, applying across unrelated class hierarchies, and a class may implement many at once.
-- Bank Mini uses both: `Account` becomes abstract through `monthlyFee()`, and `InterestBearing` serves as an extra interface for an interest-bearing account.
+| | Abstract Class | Interface |
+|---|---|---|
+| Used for | one family of classes | an extra capability |
+| Keyword | `extends` (only one) | `implements` (may be many) |
+| Contents | attributes, ordinary methods, abstract methods | a list of methods with no bodies |
+| Today's examples | `Shape`, `LibraryItem` | `Chargeable`, `Playable` |
+
+Both move mistakes to compile time: a method that has not been filled in is rejected by the compiler right away.
 
 ---
 
@@ -517,7 +664,7 @@ Does `BusinessAccount` need to implement `InterestBearing`? Explain your reasoni
 
 # References
 
-Deitel, *Java How to Program*, the Object-Oriented Programming: Creating Abstract Superclasses and Concrete Subclasses, Interfaces chapter
+Deitel, *Java How to Program*, the Object-Oriented Programming: Polymorphism and Interfaces chapter
 
 Oracle Java Tutorials: "Abstract Methods and Classes", "Interfaces"
 
@@ -525,6 +672,20 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ---
 
-## Discussion
+## Assignment: The Library Collection
 
-`SavingsAccount` now has two "contracts" at once: inheriting `Account` (an abstract class) through `extends`, and implementing `InterestBearing` (an interface) through `implements`. Explain in your own words the fundamental difference between these two kinds of contract, then give one example of a new capability (other than interest) that you think fits better as a new interface than being added directly to `Account`.
+The library adds `AudioBook` and a new rule: only books and magazines may have their loans renewed.
+
+1. `AudioBook` is a kind of item that can be played. Write its class declaration line (`class AudioBook ...`).
+2. Create an interface `Renewable` with one method. Which classes declare `implements Renewable`?
+3. Draw the complete class diagram on paper, with the correct arrows for `extends` and `implements`.
+
+---
+
+## Assignment: Your Own Case Study
+
+Reuse the class hierarchy from the previous meetings' assignment (the application you chose yourself).
+
+1. Make its superclass an abstract class, with one abstract method every subclass must fill in.
+2. Add one interface for a capability only some of the subclasses have.
+3. Update your class diagram on paper, then explain in one sentence why that capability became an interface.

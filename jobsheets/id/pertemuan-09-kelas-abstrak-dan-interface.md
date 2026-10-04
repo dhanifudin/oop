@@ -11,13 +11,13 @@
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
-1. Mendeklarasikan kelas abstrak dengan method abstrak yang wajib diimplementasikan setiap subclass.
-2. Mendeklarasikan dan menerapkan interface pada kelas yang membutuhkan kontrak perilaku tertentu.
+1. Mendeklarasikan kelas abstrak dengan method abstrak yang wajib diisi setiap subclass.
+2. Mendeklarasikan interface dan menerapkannya pada kelas yang membutuhkan kemampuan tertentu.
 
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: pertemuan ini melanjutkan proyek `bank-mini` dari topik Overriding dan Overloading.
+- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Overriding dan Overloading. Proyek itu sudah berisi `Account` dengan `canWithdraw()`, serta `SavingsAccount` dan `CheckingAccount` yang meng-override-nya.
 
 > **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
@@ -30,53 +30,97 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: Account Menjadi Kelas Abstrak
 
-> **Konsep Singkat: Kelas Abstrak.** Sebuah kelas abstrak (`abstract class`) tidak boleh diinstansiasi langsung lewat `new`; ia hanya boleh menjadi superclass. Kelas abstrak boleh berisi method abstrak, yaitu method yang hanya dideklarasikan tanda tangannya (tanpa isi), dan setiap subclass konkret wajib menyediakan isinya sendiri. Contoh generik: kelas abstrak `Shape` mendeklarasikan `abstract double area()` tanpa tahu bagaimana cara menghitungnya, sementara `Circle` dan `Square` masing-masing mengimplementasikan rumus luasnya sendiri.
+> **Konsep Singkat: Kelas Abstrak.** Bayangkan resep dasar kue yang satu langkahnya masih kosong: "isi sesuai selera". Resep itu belum bisa dimasak sebelum langkah kosongnya diisi. Kelas abstrak (`abstract class`) bekerja seperti itu: kelas yang belum lengkap, sehingga objeknya tidak boleh dibuat lewat `new`. Langkah kosongnya disebut method abstrak, yaitu method tanpa isi yang wajib diisi setiap subclass.
 
-![Shape sebagai kelas abstrak, Circle dan Square mengimplementasikan area()](../assets/uml/p09-shape-abstract.png){width=70%}
+**Tujuan langkah ini:** mencegah pembuatan `Account` polos, dan mewajibkan tiap jenis rekening menentukan biaya bulanannya sendiri.
 
-Tidak ada satu pun `Account` polos yang pernah dibuat langsung di Bank Mini sejauh ini, semua instansiasi selalu berupa `SavingsAccount` atau `CheckingAccount`. Ini pertanda baik bahwa `Account` sebaiknya menjadi kelas abstrak. Tambahkan method abstrak `monthlyFee()`:
+Di Bank Mini, rekening selalu berupa `SavingsAccount` atau `CheckingAccount`. Tidak pernah ada rekening "umum". Diagram berikut adalah hasil yang dituju langkah ini:
+
+![Account abstrak dengan method abstrak monthlyFee, diisi SavingsAccount dan CheckingAccount](../assets/uml/p09-account-monthlyfee.png){width=55%}
+
+Cara membaca diagram: nama `Account` dan method `monthlyFee()` ditulis miring, artinya abstrak. `monthlyFee()` tertulis lagi di kedua subclass, artinya kedua subclass mengisinya.
+
+1. Buka `Account.java`. Tambahkan kata `abstract` pada deklarasi kelas, lalu tambahkan method abstrak `monthlyFee()`:
 
 ![Account.java menjadi abstract class dengan method abstrak monthlyFee](../assets/code/pertemuan-09/p09-01-account.png){width=65%}
 
-`Bank` juga mendapat method baru untuk menampilkan biaya bulanan setiap rekening:
+2. Buka `Bank.java`. Tambahkan method `printMonthlyFees()` untuk mencetak biaya bulanan setiap rekening:
 
 ![Bank.java dengan method printMonthlyFees](../assets/code/pertemuan-09/p09-01-bank.png){width=65%}
 
-Karena `Account` sekarang mendeklarasikan `monthlyFee()` sebagai abstrak, `SavingsAccount` dan `CheckingAccount` wajib mengimplementasikannya:
+3. Isi `monthlyFee()` di `SavingsAccount` (tanpa biaya) dan `CheckingAccount` (biaya tetap):
 
-![SavingsAccount.java mengimplementasikan monthlyFee](../assets/code/pertemuan-09/p09-01-savingsaccount.png){width=65%}
+![SavingsAccount.java mengisi monthlyFee](../assets/code/pertemuan-09/p09-01-savingsaccount.png){width=65%}
 
-![CheckingAccount.java mengimplementasikan monthlyFee](../assets/code/pertemuan-09/p09-01-checkingaccount.png){width=65%}
+![CheckingAccount.java mengisi monthlyFee](../assets/code/pertemuan-09/p09-01-checkingaccount.png){width=65%}
 
-Perbarui `Main.java`:
+4. Perbarui `Main.java`:
 
 ![Main.java memanggil printMonthlyFees](../assets/code/pertemuan-09/p09-01-main.png){width=70%}
 
-> ✅ **Checkpoint:** program mencetak `A001 fee: 0.0`, `A002 fee: 15000.0`, `A003 fee: 0.0`, `A004 fee: 15000.0`, sesuai jenis masing-masing rekening.
+**Output yang diharapkan:**
 
-> ⚠️ **Jika gagal:** apabila muncul galat `SavingsAccount is not abstract and does not override abstract method monthlyFee()`, periksa apakah `monthlyFee()` benar-benar diimplementasikan di kedua subclass, dengan tanda tangan yang sama persis seperti yang dideklarasikan di `Account`.
+```text
+A001 - Nadia - balance: 350000.0
+Account type: Savings, interest rate: 0.01
+A002 - Sari - balance: 200000.0
+Account type: Checking, overdraft limit: 50000.0
+A003 - Rian - balance: 100000.0
+Account type: Savings, interest rate: 0.02
+A004 - Dewi - balance: -150000.0
+Account type: Checking, overdraft limit: 200000.0
+A001 fee: 0.0
+A002 fee: 15000.0
+A003 fee: 0.0
+A004 fee: 15000.0
+```
+
+**Mengapa demikian?**
+
+- Delapan baris pertama berasal dari `printAllAccounts()`. Empat baris terakhir berasal dari `printMonthlyFees()`.
+- `Bank` memanggil `monthlyFee()` yang sama untuk tiap rekening. Rekening tabungan menjawab 0.0, rekening giro menjawab 15000.0, sebab masing-masing mengisi method abstrak itu dengan caranya sendiri.
+- Baris `new Account(...)` kini tidak bisa dikompilasi. Itu memang tujuannya.
+
+> ✅ **Checkpoint:** output program sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila muncul error `SavingsAccount is not abstract and does not override abstract method monthlyFee()`, periksa apakah `monthlyFee()` sudah diisi di kedua subclass, dengan signature yang sama persis seperti di `Account`.
 
 ### Langkah 2: InterestBearing, Interface untuk Rekening Berbunga
 
-> **Konsep Singkat: Interface.** Sebuah `interface` mendeklarasikan kontrak method (tanda tangan tanpa isi) yang wajib dipenuhi kelas mana pun yang menyatakan `implements` terhadapnya, tanpa mewajibkan hubungan `extends` sama sekali. Berbeda dari kelas abstrak, sebuah kelas boleh meng-implement banyak interface sekaligus, sehingga interface cocok dipakai untuk kemampuan lintas hierarki kelas yang berbeda-beda.
+> **Konsep Singkat: Interface.** Bayangkan port USB-C. Benda apa pun yang punya port itu bisa diisi daya dengan charger yang sama. Interface bekerja seperti itu: daftar method tanpa isi. Kelas yang menyatakan `implements` berjanji mengisi semua method itu. Satu kelas hanya boleh `extends` satu superclass, tetapi boleh `implements` banyak interface.
 
-Hanya rekening yang menghasilkan bunga yang perlu kemampuan `applyInterest()`, `CheckingAccount` tidak membutuhkannya. Daripada menambah method itu ke `Account` (yang berarti seluruh subclass mewarisinya, termasuk yang tidak relevan), deklarasikan sebagai interface tersendiri:
+**Tujuan langkah ini:** memberi kemampuan "menerima bunga" hanya kepada rekening yang memang berbunga.
 
-![InterestBearing.java](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=55%}
+Hanya `SavingsAccount` yang berbunga. `CheckingAccount` tidak. Kalau `applyInterest()` ditaruh di `Account`, rekening giro ikut wajib mengisinya. Karena itu kemampuan ini dijadikan interface tersendiri:
 
 ![Account, SavingsAccount, dan interface InterestBearing](../assets/uml/p09-account-abstract.png){width=75%}
 
-`SavingsAccount` menyatakan `implements InterestBearing` dan mengimplementasikan `applyInterest()`:
+Cara membaca diagram: panah bergaris putus-putus dari `SavingsAccount` ke `InterestBearing` berarti `implements`. `CheckingAccount` tidak punya panah itu.
+
+1. Buat berkas baru `InterestBearing.java`:
+
+![InterestBearing.java](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=55%}
+
+2. Buka `SavingsAccount.java`. Tambahkan `implements InterestBearing` pada deklarasi kelas, lalu isi `applyInterest()`:
 
 ![SavingsAccount.java meng-implement InterestBearing](../assets/code/pertemuan-09/p09-02-savingsaccount.png){width=65%}
 
-Perbarui `Main.java`:
+3. Tambahkan pengujian di akhir `Main.java`:
 
 ![Main.java menguji applyInterest](../assets/code/pertemuan-09/p09-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** program menampilkan `Before interest: 100000.0` diikuti `After interest: 102000.0` (bunga 2% dari saldo 100000).
+**Output yang diharapkan:** dua belas baris dari Langkah 1 tetap sama, diikuti dua baris baru:
 
-> ⚠️ **Jika gagal:** apabila muncul galat `SavingsAccount is not abstract and does not override abstract method applyInterest()`, periksa apakah `implements InterestBearing` dan isi `applyInterest()` sudah ditambahkan bersamaan; sebuah kelas yang menyatakan `implements` tetap wajib mengimplementasikan seluruh method dari interface tersebut.
+```text
+Before interest: 100000.0
+After interest: 102000.0
+```
+
+**Mengapa demikian?** Suku bunga rekening A003 adalah 0.02. Bunganya 2% dari 100000, yaitu 2000, lalu disetor ke saldo. `CheckingAccount` tidak punya `applyInterest()` sama sekali, sebab tidak menyatakan `implements InterestBearing`.
+
+> ✅ **Checkpoint:** dua baris terakhir output sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila muncul error `SavingsAccount is not abstract and does not override abstract method applyInterest()`, periksa apakah `implements InterestBearing` dan isi `applyInterest()` ditambahkan bersamaan. Kelas yang menyatakan `implements` wajib mengisi seluruh method interface itu.
 
 ## D. Tugas dan Hasil Kerja
 
@@ -84,14 +128,17 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 2.
 - **Tugas mandiri:**
-  1. Bank memerlukan jejak audit untuk rekening yang berisiko negatif (rekening dengan overdraft). Tambahkan interface `Auditable`, lalu terapkan pada `CheckingAccount`. Diagram berikut hanya sketsa method yang perlu diimplementasikan, BUKAN kode jadi, isi `auditLog()` diserahkan sepenuhnya padamu:
+  1. Bank memerlukan jejak audit untuk rekening yang saldonya bisa negatif (rekening dengan overdraft). Tambahkan interface `Auditable`, lalu terapkan pada `CheckingAccount`. Diagram berikut hanya sketsa method yang perlu diisi, BUKAN kode jadi, isi `auditLog()` diserahkan sepenuhnya padamu:
 
-     ![Sketsa Auditable dan CheckingAccount, method yang perlu diimplementasikan tanpa isi](../assets/uml/p09-tugas-auditable.png){width=60%}
+     ![Sketsa Auditable dan CheckingAccount, method yang perlu diisi](../assets/uml/p09-tugas-auditable.png){width=60%}
 
-     Buktikan dengan memanggil `auditLog()` pada kedua `CheckingAccount` yang sudah ada di `Main.java` dan mencetak hasilnya.
-  2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
-     - (a) mengapa `applyInterest()` lebih cocok dideklarasikan sebagai interface `InterestBearing`, dibandingkan sebagai method abstrak langsung di `Account`?
-     - (b) `SavingsAccount` sekarang punya dua "kontrak" sekaligus, yaitu mewarisi `Account` (abstract class) dan meng-implement `InterestBearing` (interface). Apa perbedaan mendasar antara kedua jenis kontrak ini?
+     Buktikan lewat `Main.java`: panggil `auditLog()` pada kedua `CheckingAccount` yang sudah ada, lalu cetak hasilnya. Hasilmu benar apabila:
+     - `Auditable` adalah interface dengan satu method `auditLog()`;
+     - `CheckingAccount` menyatakan `implements Auditable`, sedangkan `SavingsAccount` tidak;
+     - teks yang dicetak memuat nomor rekening dan saldonya.
+  2. Jawab secara singkat (1-2 kalimat untuk masing-masing pertanyaan):
+     - (a) Mengapa `applyInterest()` dijadikan interface `InterestBearing`, bukan method abstrak di `Account`?
+     - (b) `SavingsAccount` memakai `extends Account` dan `implements InterestBearing`. Apa beda makna kedua kata kunci itu?
 
 ## E. Kriteria Penilaian
 

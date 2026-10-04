@@ -52,3 +52,11 @@
 % inside code blocks be interpreted instead of printed literally.
 \usepackage{fvextra}
 \fvset{breaklines=true, breakanywhere=true, fontsize=\small}
+
+% Keep every figure exactly where it is referenced in the text. Without
+% this, LaTeX floats images to the top of a later page, so a numbered step
+% ("3. Perbarui Main.java:") ends up on one page while its code screenshot
+% and the "Output yang diharapkan" block land out of order on the next,
+% which is confusing for step-by-step practicum instructions.
+\usepackage{float}
+\floatplacement{figure}{H}

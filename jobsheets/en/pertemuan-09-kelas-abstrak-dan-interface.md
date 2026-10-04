@@ -11,13 +11,13 @@
 
 After completing this jobsheet, students will be able to:
 
-1. Declare an abstract class with an abstract method that every subclass must implement.
-2. Declare and apply an interface on a class that needs a specific behavior contract.
+1. Declare an abstract class with an abstract method that every subclass must fill in.
+2. Declare an interface and apply it to a class that needs a certain capability.
 
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this meeting continues the `bank-mini` project from the Overriding and Overloading topic.
+- **Project**: this jobsheet continues the `bank-mini` project from the Overriding and Overloading topic. That project already contains `Account` with `canWithdraw()`, plus `SavingsAccount` and `CheckingAccount` overriding it.
 
 > **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash
@@ -30,53 +30,97 @@ After completing this jobsheet, students will be able to:
 
 ### Step 1: Account Becomes an Abstract Class
 
-> **Concept Brief: Abstract Class.** An abstract class (`abstract class`) must not be instantiated directly through `new`; it may only serve as a superclass. An abstract class may contain an abstract method, one whose signature is only declared (with no body), and every concrete subclass must provide its own body. A generic example: abstract class `Shape` declares `abstract double area()` with no idea how to compute it, while `Circle` and `Square` each implement their own area formula.
+> **Concept Brief: Abstract Class.** Picture a basic cake recipe with one step still blank: "fill to taste". That recipe cannot be cooked until the blank step is filled in. An abstract class (`abstract class`) works like that: a class that is not yet complete, so its objects may not be created through `new`. Its blank step is called an abstract method, a method with no body that every subclass must fill in.
 
-![Shape as an abstract class, Circle and Square implementing area()](../assets/uml/p09-shape-abstract.png){width=70%}
+**Goal of this step:** prevent a plain `Account` from being created, and require each account type to decide its own monthly fee.
 
-Not a single plain `Account` has ever been created directly in Bank Mini so far, every instantiation has always been a `SavingsAccount` or a `CheckingAccount`. This is a good sign that `Account` should become an abstract class. Add an abstract method `monthlyFee()`:
+In Bank Mini, an account is always a `SavingsAccount` or a `CheckingAccount`. There is never a "general" account. The diagram below is the result this step works toward:
 
-![Account.java becoming an abstract class with abstract method monthlyFee](../assets/code/pertemuan-09/p09-01-account.png){width=65%}
+![Abstract Account with the abstract method monthlyFee, filled in by SavingsAccount and CheckingAccount](../assets/uml/p09-account-monthlyfee.png){width=55%}
 
-`Bank` also gets a new method to display every account's monthly fee:
+How to read the diagram: the name `Account` and the method `monthlyFee()` are written in italics, meaning abstract. `monthlyFee()` is written again in both subclasses, meaning both subclasses fill it in.
 
-![Bank.java with method printMonthlyFees](../assets/code/pertemuan-09/p09-01-bank.png){width=65%}
+1. Open `Account.java`. Add the word `abstract` to the class declaration, then add the abstract method `monthlyFee()`:
 
-Since `Account` now declares `monthlyFee()` as abstract, `SavingsAccount` and `CheckingAccount` must implement it:
+![Account.java becoming an abstract class with the abstract method monthlyFee](../assets/code/pertemuan-09/p09-01-account.png){width=65%}
 
-![SavingsAccount.java implementing monthlyFee](../assets/code/pertemuan-09/p09-01-savingsaccount.png){width=65%}
+2. Open `Bank.java`. Add a method `printMonthlyFees()` to print every account's monthly fee:
 
-![CheckingAccount.java implementing monthlyFee](../assets/code/pertemuan-09/p09-01-checkingaccount.png){width=65%}
+![Bank.java with the method printMonthlyFees](../assets/code/pertemuan-09/p09-01-bank.png){width=65%}
 
-Update `Main.java`:
+3. Fill in `monthlyFee()` in `SavingsAccount` (no fee) and `CheckingAccount` (a fixed fee):
+
+![SavingsAccount.java filling in monthlyFee](../assets/code/pertemuan-09/p09-01-savingsaccount.png){width=65%}
+
+![CheckingAccount.java filling in monthlyFee](../assets/code/pertemuan-09/p09-01-checkingaccount.png){width=65%}
+
+4. Update `Main.java`:
 
 ![Main.java calling printMonthlyFees](../assets/code/pertemuan-09/p09-01-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program prints `A001 fee: 0.0`, `A002 fee: 15000.0`, `A003 fee: 0.0`, `A004 fee: 15000.0`, matching each account's type.
+**Expected output:**
 
-> ⚠️ **If it fails:** if the error `SavingsAccount is not abstract and does not override abstract method monthlyFee()` appears, check whether `monthlyFee()` is genuinely implemented in both subclasses, with a signature exactly matching the one declared in `Account`.
+```text
+A001 - Nadia - balance: 350000.0
+Account type: Savings, interest rate: 0.01
+A002 - Sari - balance: 200000.0
+Account type: Checking, overdraft limit: 50000.0
+A003 - Rian - balance: 100000.0
+Account type: Savings, interest rate: 0.02
+A004 - Dewi - balance: -150000.0
+Account type: Checking, overdraft limit: 200000.0
+A001 fee: 0.0
+A002 fee: 15000.0
+A003 fee: 0.0
+A004 fee: 15000.0
+```
+
+**Why is that?**
+
+- The first eight lines come from `printAllAccounts()`. The last four lines come from `printMonthlyFees()`.
+- `Bank` calls the same `monthlyFee()` for every account. A savings account answers 0.0, a checking account answers 15000.0, since each fills in that abstract method in its own way.
+- A line `new Account(...)` can no longer be compiled. That is exactly the point.
+
+> ✅ **Checkpoint:** the program's output matches the block above.
+
+> ⚠️ **If it fails:** if the error `SavingsAccount is not abstract and does not override abstract method monthlyFee()` appears, check whether `monthlyFee()` has been filled in in both subclasses, with exactly the same signature as in `Account`.
 
 ### Step 2: InterestBearing, an Interface for Interest-Bearing Accounts
 
-> **Concept Brief: Interface.** An `interface` declares a method contract (a signature with no body) that any class stating `implements` against it must fulfill, without requiring an `extends` relationship at all. Unlike an abstract class, a class may implement many interfaces at once, so an interface is well suited to a capability across a variety of different class hierarchies.
+> **Concept Brief: Interface.** Picture a USB-C port. Anything that has that port can be charged with the same charger. An interface works like that: a list of methods with no bodies. A class that declares `implements` promises to fill in all of those methods. A class may `extends` only one superclass, but may `implements` many interfaces.
 
-Only an account that earns interest needs the `applyInterest()` capability, `CheckingAccount` does not need it. Rather than adding that method to `Account` (which would mean every subclass inherits it, including ones for which it is irrelevant), declare it as its own interface:
+**Goal of this step:** give the "receives interest" capability only to accounts that really bear interest.
+
+Only `SavingsAccount` bears interest. `CheckingAccount` does not. If `applyInterest()` were put in `Account`, a checking account would also have to fill it in. So this capability becomes its own interface:
+
+![Account, SavingsAccount, and the interface InterestBearing](../assets/uml/p09-account-abstract.png){width=75%}
+
+How to read the diagram: the dashed arrow from `SavingsAccount` to `InterestBearing` means `implements`. `CheckingAccount` has no such arrow.
+
+1. Create a new file `InterestBearing.java`:
 
 ![InterestBearing.java](../assets/code/pertemuan-09/p09-02-interestbearing.png){width=55%}
 
-![Account, SavingsAccount, and the InterestBearing interface](../assets/uml/p09-account-abstract.png){width=75%}
-
-`SavingsAccount` states `implements InterestBearing` and implements `applyInterest()`:
+2. Open `SavingsAccount.java`. Add `implements InterestBearing` to the class declaration, then fill in `applyInterest()`:
 
 ![SavingsAccount.java implementing InterestBearing](../assets/code/pertemuan-09/p09-02-savingsaccount.png){width=65%}
 
-Update `Main.java`:
+3. Add a test at the end of `Main.java`:
 
 ![Main.java testing applyInterest](../assets/code/pertemuan-09/p09-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program displays `Before interest: 100000.0` followed by `After interest: 102000.0` (2% interest on a balance of 100000).
+**Expected output:** the twelve lines from Step 1 stay the same, followed by two new lines:
 
-> ⚠️ **If it fails:** if the error `SavingsAccount is not abstract and does not override abstract method applyInterest()` appears, check whether `implements InterestBearing` and the body of `applyInterest()` were both added together; a class that states `implements` must still implement every method from that interface.
+```text
+Before interest: 100000.0
+After interest: 102000.0
+```
+
+**Why is that?** Account A003's interest rate is 0.02. Its interest is 2% of 100000, which is 2000, then deposited into the balance. `CheckingAccount` has no `applyInterest()` at all, since it does not declare `implements InterestBearing`.
+
+> ✅ **Checkpoint:** the last two lines of the output match the block above.
+
+> ⚠️ **If it fails:** if the error `SavingsAccount is not abstract and does not override abstract method applyInterest()` appears, check whether `implements InterestBearing` and the body of `applyInterest()` were added together. A class that declares `implements` must fill in every method of that interface.
 
 ## D. Assignment and Deliverables
 
@@ -84,14 +128,17 @@ Submit the following according to the format requested by the instructor:
 
 - Screenshot of the program output after Step 2.
 - **Independent assignment:**
-  1. The bank needs an audit trail for accounts at risk of going negative (accounts with overdraft). Add an interface `Auditable`, then apply it to `CheckingAccount`. The diagram below is only a sketch of the method to implement, NOT finished code; the body of `auditLog()` is entirely up to you:
+  1. The bank needs an audit trail for accounts whose balance can go negative (accounts with an overdraft). Add an interface `Auditable`, then apply it to `CheckingAccount`. The diagram below is only a sketch of the method to fill in, NOT finished code; the body of `auditLog()` is entirely up to you:
 
-     ![Sketch of Auditable and CheckingAccount, methods to implement with no body](../assets/uml/p09-tugas-auditable.png){width=60%}
+     ![Sketch of Auditable and CheckingAccount, the method to fill in](../assets/uml/p09-tugas-auditable.png){width=60%}
 
-     Demonstrate this by calling `auditLog()` on both `CheckingAccount` objects already in `Main.java` and printing the result.
-  2. Answer briefly (2 to 3 sentences for each question):
-     - (a) why does `applyInterest()` fit better as interface `InterestBearing`, compared to an abstract method placed directly in `Account`?
-     - (b) `SavingsAccount` now has two "contracts" at once, inheriting `Account` (an abstract class) and implementing `InterestBearing` (an interface). What is the fundamental difference between these two kinds of contract?
+     Demonstrate it through `Main.java`: call `auditLog()` on both existing `CheckingAccount` objects, then print the results. Your result is correct if:
+     - `Auditable` is an interface with one method `auditLog()`;
+     - `CheckingAccount` declares `implements Auditable`, while `SavingsAccount` does not;
+     - the printed text contains the account number and its balance.
+  2. Answer briefly (1 to 2 sentences for each question):
+     - (a) Why is `applyInterest()` made into the interface `InterestBearing`, rather than an abstract method in `Account`?
+     - (b) `SavingsAccount` uses `extends Account` and `implements InterestBearing`. How do the meanings of those two keywords differ?
 
 ## E. Grading Criteria
 
@@ -99,4 +146,4 @@ Submit the following according to the format requested by the instructor:
 |---|---:|---|---|
 | Work steps completed | 40% | All steps carried out and functioning | Most steps completed, final result runs |
 | Checkpoints verified | 35% | All checkpoints reached and demonstrated (screenshot/output) | Some checkpoints demonstrated |
-| Independent assignment | 25% | Interface `Auditable` correct and conceptual answers accurate | Interface present even though answers are incomplete |
+| Independent assignment | 25% | `Auditable` interface correct and conceptual answers accurate | Interface present even though answers are incomplete |
