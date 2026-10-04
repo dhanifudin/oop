@@ -1,0 +1,22 @@
+@startuml p07-tugas-businessaccount
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class Account {
+  --
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+}
+
+class BusinessAccount {
+  - monthlyTransactionFee : double
+  --
+  # canWithdraw(amount : double) : boolean
+  + printInfo() : void
+}
+
+Account <|-- BusinessAccount
+@enduml

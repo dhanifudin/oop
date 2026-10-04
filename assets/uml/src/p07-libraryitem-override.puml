@@ -1,0 +1,40 @@
+@startuml p07-libraryitem-override
+scale 2
+!include _common.iuml
+hide circle
+hide empty members
+left to right direction
+
+class LibraryItem {
+  # title : String
+  # year : int
+  --
+  + loanDays() : int
+  + describe() : String
+  + extendLoan() : void
+  + extendLoan(days : int) : void
+}
+
+class Book {
+  - pages : int
+  --
+  + describe() : String
+}
+
+class Dvd {
+  - durationMinutes : int
+  --
+  + loanDays() : int
+  + describe() : String
+}
+
+class Magazine {
+  - issueNumber : int
+  --
+  + describe() : String
+}
+
+LibraryItem <|-- Book
+LibraryItem <|-- Dvd
+LibraryItem <|-- Magazine
+@enduml

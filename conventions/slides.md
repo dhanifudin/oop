@@ -111,6 +111,23 @@ kasus pilihan mahasiswa sendiri), mengikuti pola Pertemuan 4, atas
 permintaan eksplisit pengguna. Pengecualian ini khusus dek ini saja: jangan
 hapus Bagian Bank Mini dek lain kecuali ada permintaan eksplisit yang sama.
 
+**Pengecualian sengaja di Pertemuan 7**: mengikuti Pertemuan 6, dek ini
+juga TIDAK punya Bagian "Menerapkan ke Bank Mini" (permintaan eksplisit
+pengguna: "using same format from previous published slides"). Bagian 1-3
+memakai toy `Vehicle`/`Sedan`/`Truck`, Bagian 4 melanjutkan studi kasus
+`LibraryItem` dari Pertemuan 6 (`Dvd` meng-override `loanDays()`,
+`describe()` memakai `super`, overload `extendLoan`, UML
+`p07-libraryitem-override`), dan penutupnya dua slide "Tugas" (perpustakaan,
+lalu studi kasus mahasiswa sendiri). Bank Mini (`canWithdraw()`, overload
+`deposit()`, tugas `BusinessAccount`) hanya ada di jobsheet, bersama UML
+`p07-account-hierarchy`. Dek ini juga contoh pertama gaya penyampaian untuk
+mahasiswa pemula (lihat [[writing]]): satu gagasan per slide, analogi dulu,
+slide "Telusuri" setelah contoh kode, latihan tertutup. Checklist konsep
+yang wajib ada: override di diagram kelas, `@Override`, objek menentukan
+versi yang dijalankan, `super.method(...)`, tiga aturan override, `final`,
+`toString()`, overloading method dan constructor (`this(...)`), tabel
+perbandingan override vs overload, overload yang dikira override.
+
 ## Bahaya tersembunyi di kelas `divider`
 
 Blok CSS `section.divider h1` mengatur warna putih, tapi aturan global

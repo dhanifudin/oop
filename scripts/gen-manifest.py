@@ -130,7 +130,6 @@ def rows_p07():
         (p07("langkah-01"), "Account.java", p07("langkah-04"), "Account.java", "p07-04-account",
          [(1, 3), (34, 40), (57, 57)]),
         (p07("langkah-03"), "Main.java", p07("langkah-04"), "Main.java", "p07-04-main"),
-        (p06("tugas"), "BusinessAccount.java", p07("tugas"), "BusinessAccount.java", "p07-tugas-businessaccount"),
         (None, None, p07("tugas"), "Main.java", "p07-tugas-main"),
     ]
 

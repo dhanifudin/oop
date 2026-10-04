@@ -56,3 +56,34 @@
   menulis kode baru, grep `System.out.println` di `code-src/` yang baru
   ditambahkan untuk memastikan tidak ada kata bahasa Indonesia yang
   lolos.
+
+## Gaya penyampaian untuk mahasiswa pemula
+
+Mahasiswa mata kuliah ini masih pemula; materi yang lengkap tetapi padat
+pernah ditolak pengguna ("the students are lower grades, ensure the
+explaination and delivery method understandable"). Berlaku untuk slide dan
+jobsheet baru atau yang direvisi (contoh acuan: Pertemuan 7):
+
+- **Satu gagasan per slide**: satu term-box, ATAU satu gambar, ATAU satu
+  blok kode, ditambah paling banyak dua kalimat pendek.
+- **Analogi dulu, istilah kemudian**: buka konsep baru dengan gambaran
+  sehari-hari (resep keluarga untuk overriding, kata "bayar" di kasir untuk
+  overloading), baru sebutkan istilah Java-nya.
+- **Irama tetap per konsep**: masalah, analogi, definisi singkat,
+  gambar/diagram, contoh kode kecil, telusuri output, latihan.
+- **Slide "Telusuri"** setelah contoh kode: langkah bernomor yang berakhir
+  dengan output yang tercetak, sebelum mahasiswa diminta menebak sendiri.
+- **Kalimat pendek, kata umum**: sekitar 20 kata per kalimat; satu istilah
+  dipakai konsisten dengan kata yang sama.
+- **Kode kecil**: 6-7 baris per blok, satu hal baru per blok, komentar
+  menandai baris yang perlu diperhatikan.
+- **Latihan tertutup** di dalam Bagian (tebak output, benar/salah, pilih
+  versi, isi titik-titik); pertanyaan penalaran terbuka hanya di slide
+  Tugas penutup.
+- **Buang detail lanjutan** yang tidak dibutuhkan pemula (mis. covariant
+  return type, `static` hiding, aturan type promotion).
+- **Rangkuman** paling banyak tiga butir; perbandingan dua konsep memakai
+  tabel.
+- **Jobsheet**: tiap Langkah berurutan "Tujuan langkah ini", aksi bernomor,
+  gambar kode, "Output yang diharapkan" sebagai blok teks, "Mengapa
+  demikian?", lalu Checkpoint dan "Jika gagal".

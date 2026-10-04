@@ -104,17 +104,17 @@ style: |
 
 Pertemuan 7: **Overriding dan Overloading**
 
-Menulis ulang perilaku warisan, dan menambah versi baru sebuah method
+Mengganti perilaku warisan, dan memberi satu nama untuk beberapa bentuk pemanggilan
 
 ---
 
 ## Yang Akan Kamu Pelajari
 
-- Cara subclass menulis ulang perilaku yang diwarisi supaya cocok dengan kebutuhannya sendiri
-- Cara tetap memanfaatkan perilaku lama sambil menambah sesuatu yang baru di atasnya
-- Cara mencegah sebuah perilaku ditulis ulang sama sekali
-- Menambahkan beberapa cara memanggil operasi yang sama, dan bagaimana ini berbeda dari menulis ulang perilaku warisan
-- Penerapan pada Bank Mini: aturan penarikan yang berbeda tiap jenis rekening, dan setoran dengan atau tanpa catatan
+- Cara subclass mengganti perilaku method yang diwarisinya (overriding)
+- Cara memakai kembali perilaku lama lewat `super`, dan menguncinya lewat `final`
+- Cara membuat output `println(objek)` mudah dibaca lewat `toString()`
+- Cara memberi satu nama method untuk beberapa bentuk pemanggilan (overloading)
+- Perbedaan overriding dan overloading, diterapkan pada satu studi kasus
 
 <div class="tip-box">
 Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrograman Berbasis Objek (RTI253008), Pertemuan 7.
@@ -124,10 +124,10 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Peta Sesi Hari Ini
 
-- **Sesi 1 (50')**: Method overriding, menulis ulang perilaku warisan
-- **Sesi 2 (50')**: Method overloading, menambah versi baru sebuah method
-- **Sesi 3 (50')**: Menerapkan overriding ke Bank Mini
-- **Sesi 4 (50')**: Menerapkan overloading ke Bank Mini
+- **Sesi 1 (50')**: Method overriding
+- **Sesi 2 (50')**: `super`, `final`, dan `toString()`
+- **Sesi 3 (50')**: Method overloading
+- **Sesi 4 (50')**: Studi kasus, koleksi perpustakaan
 
 ---
 
@@ -140,39 +140,60 @@ Sesi 1 dari 4
 
 ---
 
-## Menulis Ulang Method Warisan
+## Masalah: Semua Kendaraan Berbunyi Sama
 
-Pertemuan 6 menunjukkan bahwa subclass mewarisi method superclass apa adanya. Kadang perilaku yang diwarisi tidak cocok untuk subclass tertentu: `Sedan` dan `Truck` sama-sama mewarisi `honk()` dari `Vehicle`, tetapi tentu saja bunyi klaksonnya seharusnya berbeda.
+```java
+class Vehicle {
+    public String honk() { return "Beep!"; }
+}
 
-<div class="term-box">
-<b>Overriding</b> adalah menulis ulang method superclass di dalam subclass, dengan nama dan daftar parameter (signature) yang sama persis. Java memanggil versi milik objek yang sebenarnya saat program berjalan, bukan versi yang dideklarasikan di tipe variabelnya.
-</div>
+class Sedan extends Vehicle { }
+class Truck extends Vehicle { }
+```
+
+`Sedan` dan `Truck` mewarisi `honk()` apa adanya. Keduanya berbunyi "Beep!", padahal klakson truk seharusnya berbeda.
 
 ---
 
-## Apa Itu Signature?
+## Apa Itu Overriding?
 
-Dua orang boleh punya nama yang sama; mereka dibedakan lewat data lain (tanggal lahir, alamat). Dua method dalam satu kelas juga boleh punya nama yang sama, asal Java bisa membedakannya lewat daftar parameternya, itulah yang disebut signature.
-
-![h:220 Anatomi signature: honk(int times), nama method dan daftar parameter, terpisah dari visibility dan return type](../assets/illustrations/method-signature-anatomy.svg)
+Bayangkan resep keluarga. Seorang anak memasak hidangan dengan nama yang sama, tetapi memakai resepnya sendiri.
 
 <div class="term-box">
-<b>Signature</b> sebuah method terdiri dari nama method dan daftar parameternya (jumlah, urutan, dan tipe data). Return type dan visibility BUKAN bagian dari signature.
+<b>Overriding</b> adalah menulis ulang method warisan di dalam subclass. Nama dan parameternya tetap sama, hanya isinya yang berbeda.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan sebuah sistem pembayaran dengan puluhan jenis metode (kartu kredit, transfer bank, e-wallet), dengan superclass `PaymentMethod` yang subclass-nya terus bertambah seiring waktu. Tanpa overriding, setiap kali ditambahkan jenis pembayaran baru, kode yang memproses pembayaran juga harus diubah untuk menangani kasus baru itu, berisiko merusak jenis pembayaran lain yang sudah berjalan baik.
+Sebuah aplikasi pembayaran punya banyak jenis metode: kartu kredit, transfer bank, e-wallet. Jenis baru terus bertambah. Tanpa overriding, kode pemroses pembayaran harus diubah setiap kali ada jenis baru, dan perubahan itu bisa merusak jenis lain yang sudah berjalan.
 
 <div class="term-box">
-Overriding memungkinkan setiap subclass menyediakan perilakunya sendiri tanpa mengubah satu baris pun kode superclass atau subclass lain yang sudah ada. Prinsip "boleh diperluas, tetapi tidak boleh diubah" ini adalah salah satu dari lima prinsip SOLID, disebut Open/Closed Principle, yang dibahas lebih lanjut pada Pertemuan 11.
+Dengan overriding, setiap subclass membawa perilakunya sendiri. Kode lama tidak perlu disentuh. Prinsip ini bernama Open/Closed Principle, dibahas pada Pertemuan 11.
 </div>
 
 ---
 
-## Contoh Kode: Meng-override `honk()`
+## Nama Lengkap Method: Signature
+
+![h:200 Anatomi signature: honk(int times), nama method dan daftar parameter, terpisah dari visibility dan return type](../assets/illustrations/method-signature-anatomy.svg)
+
+<div class="term-box">
+<b>Signature</b> adalah nama method ditambah daftar parameternya. Dua method dianggap sama bila signature-nya sama.
+</div>
+
+---
+
+## Overriding pada Diagram Kelas
+
+![h:260 Diagram kelas Vehicle, Sedan, dan Truck, dengan honk() muncul lagi di kedua subclass](../assets/uml/p06-vehicle.png)
+
+Method yang muncul lagi di kotak subclass berarti di-override. `honk()` tertulis di `Vehicle`, lalu tertulis lagi di `Sedan` dan `Truck`.
+
+---
+
+## Contoh Kode: Truck Meng-override `honk()`
 
 ```java
 class Vehicle {
@@ -181,31 +202,117 @@ class Vehicle {
 
 class Truck extends Vehicle {
     @Override
-    public String honk() { return "Tin tin!"; }
+    public String honk() { return "Tin tin!"; }   // isi baru
 }
 ```
 
 ---
 
-## Anotasi `@Override`
+## Telusuri Langkah demi Langkah
+
+```java
+Truck truck = new Truck();
+System.out.println(truck.honk());
+```
+
+1. Java melihat objeknya: sebuah `Truck`.
+2. Java mencari `honk()` di kelas `Truck`, dan menemukannya.
+3. Versi milik `Truck` yang dijalankan.
+
+Output: `Tin tin!`
+
+---
+
+## Anotasi `@Override`: Pengaman dari Salah Ketik
+
+```java
+class Truck extends Vehicle {
+    @Override
+    public String hunk() { return "Tin tin!"; }   // salah ketik
+}
+```
 
 <div class="tip-box">
-Anotasi <code>@Override</code> memberi tahu compiler untuk memeriksa bahwa method benar-benar menulis ulang method superclass dengan signature yang sama persis. Bila ada kesalahan ketik pada nama method, compiler menampilkan galat alih-alih diam-diam membuat method baru yang tidak pernah terpanggil.
-</div>
-
-<div class="warn-box">
-<code>@Override</code> sendiri tidak wajib secara sintaks, tetapi selalu disertakan sebagai kebiasaan baik: galat yang terdeteksi lebih awal jauh lebih murah diperbaiki daripada bug yang baru ketahuan saat program berjalan.
+Dengan <code>@Override</code>, compiler langsung menampilkan error, sebab <code>Vehicle</code> tidak punya method <code>hunk()</code>. Tanpa <code>@Override</code>, kesalahan ini lolos dan truk tetap berbunyi "Beep!".
 </div>
 
 ---
 
-## Memanggil Versi Superclass: `super.method(...)`
+## Objek yang Menentukan, Bukan Tipe Variabel
 
-<div class="term-box">
-Sebuah method yang di-override boleh tetap memanggil versi superclass-nya lewat <code>super.namaMethod(...)</code>, biasanya untuk menambahkan perilaku baru tanpa menulis ulang seluruh isi method dari awal.
+```java
+Vehicle v = new Truck();
+System.out.println(v.honk());   // Tin tin!
+```
+
+Variabel `v` bertipe `Vehicle`, tetapi objek di dalamnya adalah `Truck`. Java menjalankan versi milik objeknya.
+
+<div class="tip-box">
+Sifat ini menjadi dasar topik Polimorfisme pada Pertemuan 10.
 </div>
 
-Pola ini sering dipakai ketika subclass hanya ingin menambahkan sedikit informasi pada perilaku yang sudah ada, misalnya mencetak baris tambahan setelah baris yang sudah dicetak superclass.
+---
+
+## Kesalahan Umum: Parameter Berbeda Bukan Override
+
+<div class="warn-box">
+<b>Salah:</b> menulis <code>public String honk(String mode)</code> di <code>Truck</code>, lalu mengira <code>honk()</code> milik <code>Vehicle</code> sudah diganti.
+</div>
+
+**Benar:** parameternya berbeda, jadi signature-nya berbeda. Itu method baru, bukan override. Pasang `@Override` supaya compiler menangkap kesalahan ini.
+
+---
+
+## Latihan
+
+`Vehicle.honk()` mengembalikan `"Beep!"`. `Truck` meng-override-nya menjadi `"Tin tin!"`. Tebak output program berikut:
+
+```java
+Vehicle a = new Vehicle();
+Vehicle b = new Truck();
+System.out.println(a.honk());
+System.out.println(b.honk());
+```
+
+---
+
+## Jawaban Latihan
+
+```
+Beep!
+Tin tin!
+```
+
+Objek `a` adalah `Vehicle`, jadi versi `Vehicle` yang dijalankan. Objek `b` adalah `Truck`, jadi versi `Truck` yang dijalankan, walaupun variabelnya bertipe `Vehicle`.
+
+---
+
+## Rangkuman Bagian 1
+
+- Overriding menulis ulang method warisan di subclass, dengan signature yang sama.
+- `@Override` membuat compiler memeriksa bahwa method itu benar-benar ada di superclass.
+- Versi yang dijalankan ditentukan oleh objeknya, bukan oleh tipe variabelnya.
+
+Selanjutnya: Bagian 2 membahas cara memakai kembali perilaku lama, dan cara menguncinya.
+
+---
+
+<!-- _class: divider -->
+
+# Bagian 2
+## super, final, dan toString()
+
+Sesi 2 dari 4
+
+---
+
+## `super.method(...)`: Resep Lama Ditambah Satu Bahan
+
+Kadang subclass tidak ingin mengganti seluruh perilaku lama. Subclass hanya ingin menambah sedikit, seperti memakai resep orang tua lalu menambah satu bahan.
+
+<div class="term-box">
+<code>super.namaMethod(...)</code> memanggil versi milik superclass dari dalam method yang meng-override-nya.
+</div>
 
 ---
 
@@ -215,84 +322,150 @@ Pola ini sering dipakai ketika subclass hanya ingin menambahkan sedikit informas
 class Truck extends Vehicle {
     @Override
     public String honk() {
-        return super.honk() + " (loud horn)";
+        return super.honk() + " (loud horn)";   // hasil lama + tambahan
     }
 }
 ```
 
+Output `new Truck().honk()`: `Beep! (loud horn)`
+
 ---
 
-## Mencegah Method Di-override: `final`
+## Tiga Aturan Overriding
+
+| Aturan | Benar | Salah |
+|---|---|---|
+| Signature harus sama persis | `honk()` menjadi `honk()` | `honk()` menjadi `honk(int times)` |
+| Access modifier tidak boleh lebih sempit | `protected` menjadi `public` | `public` menjadi `private` |
+| Method `private` dan `final` tidak bisa di-override | method biasa | method bertanda `final` |
+
+Bila satu aturan dilanggar, compiler menampilkan error.
+
+---
+
+## `final`: Resep yang Tidak Boleh Diubah
+
+```java
+class Vehicle {
+    public final String plateFormat() { return "N 1234 AB"; }
+}
+```
 
 <div class="term-box">
-Method yang ditandai <code>final</code> tidak dapat di-override oleh subclass mana pun. Java akan menampilkan galat compile bila ada subclass yang mencoba menulis ulang method tersebut.
-</div>
-
-<div class="warn-box">
-Gunakan <code>final</code> secukupnya: hanya ketika ada alasan kuat suatu perilaku harus selalu sama di seluruh subclass. Menandai semua method sebagai <code>final</code> justru menghilangkan manfaat utama inheritance, yaitu kemampuan subclass menyesuaikan perilaku.
+Method bertanda <code>final</code> tidak bisa di-override. Pakai hanya bila perilakunya memang harus sama di semua subclass.
 </div>
 
 ---
 
-## Kesalahan Umum: Mengira Parameter Boleh Berbeda
+## Masalah: Output `println(objek)` Sulit Dibaca
 
-<div class="warn-box">
-<b>Salah:</b> menulis <code>public String honk(String mode)</code> di <code>Truck</code>, mengira ini meng-override <code>honk()</code> milik <code>Vehicle</code>, padahal daftar parameternya berbeda.
+```java
+Sedan civic = new Sedan("Civic");
+System.out.println(civic);   // Sedan@1b6d3586
+```
+
+`println` memanggil `toString()`, method yang diwarisi setiap kelas dari `Object`. Versi bawaannya hanya mencetak nama kelas dan hash code.
+
+<div class="tip-box">
+Karena <code>toString()</code> adalah method warisan, kita boleh meng-override-nya.
 </div>
 
-**Benar:** `honk(String mode)` bukan override, melainkan method BARU yang kebetulan bernama sama. Signature (nama dan parameter) harus identik persis; `@Override` akan menampilkan galat compile kalau tidak cocok, justru mengungkap kesalahan ini lebih awal.
+---
+
+## Contoh Kode: Meng-override `toString()`
+
+```java
+class Vehicle {
+    private String name;
+    public Vehicle(String name) { this.name = name; }
+
+    @Override
+    public String toString() { return "Vehicle: " + name; }
+}
+```
+
+Output `System.out.println(new Vehicle("Civic"))`: `Vehicle: Civic`
+
+---
+
+## Kesalahan Umum: Mempersempit Access Modifier
+
+<div class="warn-box">
+<b>Salah:</b> <code>Vehicle</code> punya <code>public String honk()</code>, lalu <code>Truck</code> menulis <code>private String honk()</code>.
+</div>
+
+**Benar:** override harus sama terbukanya, atau lebih terbuka. `public` tidak boleh menjadi `protected` atau `private`. Kode di atas gagal dikompilasi.
 
 ---
 
 ## Latihan
 
-Kelas `Truck` menulis method `public String honk(int times)`, sedangkan `Vehicle` punya `public String honk()`.
+Tentukan **valid** atau **error** untuk tiap override berikut:
 
-Apakah ini overriding? Jelaskan, lalu prediksi apa yang terjadi kalau `Truck` menandai method ini dengan `@Override`.
+1. `Vehicle`: `public String honk()`. `Truck`: `protected String honk()`.
+2. `Vehicle`: `public final String plateFormat()`. `Truck` menulis ulang `plateFormat()`.
+3. `Truck`: `@Override public String honk() { return super.honk() + "!"; }`
 
 ---
 
 ## Jawaban Latihan
 
-**Bukan overriding**, sebab parameternya berbeda (`honk()` vs `honk(int times)`). Kalau ditandai `@Override`, compiler akan menampilkan galat, sebab tidak ada method `honk(int times)` di `Vehicle` yang bisa ditulis ulang.
+1. **Error.** `protected` lebih sempit daripada `public`.
+2. **Error.** Method `final` tidak bisa di-override.
+3. **Valid.** Output-nya `Beep!!`, yaitu hasil `super.honk()` ditambah satu tanda seru.
 
 ---
 
-## Rangkuman Bagian 1
+## Rangkuman Bagian 2
 
-- Overriding menulis ulang method superclass di subclass, dengan signature yang harus sama persis.
-- `@Override` membuat compiler memeriksa signature-nya benar-benar cocok, menangkap kesalahan lebih awal.
-- `super.method(...)` memanggil versi superclass; `final` mencegah method di-override sama sekali.
+- `super.method(...)` memakai kembali perilaku superclass, lalu subclass menambah bagiannya sendiri.
+- Tiga aturan override: signature sama, access modifier tidak lebih sempit, `private` dan `final` tidak bisa di-override.
+- Meng-override `toString()` membuat output `println(objek)` mudah dibaca.
 
-Selanjutnya: Bagian 2 membahas method overloading, situasi ketika daftar parameter yang berbeda ternyata bukan overriding sama sekali.
+Selanjutnya: Bagian 3 membahas overloading, nama yang sama dengan parameter yang berbeda.
 
 ---
 
 <!-- _class: divider -->
 
-# Bagian 2
+# Bagian 3
 ## Method Overloading
 
-Sesi 2 dari 4
+Sesi 3 dari 4
 
 ---
 
-## Nama Sama, Parameter Berbeda
+## Masalah: Nama Method Terus Bertambah
+
+```java
+class Vehicle {
+    public String honkOnce() { return "Beep!"; }
+    public String honkTimes(int times) { return "Beep!".repeat(times); }
+    public String honkLoud(boolean loud) { return loud ? "BEEP!" : "Beep!"; }
+}
+```
+
+Ketiganya melakukan hal yang sama, yaitu membunyikan klakson. Pemakai kelas ini harus menghafal tiga nama yang berbeda.
+
+---
+
+## Apa Itu Overloading?
+
+Di kasir, satu kata "bayar" berlaku untuk tunai, kartu, dan QR. Kasir memilih caranya dari apa yang kamu serahkan.
 
 <div class="term-box">
-<b>Overloading</b> adalah menambahkan method dengan nama yang sama tetapi daftar parameter (jumlah atau tipe) yang berbeda, dengan kata lain: nama sama, signature berbeda. Compiler memilih versi mana yang dipanggil berdasarkan argumen yang diberikan saat pemanggilan, ditentukan sejak program dikompilasi, bukan saat program berjalan.
+<b>Overloading</b> adalah beberapa method dengan nama yang sama, tetapi daftar parameter yang berbeda. Compiler memilih versinya dari argumen yang diberikan.
 </div>
-
-Contoh umum: `println()` pada `System.out` sebenarnya adalah puluhan method overload, masing-masing menerima tipe argumen yang berbeda (`String`, `int`, `double`, `boolean`, dan seterusnya), tetapi semuanya dipanggil dengan nama yang sama.
 
 ---
 
-## Contoh Kode: Meng-overload `honk()`
+## Contoh Kode: `honk()` dan `honk(int times)`
 
 ```java
 class Vehicle {
     public String honk() { return "Beep!"; }
-    public String honk(int times) {
+
+    public String honk(int times) {      // nama sama, parameter berbeda
         return honk().repeat(times);
     }
 }
@@ -300,13 +473,44 @@ class Vehicle {
 
 ---
 
+## Telusuri: Versi Mana yang Dipilih?
+
+```java
+Vehicle v = new Vehicle();
+System.out.println(v.honk());    // tanpa argumen
+System.out.println(v.honk(3));   // satu argumen int
+```
+
+1. `v.honk()` tidak membawa argumen, compiler memilih `honk()`.
+2. `v.honk(3)` membawa satu `int`, compiler memilih `honk(int times)`.
+
+Output: `Beep!` lalu `Beep!Beep!Beep!`
+
+---
+
 ## Mengapa Ini Penting?
 
-Tanpa overloading, setiap variasi cara memanggil sebuah operasi butuh nama method yang berbeda, misalnya `printString()`, `printInt()`, `printDouble()`, `printBoolean()`. Semakin banyak variasi tipe data, semakin sulit programmer lain mengingat nama mana yang harus dipakai untuk kebutuhan tertentu.
+Tanpa overloading, mencetak ke layar butuh `printString()`, `printInt()`, `printDouble()`, dan seterusnya. Programmer harus mengingat nama yang berbeda untuk tiap tipe data.
 
 <div class="term-box">
-Overloading membuat API sebuah kelas terasa alami untuk dipakai: satu nama method yang sama, <code>println(...)</code>, cukup untuk seluruh variasi tipe data, dan compiler yang menentukan versi mana yang cocok berdasarkan argumen yang diberikan.
+Berkat overloading, satu nama <code>println(...)</code> cukup untuk semua tipe data. Kelas yang kita tulis pun lebih mudah dipakai orang lain bila mengikuti cara yang sama.
 </div>
+
+---
+
+## Constructor Juga Bisa Di-overload
+
+```java
+class Vehicle {
+    private String name;
+    private int wheels;
+
+    public Vehicle(String name) { this(name, 4); }   // memanggil constructor di bawah
+    public Vehicle(String name, int wheels) { this.name = name; this.wheels = wheels; }
+}
+```
+
+`new Vehicle("Civic")` dan `new Vehicle("Hino", 6)` sama-sama valid. `this(...)` memanggil constructor lain di kelas yang sama.
 
 ---
 
@@ -314,23 +518,23 @@ Overloading membuat API sebuah kelas terasa alami untuk dipakai: satu nama metho
 
 ![h:300 Perbandingan overriding dan overloading](../assets/illustrations/override-vs-overload.svg)
 
-Keduanya terdengar mirip namanya, tetapi mekanismenya sangat berbeda: overriding mengganti perilaku method warisan di subclass (diputuskan saat program berjalan), sementara overloading menambah versi baru sebuah method di kelas yang sama (diputuskan saat program dikompilasi).
+Overriding mengganti isi method warisan. Overloading menambah versi baru dengan parameter yang berbeda.
 
 ---
 
-## Kesalahan Umum: Mengira Tipe Kembalian Saja Sudah Cukup
+## Kesalahan Umum: Hanya Tipe Kembalian yang Berbeda
 
 <div class="warn-box">
-<b>Salah:</b> menulis <code>public String honk()</code> dan <code>public int honk()</code> di kelas yang sama, mengira keduanya overload yang sah karena tipe kembaliannya berbeda.
+<b>Salah:</b> menulis <code>public String honk()</code> dan <code>public int honk()</code> di kelas yang sama, lalu mengira keduanya overload yang valid.
 </div>
 
-**Benar:** tipe kembalian saja tidak cukup untuk overloading. Java membedakan overload lewat daftar parameter; dua method dengan parameter identik tapi tipe kembalian berbeda menyebabkan galat compile "duplicate method".
+**Benar:** tipe kembalian tidak termasuk signature. Kedua method itu punya signature yang sama, sehingga compiler menampilkan error. Yang harus berbeda adalah daftar parameternya.
 
 ---
 
 ## Latihan
 
-Untuk tiap pasangan method berikut, di kelas yang sama, tentukan **overloading yang sah** atau **galat compile**:
+Di kelas yang sama, tentukan **overload valid** atau **error**:
 
 1. `honk()` dan `honk(int times)`
 2. `String getName()` dan `int getName()`
@@ -340,153 +544,172 @@ Untuk tiap pasangan method berikut, di kelas yang sama, tentukan **overloading y
 
 ## Jawaban Latihan
 
-1. **Overloading sah**, parameternya berbeda (jumlah).
-2. **Galat compile**, parameternya identik (kosong); hanya tipe kembalian yang berbeda, itu tidak cukup.
-3. **Overloading sah**, tipe parameternya berbeda (`int` vs `double`).
-
----
-
-## Rangkuman Bagian 2
-
-- Overloading menambah versi baru sebuah method dengan parameter berbeda, dipilih compiler berdasarkan argumen pemanggilan.
-- Tipe kembalian saja tidak pernah cukup untuk membedakan overload; parameternya yang harus berbeda.
-- Overriding mengganti perilaku warisan (runtime); overloading menambah versi baru (compile-time).
-
-Selanjutnya: Bagian 3 menerapkan overriding ke aturan penarikan Bank Mini.
-
----
-
-<!-- _class: divider -->
-
-# Bagian 3
-## Menerapkan Overriding ke Bank Mini
-
-Sesi 3 dari 4
-
----
-
-## canWithdraw() yang Di-override Tiap Jenis Rekening
-
-![h:280 Account dengan canWithdraw sebagai titik override, SavingsAccount dan CheckingAccount menulis ulang aturannya masing-masing](../assets/uml/p07-account-hierarchy.png)
-
-Pertemuan 6 menunjukkan bahwa `overdraftLimit` milik `CheckingAccount` belum memengaruhi apa pun, karena `withdraw()` yang diwarisi hanya tahu satu aturan generik. Dengan `canWithdraw()` yang di-override, `SavingsAccount` kini menjaga saldo minimum dan `CheckingAccount` kini benar-benar bisa ditarik melebihi saldo hingga batas overdraft-nya.
-
----
-
-## Contoh Kode: `canWithdraw()` yang Berbeda Tiap Rekening
-
-```java
-class SavingsAccount extends Account {
-    @Override
-    protected boolean canWithdraw(double amount) {
-        return balance - amount >= 50000;  // saldo minimum
-    }
-}
-
-class CheckingAccount extends Account {
-    @Override
-    protected boolean canWithdraw(double amount) {
-        return balance - amount >= -overdraftLimit;
-    }
-}
-```
-
----
-
-## Kesalahan Umum: Mengurangi Visibility Saat Override
-
-<div class="warn-box">
-<b>Salah:</b> menulis <code>private boolean canWithdraw(double amount)</code> di <code>SavingsAccount</code>, mengira ini meng-override method <code>protected</code> milik <code>Account</code>.
-</div>
-
-**Benar:** Java tidak mengizinkan override yang mengurangi visibility. Method override harus sama atau lebih terbuka daripada superclass-nya (`protected` boleh jadi `public`, tapi tidak boleh jadi `private`); kode ini gagal dikompilasi.
-
----
-
-## Latihan
-
-`SavingsAccount` menjaga saldo minimum Rp 50.000. Diberi `balance` saat ini Rp 100.000, tentukan hasil `withdraw(60000)`: berhasil atau ditolak? Jelaskan lewat `canWithdraw()`.
-
----
-
-## Jawaban Latihan
-
-**Ditolak.** `canWithdraw()` milik `SavingsAccount` mengecek `balance - amount >= 50000`. Dengan `balance` 100000 dan `amount` 60000, hasilnya 40000, kurang dari 50000, sehingga `canWithdraw()` mengembalikan `false` dan `withdraw()` ditolak.
+1. **Valid.** Jumlah parameternya berbeda.
+2. **Error.** Parameternya sama (kosong), hanya tipe kembaliannya yang berbeda.
+3. **Valid.** Tipe parameternya berbeda, `int` dan `double`.
 
 ---
 
 ## Rangkuman Bagian 3
 
-- `canWithdraw()` di-override tiap subclass `Account`, memberi aturan penarikan yang berbeda tanpa mengubah `withdraw()` itu sendiri.
-- Method override tidak boleh mengurangi visibility dibanding superclass-nya.
-- Aturan overriding dari Bagian 1 (signature sama persis, `@Override`) berlaku persis sama di sini.
+- Overloading: nama method sama, daftar parameter berbeda.
+- Compiler memilih versinya dari jumlah dan tipe argumen saat pemanggilan.
+- Constructor juga bisa di-overload; `this(...)` memanggil constructor lain di kelas yang sama.
 
-Selanjutnya: Bagian 4 menerapkan overloading ke method setoran Bank Mini.
+Selanjutnya: Bagian 4 memakai overriding dan overloading pada koleksi perpustakaan.
 
 ---
 
 <!-- _class: divider -->
 
 # Bagian 4
-## Menerapkan Overloading ke Bank Mini
+## Studi Kasus: Koleksi Perpustakaan
 
 Sesi 4 dari 4
 
 ---
 
-## deposit() yang Di-overload
+## Kembali ke Perpustakaan
 
-<div class="term-box">
-<code>Account</code> mendapat versi kedua dari <code>deposit(double amount)</code>, yaitu <code>deposit(double amount, String note)</code>, yang menerima catatan tambahan lalu memanggil versi pertama untuk logika penyimpanannya. Keduanya adalah method yang berbeda di kelas yang sama, dipilih Java berdasarkan jumlah argumen yang diberikan saat pemanggilan.
-</div>
+Pada Pertemuan 6, `Book`, `Dvd`, dan `Magazine` mewarisi `LibraryItem`. Ada tiga hal yang belum beres:
+
+1. Semua koleksi dipinjam 14 hari, padahal DVD seharusnya 7 hari.
+2. `describe()` hanya mencetak judul dan tahun, belum menyebut halaman atau durasi.
+3. Perpanjangan pinjaman butuh dua cara: bawaan 7 hari, atau jumlah hari tertentu.
+
+Nomor 1 dan 2 diselesaikan dengan overriding. Nomor 3 diselesaikan dengan overloading.
 
 ---
 
-## Contoh Kode: `deposit()` dengan Dua Versi
+## Diagram Kelas: Siapa Meng-override Apa
+
+![h:300 LibraryItem dengan loanDays, describe, dan dua versi extendLoan; Book, Dvd, dan Magazine menulis ulang sebagian method](../assets/uml/p07-libraryitem-override.png)
+
+`loanDays()` muncul lagi di `Dvd`. `describe()` muncul lagi di ketiga subclass. `extendLoan` tertulis dua kali di `LibraryItem` dengan parameter berbeda.
+
+---
+
+## Contoh Kode: `Dvd` Meng-override `loanDays()`
 
 ```java
-class Account {
-    public boolean deposit(double amount) {
-        if (amount <= 0) return false;
-        balance += amount;
-        return true;
-    }
+class LibraryItem {
+    public int loanDays() { return 14; }
+}
 
-    public boolean deposit(double amount, String note) {
-        System.out.println("Note: " + note);
-        return deposit(amount);
-    }
+class Dvd extends LibraryItem {
+    @Override
+    public int loanDays() { return 7; }   // khusus DVD
 }
 ```
 
 ---
 
+## Contoh Kode: `describe()` dengan `super`
+
+```java
+class LibraryItem {
+    public String describe() { return title + " (" + year + ")"; }
+}
+
+class Book extends LibraryItem {
+    @Override
+    public String describe() { return super.describe() + ", " + pages + " pages"; }
+}
+```
+
+Output untuk buku Dune: `Dune (1965), 412 pages`
+
+---
+
+## Contoh Kode: Dua Versi `extendLoan`
+
+```java
+class LibraryItem {
+    private int dueInDays = 14;
+
+    public void extendLoan() { extendLoan(7); }            // tanpa angka: tambah 7 hari
+    public void extendLoan(int days) { dueInDays += days; }
+}
+```
+
+`item.extendLoan()` menambah 7 hari. `item.extendLoan(3)` menambah 3 hari.
+
+---
+
+## Telusuri: Satu Koleksi, Output Berbeda
+
+```java
+LibraryItem[] items = { new Book("Dune", 1965, 412), new Dvd("Inception", 2010, 148) };
+for (LibraryItem item : items) {
+    System.out.println(item.describe() + ": " + item.loanDays() + " days");
+}
+```
+
+```
+Dune (1965), 412 pages: 14 days
+Inception (2010), 148 min: 7 days
+```
+
+Kode perulangan tidak berubah dari Pertemuan 6. Tiap objek menjalankan versinya sendiri.
+
+---
+
+## Kesalahan Umum: Overload yang Dikira Override
+
+<div class="warn-box">
+<b>Salah:</b> <code>Dvd</code> menulis <code>public int loanDays(int extra) { return 7; }</code> tanpa <code>@Override</code>, lalu heran karena DVD masih dipinjam 14 hari.
+</div>
+
+**Benar:** parameternya berbeda, jadi itu overload, bukan override. Perulangan memanggil `loanDays()` tanpa argumen, dan versi itu masih milik `LibraryItem`. `@Override` akan menangkap kesalahan ini.
+
+---
+
 ## Latihan
 
-Panggilan `account.deposit(50000)` dan `account.deposit(50000, "monthly salary")` sama-sama valid.
+1. Lengkapi supaya majalah dipinjam 3 hari:
 
-Method mana yang dipanggil Java untuk masing-masing, dan berdasarkan apa Java memilihnya?
+```java
+class Magazine extends LibraryItem {
+    ________
+    public int loanDays() { return ___; }
+}
+```
+
+2. Versi `extendLoan` mana yang dipilih untuk `item.extendLoan()` dan `item.extendLoan(5)`?
 
 ---
 
 ## Jawaban Latihan
 
-`account.deposit(50000)` memanggil versi satu parameter; `account.deposit(50000, "monthly salary")` memanggil versi dua parameter. Java memilih berdasarkan jumlah dan tipe argumen yang diberikan saat pemanggilan, ditentukan sejak kompilasi, bukan saat program berjalan.
+```java
+class Magazine extends LibraryItem {
+    @Override
+    public int loanDays() { return 3; }
+}
+```
+
+`item.extendLoan()` memilih versi tanpa parameter. `item.extendLoan(5)` memilih versi `extendLoan(int days)`.
 
 ---
 
 ## Rangkuman Bagian 4
 
-- `deposit()` di-overload: versi dua parameter menerima catatan tambahan, lalu memanggil versi satu parameter untuk logika intinya.
-- Java memilih versi overload berdasarkan jumlah dan tipe argumen saat pemanggilan, bukan saat program berjalan.
+- `Dvd` meng-override `loanDays()`, sehingga DVD dipinjam 7 hari tanpa mengubah `LibraryItem`.
+- `describe()` di subclass memakai `super.describe()`, lalu menambah datanya sendiri.
+- `extendLoan()` dan `extendLoan(int days)` adalah overload: satu nama, dua bentuk pemanggilan.
 
 ---
 
 ## Rangkuman Pertemuan 7
 
-- Overriding menulis ulang perilaku warisan dengan signature yang sama persis; overloading menambah versi baru dengan parameter berbeda.
-- `@Override` menangkap kesalahan signature lebih awal; `super.method(...)` tetap memanfaatkan perilaku lama; `final` mencegah override sama sekali.
-- Bank Mini memakai overriding untuk aturan penarikan tiap jenis rekening, dan overloading untuk setoran dengan atau tanpa catatan.
+| | Overriding | Overloading |
+|---|---|---|
+| Ditulis di | subclass | kelas yang sama |
+| Signature | sama persis | nama sama, parameter berbeda |
+| Yang menentukan versi | objek yang sebenarnya | argumen saat pemanggilan |
+| Kapan ditentukan | saat program berjalan | saat kompilasi |
+
+`@Override` menjaga dari salah ketik, `super.method(...)` memakai kembali perilaku lama, `final` mengunci sebuah method.
 
 ---
 
@@ -494,7 +717,7 @@ Method mana yang dipanggil Java untuk masing-masing, dan berdasarkan apa Java me
 
 # Referensi
 
-Deitel, *Java How to Program*, bab Object-Oriented Programming: Overriding, Overloading
+Deitel, *Java How to Program*, bab Object-Oriented Programming: Inheritance dan Polymorphism
 
 Oracle Java Tutorials: "Overriding and Hiding Methods", "Defining Methods" (overloading)
 
@@ -502,6 +725,20 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Diskusi
+## Tugas: Koleksi Perpustakaan
 
-`Employee.describe()` (Pertemuan 6) ditandai `final` karena formatnya harus selalu konsisten untuk seluruh jenis pegawai. Perhatikan kembali method-method `Account` yang baru saja kamu buat (`printInfo()`, `canWithdraw()`, `deposit()`, dan lain-lain): apakah ada salah satu di antaranya yang menurutmu juga layak ditandai `final`? Jelaskan alasanmu, atau jelaskan mengapa tidak ada yang membutuhkannya.
+Perpustakaan menambah `AudioBook`, subclass dari `LibraryItem`, dengan atribut `durationMinutes` dan `narrator`. Buku audio dipinjam 10 hari.
+
+1. Method mana yang perlu di-override di `AudioBook`? Tuliskan signature-nya.
+2. Tambahkan satu overload yang menurutmu berguna, lalu jelaskan kapan versi itu dipakai.
+3. Gambarkan diagram kelas `AudioBook` di kertas, lengkap dengan panah ke `LibraryItem`.
+
+---
+
+## Tugas: Studi Kasusmu Sendiri
+
+Pakai kembali hierarki kelas dari tugas Pertemuan 6 (aplikasi pilihanmu sendiri).
+
+1. Pilih satu method di superclass, lalu tulis override-nya di salah satu subclass. Pakai `super.method(...)` di dalamnya.
+2. Tambahkan satu pasang overload pada salah satu kelas.
+3. Perbarui diagram kelasmu di kertas, lalu tuliskan output yang kamu harapkan dari satu pemanggilan tiap method.

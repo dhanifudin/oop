@@ -104,17 +104,17 @@ style: |
 
 Meeting 7: **Overriding and Overloading**
 
-Rewriting inherited behavior, and adding a new version of a method
+Replacing inherited behavior, and giving one name to several ways of calling
 
 ---
 
 ## What You Will Learn
 
-- How a subclass rewrites inherited behavior to fit its own needs
-- How to still make use of old behavior while adding something new on top of it
-- How to prevent a behavior from being rewritten at all
-- Adding several ways to call the same operation, and how this differs from rewriting inherited behavior
-- Applying this to Bank Mini: a different withdrawal rule for each account type, and a deposit with or without a note
+- How a subclass replaces the behavior of a method it inherits (overriding)
+- How to reuse the old behavior through `super`, and lock it through `final`
+- How to make the output of `println(object)` readable through `toString()`
+- How to give one method name to several ways of calling it (overloading)
+- The difference between overriding and overloading, applied to one case study
 
 <div class="tip-box">
 Hands-on practice for today's material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 7.
@@ -124,10 +124,10 @@ Hands-on practice for today's material is available in the Practicum: Object-Ori
 
 ## Today's Session Map
 
-- **Session 1 (50')**: Method overriding, rewriting inherited behavior
-- **Session 2 (50')**: Method overloading, adding a new version of a method
-- **Session 3 (50')**: Applying overriding to Bank Mini
-- **Session 4 (50')**: Applying overloading to Bank Mini
+- **Session 1 (50')**: Method overriding
+- **Session 2 (50')**: `super`, `final`, and `toString()`
+- **Session 3 (50')**: Method overloading
+- **Session 4 (50')**: Case study, the library collection
 
 ---
 
@@ -140,39 +140,60 @@ Session 1 of 4
 
 ---
 
-## Rewriting an Inherited Method
+## The Problem: Every Vehicle Sounds the Same
 
-Meeting 6 showed that a subclass inherits its superclass's methods as-is. Sometimes the inherited behavior does not fit a particular subclass: `Sedan` and `Truck` both inherit `honk()` from `Vehicle`, but of course their horn sounds should differ.
+```java
+class Vehicle {
+    public String honk() { return "Beep!"; }
+}
 
-<div class="term-box">
-<b>Overriding</b> is rewriting a superclass's method inside a subclass, with the exact same name and parameter list (signature). Java calls the version belonging to the object's actual type at runtime, not the version declared by the variable's type.
-</div>
+class Sedan extends Vehicle { }
+class Truck extends Vehicle { }
+```
+
+`Sedan` and `Truck` inherit `honk()` as-is. Both say "Beep!", even though a truck's horn should sound different.
 
 ---
 
-## What Is a Signature?
+## What Is Overriding?
 
-Two people can share the same name; they are told apart through other data (birth date, address). Two methods within one class can also share the same name, as long as Java can tell them apart through their parameter list, which is what is called a signature.
-
-![h:220 Anatomy of a signature: honk(int times), the method's name and parameter list, separate from visibility and return type](../assets/illustrations/method-signature-anatomy.svg)
+Picture a family recipe. A child cooks a dish with the same name, but uses their own recipe.
 
 <div class="term-box">
-A method's <b>signature</b> consists of its name and its parameter list (count, order, and data type). The return type and visibility are NOT part of the signature.
+<b>Overriding</b> is rewriting an inherited method inside a subclass. Its name and parameters stay the same; only its body is different.
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine a payment system with dozens of method types (credit card, bank transfer, e-wallet), with a superclass `PaymentMethod` whose subclasses keep growing over time. Without overriding, every time a new payment type is added, the code that processes payments would also have to change to handle that new case, risking breaking other payment types that already work fine.
+A payment application has many kinds of methods: credit card, bank transfer, e-wallet. New kinds keep being added. Without overriding, the payment-processing code must be changed every time a new kind appears, and that change can break other kinds that already work.
 
 <div class="term-box">
-Overriding lets every subclass provide its own behavior without changing a single line of the superclass's code or any other existing subclass. This "open for extension, closed for modification" principle is one of the five SOLID principles, called the Open/Closed Principle, covered further in Meeting 11.
+With overriding, each subclass carries its own behavior. Old code does not need to be touched. This principle is called the Open/Closed Principle, covered in Meeting 11.
 </div>
 
 ---
 
-## Code Example: Overriding `honk()`
+## A Method's Full Name: The Signature
+
+![h:200 Anatomy of a signature: honk(int times), the method name and parameter list, separate from visibility and return type](../assets/illustrations/method-signature-anatomy.svg)
+
+<div class="term-box">
+A <b>signature</b> is the method name plus its parameter list. Two methods are considered the same when their signatures are the same.
+</div>
+
+---
+
+## Overriding in a Class Diagram
+
+![h:260 Class diagram of Vehicle, Sedan, and Truck, with honk() appearing again in both subclasses](../assets/uml/p06-vehicle.png)
+
+A method that appears again in a subclass box is overridden. `honk()` is written in `Vehicle`, then written again in `Sedan` and `Truck`.
+
+---
+
+## Code Example: Truck Overrides `honk()`
 
 ```java
 class Vehicle {
@@ -181,31 +202,117 @@ class Vehicle {
 
 class Truck extends Vehicle {
     @Override
-    public String honk() { return "Honk honk!"; }
+    public String honk() { return "Tin tin!"; }   // new body
 }
 ```
 
 ---
 
-## The `@Override` Annotation
+## Trace It Step by Step
+
+```java
+Truck truck = new Truck();
+System.out.println(truck.honk());
+```
+
+1. Java looks at the object: a `Truck`.
+2. Java looks for `honk()` in class `Truck`, and finds it.
+3. `Truck`'s version is the one that runs.
+
+Output: `Tin tin!`
+
+---
+
+## The `@Override` Annotation: A Guard Against Typos
+
+```java
+class Truck extends Vehicle {
+    @Override
+    public String hunk() { return "Tin tin!"; }   // typo
+}
+```
 
 <div class="tip-box">
-The <code>@Override</code> annotation tells the compiler to check that a method genuinely rewrites a superclass method with the exact same signature. If there is a typo in the method name, the compiler raises an error instead of silently creating a new method that is never called.
-</div>
-
-<div class="warn-box">
-<code>@Override</code> itself is not syntactically required, but it is always included as good practice: an error caught early is far cheaper to fix than a bug only discovered once the program is running.
+With <code>@Override</code>, the compiler reports an error right away, since <code>Vehicle</code> has no method <code>hunk()</code>. Without <code>@Override</code>, this mistake slips through and the truck still says "Beep!".
 </div>
 
 ---
 
-## Calling the Superclass Version: `super.method(...)`
+## The Object Decides, Not the Variable Type
 
-<div class="term-box">
-An overriding method may still call its superclass's version through <code>super.methodName(...)</code>, usually to add new behavior without rewriting the entire method body from scratch.
+```java
+Vehicle v = new Truck();
+System.out.println(v.honk());   // Tin tin!
+```
+
+Variable `v` is of type `Vehicle`, but the object inside it is a `Truck`. Java runs the version that belongs to the object.
+
+<div class="tip-box">
+This behavior is the foundation of the Polymorphism topic in Meeting 10.
 </div>
 
-This pattern is often used when a subclass only wants to add a bit of extra information to existing behavior, for example printing an additional line after the line already printed by the superclass.
+---
+
+## Common Mistake: Different Parameters Are Not an Override
+
+<div class="warn-box">
+<b>Wrong:</b> writing <code>public String honk(String mode)</code> in <code>Truck</code>, then assuming <code>Vehicle</code>'s <code>honk()</code> has been replaced.
+</div>
+
+**Correct:** the parameters differ, so the signature differs. That is a new method, not an override. Add `@Override` so the compiler catches this mistake.
+
+---
+
+## Exercise
+
+`Vehicle.honk()` returns `"Beep!"`. `Truck` overrides it to return `"Tin tin!"`. Predict the output of this program:
+
+```java
+Vehicle a = new Vehicle();
+Vehicle b = new Truck();
+System.out.println(a.honk());
+System.out.println(b.honk());
+```
+
+---
+
+## Exercise Answer
+
+```
+Beep!
+Tin tin!
+```
+
+Object `a` is a `Vehicle`, so `Vehicle`'s version runs. Object `b` is a `Truck`, so `Truck`'s version runs, even though its variable is of type `Vehicle`.
+
+---
+
+## Part 1 Summary
+
+- Overriding rewrites an inherited method in a subclass, with the same signature.
+- `@Override` makes the compiler check that the method really exists in the superclass.
+- The version that runs is decided by the object, not by the variable's type.
+
+Next: Part 2 covers how to reuse the old behavior, and how to lock it.
+
+---
+
+<!-- _class: divider -->
+
+# Part 2
+## super, final, and toString()
+
+Session 2 of 4
+
+---
+
+## `super.method(...)`: The Old Recipe Plus One Ingredient
+
+Sometimes a subclass does not want to replace all of the old behavior. It only wants to add a little, like using a parent's recipe and adding one ingredient.
+
+<div class="term-box">
+<code>super.methodName(...)</code> calls the superclass's version from inside the method that overrides it.
+</div>
 
 ---
 
@@ -215,84 +322,150 @@ This pattern is often used when a subclass only wants to add a bit of extra info
 class Truck extends Vehicle {
     @Override
     public String honk() {
-        return super.honk() + " (loud horn)";
+        return super.honk() + " (loud horn)";   // old result + addition
     }
 }
 ```
 
+Output of `new Truck().honk()`: `Beep! (loud horn)`
+
 ---
 
-## Preventing a Method from Being Overridden: `final`
+## Three Rules of Overriding
+
+| Rule | Right | Wrong |
+|---|---|---|
+| The signature must be exactly the same | `honk()` becomes `honk()` | `honk()` becomes `honk(int times)` |
+| The access modifier must not be narrower | `protected` becomes `public` | `public` becomes `private` |
+| `private` and `final` methods cannot be overridden | an ordinary method | a method marked `final` |
+
+If one rule is broken, the compiler reports an error.
+
+---
+
+## `final`: A Recipe That Must Not Be Changed
+
+```java
+class Vehicle {
+    public final String plateFormat() { return "N 1234 AB"; }
+}
+```
 
 <div class="term-box">
-A method marked <code>final</code> cannot be overridden by any subclass. Java raises a compile error if a subclass tries to rewrite that method.
-</div>
-
-<div class="warn-box">
-Use <code>final</code> sparingly: only when there is a strong reason a behavior must always be identical across every subclass. Marking every method as <code>final</code> actually removes inheritance's main benefit, a subclass's ability to adapt its behavior.
+A method marked <code>final</code> cannot be overridden. Use it only when the behavior really must be the same in every subclass.
 </div>
 
 ---
 
-## Common Mistake: Thinking the Parameters May Differ
+## The Problem: `println(object)` Output Is Hard to Read
 
-<div class="warn-box">
-<b>Wrong:</b> writing <code>public String honk(String mode)</code> in <code>Truck</code>, thinking this overrides <code>Vehicle</code>'s <code>honk()</code>, when the parameter list is actually different.
+```java
+Sedan civic = new Sedan("Civic");
+System.out.println(civic);   // Sedan@1b6d3586
+```
+
+`println` calls `toString()`, a method every class inherits from `Object`. Its default version only prints the class name and a hash code.
+
+<div class="tip-box">
+Since <code>toString()</code> is an inherited method, we are allowed to override it.
 </div>
 
-**Correct:** `honk(String mode)` is not an override, it is a NEW method that happens to share the same name. The signature (name and parameters) must be exactly identical; `@Override` raises a compile error when they do not match, catching this mistake early.
+---
+
+## Code Example: Overriding `toString()`
+
+```java
+class Vehicle {
+    private String name;
+    public Vehicle(String name) { this.name = name; }
+
+    @Override
+    public String toString() { return "Vehicle: " + name; }
+}
+```
+
+Output of `System.out.println(new Vehicle("Civic"))`: `Vehicle: Civic`
+
+---
+
+## Common Mistake: Narrowing the Access Modifier
+
+<div class="warn-box">
+<b>Wrong:</b> <code>Vehicle</code> has <code>public String honk()</code>, then <code>Truck</code> writes <code>private String honk()</code>.
+</div>
+
+**Correct:** an override must be just as open, or more open. `public` may not become `protected` or `private`. The code above fails to compile.
 
 ---
 
 ## Exercise
 
-Class `Truck` writes method `public String honk(int times)`, while `Vehicle` has `public String honk()`.
+Decide **valid** or **error** for each override below:
 
-Is this overriding? Explain, then predict what happens if `Truck` marks this method with `@Override`.
+1. `Vehicle`: `public String honk()`. `Truck`: `protected String honk()`.
+2. `Vehicle`: `public final String plateFormat()`. `Truck` rewrites `plateFormat()`.
+3. `Truck`: `@Override public String honk() { return super.honk() + "!"; }`
 
 ---
 
 ## Exercise Answer
 
-**Not overriding**, since the parameters differ (`honk()` vs `honk(int times)`). If marked `@Override`, the compiler raises an error, since there is no `honk(int times)` method in `Vehicle` to rewrite.
+1. **Error.** `protected` is narrower than `public`.
+2. **Error.** A `final` method cannot be overridden.
+3. **Valid.** Its output is `Beep!!`, the result of `super.honk()` plus one exclamation mark.
 
 ---
 
-## Part 1 Summary
+## Part 2 Summary
 
-- Overriding rewrites a superclass's method in a subclass, with a signature that must match exactly.
-- `@Override` makes the compiler check that the signature genuinely matches, catching mistakes early.
-- `super.method(...)` calls the superclass's version; `final` prevents a method from being overridden at all.
+- `super.method(...)` reuses the superclass's behavior, then the subclass adds its own part.
+- Three override rules: same signature, access modifier not narrower, `private` and `final` cannot be overridden.
+- Overriding `toString()` makes the output of `println(object)` readable.
 
-Next: Part 2 covers method overloading, a situation where a different parameter list turns out not to be overriding at all.
+Next: Part 3 covers overloading, the same name with different parameters.
 
 ---
 
 <!-- _class: divider -->
 
-# Part 2
+# Part 3
 ## Method Overloading
 
-Session 2 of 4
+Session 3 of 4
 
 ---
 
-## Same Name, Different Parameters
+## The Problem: Method Names Keep Multiplying
+
+```java
+class Vehicle {
+    public String honkOnce() { return "Beep!"; }
+    public String honkTimes(int times) { return "Beep!".repeat(times); }
+    public String honkLoud(boolean loud) { return loud ? "BEEP!" : "Beep!"; }
+}
+```
+
+All three do the same thing, which is sounding the horn. Anyone using this class has to memorize three different names.
+
+---
+
+## What Is Overloading?
+
+At a cashier, the single word "pay" works for cash, card, and QR. The cashier picks the way from what you hand over.
 
 <div class="term-box">
-<b>Overloading</b> is adding a method with the same name but a different parameter list (count or type), in other words: same name, different signature. The compiler chooses which version gets called based on the arguments given at the call site, decided when the program is compiled, not while it runs.
+<b>Overloading</b> is several methods with the same name but different parameter lists. The compiler picks the version from the arguments given.
 </div>
-
-A common example: `println()` on `System.out` is actually dozens of overloaded methods, each accepting a different argument type (`String`, `int`, `double`, `boolean`, and so on), yet all called under the same name.
 
 ---
 
-## Code Example: Overloading `honk()`
+## Code Example: `honk()` and `honk(int times)`
 
 ```java
 class Vehicle {
     public String honk() { return "Beep!"; }
-    public String honk(int times) {
+
+    public String honk(int times) {      // same name, different parameters
         return honk().repeat(times);
     }
 }
@@ -300,37 +473,68 @@ class Vehicle {
 
 ---
 
+## Trace It: Which Version Is Picked?
+
+```java
+Vehicle v = new Vehicle();
+System.out.println(v.honk());    // no argument
+System.out.println(v.honk(3));   // one int argument
+```
+
+1. `v.honk()` carries no argument, so the compiler picks `honk()`.
+2. `v.honk(3)` carries one `int`, so the compiler picks `honk(int times)`.
+
+Output: `Beep!` then `Beep!Beep!Beep!`
+
+---
+
 ## Why Does This Matter?
 
-Without overloading, every variation of how to call an operation would need a different method name, for example `printString()`, `printInt()`, `printDouble()`, `printBoolean()`. The more data type variations there are, the harder it becomes for other programmers to remember which name to use for a given need.
+Without overloading, printing to the screen would need `printString()`, `printInt()`, `printDouble()`, and so on. Programmers would have to remember a different name for each data type.
 
 <div class="term-box">
-Overloading makes a class's API feel natural to use: one single method name, <code>println(...)</code>, is enough for every data type variation, with the compiler determining which version fits based on the arguments given.
+Thanks to overloading, the single name <code>println(...)</code> is enough for every data type. The classes we write are also easier for others to use when they follow the same approach.
 </div>
+
+---
+
+## Constructors Can Be Overloaded Too
+
+```java
+class Vehicle {
+    private String name;
+    private int wheels;
+
+    public Vehicle(String name) { this(name, 4); }   // calls the constructor below
+    public Vehicle(String name, int wheels) { this.name = name; this.wheels = wheels; }
+}
+```
+
+`new Vehicle("Civic")` and `new Vehicle("Hino", 6)` are both valid. `this(...)` calls another constructor in the same class.
 
 ---
 
 ## Overriding vs Overloading
 
-![h:300 Comparing overriding and overloading](../assets/illustrations/override-vs-overload.svg)
+![h:300 Comparison of overriding and overloading](../assets/illustrations/override-vs-overload.svg)
 
-The two sound similar in name, but their mechanisms are very different: overriding replaces an inherited method's behavior in a subclass (decided at runtime), while overloading adds a new version of a method within the same class (decided at compile time).
+Overriding replaces the body of an inherited method. Overloading adds a new version with different parameters.
 
 ---
 
-## Common Mistake: Thinking the Return Type Alone Is Enough
+## Common Mistake: Only the Return Type Differs
 
 <div class="warn-box">
-<b>Wrong:</b> writing <code>public String honk()</code> and <code>public int honk()</code> in the same class, thinking both are a valid overload since their return types differ.
+<b>Wrong:</b> writing <code>public String honk()</code> and <code>public int honk()</code> in the same class, then assuming both are a valid overload.
 </div>
 
-**Correct:** the return type alone is not enough for overloading. Java distinguishes an overload through its parameter list; two methods with identical parameters but different return types cause a "duplicate method" compile error.
+**Correct:** the return type is not part of the signature. Both methods have the same signature, so the compiler reports an error. What must differ is the parameter list.
 
 ---
 
 ## Exercise
 
-For each pair of methods below, within the same class, determine **valid overloading** or **compile error**:
+In the same class, decide **valid overload** or **error**:
 
 1. `honk()` and `honk(int times)`
 2. `String getName()` and `int getName()`
@@ -340,153 +544,172 @@ For each pair of methods below, within the same class, determine **valid overloa
 
 ## Exercise Answer
 
-1. **Valid overloading**, the parameters differ (in count).
-2. **Compile error**, the parameters are identical (empty); only the return type differs, which is not enough.
-3. **Valid overloading**, the parameter types differ (`int` vs `double`).
-
----
-
-## Part 2 Summary
-
-- Overloading adds a new version of a method with different parameters, chosen by the compiler based on the arguments at the call site.
-- The return type alone is never enough to distinguish an overload; the parameters must differ.
-- Overriding replaces inherited behavior (runtime); overloading adds a new version (compile time).
-
-Next: Part 3 applies overriding to Bank Mini's withdrawal rules.
-
----
-
-<!-- _class: divider -->
-
-# Part 3
-## Applying Overriding to Bank Mini
-
-Session 3 of 4
-
----
-
-## canWithdraw() Overridden by Each Account Type
-
-![h:280 Account with canWithdraw as the override point, SavingsAccount and CheckingAccount rewriting their own rules](../assets/uml/p07-account-hierarchy.png)
-
-Meeting 6 showed that `CheckingAccount`'s `overdraftLimit` did not yet affect anything, since the inherited `withdraw()` only knew one generic rule. With `canWithdraw()` overridden, `SavingsAccount` now maintains a minimum balance and `CheckingAccount` can genuinely be withdrawn from beyond its balance, up to its overdraft limit.
-
----
-
-## Code Example: `canWithdraw()` Differing by Account Type
-
-```java
-class SavingsAccount extends Account {
-    @Override
-    protected boolean canWithdraw(double amount) {
-        return balance - amount >= 50000;  // minimum balance
-    }
-}
-
-class CheckingAccount extends Account {
-    @Override
-    protected boolean canWithdraw(double amount) {
-        return balance - amount >= -overdraftLimit;
-    }
-}
-```
-
----
-
-## Common Mistake: Reducing Visibility While Overriding
-
-<div class="warn-box">
-<b>Wrong:</b> writing <code>private boolean canWithdraw(double amount)</code> in <code>SavingsAccount</code>, thinking this overrides <code>Account</code>'s <code>protected</code> method.
-</div>
-
-**Correct:** Java does not allow an override to reduce visibility. An overriding method must be equally or more open than its superclass's (`protected` may become `public`, but never `private`); this code fails to compile.
-
----
-
-## Exercise
-
-`SavingsAccount` maintains a minimum balance of Rp 50,000. Given a current `balance` of Rp 100,000, determine the result of `withdraw(60000)`: does it succeed or get rejected? Explain through `canWithdraw()`.
-
----
-
-## Exercise Answer
-
-**Rejected.** `SavingsAccount`'s `canWithdraw()` checks `balance - amount >= 50000`. With `balance` 100000 and `amount` 60000, the result is 40000, less than 50000, so `canWithdraw()` returns `false` and `withdraw()` is rejected.
+1. **Valid.** The number of parameters differs.
+2. **Error.** The parameters are the same (none); only the return type differs.
+3. **Valid.** The parameter types differ, `int` and `double`.
 
 ---
 
 ## Part 3 Summary
 
-- `canWithdraw()` is overridden by each `Account` subclass, giving each a different withdrawal rule without changing `withdraw()` itself.
-- An overriding method must not reduce visibility compared to its superclass.
-- The overriding rules from Part 1 (an exact matching signature, `@Override`) apply here in exactly the same way.
+- Overloading: same method name, different parameter list.
+- The compiler picks the version from the number and types of the arguments in the call.
+- Constructors can be overloaded too; `this(...)` calls another constructor in the same class.
 
-Next: Part 4 applies overloading to Bank Mini's deposit method.
+Next: Part 4 uses overriding and overloading on the library collection.
 
 ---
 
 <!-- _class: divider -->
 
 # Part 4
-## Applying Overloading to Bank Mini
+## Case Study: The Library Collection
 
 Session 4 of 4
 
 ---
 
-## An Overloaded deposit()
+## Back to the Library
 
-<div class="term-box">
-<code>Account</code> gets a second version of <code>deposit(double amount)</code>, namely <code>deposit(double amount, String note)</code>, which accepts an extra note and then calls the first version for its storage logic. Both are different methods within the same class, chosen by Java based on the number of arguments given at the call site.
-</div>
+In Meeting 6, `Book`, `Dvd`, and `Magazine` inherited from `LibraryItem`. Three things are still unresolved:
+
+1. Every item is loaned for 14 days, even though a DVD should be 7 days.
+2. `describe()` only prints the title and year, not the pages or running time.
+3. Extending a loan needs two ways: the default 7 days, or a chosen number of days.
+
+Numbers 1 and 2 are solved with overriding. Number 3 is solved with overloading.
 
 ---
 
-## Code Example: `deposit()` with Two Versions
+## Class Diagram: Who Overrides What
+
+![h:300 LibraryItem with loanDays, describe, and two versions of extendLoan; Book, Dvd, and Magazine rewrite some of the methods](../assets/uml/p07-libraryitem-override.png)
+
+`loanDays()` appears again in `Dvd`. `describe()` appears again in all three subclasses. `extendLoan` is written twice in `LibraryItem` with different parameters.
+
+---
+
+## Code Example: `Dvd` Overrides `loanDays()`
 
 ```java
-class Account {
-    public boolean deposit(double amount) {
-        if (amount <= 0) return false;
-        balance += amount;
-        return true;
-    }
+class LibraryItem {
+    public int loanDays() { return 14; }
+}
 
-    public boolean deposit(double amount, String note) {
-        System.out.println("Note: " + note);
-        return deposit(amount);
-    }
+class Dvd extends LibraryItem {
+    @Override
+    public int loanDays() { return 7; }   // DVD only
 }
 ```
 
 ---
 
+## Code Example: `describe()` with `super`
+
+```java
+class LibraryItem {
+    public String describe() { return title + " (" + year + ")"; }
+}
+
+class Book extends LibraryItem {
+    @Override
+    public String describe() { return super.describe() + ", " + pages + " pages"; }
+}
+```
+
+Output for the book Dune: `Dune (1965), 412 pages`
+
+---
+
+## Code Example: Two Versions of `extendLoan`
+
+```java
+class LibraryItem {
+    private int dueInDays = 14;
+
+    public void extendLoan() { extendLoan(7); }            // no number: add 7 days
+    public void extendLoan(int days) { dueInDays += days; }
+}
+```
+
+`item.extendLoan()` adds 7 days. `item.extendLoan(3)` adds 3 days.
+
+---
+
+## Trace It: One Collection, Different Output
+
+```java
+LibraryItem[] items = { new Book("Dune", 1965, 412), new Dvd("Inception", 2010, 148) };
+for (LibraryItem item : items) {
+    System.out.println(item.describe() + ": " + item.loanDays() + " days");
+}
+```
+
+```
+Dune (1965), 412 pages: 14 days
+Inception (2010), 148 min: 7 days
+```
+
+The loop code is unchanged from Meeting 6. Each object runs its own version.
+
+---
+
+## Common Mistake: An Overload Mistaken for an Override
+
+<div class="warn-box">
+<b>Wrong:</b> <code>Dvd</code> writes <code>public int loanDays(int extra) { return 7; }</code> without <code>@Override</code>, then wonders why a DVD is still loaned for 14 days.
+</div>
+
+**Correct:** the parameters differ, so that is an overload, not an override. The loop calls `loanDays()` with no argument, and that version still belongs to `LibraryItem`. `@Override` would have caught this mistake.
+
+---
+
 ## Exercise
 
-The calls `account.deposit(50000)` and `account.deposit(50000, "monthly salary")` are both valid.
+1. Complete the code so a magazine is loaned for 3 days:
 
-Which method does Java call for each, and what does Java base that choice on?
+```java
+class Magazine extends LibraryItem {
+    ________
+    public int loanDays() { return ___; }
+}
+```
+
+2. Which version of `extendLoan` is picked for `item.extendLoan()` and `item.extendLoan(5)`?
 
 ---
 
 ## Exercise Answer
 
-`account.deposit(50000)` calls the one-parameter version; `account.deposit(50000, "monthly salary")` calls the two-parameter version. Java chooses based on the number and type of arguments given at the call site, decided at compile time, not while the program runs.
+```java
+class Magazine extends LibraryItem {
+    @Override
+    public int loanDays() { return 3; }
+}
+```
+
+`item.extendLoan()` picks the version with no parameter. `item.extendLoan(5)` picks the `extendLoan(int days)` version.
 
 ---
 
 ## Part 4 Summary
 
-- `deposit()` is overloaded: the two-parameter version accepts an extra note, then calls the one-parameter version for its core logic.
-- Java chooses which overload to use based on the number and type of arguments at the call site, not while the program runs.
+- `Dvd` overrides `loanDays()`, so a DVD is loaned for 7 days without changing `LibraryItem`.
+- `describe()` in a subclass uses `super.describe()`, then adds its own data.
+- `extendLoan()` and `extendLoan(int days)` are overloads: one name, two ways of calling.
 
 ---
 
 ## Meeting 7 Summary
 
-- Overriding rewrites inherited behavior with an exactly matching signature; overloading adds a new version with different parameters.
-- `@Override` catches a signature mistake early; `super.method(...)` still makes use of old behavior; `final` prevents overriding entirely.
-- Bank Mini uses overriding for each account type's withdrawal rule, and overloading for a deposit with or without a note.
+| | Overriding | Overloading |
+|---|---|---|
+| Written in | the subclass | the same class |
+| Signature | exactly the same | same name, different parameters |
+| What decides the version | the actual object | the arguments in the call |
+| When it is decided | while the program runs | at compile time |
+
+`@Override` guards against typos, `super.method(...)` reuses the old behavior, `final` locks a method.
 
 ---
 
@@ -494,7 +717,7 @@ Which method does Java call for each, and what does Java base that choice on?
 
 # References
 
-Deitel, *Java How to Program*, the Object-Oriented Programming: Overriding, Overloading chapter
+Deitel, *Java How to Program*, the Object-Oriented Programming: Inheritance and Polymorphism chapters
 
 Oracle Java Tutorials: "Overriding and Hiding Methods", "Defining Methods" (overloading)
 
@@ -502,6 +725,20 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ---
 
-## Discussion
+## Assignment: The Library Collection
 
-`Employee.describe()` (Meeting 6) is marked `final` because its format must always stay consistent across every kind of employee. Look again at the `Account` methods you just built (`printInfo()`, `canWithdraw()`, `deposit()`, and others): do you think any of them also deserve to be marked `final`? Explain your reasoning, or explain why none of them need it.
+The library adds `AudioBook`, a subclass of `LibraryItem`, with attributes `durationMinutes` and `narrator`. An audiobook is loaned for 10 days.
+
+1. Which methods need to be overridden in `AudioBook`? Write their signatures.
+2. Add one overload you think would be useful, then explain when that version is used.
+3. Draw the class diagram of `AudioBook` on paper, complete with its arrow to `LibraryItem`.
+
+---
+
+## Assignment: Your Own Case Study
+
+Reuse the class hierarchy from the Meeting 6 assignment (the application you chose yourself).
+
+1. Pick one method in the superclass, then write its override in one of the subclasses. Use `super.method(...)` inside it.
+2. Add one pair of overloads to one of the classes.
+3. Update your class diagram on paper, then write the output you expect from one call to each method.
