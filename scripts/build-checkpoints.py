@@ -23,12 +23,14 @@ meeting-local toy classes (introduced to teach a concept, never meant to
 become a permanent part of Bank Mini) get cleaned out of the ongoing
 project instead of piling up in every later checkpoint forever.
 
-Meetings from MAVEN_FROM onward are emitted as Maven projects (pom.xml
-from scripts/pom-template.xml, sources under
-src/main/java/id/ac/polinema/..., preserving any model/repository/ui
-subpackage folders already present in code-src). Earlier meetings are
-emitted as a plain src/id/ac/polinema/*.java tree, runnable with
-javac/java directly.
+Every meeting is emitted as a Maven project (pom.xml from
+scripts/pom-template.xml, sources under src/main/java/id/ac/polinema/...,
+preserving any model/repository/ui subpackage folders already present in
+code-src), so each checkpoint opens directly in NetBeans through
+File > Open Project and runs with Run Project (F6) or
+`mvn -q compile exec:java`. Earlier meetings used to be a bare
+src/id/ac/polinema/*.java tree with no project file, which NetBeans could
+not open as a project.
 
 Meetings whose code-src directory does not exist yet are skipped (content
 is authored incrementally, batch by batch).
@@ -43,7 +45,6 @@ POM_TEMPLATE = (REPO_ROOT / "scripts/pom-template.xml").read_text()
 
 # Teaching-week order for the whole semester (assessment weeks omitted).
 MEETING_ORDER = ["01", "02", "03", "04", "06", "07", "09", "10", "11", "13", "14", "15", "16"]
-MAVEN_FROM = "13"
 MAIN_CLASS = "id.ac.polinema.Main"
 
 JDBC_DEPENDENCIES = """  <dependencies>
@@ -96,22 +97,20 @@ def write_snapshot(files: dict, nn: str):
     dest_root = OUT / f"pertemuan-{nn}"
     if dest_root.exists():
         shutil.rmtree(dest_root)
-    is_maven = nn >= MAVEN_FROM
-    src_base = dest_root / ("src/main/java" if is_maven else "src")
+    src_base = dest_root / "src/main/java"
     for rel, abs_path in files.items():
         target = src_base / rel
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(abs_path, target)
-    if is_maven:
-        dest_root.mkdir(parents=True, exist_ok=True)
-        deps = JDBC_DEPENDENCIES if nn >= "15" else ""
-        pom = (
-            POM_TEMPLATE
-            .replace("{{ARTIFACT_ID}}", f"bank-mini-pertemuan-{nn}")
-            .replace("{{MAIN_CLASS}}", MAIN_CLASS)
-            .replace("{{DEPENDENCIES}}", deps)
-        )
-        (dest_root / "pom.xml").write_text(pom)
+    dest_root.mkdir(parents=True, exist_ok=True)
+    deps = JDBC_DEPENDENCIES if nn >= "15" else ""
+    pom = (
+        POM_TEMPLATE
+        .replace("{{ARTIFACT_ID}}", f"bank-mini-pertemuan-{nn}")
+        .replace("{{MAIN_CLASS}}", MAIN_CLASS)
+        .replace("{{DEPENDENCIES}}", deps)
+    )
+    (dest_root / "pom.xml").write_text(pom)
     return dest_root
 
 

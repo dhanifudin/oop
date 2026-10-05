@@ -13,10 +13,11 @@ dirender dari `jobsheets/assets/code-src/` lewat `scripts/render-code.py`;
 baris kode yang baru/berubah pada suatu langkah disorot hijau otomatis
 (dihitung dari diff terhadap langkah sebelumnya, termasuk lintas pertemuan,
 di `scripts/gen-manifest.py`). Diagram UML memakai gambar PlantUML, bukan
-ASCII art. Pertemuan 2-11 memakai struktur `src/id/ac/polinema/*.java`
-polos (javac/java). Pertemuan 13 dan seterusnya beralih ke proyek Maven
-(checkpoint `code/bank-mini/pertemuan-NN/`), dijalankan dengan
-`mvn -q compile exec:java` atau Run Project di NetBeans.
+ASCII art. Seluruh checkpoint `code/bank-mini/pertemuan-NN/` adalah
+proyek Maven, dijalankan dengan `mvn -q compile exec:java` atau Run Project
+di NetBeans (teks jobsheet Pertemuan 1-11 sendiri masih menuliskan perintah
+`javac` polos dan baru menyebut Maven di Pertemuan 13; itu sengaja belum
+diubah atas permintaan pengguna).
 
 **Jobsheet sepenuhnya Bank-Mini-only**, tidak mengetik toy generik apa pun
 ke dalam proyek; lihat [[bank-mini]] untuk pola "konsep dulu, baru studi

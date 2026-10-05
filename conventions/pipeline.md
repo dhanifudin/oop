@@ -17,9 +17,12 @@
   lengkap yang bisa dijalankan/dibuka NetBeans, DIHASILKAN OTOMATIS oleh
   `scripts/build-checkpoints.py` dari `jobsheets/assets/code-src/` (jangan
   diedit manual, edit sumbernya lalu jalankan `make checkpoints`).
-  Pertemuan 2-11: struktur `src/id/ac/polinema/*.java` polos (javac/java).
-  Pertemuan 13-16: proyek Maven (`pom.xml` dari `scripts/pom-template.xml`,
-  `src/main/java/id/ac/polinema/{model,repository,ui}/`); Pertemuan 15
+  SEMUA checkpoint adalah proyek Maven (`pom.xml` dari
+  `scripts/pom-template.xml`, sumber di `src/main/java/id/ac/polinema/`),
+  supaya bisa langsung dibuka lewat File > Open Project di NetBeans; jangan
+  kembalikan Pertemuan 1-11 ke struktur `src/id/ac/polinema/*.java` polos
+  tanpa berkas proyek. Subpaket `{model,repository,ui}` baru muncul mulai
+  Pertemuan 13; Pertemuan 15
   menambah dependency `org.xerial:sqlite-jdbc` dan
   `commons-dbutils:commons-dbutils` (dipakai lewat `QueryRunner` di
   `JdbcAccountRepository`/`JdbcUserRepository`, menggantikan
