@@ -34,11 +34,11 @@ The `bank-mini` project from Meeting 4 continues in this meeting. So far there i
 
 ![Class diagram of Account, SavingsAccount, and CheckingAccount](../assets/uml/p06-account-hierarchy.png){width=70%}
 
-Each subclass in the diagram adds only one attribute and one method of its own; `deposit()`, `withdraw()`, and `printInfo()` remain `Account`'s and are inherited as-is. Start with `SavingsAccount`:
+Translating this diagram into Java code follows the rule already covered in the concept class: the hollow-triangle arrow from `SavingsAccount` to `Account` becomes `class SavingsAccount extends Account`, the attribute row `-interestRate : double` becomes the field `private double interestRate;`, and the method row `+printAccountType() : void` becomes the method `public void printAccountType() { ... }`. `deposit()`, `withdraw()`, and `printInfo()` deliberately do not reappear in the `SavingsAccount` box, since all three are already inherited as-is from `Account` and need no redeclaration. Start with `SavingsAccount`:
 
 ![SavingsAccount.java](../assets/code/pertemuan-06/p06-01-savingsaccount.png){width=65%}
 
-`SavingsAccount`'s constructor calls `super(accountNumber, owner, balance)` as its first line to build the part inherited from `Account`, then fills in its own `interestRate`. Update `Main.java` to test it:
+`SavingsAccount`'s constructor calls `super(accountNumber, owner, balance)` as its first line to build the part inherited from `Account`, then fills in its own `interestRate`. This code also adds `getInterestRate()`, a method not shown on the diagram: a `private` attribute needs a way to be read from outside the class (the encapsulation habit from Meeting 3), so a getter like this is reasonable to add even when a diagram does not always draw it explicitly. Update `Main.java` to test it:
 
 ![Main.java creating a SavingsAccount and calling both its inherited method and its new method](../assets/code/pertemuan-06/p06-01-main.png){width=70%}
 
@@ -48,7 +48,7 @@ Each subclass in the diagram adds only one attribute and one method of its own; 
 
 ### Step 2: CheckingAccount, the Second Subclass
 
-Add a class `CheckingAccount`, a second subclass of `Account`, following the same pattern as `SavingsAccount`:
+Add a class `CheckingAccount`, a second subclass of `Account`, following the same diagram-translation pattern as `SavingsAccount`:
 
 ![CheckingAccount.java](../assets/code/pertemuan-06/p06-02-checkingaccount.png){width=65%}
 
