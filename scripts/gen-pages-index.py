@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Assemble the GitHub Pages site under docs/: copy every built slide and
-jobsheet PDF plus a generated index.html linking them, grouped by meeting.
+jobsheet PDF, every navigable web (HTML) slide deck, plus a generated
+index.html linking them, grouped by meeting.
 
-Run after `make pdf` has produced slides/build/*.pdf and
-jobsheets/build/*.pdf. This script's own output directory (docs/) is
+Run after `make pdf` has produced slides/build/*.pdf, slides/build-html/,
+and jobsheets/build/*.pdf. This script's own output directory (docs/) is
 gitignored and rebuilt fresh by CI on every deploy, never committed.
 """
 import re
@@ -12,12 +13,19 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SLIDES_BUILD = REPO_ROOT / "slides/build"
+SLIDES_BUILD_HTML = REPO_ROOT / "slides/build-html"
 JOBSHEETS_BUILD = REPO_ROOT / "jobsheets/build"
 CHECKPOINT_ZIPS = REPO_ROOT / "code/bank-mini-zips"
 DOCS = REPO_ROOT / "docs-site"
 
 # id-pertemuan-01-pengantar-konsep-pbo.pdf -> lang="id", nn="01", slug="pengantar-konsep-pbo"
 NAME_RE = re.compile(r"^(id|en)-pertemuan-(\d+)-(.+)\.pdf$")
+
+# slides/build-html/id/pertemuan-01-pengantar-konsep-pbo.html -> nn="01", slug="pengantar-konsep-pbo"
+# (lang comes from the parent directory here, not the filename, since the
+# web deck's relative image paths only resolve one level below a sibling
+# assets/ folder shared by both languages.)
+HTML_NAME_RE = re.compile(r"^pertemuan-(\d+)-(.+)\.html$")
 
 
 def collect(build_dir: Path):
@@ -34,6 +42,23 @@ def collect(build_dir: Path):
     return by_meeting
 
 
+def collect_html(build_html_dir: Path):
+    """Returns {nn: {lang: (slug, src_path)}} for every web deck in
+    build_html_dir/{id,en}/*.html."""
+    by_meeting = {}
+    for lang in ("id", "en"):
+        lang_dir = build_html_dir / lang
+        if not lang_dir.exists():
+            continue
+        for page in sorted(lang_dir.glob("*.html")):
+            m = HTML_NAME_RE.match(page.name)
+            if not m:
+                continue
+            nn, slug = m.groups()
+            by_meeting.setdefault(nn, {})[lang] = (slug, page)
+    return by_meeting
+
+
 def title_from_slug(slug: str) -> str:
     return slug.replace("-", " ").title()
 
@@ -44,17 +69,27 @@ def main():
     (DOCS / "slides").mkdir(parents=True)
     (DOCS / "jobsheets").mkdir(parents=True)
     (DOCS / "code").mkdir(parents=True)
+    (DOCS / "slides-html" / "id").mkdir(parents=True)
+    (DOCS / "slides-html" / "en").mkdir(parents=True)
 
     slides = collect(SLIDES_BUILD)
+    slides_html = collect_html(SLIDES_BUILD_HTML)
     jobsheets = collect(JOBSHEETS_BUILD)
 
-    all_nn = sorted(set(slides) | set(jobsheets), key=lambda n: int(n))
+    # The web decks' relative image paths point at a sibling assets/, shared
+    # by both languages; copy it once rather than per deck.
+    html_assets_src = SLIDES_BUILD_HTML / "assets"
+    if html_assets_src.exists():
+        shutil.copytree(html_assets_src, DOCS / "slides-html" / "assets")
+
+    all_nn = sorted(set(slides) | set(slides_html) | set(jobsheets), key=lambda n: int(n))
 
     rows = []
     for nn in all_nn:
         s = slides.get(nn, {})
+        sh = slides_html.get(nn, {})
         j = jobsheets.get(nn, {})
-        slug = next(iter(s.values()), next(iter(j.values()), (None, None)))[0]
+        slug = next(iter(s.values()), next(iter(sh.values()), next(iter(j.values()), (None, None))))[0]
         title = title_from_slug(slug) if slug else f"Pertemuan {nn}"
 
         # Slides/jobsheets are per-language; a missing translation shows as
@@ -70,6 +105,13 @@ def main():
                 lang_cells[lang].append(f'<a href="slides/{src.name}">Slides</a>')
             else:
                 lang_cells[lang].append('<span class="unavailable">Slides</span>')
+            if lang in sh:
+                _, src = sh[lang]
+                dest = DOCS / "slides-html" / lang / src.name
+                shutil.copyfile(src, dest)
+                lang_cells[lang].append(f'<a href="slides-html/{lang}/{src.name}">Web</a>')
+            else:
+                lang_cells[lang].append('<span class="unavailable">Web</span>')
             if lang in j:
                 _, src = j[lang]
                 dest = DOCS / "jobsheets" / src.name

@@ -2,9 +2,22 @@
 
 - `slides/id/`, `slides/en/`: slide Marp (`pertemuan-NN-<slug>.md`).
   `slides/assets/uml/`: diagram UML (PNG, hasil render PlantUML, dipakai
-  bersama oleh `id/` dan `en/`). `slides/build.sh` merender ke PDF via
-  `marp --pdf` (lihat `scripts/render-all.sh` untuk alur lengkap). Lihat
-  [[slides]] untuk konvensi isi/gaya.
+  bersama oleh `id/` dan `en/`). `slides/build.sh` merender tiap deck ke DUA
+  format: PDF via `marp --pdf` ke `slides/build/`, dan dek web navigable
+  (template bawaan "bespoke" Marp: navigasi klik/keyboard, fullscreen,
+  overview grid) via `marp` polos (tanpa `--pdf`) ke
+  `slides/build-html/{id,en}/<slug>.html` (lihat `scripts/render-all.sh`
+  untuk alur lengkap). Lihat [[slides]] untuk konvensi isi/gaya.
+
+  **Format HTML TIDAK mem-bundle gambar lokal sebagai data URI** (beda dari
+  PDF, yang gambarnya langsung tertanam lewat rendering browser headless):
+  path relatif `../assets/...` yang sama dipakai Markdown sumbernya ikut
+  tertulis apa adanya ke HTML, jadi tiap halaman web hanya tampil benar
+  selama dia tetap berada satu level di bawah folder `assets/` yang sama.
+  `build.sh` menjamin ini dengan menyalin `slides/assets/` utuh ke
+  `slides/build-html/assets/` setiap kali dijalankan, dipakai bersama oleh
+  `build-html/id/` dan `build-html/en/`; jangan pindahkan berkas `.html`
+  hasil build ini sendirian tanpa folder `assets/` saudaranya.
 - `jobsheets/id/`, `jobsheets/en/`: jobsheet praktikum (`pertemuan-NN-<slug>.md`).
   `TEMPLATE.md` adalah kerangka baku. `jobsheets/assets/code/`: gambar
   cuplikan kode (PNG hasil render `scripts/render-code.py`, dipakai bersama
@@ -99,8 +112,11 @@
     checkpoint pernah ikut ter-compile manual saat pengujian lokal)
   - `pom-template.xml` (kerangka `pom.xml` untuk checkpoint Maven)
   - `gen-pages-index.py` (susun `docs-site/` berisi seluruh PDF slide/
-    jobsheet dan zip checkpoint plus `index.html` yang menautkannya, untuk
-    diunggah `.github/workflows/pages.yml` ke GitHub Pages)
+    jobsheet, dek web (`docs-site/slides-html/{id,en}/` plus satu salinan
+    `docs-site/slides-html/assets/` bersama), dan zip checkpoint, plus
+    `index.html` yang menautkannya (link "Slides" untuk PDF, "Web" untuk dek
+    HTML, "Jobsheet" untuk PDF jobsheet), untuk diunggah
+    `.github/workflows/pages.yml` ke GitHub Pages)
   - `render-all.sh` (jalankan semuanya lalu build seluruh PDF; TIDAK
     termasuk `gen-checkpoint-zips.py`/`gen-pages-index.py`, keduanya cuma
     dipanggil dari alur CI Pages, lihat `make zips` untuk menjalankannya

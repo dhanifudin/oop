@@ -34,6 +34,9 @@
 /slides/build/
 /jobsheets/build/
 
+# Navigable web (HTML) slide decks, Marp's default "bespoke" template.
+/slides/build-html/
+
 # Local staging area for the GitHub Pages site, assembled fresh by CI.
 # (NOT /docs/ -- that holds the committed official RPS reference PDFs.)
 /docs-site/

@@ -3,7 +3,7 @@
 # Usage:
 #   make            build everything (diagrams, illustrations, code images, all PDFs)
 #   make pdf        same as above
-#   make slides     just rebuild slide-deck PDFs
+#   make slides     just rebuild slide decks (PDF + navigable web/HTML)
 #   make jobsheets  just rebuild jobsheet PDFs
 #   make diagrams   just re-render UML diagrams + SVG illustrations
 #   make images     just regenerate jobsheet code-snippet images
@@ -47,5 +47,5 @@ setup:
 	./scripts/setup.sh
 
 clean:
-	rm -rf slides/build jobsheets/build
+	rm -rf slides/build slides/build-html jobsheets/build
 	rm -rf code/bank-mini code/bank-mini-zips
