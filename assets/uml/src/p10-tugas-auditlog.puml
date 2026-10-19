@@ -9,7 +9,7 @@ class Bank {
   + printAuditLog() : void
 }
 
-interface Auditable {
+interface Auditable <<interface>> {
   + auditLog() : String
 }
 

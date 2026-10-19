@@ -167,7 +167,7 @@ An <b>abstract class</b> is a class that is not yet complete. Its objects may no
 
 ## Why Does This Matter?
 
-A display library is used by hundreds of applications. Every component must know how to draw itself. Without abstract classes, a component that does not yet know how to draw could still be created, and the mistake would only show up when a user runs the application.
+A UI framework is used by hundreds of applications. Every component must know how to draw itself. Without abstract classes, a component that does not yet know how to draw could still be created, and the mistake would only show up when a user runs the application.
 
 <div class="term-box">
 An abstract class moves that mistake to compile time. The compiler rejects it, rather than a user discovering it.
@@ -181,7 +181,7 @@ An abstract class moves that mistake to compile time. The compiler rejects it, r
 An <b>abstract method</b> has only a signature, with no body. Every subclass must fill it in through overriding. Until it is filled in, that subclass cannot be compiled.
 </div>
 
-An abstract method may only be written inside an abstract class.
+Among classes, only an abstract class may contain an abstract method. A subclass that is also abstract may leave it empty.
 
 ---
 
@@ -253,7 +253,7 @@ Output: `small circle: 12.56`
 `Shape` is an abstract class with an abstract method `area()`. Decide **valid** or **error**:
 
 1. `Shape s = new Shape("x");`
-2. `class Square extends Shape { }` (without `area()`)
+2. `Shape[] shapes = new Shape[3];`
 3. `Shape s = new Circle("c", 1);`
 
 ---
@@ -261,7 +261,7 @@ Output: `small circle: 12.56`
 ## Exercise Answer
 
 1. **Error.** An object of an abstract class may not be created.
-2. **Error.** `Square` has not filled in the abstract method `area()`.
+2. **Valid.** This only creates an array that can hold `Shape` references. No `Shape` object has been created yet.
 3. **Valid.** The object is a `Circle`, a complete class. Its variable may be of type `Shape`.
 
 ---
@@ -329,13 +329,17 @@ class Phone implements Chargeable {
 }
 ```
 
+<div class="tip-box">
+Methods in an interface are automatically <code>public</code>, so a class that fills them in must also write <code>public</code>.
+</div>
+
 ---
 
 ## Interfaces in a Class Diagram
 
 ![h:280 Chargeable implemented by Phone and ElectricCar](../assets/uml/p09-chargeable.png)
 
-An interface's name is also written in italics. The difference is in the arrow: it is dashed, pointing from the class to the interface it implements.
+An interface carries the label `«interface»` above its name. Its arrow is dashed with a hollow triangle head, pointing from the class to the interface it implements.
 
 ---
 
@@ -353,7 +357,7 @@ Phone is charging
 Car is charging
 ```
 
-The loop only knows `Chargeable`. Each object runs its own `charge()`.
+The loop only knows `Chargeable`. Each object runs its own `charge()`. `ElectricCar` is written with the same pattern as `Phone`.
 
 ---
 
@@ -368,7 +372,7 @@ class Phone implements Chargeable, Connectable {
 }
 ```
 
-A class may `extends` only one superclass, but may `implements` many interfaces.
+A class may extend only one superclass (`extends`), but may implement many interfaces (`implements`).
 
 ---
 
@@ -386,7 +390,7 @@ A class may `extends` only one superclass, but may `implements` many interfaces.
 
 `Chargeable` has a method `charge()`. `Connectable` has a method `connect()`. Decide **valid** or **error**:
 
-1. `class Laptop extends Chargeable { ... }`
+1. `class Laptop implements Chargeable { void charge() { } }` (without `public`)
 2. `class Laptop implements Chargeable { }` (without `charge()`)
 3. `class Laptop implements Chargeable, Connectable` with `charge()` and `connect()` filled in
 
@@ -394,9 +398,9 @@ A class may `extends` only one superclass, but may `implements` many interfaces.
 
 ## Exercise Answer
 
-1. **Error.** An interface is used with `implements`, not `extends`.
+1. **Error.** Interface methods are automatically `public`, so `charge()` in `Laptop` must also be `public`.
 2. **Error.** `Laptop` promises to fill in `charge()`, but has not done so.
-3. **Valid.** One class may `implements` many interfaces, as long as every method is filled in.
+3. **Valid.** One class may implement many interfaces, as long as every method is filled in.
 
 ---
 
@@ -404,7 +408,7 @@ A class may `extends` only one superclass, but may `implements` many interfaces.
 
 - An interface is a list of methods with no bodies, used through `implements`.
 - Unrelated classes can use the same interface.
-- One class may `implements` many interfaces.
+- One class may implement many interfaces.
 
 Next: Part 3 covers how to choose between an abstract class and an interface.
 
@@ -482,11 +486,11 @@ Output: `Beep!` then `Car is charging`. There is one object, but it can be held 
 
 ## Exercise
 
-Choose **abstract class** or **interface**:
+Choose **abstract class**, **interface**, or **both**:
 
 1. `Animal` as the parent of `Cat` and `Dog`, with a shared attribute `name`.
 2. The capability "can be printed" (`print()`) for `Invoice`, `Photo`, and `Ticket`.
-3. `Employee` as the parent of `Manager` and `Staff`, with a shared attribute `baseSalary`.
+3. `Dog` is an `Animal`, and only `Dog` can be trained through `train()` (`Cat` cannot).
 
 ---
 
@@ -494,7 +498,7 @@ Choose **abstract class** or **interface**:
 
 1. **Abstract class.** `Cat` and `Dog` are one family and share the attribute `name`.
 2. **Interface.** `Invoice`, `Photo`, and `Ticket` are unrelated; "can be printed" is an extra capability.
-3. **Abstract class.** `Manager` and `Staff` are one family and share the attribute `baseSalary`.
+3. **Both.** `Dog` inherits the abstract class `Animal` (one family), and `implements` an interface for the `train()` capability that `Cat` does not have.
 
 ---
 
@@ -502,7 +506,7 @@ Choose **abstract class** or **interface**:
 
 - One family with shared attributes: abstract class.
 - An extra capability for any class: interface.
-- One class may `extends` one abstract class and `implements` several interfaces at once.
+- One class may extend one abstract class and implement several interfaces at once.
 
 Next: Part 4 uses both on the library collection.
 
@@ -519,7 +523,7 @@ Session 4 of 4
 
 ## Back to the Library
 
-In the previous meetings, `Book`, `Dvd`, and `Magazine` inherited from `LibraryItem`. Three things are still unresolved:
+In the previous meetings, `Book`, `Dvd`, and `Magazine` inherited from `LibraryItem`. The attributes and methods from those meetings are still there; this slide only shows the parts that change. Three things are still unresolved:
 
 1. `new LibraryItem("?")` can still be created, even though no "general item" sits on a shelf.
 2. Each kind of item has its own late fee, but nothing requires it.
@@ -544,6 +548,7 @@ abstract class LibraryItem {
     protected String title;
     public LibraryItem(String title) { this.title = title; }
 
+    public String getTitle() { return title; }
     public abstract int lateFeePerDay();   // must be filled in by each kind of item
 }
 ```
@@ -586,7 +591,7 @@ class Dvd extends LibraryItem implements Playable {
 ```java
 LibraryItem[] items = { new Book("Dune"), new Dvd("Inception") };
 for (LibraryItem item : items) {
-    System.out.println(item.title + ": " + item.lateFeePerDay());
+    System.out.println(item.getTitle() + ": " + item.lateFeePerDay());
 }
 ```
 
@@ -621,7 +626,7 @@ class Magazine ________ LibraryItem {
 }
 ```
 
-2. Does `Magazine` need to declare `implements Playable`? Yes or no?
+2. Digital magazines can now be played. What must be added to `Magazine`?
 
 ---
 
@@ -635,7 +640,7 @@ class Magazine extends LibraryItem {
 }
 ```
 
-**No.** A magazine cannot be played, so it need not promise to fill in `play()`.
+Question 2: `implements Playable`, then fill in `play()`. Only a class that needs the capability promises to fill it in.
 
 ---
 
@@ -674,7 +679,7 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ## Assignment: The Library Collection
 
-The library adds `AudioBook` and a new rule: only books and magazines may have their loans renewed.
+The library adds `AudioBook` and a new rule: only `Book` and `Magazine` may have their loans renewed.
 
 1. `AudioBook` is a kind of item that can be played. Write its class declaration line (`class AudioBook ...`).
 2. Create an interface `Renewable` with one method. Which classes declare `implements Renewable`?

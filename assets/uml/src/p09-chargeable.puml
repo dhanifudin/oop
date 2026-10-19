@@ -4,7 +4,7 @@ scale 2
 hide circle
 hide empty members
 
-interface Chargeable {
+interface Chargeable <<interface>> {
   + charge() : void
 }
 

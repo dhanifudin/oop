@@ -167,7 +167,7 @@ Bayangkan resep dasar kue yang satu langkahnya masih kosong: "isi sesuai selera"
 
 ## Mengapa Ini Penting?
 
-Sebuah library tampilan dipakai ratusan aplikasi. Setiap komponen wajib tahu cara menggambar dirinya. Tanpa kelas abstrak, komponen yang belum tahu cara menggambar bisa lolos dibuat, dan kesalahannya baru terlihat saat aplikasi dipakai pengguna.
+Sebuah framework tampilan dipakai ratusan aplikasi. Setiap komponen wajib tahu cara menggambar dirinya. Tanpa kelas abstrak, komponen yang belum tahu cara menggambar bisa lolos dibuat, dan kesalahannya baru terlihat saat aplikasi dipakai pengguna.
 
 <div class="term-box">
 Kelas abstrak memindahkan kesalahan itu ke saat kompilasi. Compiler yang menolaknya, bukan pengguna yang menemukannya.
@@ -181,7 +181,7 @@ Kelas abstrak memindahkan kesalahan itu ke saat kompilasi. Compiler yang menolak
 <b>Method abstrak</b> hanya punya signature, tanpa isi. Setiap subclass wajib mengisinya lewat overriding. Bila belum diisi, subclass itu tidak bisa dikompilasi.
 </div>
 
-Method abstrak hanya boleh ditulis di dalam kelas abstrak.
+Di antara kelas, hanya kelas abstrak yang boleh berisi method abstrak. Subclass yang juga abstrak boleh membiarkannya kosong.
 
 ---
 
@@ -253,7 +253,7 @@ Output: `small circle: 12.56`
 `Shape` adalah kelas abstrak dengan method abstrak `area()`. Tentukan **valid** atau **error**:
 
 1. `Shape s = new Shape("x");`
-2. `class Square extends Shape { }` (tanpa `area()`)
+2. `Shape[] shapes = new Shape[3];`
 3. `Shape s = new Circle("c", 1);`
 
 ---
@@ -261,7 +261,7 @@ Output: `small circle: 12.56`
 ## Jawaban Latihan
 
 1. **Error.** Objek kelas abstrak tidak boleh dibuat.
-2. **Error.** `Square` belum mengisi method abstrak `area()`.
+2. **Valid.** Ini hanya membuat array tempat menyimpan `Shape`. Belum ada objek `Shape` yang dibuat.
 3. **Valid.** Objeknya `Circle`, kelas yang sudah lengkap. Variabelnya boleh bertipe `Shape`.
 
 ---
@@ -329,13 +329,17 @@ class Phone implements Chargeable {
 }
 ```
 
+<div class="tip-box">
+Method di interface otomatis <code>public</code>, jadi kelas yang mengisinya juga wajib menulis <code>public</code>.
+</div>
+
 ---
 
 ## Interface pada Diagram Kelas
 
 ![h:280 Chargeable diimplementasikan Phone dan ElectricCar](../assets/uml/p09-chargeable.png)
 
-Nama interface juga ditulis miring. Bedanya ada pada panahnya: bergaris putus-putus, menunjuk dari kelas ke interface yang diimplementasikan.
+Interface diberi label `«interface»` di atas namanya. Panahnya bergaris putus-putus dengan ujung segitiga kosong, menunjuk dari kelas ke interface yang diimplementasikan.
 
 ---
 
@@ -353,7 +357,7 @@ Phone is charging
 Car is charging
 ```
 
-Perulangan hanya mengenal `Chargeable`. Tiap objek menjalankan `charge()` miliknya sendiri.
+Perulangan hanya mengenal `Chargeable`. Tiap objek menjalankan `charge()` miliknya sendiri. `ElectricCar` ditulis dengan pola yang sama seperti `Phone`.
 
 ---
 
@@ -386,7 +390,7 @@ Sebuah kelas hanya boleh `extends` satu superclass, tetapi boleh `implements` ba
 
 `Chargeable` punya method `charge()`. `Connectable` punya method `connect()`. Tentukan **valid** atau **error**:
 
-1. `class Laptop extends Chargeable { ... }`
+1. `class Laptop implements Chargeable { void charge() { } }` (tanpa `public`)
 2. `class Laptop implements Chargeable { }` (tanpa `charge()`)
 3. `class Laptop implements Chargeable, Connectable` dengan `charge()` dan `connect()` terisi
 
@@ -394,7 +398,7 @@ Sebuah kelas hanya boleh `extends` satu superclass, tetapi boleh `implements` ba
 
 ## Jawaban Latihan
 
-1. **Error.** Interface dipakai dengan `implements`, bukan `extends`.
+1. **Error.** Method interface otomatis `public`, jadi `charge()` di `Laptop` juga wajib `public`.
 2. **Error.** `Laptop` berjanji mengisi `charge()`, tetapi belum mengisinya.
 3. **Valid.** Satu kelas boleh `implements` banyak interface, asal semua method terisi.
 
@@ -482,11 +486,11 @@ Output: `Beep!` lalu `Car is charging`. Objeknya satu, tetapi bisa dipegang lewa
 
 ## Latihan
 
-Pilih **kelas abstrak** atau **interface**:
+Pilih **kelas abstrak**, **interface**, atau **keduanya**:
 
 1. `Animal` sebagai induk `Cat` dan `Dog`, dengan atribut `name` yang dipakai bersama.
 2. Kemampuan "bisa dicetak" (`print()`) untuk `Invoice`, `Photo`, dan `Ticket`.
-3. `Employee` sebagai induk `Manager` dan `Staff`, dengan atribut `baseSalary` yang dipakai bersama.
+3. `Dog` adalah `Animal`, dan hanya `Dog` yang bisa dilatih lewat `train()` (`Cat` tidak).
 
 ---
 
@@ -494,7 +498,7 @@ Pilih **kelas abstrak** atau **interface**:
 
 1. **Kelas abstrak.** `Cat` dan `Dog` satu keluarga dan berbagi atribut `name`.
 2. **Interface.** `Invoice`, `Photo`, dan `Ticket` tidak berkerabat; "bisa dicetak" adalah kemampuan tambahan.
-3. **Kelas abstrak.** `Manager` dan `Staff` satu keluarga dan berbagi atribut `baseSalary`.
+3. **Keduanya.** `Dog` mewarisi kelas abstrak `Animal` (satu keluarga), dan `implements` interface untuk kemampuan `train()` yang tidak dimiliki `Cat`.
 
 ---
 
@@ -519,7 +523,7 @@ Sesi 4 dari 4
 
 ## Kembali ke Perpustakaan
 
-Pada pertemuan sebelumnya, `Book`, `Dvd`, dan `Magazine` mewarisi `LibraryItem`. Ada tiga hal yang belum beres:
+Pada pertemuan sebelumnya, `Book`, `Dvd`, dan `Magazine` mewarisi `LibraryItem`. Atribut dan method dari pertemuan itu tetap ada; slide ini hanya menampilkan bagian yang berubah. Ada tiga hal yang belum beres:
 
 1. `new LibraryItem("?")` masih bisa dibuat, padahal tidak ada "koleksi umum" di rak.
 2. Tiap jenis koleksi punya denda keterlambatan sendiri, tetapi tidak ada yang mewajibkannya.
@@ -544,6 +548,7 @@ abstract class LibraryItem {
     protected String title;
     public LibraryItem(String title) { this.title = title; }
 
+    public String getTitle() { return title; }
     public abstract int lateFeePerDay();   // wajib diisi tiap jenis koleksi
 }
 ```
@@ -586,7 +591,7 @@ class Dvd extends LibraryItem implements Playable {
 ```java
 LibraryItem[] items = { new Book("Dune"), new Dvd("Inception") };
 for (LibraryItem item : items) {
-    System.out.println(item.title + ": " + item.lateFeePerDay());
+    System.out.println(item.getTitle() + ": " + item.lateFeePerDay());
 }
 ```
 
@@ -621,7 +626,7 @@ class Magazine ________ LibraryItem {
 }
 ```
 
-2. Perlukah `Magazine` menyatakan `implements Playable`? Ya atau tidak?
+2. Majalah digital kini bisa diputar. Apa yang perlu ditambahkan pada `Magazine`?
 
 ---
 
@@ -635,7 +640,7 @@ class Magazine extends LibraryItem {
 }
 ```
 
-**Tidak.** Majalah tidak bisa diputar, jadi tidak perlu berjanji mengisi `play()`.
+Soal 2: `implements Playable`, lalu isi `play()`. Hanya kelas yang butuh kemampuan itu yang berjanji mengisinya.
 
 ---
 
@@ -674,7 +679,7 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Tugas: Koleksi Perpustakaan
 
-Perpustakaan menambah `AudioBook` (buku audio) dan aturan baru: hanya buku dan majalah yang pinjamannya bisa diperpanjang.
+Perpustakaan menambah `AudioBook` (buku audio) dan aturan baru: hanya `Book` dan `Magazine` yang pinjamannya bisa diperpanjang.
 
 1. `AudioBook` adalah jenis koleksi yang bisa diputar. Tuliskan baris deklarasi kelasnya (`class AudioBook ...`).
 2. Buat interface `Renewable` dengan satu method. Kelas mana saja yang menyatakan `implements Renewable`?

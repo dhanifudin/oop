@@ -9,10 +9,11 @@ abstract class LibraryItem {
   # title : String
   --
   + LibraryItem(title : String)
+  + getTitle() : String
   + {abstract} lateFeePerDay() : int
 }
 
-interface Playable {
+interface Playable <<interface>> {
   + play() : void
 }
 

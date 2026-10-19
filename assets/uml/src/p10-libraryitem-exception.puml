@@ -19,7 +19,7 @@ abstract class LibraryItem {
   + {abstract} lateFeePerDay() : int
 }
 
-interface Playable {
+interface Playable <<interface>> {
   + play() : void
 }
 

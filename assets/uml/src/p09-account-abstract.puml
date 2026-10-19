@@ -16,7 +16,7 @@ abstract class Account {
   + {abstract} monthlyFee() : double
 }
 
-interface InterestBearing {
+interface InterestBearing <<interface>> {
   + applyInterest() : void
 }
 

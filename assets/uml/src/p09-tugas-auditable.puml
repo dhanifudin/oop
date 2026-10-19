@@ -8,7 +8,7 @@ left to right direction
 abstract class Account {
 }
 
-interface Auditable {
+interface Auditable <<interface>> {
   + auditLog() : String
 }
 
