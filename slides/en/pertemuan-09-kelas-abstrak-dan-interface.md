@@ -677,6 +677,27 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ---
 
+## Assignment Context: The Library Project
+
+<div class="cols">
+<div>
+
+Both assignments continue the library project you have been building since Meeting 6. The project today:
+
+- `LibraryItem` is abstract, with an abstract `lateFeePerDay()`
+- `Book` (1000), `Magazine` (500), and `Dvd` (5000) fill it in
+- Only `Dvd` `implements Playable`
+
+</div>
+<div>
+
+![h:300 The library project after Meeting 9](../assets/uml/p09-libraryitem-abstract.png)
+
+</div>
+</div>
+
+---
+
 ## Assignment: The Library Collection
 
 The library adds `AudioBook` and a new rule: only `Book` and `Magazine` may have their loans renewed.

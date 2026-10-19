@@ -677,6 +677,27 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
+## Konteks Tugas: Proyek Perpustakaan
+
+<div class="cols">
+<div>
+
+Kedua tugas berikut melanjutkan proyek perpustakaan yang kamu bangun sejak Pertemuan 6. Keadaan proyek hari ini:
+
+- `LibraryItem` abstrak, dengan `lateFeePerDay()` abstrak
+- `Book` (1000), `Magazine` (500), dan `Dvd` (5000) mengisinya
+- Hanya `Dvd` yang `implements Playable`
+
+</div>
+<div>
+
+![h:300 Keadaan proyek perpustakaan setelah Pertemuan 9](../assets/uml/p09-libraryitem-abstract.png)
+
+</div>
+</div>
+
+---
+
 ## Tugas: Koleksi Perpustakaan
 
 Perpustakaan menambah `AudioBook` (buku audio) dan aturan baru: hanya `Book` dan `Magazine` yang pinjamannya bisa diperpanjang.
