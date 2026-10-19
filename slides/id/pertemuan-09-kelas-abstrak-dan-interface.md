@@ -104,7 +104,7 @@ style: |
 
 Pertemuan 9: **Kelas Abstrak dan Interface**
 
-Kelas yang belum lengkap, dan kontrak kemampuan
+Rancangan dasar kelas yang wajib dilengkapi subclass, dan kontrak kesepakatan antar kelas
 
 ---
 

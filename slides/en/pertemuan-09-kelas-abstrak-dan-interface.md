@@ -104,7 +104,7 @@ style: |
 
 Meeting 9: **Abstract Classes and Interfaces**
 
-Classes that are not yet complete, and contracts of capability
+A base design a subclass must complete, and an agreed contract between classes
 
 ---
 
