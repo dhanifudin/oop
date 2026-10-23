@@ -25,7 +25,7 @@ public class CheckingAccount extends Account implements Auditable {
 
     @Override
     public String auditLog() {
-        return getAccountNumber() + " overdraft limit: " + overdraftLimit;
+        return getAccountNumber() + " balance: " + getBalance() + ", overdraft limit: " + overdraftLimit;
     }
 
     @Override

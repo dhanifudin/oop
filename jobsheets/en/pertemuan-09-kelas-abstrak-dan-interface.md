@@ -44,6 +44,8 @@ How to read the diagram: the name `Account` and the method `monthlyFee()` are wr
 
 ![Account.java becoming an abstract class with the abstract method monthlyFee](../assets/code/pertemuan-09/p09-01-account.png){width=65%}
 
+Once `Account` is abstract, the editor marks `SavingsAccount` and `CheckingAccount` with errors. This is expected: neither has filled in `monthlyFee()` yet. The errors disappear after step 3.
+
 2. Open `Bank.java`. Add a method `printMonthlyFees()` to print every account's monthly fee:
 
 ![Bank.java with the method printMonthlyFees](../assets/code/pertemuan-09/p09-01-bank.png){width=65%}
@@ -57,6 +59,8 @@ How to read the diagram: the name `Account` and the method `monthlyFee()` are wr
 4. Update `Main.java`:
 
 ![Main.java calling printMonthlyFees](../assets/code/pertemuan-09/p09-01-main.png){width=70%}
+
+5. (Optional) Prove for yourself that `Account` cannot be created. Temporarily add the line `Account test = new Account("X", customer1, 0);` to `Main.java`. The compiler rejects it with the error `Account is abstract; cannot be instantiated`. Remove the line after trying it, so the output below stays the same.
 
 **Expected output:**
 
@@ -79,7 +83,7 @@ A004 fee: 15000.0
 
 - The first eight lines come from `printAllAccounts()`. The last four lines come from `printMonthlyFees()`.
 - `Bank` calls the same `monthlyFee()` for every account. A savings account answers 0.0, a checking account answers 15000.0, since each fills in that abstract method in its own way.
-- A line `new Account(...)` can no longer be compiled. That is exactly the point.
+- The `new Account(...)` attempt in step 5 is rejected by the compiler. That is exactly the point: Bank Mini never has a "general" account.
 
 > ✅ **Checkpoint:** the program's output matches the block above.
 
@@ -95,7 +99,7 @@ Only `SavingsAccount` bears interest. `CheckingAccount` does not. If `applyInter
 
 ![Account, SavingsAccount, and the interface InterestBearing](../assets/uml/p09-account-abstract.png){width=75%}
 
-How to read the diagram: the dashed arrow from `SavingsAccount` to `InterestBearing` means `implements`. `CheckingAccount` has no such arrow.
+How to read the diagram: the label `«interface»` marks `InterestBearing` as an interface. The dashed arrow from `SavingsAccount` to `InterestBearing` means `implements`. `CheckingAccount` has no such arrow.
 
 1. Create a new file `InterestBearing.java`:
 
@@ -105,7 +109,7 @@ How to read the diagram: the dashed arrow from `SavingsAccount` to `InterestBear
 
 ![SavingsAccount.java implementing InterestBearing](../assets/code/pertemuan-09/p09-02-savingsaccount.png){width=65%}
 
-3. Add a test at the end of `Main.java`:
+3. Add a test at the end of `Main.java`. The savings account is held through a variable of type `InterestBearing`, so the caller only knows the contract:
 
 ![Main.java testing applyInterest](../assets/code/pertemuan-09/p09-02-main.png){width=70%}
 
@@ -116,11 +120,17 @@ Before interest: 100000.0
 After interest: 102000.0
 ```
 
-**Why is that?** Account A003's interest rate is 0.02. Its interest is 2% of 100000, which is 2000, then deposited into the balance. `CheckingAccount` has no `applyInterest()` at all, since it does not declare `implements InterestBearing`.
+**Why is that?**
+
+- A003's balance is still 100000 before interest, because the 70000 withdrawal in `Main` is rejected: `SavingsAccount` requires a minimum balance of 50000.
+- Account A003's interest rate is 0.02. Its interest is 2% of 100000, which is 2000, then deposited into the balance.
+- Through the variable `earner` (of type `InterestBearing`) only `applyInterest()` can be called. `CheckingAccount` has no such method at all, since it does not declare `implements InterestBearing`.
 
 > ✅ **Checkpoint:** the last two lines of the output match the block above.
 
 > ⚠️ **If it fails:** if the error `SavingsAccount is not abstract and does not override abstract method applyInterest()` appears, check whether `implements InterestBearing` and the body of `applyInterest()` were added together. A class that declares `implements` must fill in every method of that interface.
+>
+> If the error `attempting to assign weaker access privileges; was public` appears, add `public` to `applyInterest()` in `SavingsAccount`. Methods in an interface are automatically `public`, so their bodies must also be `public`.
 
 ## D. Assignment and Deliverables
 

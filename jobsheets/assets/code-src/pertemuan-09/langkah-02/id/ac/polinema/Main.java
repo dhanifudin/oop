@@ -25,8 +25,9 @@ public class Main {
         bank.printAllAccounts();
         bank.printMonthlyFees();
 
+        InterestBearing earner = savings;
         System.out.println("Before interest: " + savings.getBalance());
-        savings.applyInterest();
+        earner.applyInterest();
         System.out.println("After interest: " + savings.getBalance());
     }
 }

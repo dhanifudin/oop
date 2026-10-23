@@ -17,7 +17,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface. Proyek itu sudah berisi `Account` abstrak dengan `monthlyFee()`, serta interface `InterestBearing` yang diterapkan `SavingsAccount`.
+- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface. Proyek itu sudah berisi `Account` abstrak dengan `monthlyFee()`, serta interface `InterestBearing` yang diterapkan `SavingsAccount`. Tugas mandiri jobsheet ini memakai interface `Auditable` dari tugas mandiri Pertemuan 9; kerjakan tugas itu lebih dulu bila belum.
 
 > **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash

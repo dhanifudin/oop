@@ -153,7 +153,7 @@ def rows_p09():
         (p09("langkah-01"), "SavingsAccount.java", p09("langkah-02"), "SavingsAccount.java", "p09-02-savingsaccount",
          [(1, 3), (26, 30)]),
         (p09("langkah-01"), "Main.java", p09("langkah-02"), "Main.java", "p09-02-main",
-         [(1, 3), (27, 30)]),
+         [(1, 3), (27, 31)]),
         (p09("langkah-02"), "Main.java", p09("tugas"), "Main.java", "p09-tugas-main"),
     ]
 

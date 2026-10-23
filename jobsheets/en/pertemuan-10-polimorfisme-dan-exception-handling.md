@@ -17,7 +17,7 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this jobsheet continues the `bank-mini` project from the Abstract Classes and Interfaces topic. That project already contains the abstract `Account` with `monthlyFee()`, plus the interface `InterestBearing` implemented by `SavingsAccount`.
+- **Project**: this jobsheet continues the `bank-mini` project from the Abstract Classes and Interfaces topic. That project already contains the abstract `Account` with `monthlyFee()`, plus the interface `InterestBearing` implemented by `SavingsAccount`. The independent assignment of this jobsheet uses the interface `Auditable` from the Meeting 9 independent assignment; complete that assignment first if you have not yet.
 
 > **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash

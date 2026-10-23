@@ -44,6 +44,8 @@ Cara membaca diagram: nama `Account` dan method `monthlyFee()` ditulis miring, a
 
 ![Account.java menjadi abstract class dengan method abstrak monthlyFee](../assets/code/pertemuan-09/p09-01-account.png){width=65%}
 
+Begitu `Account` menjadi abstrak, editor menandai `SavingsAccount` dan `CheckingAccount` dengan error. Itu wajar: keduanya belum mengisi `monthlyFee()`. Error hilang setelah langkah 3.
+
 2. Buka `Bank.java`. Tambahkan method `printMonthlyFees()` untuk mencetak biaya bulanan setiap rekening:
 
 ![Bank.java dengan method printMonthlyFees](../assets/code/pertemuan-09/p09-01-bank.png){width=65%}
@@ -57,6 +59,8 @@ Cara membaca diagram: nama `Account` dan method `monthlyFee()` ditulis miring, a
 4. Perbarui `Main.java`:
 
 ![Main.java memanggil printMonthlyFees](../assets/code/pertemuan-09/p09-01-main.png){width=70%}
+
+5. (Opsional) Buktikan sendiri bahwa `Account` tidak bisa dibuat. Tambahkan sementara baris `Account test = new Account("X", customer1, 0);` di `Main.java`. Compiler menolaknya dengan error `Account is abstract; cannot be instantiated`. Hapus baris itu setelah mencoba, supaya output di bawah tetap sama.
 
 **Output yang diharapkan:**
 
@@ -79,7 +83,7 @@ A004 fee: 15000.0
 
 - Delapan baris pertama berasal dari `printAllAccounts()`. Empat baris terakhir berasal dari `printMonthlyFees()`.
 - `Bank` memanggil `monthlyFee()` yang sama untuk tiap rekening. Rekening tabungan menjawab 0.0, rekening giro menjawab 15000.0, sebab masing-masing mengisi method abstrak itu dengan caranya sendiri.
-- Baris `new Account(...)` kini tidak bisa dikompilasi. Itu memang tujuannya.
+- Percobaan `new Account(...)` pada langkah 5 ditolak compiler. Itu memang tujuannya: di Bank Mini tidak pernah ada rekening "umum".
 
 > ✅ **Checkpoint:** output program sama dengan blok di atas.
 
@@ -95,7 +99,7 @@ Hanya `SavingsAccount` yang berbunga. `CheckingAccount` tidak. Kalau `applyInter
 
 ![Account, SavingsAccount, dan interface InterestBearing](../assets/uml/p09-account-abstract.png){width=75%}
 
-Cara membaca diagram: panah bergaris putus-putus dari `SavingsAccount` ke `InterestBearing` berarti `implements`. `CheckingAccount` tidak punya panah itu.
+Cara membaca diagram: label `«interface»` menandai `InterestBearing` sebagai interface. Panah bergaris putus-putus dari `SavingsAccount` ke `InterestBearing` berarti `implements`. `CheckingAccount` tidak punya panah itu.
 
 1. Buat berkas baru `InterestBearing.java`:
 
@@ -105,7 +109,7 @@ Cara membaca diagram: panah bergaris putus-putus dari `SavingsAccount` ke `Inter
 
 ![SavingsAccount.java meng-implement InterestBearing](../assets/code/pertemuan-09/p09-02-savingsaccount.png){width=65%}
 
-3. Tambahkan pengujian di akhir `Main.java`:
+3. Tambahkan pengujian di akhir `Main.java`. Rekening tabungan dipegang lewat variabel bertipe `InterestBearing`, sehingga pemanggil hanya mengenal kontraknya:
 
 ![Main.java menguji applyInterest](../assets/code/pertemuan-09/p09-02-main.png){width=70%}
 
@@ -116,11 +120,17 @@ Before interest: 100000.0
 After interest: 102000.0
 ```
 
-**Mengapa demikian?** Suku bunga rekening A003 adalah 0.02. Bunganya 2% dari 100000, yaitu 2000, lalu disetor ke saldo. `CheckingAccount` tidak punya `applyInterest()` sama sekali, sebab tidak menyatakan `implements InterestBearing`.
+**Mengapa demikian?**
+
+- Saldo A003 masih 100000 sebelum bunga, sebab penarikan 70000 di `Main` ditolak: `SavingsAccount` mensyaratkan saldo minimum 50000.
+- Suku bunga rekening A003 adalah 0.02. Bunganya 2% dari 100000, yaitu 2000, lalu disetor ke saldo.
+- Lewat variabel `earner` (bertipe `InterestBearing`) hanya `applyInterest()` yang bisa dipanggil. `CheckingAccount` tidak punya method itu sama sekali, sebab tidak menyatakan `implements InterestBearing`.
 
 > ✅ **Checkpoint:** dua baris terakhir output sama dengan blok di atas.
 
 > ⚠️ **Jika gagal:** apabila muncul error `SavingsAccount is not abstract and does not override abstract method applyInterest()`, periksa apakah `implements InterestBearing` dan isi `applyInterest()` ditambahkan bersamaan. Kelas yang menyatakan `implements` wajib mengisi seluruh method interface itu.
+>
+> Apabila muncul error `attempting to assign weaker access privileges; was public`, tambahkan `public` pada `applyInterest()` di `SavingsAccount`. Method di interface otomatis `public`, sehingga isinya juga wajib `public`.
 
 ## D. Tugas dan Hasil Kerja
 
