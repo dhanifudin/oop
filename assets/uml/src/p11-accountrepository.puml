@@ -10,7 +10,7 @@ class Bank {
   + findAccount(accountNumber : String) : Account
 }
 
-interface AccountRepository {
+interface AccountRepository <<interface>> {
   + save(account : Account) : void
   + findByNumber(accountNumber : String) : Account
   + findAll() : Collection<Account>

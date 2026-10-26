@@ -11,7 +11,7 @@ class Order {
   + describe() : String
 }
 
-interface Shippable {
+interface Shippable <<interface>> {
   + ship() : String
 }
 

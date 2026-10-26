@@ -31,129 +31,203 @@ After completing this jobsheet, students will be able to:
 
 ## C. Work Steps
 
-### Step 1: Bank Switches from Array to Map
+### Step 1: Bank Switches from an Array to a Map
 
-> **Concept Brief: Collections.** The Java Collections Framework provides ready-made data structures such as `ArrayList` (a list whose size adjusts automatically, needing no upfront size) and `HashMap`/`LinkedHashMap` (storing key-value pairs, with a lookup by key done directly without checking elements one by one). Both replace a plain array, whose size stays fixed since creation and whose search must check elements one by one.
+> **Concept Brief: Collections.** A plain array has a fixed size from the moment it is created, and searching it checks elements one by one. The Java Collections Framework provides replacements. An `ArrayList` is a list whose size adjusts automatically. A `Map` stores pairs of a key and a value, so searching by key can be direct. Bank Mini uses `LinkedHashMap`, a `Map` that keeps elements in the order they were added.
 
-> **Concept Brief: Generics.** The `<...>` written in `Map<String, Account>` is called a *type parameter*: this part states what type the data structure is allowed to hold. With `Map<String, Account>`, the compiler ensures only a `String` can be used as a key and only an `Account` can be stored as a value; a wrong type is caught at compile time, instead of causing a `ClassCastException` later once the program is already running.
+> **Concept Brief: Generics.** The `<...>` in `Map<String, Account>` is called a *type parameter*. It states which types may be stored. In `Map<String, Account>`, the key must be a `String` and the value must be an `Account`. If a type is wrong, the compiler rejects the code at once. Without `<...>`, the mistake only appears as a `ClassCastException` when the program runs.
 
-![A fixed-size array with one-by-one search, compared with a Map with a direct lookup by key](../assets/uml/p11-collections-motivation.png){width=75%}
+![A fixed-size array searched one by one, compared with a Map searched directly by key](../assets/uml/p11-collections-motivation.png){width=75%}
 
-So far, `Bank` has stored accounts in a fixed-size `Account[] accounts`, with `findAccount()` checking elements one by one. Replace it with a `Map<String, Account>`, using the account number as the key:
+**Goal of this step:** replace the account storage, from an array to a `Map`, without changing the program's output.
 
-![Bank.java using LinkedHashMap in place of an Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=65%}
+So far, `Bank` stores accounts in a fixed-size `Account[] accounts`, and `findAccount()` checks elements one by one. With `Map<String, Account>`, the account number becomes the key, so lookup is direct.
 
-Apply the same `accounts.values()` change to `printMonthlyFees()` and `processMonthEnd()` (not shown here, the pattern is identical to `printAllAccounts()` above).
+1. Open `Bank.java`. Replace the array with a `LinkedHashMap`. Every method that walks through the accounts now uses `accounts.values()`:
 
-Update `Main.java`; the `Bank` constructor no longer needs a capacity:
+![Bank.java using LinkedHashMap in place of the Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=85%}
 
-![Main.java creating Bank with no capacity parameter](../assets/code/pertemuan-11/p11-01-main.png){width=70%}
+2. Update `Main.java`. The `Bank` constructor no longer needs a capacity:
 
-> ✅ **Checkpoint:** the program's output remains identical to before, from the Polymorphism and Exception Handling topic (the `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, and `monthly fee` lines for A001, A002, A003).
+![Main.java creating Bank without a capacity parameter](../assets/code/pertemuan-11/p11-01-main.png){width=70%}
 
-> ⚠️ **If it fails:** if the error `incompatible types: Account cannot be converted to ...` appears in a loop, check whether the `for` loop uses `accounts.values()` (not `accounts` directly), since a `Map` cannot be iterated over like an array.
+**Expected output:**
+
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+```
+
+**Why is that?**
+
+- The output is the same as in Meeting 10, because only how accounts are stored changed, not what `Bank` does.
+- `LinkedHashMap` keeps the order of insertion, so A001, A002, and A003 stay in order.
+- `accounts.values()` returns all accounts. `findAccount()` uses `accounts.get(...)`, which looks up the account number directly.
+
+> ✅ **Checkpoint:** the program's output matches the block above.
+
+> ⚠️ **If it fails:** if the error `for-each not applicable to expression type` appears, check whether the `for` loop uses `accounts.values()` rather than `accounts` itself. A `Map` cannot be looped over directly like an array.
 
 ### Step 2: Transaction, Single Responsibility Principle
 
-> **Concept Brief: Single Responsibility Principle.** One of the five SOLID principles, the Single Responsibility Principle, states that a class should have one responsibility, one reason to change. A class mixing many responsibilities at once (computing, formatting, sending, and so on) becomes hard to understand, and a change to one responsibility risks affecting another responsibility that is actually unrelated to it.
+> **Concept Brief: Single Responsibility Principle.** The Single Responsibility Principle (SRP) says that a class should have one responsibility, which means one reason to change. A class that mixes many responsibilities is hard to understand. A change to one responsibility risks breaking another.
 
-![One class with three responsibilities, split into three classes each with one responsibility](../assets/uml/p11-srp-split.png){width=72%}
+![One class with three responsibilities, split into three classes with one responsibility each](../assets/uml/p11-srp-split.png){width=72%}
 
-Bank Mini has so far kept no transaction history at all. Add a class `Transaction`, whose sole responsibility is representing one transaction.
+> **Concept Brief: enum.** An `enum` declares a fixed set of named constants. The compiler rejects any value outside those constants. `TransactionType.DEPOSIT` is always valid. A typo such as `"WITHDRAWL"` in a `String` still compiles, and is only noticed when the transaction history no longer makes sense.
 
-> **Concept Brief: enum.** An `enum` declares a fixed set of named constants. Unlike a `String`, the compiler rejects any value outside the declared constants: `TransactionType.DEPOSIT` is always valid, while a typo such as `"WITHDRAWL"` on a `String` still compiles successfully and only surfaces much later, once a transaction history line stops making sense.
+**Goal of this step:** record transaction history, with one dedicated class that represents a single transaction.
+
+So far Bank Mini does not record transaction history. Add a `Transaction` class whose only responsibility is to represent one transaction:
+
+1. Create a new file `TransactionType.java`:
 
 ![TransactionType.java](../assets/code/pertemuan-11/p11-02-transactiontype.png){width=45%}
 
+2. Create a new file `Transaction.java`:
+
 ![Transaction.java](../assets/code/pertemuan-11/p11-02-transaction.png){width=55%}
 
-![Account and Transaction, one Account holding many Transactions](../assets/uml/p11-transaction.png){width=68%}
+![Account and Transaction, one Account holds many Transactions](../assets/uml/p11-transaction.png){width=68%}
 
-`Account` keeps a list of its own `Transaction` entries, adding one every time `deposit()` or `withdraw()` succeeds:
+3. Open `Account.java`. `Account` keeps a list of its own `Transaction` objects, and adds one each time a `deposit()` or `withdraw()` succeeds:
 
-![Account.java recording a Transaction on deposit and withdraw](../assets/code/pertemuan-11/p11-02-account.png){width=68%}
+![Account.java recording a Transaction in deposit and withdraw](../assets/code/pertemuan-11/p11-02-account.png){width=68%}
 
-`Bank` gets a method to display one account's history:
+4. Open `Bank.java`. Add a method to display the history of one account:
 
-![Bank.java with method printHistory](../assets/code/pertemuan-11/p11-02-bank.png){width=68%}
+![Bank.java with the printHistory method](../assets/code/pertemuan-11/p11-02-bank.png){width=68%}
 
-Update `Main.java`:
+5. Update `Main.java`:
 
 ![Main.java calling printHistory](../assets/code/pertemuan-11/p11-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program adds the lines `A003 WITHDRAW 30000.0` and `A003 DEPOSIT 1400.0` after the lines from Step 1.
+**Expected output:** the seven lines from Step 1 stay the same, followed by two history lines:
 
-> ⚠️ **If it fails:** if the transaction history is empty, check whether `history.add(...)` is called AFTER validation succeeds (inside `deposit()` and `withdraw()`), not before the `canWithdraw()`/minimum amount check. If the error `cannot find symbol: variable DEPOSIT` or similar appears, check whether the constant is called as `TransactionType.DEPOSIT` (not `Transaction.DEPOSIT`), since the enum constant comes from the `TransactionType` class, not `Transaction`.
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+A003 WITHDRAW 30000.0
+A003 DEPOSIT 1400.0
+```
+
+**Why is that?**
+
+- The 70000 withdrawal is rejected, so it is not recorded. `history.add(...)` only runs after validation succeeds.
+- The 30000 withdrawal succeeds, so it is recorded as `WITHDRAW`.
+- A003's interest is deposited through `deposit()`, so it is recorded as `DEPOSIT 1400.0` (2% of 70000).
+
+> ✅ **Checkpoint:** the last two lines of the output match the block above.
+
+> ⚠️ **If it fails:** if the transaction history is empty, check whether `history.add(...)` is called **after** validation succeeds (inside `deposit()` and `withdraw()`), not before the `canWithdraw()` or minimum amount check. If the error `cannot find symbol: variable DEPOSIT` appears, check whether the constant is written as `TransactionType.DEPOSIT`, not `Transaction.DEPOSIT`. The constant comes from the `TransactionType` class.
 
 ### Step 3: AccountRepository, Dependency Inversion Principle
 
-> **Concept Brief: Dependency Inversion Principle.** One of the five SOLID principles, the Dependency Inversion Principle, states that a high-level class (governing business flow) should depend on an interface (an abstraction), rather than directly on a concrete implementation class. This way, the concrete implementation can be swapped at any time without changing a single line of code that depends on it.
+> **Concept Brief: Dependency Inversion Principle.** The Dependency Inversion Principle (DIP) says that the class that controls the flow (a high-level class) should depend on an interface, not on a concrete class. That way, the concrete implementation can be replaced without changing the class that uses it.
 
-> **Concept Brief: Declaring a Generic Interface.** Besides being used (as in `Map<String, Account>` in Step 1), an interface or class can also BE declared generic, by writing `<T>` right after its own name:
-> ```java
-> public interface Repository<T> {
->     void save(T item);
->     T findByNumber(String id);
->     Collection<T> findAll();
-> }
-> ```
-> `T` here is a *type parameter*, filled in later by whoever implements this interface (e.g. `Repository<Account>`). The snippet above is NOT something to add to your project, purely an illustration: `AccountRepository` could in principle have been written following this same `Repository<T>` pattern, but Bank Mini deliberately keeps it as its own concrete interface, since there is so far only one entity type (`Account`) that needs storing; generalizing through `<T>` only genuinely pays off once a second entity type also needs storing the same way.
+**Goal of this step:** separate the storage responsibility from `Bank`, so `Bank` only knows an interface.
 
-`Bank` has so far stored `Map<String, Account>` directly inside itself. Separate the storage responsibility into its own interface:
+So far `Bank` keeps a `Map<String, Account>` inside itself. Separate the storage into its own interface:
+
+1. Create a new file `AccountRepository.java`:
 
 ![AccountRepository.java](../assets/code/pertemuan-11/p11-03-accountrepository.png){width=55%}
 
+2. Create a new file `InMemoryAccountRepository.java`:
+
 ![InMemoryAccountRepository.java](../assets/code/pertemuan-11/p11-03-inmemoryaccountrepository.png){width=65%}
 
-`Bank` now depends on the `AccountRepository` interface, not directly on `Map`:
+![Bank depends on the AccountRepository interface, implemented by InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=75%}
 
-![Bank.java depending on AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=65%}
+How to read the diagram: the label `«interface»` marks `AccountRepository` as an interface. The dashed arrow means `InMemoryAccountRepository` implements it. `Bank` only knows that interface.
 
-The other methods (`printMonthlyFees()`, `processMonthEnd()`, `printHistory()`) follow the same pattern: `accounts.values()` becomes `repository.findAll()`, and `accounts.get(...)` becomes `repository.findByNumber(...)`.
+3. Open `Bank.java`. `Bank` now depends on `AccountRepository`, not on a `Map`. Every method uses `repository.findAll()` and `repository.findByNumber(...)`:
 
-![Bank depending on interface AccountRepository, implemented by InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=75%}
+![Bank.java depending on AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=85%}
 
-Update `Main.java`:
+4. Update `Main.java`:
 
-![Main.java creating Bank with InMemoryAccountRepository](../assets/code/pertemuan-11/p11-03-main.png){width=70%}
+![Main.java creating Bank with an InMemoryAccountRepository](../assets/code/pertemuan-11/p11-03-main.png){width=70%}
 
-> ✅ **Checkpoint:** the program's output remains identical to Step 2, not one line changing even though the way accounts are stored has changed completely.
+This interface is deliberately not made generic (`Repository<T>`), because Bank Mini only stores one kind of data so far, which is `Account`.
 
-> ⚠️ **If it fails:** if the error `constructor Bank in class Bank cannot be applied to given types` appears, check whether `Main.java` now calls `new Bank(new InMemoryAccountRepository())`, not `new Bank()` as in Steps 1-2.
+**Expected output:** exactly the same as Step 2:
+
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+A003 WITHDRAW 30000.0
+A003 DEPOSIT 1400.0
+```
+
+**Why is that?**
+
+- Only how accounts are stored changed. What `Bank` does did not change, so not a single line of output is different.
+- `Bank` does not know its storage is a `Map`. It only calls methods of `AccountRepository`.
+- The code that creates `Bank` (in `Main.java`) chooses which implementation is used.
+
+> ✅ **Checkpoint:** the program's output matches the block above.
+
+> ⚠️ **If it fails:** if the error `constructor Bank in class Bank cannot be applied to given types` appears, check whether `Main.java` calls `new Bank(new InMemoryAccountRepository())`, not `new Bank()` as in Steps 1 and 2.
 
 ### Step 4: Tracing OCP, LSP, and ISP in Code Already Built
 
-> **Concept Brief: Open/Closed Principle.** One of the five SOLID principles, the Open/Closed Principle, states that a class should be open for extension (a new subclass) but closed for modification (existing code untouched). Bank Mini has actually applied this principle since the Overriding and Overloading topic already; no new code is needed to prove it, only tracing.
+> **Concept Brief: Open/Closed Principle.** The Open/Closed Principle (OCP) says that a class is open for extension (new subclasses) but closed for modification (old code is not touched). Bank Mini has applied it since the Overriding and Overloading topic.
 
-> **Concept Brief: Liskov Substitution Principle.** One of the five SOLID principles, the Liskov Substitution Principle, states that a subclass must be able to stand in for its superclass anywhere without changing the correctness of the program. `Bank` processing `Account` polymorphically since the Abstract Class/Interface and Polymorphism topics already shows this principle at work.
+> **Concept Brief: Liskov Substitution Principle.** The Liskov Substitution Principle (LSP) says that a subclass must be able to replace its superclass anywhere without making the program wrong. `Bank` processing `Account` objects polymorphically already shows it.
 
-> **Concept Brief: Interface Segregation Principle.** One of the five SOLID principles, the Interface Segregation Principle, states that an interface should be small and focused, never forcing a class to implement a method irrelevant to it. `InterestBearing`, already built since the Abstract Classes and Interfaces topic, is a genuine example of it.
+> **Concept Brief: Interface Segregation Principle.** The Interface Segregation Principle (ISP) says that an interface should be small and focused, so classes are not forced to fill in methods that do not apply to them. `InterestBearing` is an example.
 
-`SavingsAccount.canWithdraw()` (enforcing a minimum balance) and `CheckingAccount.canWithdraw()` (allowing overdraft) override the same method with different rules, with neither `Account` nor `Bank` ever knowing either subclass's specific rule:
+**Goal of this step:** prove that all three principles already work in the code you built, without writing new code.
 
-![SavingsAccount.java overriding canWithdraw to enforce a minimum balance](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=65%}
+**4a. Open/Closed.** `SavingsAccount.canWithdraw()` (keeps a minimum balance) and `CheckingAccount.canWithdraw()` (allows an overdraft) override the same method with different rules. `Account` and `Bank` never know either rule:
 
-![CheckingAccount.java overriding canWithdraw for overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
+![SavingsAccount.java overriding canWithdraw to keep a minimum balance](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=65%}
 
-Prove it directly by opening `Account.java` and `Bank.java` in your editor, then use Find (Ctrl+F, or Find on NetBeans) to search for the words `SavingsAccount` and `CheckingAccount` in both files:
+![CheckingAccount.java overriding canWithdraw for the overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
 
-> ✅ **Checkpoint:** the search finds no occurrence of `SavingsAccount` or `CheckingAccount` in either `Account.java` or `Bank.java`. Neither file ever names either concrete class at all, even though both must process `SavingsAccount` and `CheckingAccount` differently. This is the **Open/Closed Principle**: a new withdrawal rule is simply written through an override, with no change to `Account`/`Bank`.
+1. Open `Account.java` and `Bank.java`. Use the Find feature (Ctrl+F, or Find in NetBeans) to search both files for the words `SavingsAccount` and `CheckingAccount`.
 
-`Bank.processMonthEnd()` and `printAllAccounts()` (the Abstract Class/Interface and Polymorphism topics) call `monthlyFee()` and `printInfo()` polymorphically through the `Account` type, trusting that method's contract is always fulfilled by whatever subclass it is:
+> ✅ **Checkpoint:** the search finds no occurrence of `SavingsAccount` or `CheckingAccount` in `Account.java` or `Bank.java`. A new withdrawal rule only needs an override, with no change to `Account` or `Bank`. This is the **Open/Closed Principle**.
 
-![Bank.java with method processMonthEnd, iterating polymorphically through the repository](../assets/code/pertemuan-11/p11-04-bank.png){width=68%}
+**4b. Liskov Substitution.** `Bank.processMonthEnd()` calls `acc.monthlyFee()` through the `Account` type. That method is trusted to be fulfilled by any subclass:
 
-> ✅ **Checkpoint:** explain in your own words why `processMonthEnd()` can process both `SavingsAccount` and `CheckingAccount` through the same single line `acc.monthlyFee()`, with no `if`/`else` branch per account kind. This is the **Liskov Substitution Principle**: both subclasses can stand in for `Account` at this point without changing the correctness of the program.
+![Bank.java with the processMonthEnd method, polymorphic iteration through the repository](../assets/code/pertemuan-11/p11-04-bank.png){width=68%}
 
-`InterestBearing` (the Abstract Classes and Interfaces topic) contains only one method, `applyInterest()`, and ONLY `SavingsAccount` implements it; `CheckingAccount` is never forced to have a method irrelevant to it:
+2. Look again at the output of Step 3. The `monthly fee` lines differ for each kind of account.
+
+> ✅ **Checkpoint:** the output shows `A001 monthly fee: 0.0` and `A003 monthly fee: 0.0` (`SavingsAccount`), but `A002 monthly fee: 15000.0` (`CheckingAccount`). Yet `processMonthEnd()` uses one and the same line `acc.monthlyFee()`, with no `if`/`else` branch per kind. Both subclasses replace `Account` without making the program wrong. This is the **Liskov Substitution Principle**.
+
+**4c. Interface Segregation.** `InterestBearing` holds only one method, `applyInterest()`, and only `SavingsAccount` implements it:
 
 ![InterestBearing.java, a small one-method interface](../assets/code/pertemuan-11/p11-04-interestbearing.png){width=45%}
 
-Prove it again the same way, search for the word `InterestBearing` in `SavingsAccount.java` and in `CheckingAccount.java`:
+3. Search for the word `InterestBearing` in `SavingsAccount.java` and in `CheckingAccount.java`.
 
-> ✅ **Checkpoint:** `InterestBearing` appears in `SavingsAccount.java` (on the `implements` line), but does NOT appear anywhere in `CheckingAccount.java`. This is the **Interface Segregation Principle**: a small, focused interface, with `CheckingAccount` never forced to implement `applyInterest()`, which would make no sense for it.
+> ✅ **Checkpoint:** `InterestBearing` appears in `SavingsAccount.java` (on the `implements` line), but does not appear at all in `CheckingAccount.java`. `CheckingAccount` is not forced to implement an `applyInterest()` that makes no sense for it. This is the **Interface Segregation Principle**.
 
-> ⚠️ **If it fails:** if `SavingsAccount`/`CheckingAccount` turn up in `Account.java`/`Bank.java` from the previous step, check again whether either file ever wrote a concrete class name (e.g. `if (acc instanceof SavingsAccount)`) instead of using a polymorphic method/an `instanceof` check through an interface as it should have since the Inheritance through Polymorphism topics.
+**Why is that?**
+
+- `Account` and `Bank` never mention a concrete class name, so a new subclass does not force either of them to change.
+- The caller treats every `Account` the same way, and each subclass answers by its own rule.
+- An ability that only some classes have becomes a small interface, not a method in `Account`.
+
+> ⚠️ **If it fails:** if `SavingsAccount` or `CheckingAccount` does appear in `Account.java` or `Bank.java`, check whether either file writes a concrete class name, for example `if (acc instanceof SavingsAccount)`. The check should go through a polymorphic method or an `instanceof` check against an interface.
 
 ## D. Assignment and Deliverables
 
@@ -169,13 +243,13 @@ Submit the following according to the format requested by the instructor:
 
      ![Main.java adding BusinessAccount, calling processMonthEnd and printAllAccounts](../assets/code/pertemuan-11/p11-tugas-main.png){width=70%}
 
-     Prove both of the following from the program's output, with NO change to a single line of `Account.java` or `Bank.java`:
+     Prove both of the following from the program's output, with no change to a single line of `Account.java` or `Bank.java`:
      - **(Open/Closed + Liskov Substitution)** the line `A004 monthly fee: 0.0` appears among `processMonthEnd()`'s other lines, and `A004 - Budi - balance: 2000000.0` followed by `Account type: Business` appears in `printAllAccounts()`, exactly as `SavingsAccount`/`CheckingAccount` were processed earlier.
-     - **(Interface Segregation)** NO `A004 interest applied` line appears, since `BusinessAccount` does not implement `InterestBearing`.
+     - **(Interface Segregation)** no `A004 interest applied` line appears, since `BusinessAccount` does not implement `InterestBearing`.
   2. Answer briefly (2 to 3 sentences for each question):
      - (a) name which SOLID principle is proven by the fact that `Account.java`/`Bank.java` did not change at all after `BusinessAccount` was added, and explain why.
      - (b) `processMonthEnd()` uses `instanceof InterestBearing`, not `instanceof SavingsAccount`. Explain why `BusinessAccount` is automatically handled correctly (not charged interest) with no need for `Bank.java` to know anything about its existence.
-     - (c) Sometime later (the Persistence with JDBC and an Authentication Mechanism topic), `InMemoryAccountRepository` will be replaced with `JdbcAccountRepository`, storing data to a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
+     - (c) Sometime later, `InMemoryAccountRepository` will be replaced with another class that stores data in a database. Explain why `Bank.java` does not need a single line changed for that swap, and which SOLID principle makes this possible.
 
 ## E. Grading Criteria
 

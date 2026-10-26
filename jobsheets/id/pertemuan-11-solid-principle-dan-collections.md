@@ -33,127 +33,201 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: Bank Beralih dari Array ke Map
 
-> **Konsep Singkat: Collections.** Java Collections Framework menyediakan struktur data siap pakai seperti `ArrayList` (daftar yang ukurannya menyesuaikan otomatis, tidak perlu ditentukan di awal) dan `HashMap`/`LinkedHashMap` (menyimpan pasangan kunci-nilai, pencarian berdasarkan kunci dilakukan langsung tanpa memeriksa elemen satu per satu). Keduanya menggantikan array biasa, yang ukurannya tetap sejak dibuat dan pencariannya harus memeriksa elemen satu per satu.
+> **Konsep Singkat: Collections.** Array biasa berukuran tetap sejak dibuat, dan pencariannya memeriksa elemen satu per satu. Java Collections Framework menyediakan penggantinya. `ArrayList` adalah daftar yang ukurannya menyesuaikan otomatis. `Map` menyimpan pasangan kunci dan nilai, sehingga pencarian lewat kunci bisa langsung. Bank Mini memakai `LinkedHashMap`, yaitu `Map` yang menjaga urutan elemen sesuai urutan penambahan.
 
-> **Konsep Singkat: Generics.** Tulisan `<...>` pada `Map<String, Account>` disebut *type parameter*: bagian ini menyatakan tipe apa yang boleh disimpan di dalam struktur data itu. Dengan `Map<String, Account>`, compiler memastikan hanya `String` yang boleh dipakai sebagai kunci dan hanya `Account` yang boleh disimpan sebagai nilai, galat tipe yang salah tertangkap saat kompilasi, bukan menyebabkan `ClassCastException` di kemudian hari saat program sudah berjalan.
+> **Konsep Singkat: Generics.** Tulisan `<...>` pada `Map<String, Account>` disebut *type parameter*. Isinya menyatakan tipe apa yang boleh disimpan. Pada `Map<String, Account>`, kuncinya harus `String` dan nilainya harus `Account`. Bila tipenya salah, compiler langsung menolak kode itu. Tanpa `<...>`, kesalahan baru muncul sebagai `ClassCastException` saat program berjalan.
 
 ![Array berukuran tetap dengan pencarian satu per satu, dibandingkan Map dengan pencarian langsung lewat kunci](../assets/uml/p11-collections-motivation.png){width=75%}
 
-Sejauh ini, `Bank` menyimpan rekening di `Account[] accounts` berukuran tetap, `findAccount()` memeriksa elemen satu per satu. Ganti dengan `Map<String, Account>`, memakai nomor rekening sebagai kunci:
+**Tujuan langkah ini:** mengganti penyimpanan rekening dari array ke `Map`, tanpa mengubah output program.
 
-![Bank.java memakai LinkedHashMap menggantikan Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=65%}
+Sejauh ini, `Bank` menyimpan rekening di `Account[] accounts` berukuran tetap, dan `findAccount()` memeriksa elemen satu per satu. Dengan `Map<String, Account>`, nomor rekening menjadi kunci, sehingga pencarian langsung.
 
-Terapkan perubahan `accounts.values()` yang sama pada `printMonthlyFees()` dan `processMonthEnd()` (tidak ditampilkan di sini, polanya identik dengan `printAllAccounts()` di atas).
+1. Buka `Bank.java`. Ganti array dengan `LinkedHashMap`. Semua method yang menelusuri rekening kini memakai `accounts.values()`:
 
-Perbarui `Main.java`, konstruktor `Bank` tidak lagi memerlukan kapasitas:
+![Bank.java memakai LinkedHashMap menggantikan Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=85%}
+
+2. Perbarui `Main.java`. Konstruktor `Bank` tidak lagi memerlukan kapasitas:
 
 ![Main.java membuat Bank tanpa parameter kapasitas](../assets/code/pertemuan-11/p11-01-main.png){width=70%}
 
-> ✅ **Checkpoint:** output program tetap identik dengan sebelumnya, dari topik Polimorfisme dan Exception Handling (baris `Withdrawal failed`, `Withdrawal succeeded`, `interest applied`, dan `monthly fee` untuk A001, A002, A003).
+**Output yang diharapkan:**
 
-> ⚠️ **Jika gagal:** apabila muncul galat `incompatible types: Account cannot be converted to ...` pada perulangan, periksa apakah perulangan `for` memakai `accounts.values()` (bukan `accounts` secara langsung), sebab `Map` tidak bisa di-iterasi seperti array.
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+```
+
+**Mengapa demikian?**
+
+- Output sama dengan Pertemuan 10, sebab yang berubah hanya cara penyimpanan, bukan perilaku `Bank`.
+- `LinkedHashMap` menjaga urutan penambahan, sehingga A001, A002, dan A003 tetap berurutan.
+- `accounts.values()` mengembalikan semua rekening. `findAccount()` memakai `accounts.get(...)`, yang langsung mencari lewat nomor rekening.
+
+> ✅ **Checkpoint:** output program sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila muncul error `for-each not applicable to expression type`, periksa apakah looping `for` memakai `accounts.values()`, bukan `accounts` secara langsung. `Map` tidak bisa dilooping langsung seperti array.
 
 ### Langkah 2: Transaction, Single Responsibility Principle
 
-> **Konsep Singkat: Single Responsibility Principle.** Salah satu dari lima prinsip SOLID, Single Responsibility Principle, menyatakan bahwa satu kelas sebaiknya memiliki satu tanggung jawab, satu alasan untuk berubah. Kelas yang mencampur banyak tanggung jawab sekaligus (menghitung, memformat, mengirim, dan seterusnya) menjadi sulit dipahami dan setiap perubahan pada satu tanggung jawab berisiko memengaruhi tanggung jawab lain yang sebenarnya tidak berhubungan.
+> **Konsep Singkat: Single Responsibility Principle.** Single Responsibility Principle (SRP) menyatakan bahwa satu kelas sebaiknya punya satu tanggung jawab, yaitu satu alasan untuk berubah. Kelas yang mencampur banyak tanggung jawab sulit dipahami. Perubahan pada satu tanggung jawab berisiko merusak tanggung jawab lain.
 
 ![Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/uml/p11-srp-split.png){width=72%}
 
-Bank Mini sejauh ini tidak mencatat riwayat transaksi sama sekali. Tambahkan kelas `Transaction`, tanggung jawabnya hanya merepresentasikan satu transaksi.
+> **Konsep Singkat: enum.** `enum` mendeklarasikan sekumpulan konstanta bernama yang jumlahnya tetap. Compiler menolak nilai di luar konstanta itu. `TransactionType.DEPOSIT` pasti valid. Salah ketik seperti `"WITHDRAWL"` pada `String` tetap berhasil dikompilasi, dan baru ketahuan salah saat riwayat transaksi sudah tidak masuk akal.
 
-> **Konsep Singkat: enum.** `enum` mendeklarasikan sekumpulan konstanta bernama yang tetap jumlahnya. Berbeda dari `String`, compiler menolak nilai apa pun di luar konstanta yang dideklarasikan: `TransactionType.DEPOSIT` pasti valid, sementara salah ketik seperti `"WITHDRAWL"` pada `String` tetap berhasil dikompilasi dan baru ketahuan salah jauh kemudian, saat baris riwayat transaksinya sudah tidak masuk akal.
+**Tujuan langkah ini:** mencatat riwayat transaksi, dengan satu kelas khusus yang hanya mewakili satu transaksi.
+
+Bank Mini sejauh ini tidak mencatat riwayat transaksi. Tambahkan kelas `Transaction`, yang tanggung jawabnya hanya merepresentasikan satu transaksi:
+
+1. Buat berkas baru `TransactionType.java`:
 
 ![TransactionType.java](../assets/code/pertemuan-11/p11-02-transactiontype.png){width=45%}
+
+2. Buat berkas baru `Transaction.java`:
 
 ![Transaction.java](../assets/code/pertemuan-11/p11-02-transaction.png){width=55%}
 
 ![Account dan Transaction, satu Account memiliki banyak Transaction](../assets/uml/p11-transaction.png){width=68%}
 
-`Account` menyimpan daftar `Transaction` miliknya sendiri, ditambahkan setiap kali `deposit()` atau `withdraw()` berhasil:
+3. Buka `Account.java`. `Account` menyimpan daftar `Transaction` miliknya sendiri, dan menambahkannya setiap kali `deposit()` atau `withdraw()` berhasil:
 
 ![Account.java mencatat Transaction pada deposit dan withdraw](../assets/code/pertemuan-11/p11-02-account.png){width=68%}
 
-`Bank` mendapat method untuk menampilkan riwayat satu rekening:
+4. Buka `Bank.java`. Tambahkan method untuk menampilkan riwayat satu rekening:
 
 ![Bank.java dengan method printHistory](../assets/code/pertemuan-11/p11-02-bank.png){width=68%}
 
-Perbarui `Main.java`:
+5. Perbarui `Main.java`:
 
 ![Main.java memanggil printHistory](../assets/code/pertemuan-11/p11-02-main.png){width=70%}
 
-> ✅ **Checkpoint:** program menambahkan baris `A003 WITHDRAW 30000.0` dan `A003 DEPOSIT 1400.0` setelah baris dari Langkah 1.
+**Output yang diharapkan:** tujuh baris dari Langkah 1 tetap sama, diikuti dua baris riwayat:
 
-> ⚠️ **Jika gagal:** apabila riwayat transaksi kosong, periksa apakah `history.add(...)` dipanggil SETELAH validasi berhasil (di dalam `deposit()` dan `withdraw()`), bukan sebelum pengecekan `canWithdraw()`/jumlah minimum. Apabila muncul galat `cannot find symbol: variable DEPOSIT` atau semacamnya, periksa apakah konstanta dipanggil sebagai `TransactionType.DEPOSIT` (bukan `Transaction.DEPOSIT`), sebab konstanta enum-nya berasal dari kelas `TransactionType`, bukan dari `Transaction`.
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+A003 WITHDRAW 30000.0
+A003 DEPOSIT 1400.0
+```
+
+**Mengapa demikian?**
+
+- Penarikan 70000 ditolak, jadi tidak tercatat. Pencatatan `history.add(...)` hanya dijalankan setelah validasi berhasil.
+- Penarikan 30000 berhasil, sehingga tercatat sebagai `WITHDRAW`.
+- Bunga A003 disetor lewat `deposit()`, sehingga tercatat sebagai `DEPOSIT 1400.0` (2% dari 70000).
+
+> ✅ **Checkpoint:** dua baris terakhir output sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila riwayat transaksi kosong, periksa apakah `history.add(...)` dipanggil **setelah** validasi berhasil (di dalam `deposit()` dan `withdraw()`), bukan sebelum pengecekan `canWithdraw()` atau jumlah minimum. Apabila muncul error `cannot find symbol: variable DEPOSIT`, periksa apakah konstanta dipanggil sebagai `TransactionType.DEPOSIT`, bukan `Transaction.DEPOSIT`. Konstanta itu berasal dari kelas `TransactionType`.
 
 ### Langkah 3: AccountRepository, Dependency Inversion Principle
 
-> **Konsep Singkat: Dependency Inversion Principle.** Salah satu dari lima prinsip SOLID, Dependency Inversion Principle, menyatakan bahwa kelas tingkat tinggi (yang mengatur alur bisnis) sebaiknya bergantung pada interface (abstraksi), bukan pada kelas implementasi konkret secara langsung. Dengan begitu, implementasi konkretnya boleh diganti kapan saja tanpa mengubah satu baris pun kode yang bergantung padanya.
+> **Konsep Singkat: Dependency Inversion Principle.** Dependency Inversion Principle (DIP) menyatakan bahwa kelas yang mengatur alur (kelas tingkat tinggi) sebaiknya bergantung pada interface, bukan pada kelas konkret. Dengan begitu, implementasi konkretnya bisa diganti tanpa mengubah kelas yang memakainya.
 
-> **Konsep Singkat: Mendeklarasikan Interface Generik.** Selain dipakai (seperti `Map<String, Account>` pada Langkah 1), sebuah interface atau kelas juga BISA dideklarasikan generik, dengan menuliskan `<T>` setelah namanya sendiri:
-> ```java
-> public interface Repository<T> {
->     void save(T item);
->     T findByNumber(String id);
->     Collection<T> findAll();
-> }
-> ```
-> `T` di sini adalah *type parameter*, diisi kelak oleh siapa pun yang mengimplementasikan interface ini (mis. `Repository<Account>`). Bagian di bawah ini TIDAK dituliskan ke proyekmu, sekadar ilustrasi: `AccountRepository` sebenarnya bisa saja ditulis mengikuti pola `Repository<T>` ini, tetapi Bank Mini sengaja mempertahankannya sebagai interface konkret tersendiri, sebab sejauh ini hanya ada satu jenis entitas (`Account`) yang butuh disimpan, generalisasi lewat `<T>` baru benar-benar berguna begitu ada jenis entitas kedua yang juga butuh disimpan dengan cara serupa.
+**Tujuan langkah ini:** memisahkan tanggung jawab penyimpanan dari `Bank`, sehingga `Bank` hanya mengenal interface.
 
-`Bank` sejauh ini menyimpan `Map<String, Account>` secara langsung di dalam dirinya sendiri. Pisahkan tanggung jawab penyimpanan ke interface tersendiri:
+`Bank` sejauh ini menyimpan `Map<String, Account>` di dalam dirinya sendiri. Pisahkan penyimpanan ke interface tersendiri:
+
+1. Buat berkas baru `AccountRepository.java`:
 
 ![AccountRepository.java](../assets/code/pertemuan-11/p11-03-accountrepository.png){width=55%}
 
+2. Buat berkas baru `InMemoryAccountRepository.java`:
+
 ![InMemoryAccountRepository.java](../assets/code/pertemuan-11/p11-03-inmemoryaccountrepository.png){width=65%}
-
-`Bank` sekarang bergantung pada interface `AccountRepository`, bukan pada `Map` secara langsung:
-
-![Bank.java bergantung pada AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=65%}
-
-Method lain (`printMonthlyFees()`, `processMonthEnd()`, `printHistory()`) mengikuti pola yang sama: `accounts.values()` diganti `repository.findAll()`, dan `accounts.get(...)` diganti `repository.findByNumber(...)`.
 
 ![Bank bergantung pada interface AccountRepository, diimplementasikan InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=75%}
 
-Perbarui `Main.java`:
+Cara membaca diagram: label `«interface»` menandai `AccountRepository` sebagai interface. Panah bergaris putus-putus berarti `InMemoryAccountRepository` mengimplementasikannya. `Bank` hanya mengenal interface itu.
+
+3. Buka `Bank.java`. `Bank` kini bergantung pada `AccountRepository`, bukan pada `Map`. Semua method memakai `repository.findAll()` dan `repository.findByNumber(...)`:
+
+![Bank.java bergantung pada AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=85%}
+
+4. Perbarui `Main.java`:
 
 ![Main.java membuat Bank dengan InMemoryAccountRepository](../assets/code/pertemuan-11/p11-03-main.png){width=70%}
 
-> ✅ **Checkpoint:** output program tetap identik dengan Langkah 2, tidak ada satu baris output pun yang berubah meskipun cara penyimpanan rekening berganti total.
+Interface ini sengaja tidak dibuat generik (`Repository<T>`), karena Bank Mini baru menyimpan satu jenis data, yaitu `Account`.
 
-> ⚠️ **Jika gagal:** apabila muncul galat `constructor Bank in class Bank cannot be applied to given types`, periksa apakah `Main.java` sudah memanggil `new Bank(new InMemoryAccountRepository())`, bukan `new Bank()` seperti Langkah 1-2.
+**Output yang diharapkan:** sama persis dengan Langkah 2:
+
+```text
+Withdrawal failed: A003: insufficient balance for a withdrawal of 70000.0
+Withdrawal succeeded, new balance: 70000.0
+A001 interest applied, new balance: 505000.0
+A001 monthly fee: 0.0
+A002 monthly fee: 15000.0
+A003 interest applied, new balance: 71400.0
+A003 monthly fee: 0.0
+A003 WITHDRAW 30000.0
+A003 DEPOSIT 1400.0
+```
+
+**Mengapa demikian?**
+
+- Yang berganti hanya cara penyimpanan. Perilaku `Bank` tidak berubah, jadi tidak ada satu baris output pun yang berbeda.
+- `Bank` tidak tahu bahwa penyimpanannya berupa `Map`. Ia hanya memanggil method milik `AccountRepository`.
+- Kode yang membuat `Bank` (di `Main.java`) yang memilih implementasi mana yang dipakai.
+
+> ✅ **Checkpoint:** output program sama dengan blok di atas.
+
+> ⚠️ **Jika gagal:** apabila muncul error `constructor Bank in class Bank cannot be applied to given types`, periksa apakah `Main.java` sudah memanggil `new Bank(new InMemoryAccountRepository())`, bukan `new Bank()` seperti Langkah 1 dan 2.
 
 ### Langkah 4: Menelusuri OCP, LSP, dan ISP pada Kode yang Sudah Dibangun
 
-> **Konsep Singkat: Open/Closed Principle.** Salah satu dari lima prinsip SOLID, Open/Closed Principle, menyatakan bahwa kelas sebaiknya terbuka untuk diperluas (subclass baru) tetapi tertutup untuk diubah (kode lama tidak disentuh). Bank Mini sebenarnya sudah menerapkan prinsip ini sejak topik Overriding dan Overloading, tidak butuh kode baru untuk membuktikannya, tinggal ditelusuri.
+> **Konsep Singkat: Open/Closed Principle.** Open/Closed Principle (OCP) menyatakan bahwa kelas terbuka untuk diperluas (subclass baru), tetapi tertutup untuk diubah (kode lama tidak disentuh). Bank Mini sudah menerapkannya sejak topik Overriding dan Overloading.
 
-> **Konsep Singkat: Liskov Substitution Principle.** Salah satu dari lima prinsip SOLID, Liskov Substitution Principle, menyatakan bahwa subclass harus bisa menggantikan superclass-nya di mana pun tanpa mengubah kebenaran program. `Bank` yang memproses `Account` secara polimorfik sejak topik Abstract Class/Interface dan Polimorfisme sudah menunjukkan prinsip ini bekerja.
+> **Konsep Singkat: Liskov Substitution Principle.** Liskov Substitution Principle (LSP) menyatakan bahwa subclass harus bisa menggantikan superclass-nya di mana pun tanpa membuat program salah. `Bank` yang memproses `Account` secara polimorfik sudah menunjukkannya.
 
-> **Konsep Singkat: Interface Segregation Principle.** Salah satu dari lima prinsip SOLID, Interface Segregation Principle, menyatakan bahwa interface sebaiknya kecil dan fokus, tidak memaksa kelas mengimplementasikan method yang tidak relevan baginya. `InterestBearing`, sudah dibangun sejak topik Abstract Class dan Interface, adalah contoh nyatanya.
+> **Konsep Singkat: Interface Segregation Principle.** Interface Segregation Principle (ISP) menyatakan bahwa interface sebaiknya kecil dan fokus, sehingga kelas tidak dipaksa mengisi method yang tidak relevan. `InterestBearing` adalah contohnya.
 
-`SavingsAccount.canWithdraw()` (menahan saldo minimum) dan `CheckingAccount.canWithdraw()` (mengizinkan overdraft) meng-override method yang sama dengan aturan yang berbeda, tanpa `Account` maupun `Bank` pernah tahu aturan spesifik keduanya:
+**Tujuan langkah ini:** membuktikan bahwa ketiga prinsip itu sudah bekerja pada kode yang kamu bangun, tanpa menulis kode baru.
+
+**4a. Open/Closed.** `SavingsAccount.canWithdraw()` (menahan saldo minimum) dan `CheckingAccount.canWithdraw()` (mengizinkan overdraft) meng-override method yang sama dengan aturan berbeda. `Account` dan `Bank` tidak pernah tahu aturan keduanya:
 
 ![SavingsAccount.java meng-override canWithdraw untuk menahan saldo minimum](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=65%}
 
 ![CheckingAccount.java meng-override canWithdraw untuk overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
 
-Buktikan langsung dengan membuka `Account.java` dan `Bank.java` di editor, lalu gunakan fitur Cari (Ctrl+F, atau Find pada NetBeans) untuk mencari kata `SavingsAccount` dan `CheckingAccount` di kedua berkas tersebut:
+1. Buka `Account.java` dan `Bank.java`. Gunakan fitur Cari (Ctrl+F, atau Find pada NetBeans) untuk mencari kata `SavingsAccount` dan `CheckingAccount` di kedua berkas.
 
-> ✅ **Checkpoint:** pencarian tidak menemukan satu pun kemunculan `SavingsAccount` maupun `CheckingAccount` di `Account.java` atau `Bank.java`. Kedua berkas ini tidak pernah menyebut nama kelas konkretnya sama sekali, padahal keduanya harus memproses `SavingsAccount` dan `CheckingAccount` secara berbeda. Inilah **Open/Closed Principle**: aturan penarikan baru cukup ditulis lewat override, tanpa mengubah `Account`/`Bank`.
+> ✅ **Checkpoint:** pencarian tidak menemukan satu pun kemunculan `SavingsAccount` maupun `CheckingAccount` di `Account.java` atau `Bank.java`. Aturan penarikan baru cukup ditulis lewat override, tanpa mengubah `Account` dan `Bank`. Inilah **Open/Closed Principle**.
 
-Method `Bank.processMonthEnd()` dan `printAllAccounts()` (topik Abstract Class/Interface dan Polimorfisme) memanggil `monthlyFee()` dan `printInfo()` secara polimorfik lewat tipe `Account`, memercayai kontrak method itu selalu terpenuhi oleh subclass mana pun:
+**4b. Liskov Substitution.** `Bank.processMonthEnd()` memanggil `acc.monthlyFee()` lewat tipe `Account`. Method itu dipercaya selalu terpenuhi oleh subclass mana pun:
 
 ![Bank.java dengan method processMonthEnd, iterasi polimorfik lewat repository](../assets/code/pertemuan-11/p11-04-bank.png){width=68%}
 
-> ✅ **Checkpoint:** jelaskan dengan kata-katamu sendiri mengapa `processMonthEnd()` bisa memproses `SavingsAccount` maupun `CheckingAccount` lewat satu baris `acc.monthlyFee()` yang sama, tanpa cabang `if`/`else` per jenis rekening. Inilah **Liskov Substitution Principle**: kedua subclass bisa menggantikan `Account` di titik ini tanpa mengubah kebenaran program.
+2. Lihat kembali output Langkah 3. Baris `monthly fee` berbeda untuk tiap jenis rekening.
 
-`InterestBearing` (topik Abstract Class dan Interface) hanya berisi satu method, `applyInterest()`, dan HANYA `SavingsAccount` yang mengimplementasikannya; `CheckingAccount` tidak pernah dipaksa memiliki method yang tidak relevan baginya:
+> ✅ **Checkpoint:** output menunjukkan `A001 monthly fee: 0.0` dan `A003 monthly fee: 0.0` (`SavingsAccount`), tetapi `A002 monthly fee: 15000.0` (`CheckingAccount`). Padahal `processMonthEnd()` memakai satu baris `acc.monthlyFee()` yang sama, tanpa cabang `if`/`else` per jenis. Kedua subclass menggantikan `Account` tanpa membuat program salah. Inilah **Liskov Substitution Principle**.
+
+**4c. Interface Segregation.** `InterestBearing` hanya berisi satu method, `applyInterest()`, dan hanya `SavingsAccount` yang mengimplementasikannya:
 
 ![InterestBearing.java, interface kecil satu method](../assets/code/pertemuan-11/p11-04-interestbearing.png){width=45%}
 
-Buktikan lagi dengan cara yang sama, cari kata `InterestBearing` di `SavingsAccount.java` dan di `CheckingAccount.java`:
+3. Cari kata `InterestBearing` di `SavingsAccount.java` dan di `CheckingAccount.java`.
 
-> ✅ **Checkpoint:** `InterestBearing` muncul di `SavingsAccount.java` (pada baris `implements`), tetapi TIDAK muncul sama sekali di `CheckingAccount.java`. Inilah **Interface Segregation Principle**: interface kecil dan fokus, `CheckingAccount` tidak pernah dipaksa mengimplementasikan `applyInterest()` yang tidak masuk akal baginya.
+> ✅ **Checkpoint:** `InterestBearing` muncul di `SavingsAccount.java` (pada baris `implements`), tetapi tidak muncul sama sekali di `CheckingAccount.java`. `CheckingAccount` tidak dipaksa mengimplementasikan `applyInterest()` yang tidak masuk akal baginya. Inilah **Interface Segregation Principle**.
 
-> ⚠️ **Jika gagal:** apabila `SavingsAccount`/`CheckingAccount` justru muncul di `Account.java`/`Bank.java` pada langkah sebelumnya, periksa kembali apakah kedua berkas itu pernah menuliskan nama kelas konkret (mis. `if (acc instanceof SavingsAccount)`) alih-alih memakai method polimorfik/pengecekan `instanceof` lewat interface seperti seharusnya sejak topik Inheritance hingga Polimorfisme.
+**Mengapa demikian?**
+
+- `Account` dan `Bank` tidak pernah menyebut nama kelas konkret, jadi subclass baru tidak memaksa keduanya berubah.
+- Pemanggil memperlakukan semua `Account` dengan cara yang sama, dan tiap subclass menjawab dengan aturannya sendiri.
+- Kemampuan yang hanya dimiliki sebagian kelas dijadikan interface kecil, bukan method di `Account`.
+
+> ⚠️ **Jika gagal:** apabila `SavingsAccount` atau `CheckingAccount` justru muncul di `Account.java` atau `Bank.java`, periksa apakah salah satu berkas menuliskan nama kelas konkret, misalnya `if (acc instanceof SavingsAccount)`. Pengecekan seharusnya lewat method polimorfik atau `instanceof` terhadap interface.
 
 ## D. Tugas dan Hasil Kerja
 
@@ -169,13 +243,13 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
      ![Main.java menambahkan BusinessAccount, memanggil processMonthEnd dan printAllAccounts](../assets/code/pertemuan-11/p11-tugas-main.png){width=70%}
 
-     Buktikan dua hal berikut dari output program, TANPA mengubah satu baris pun `Account.java` atau `Bank.java`:
+     Buktikan dua hal berikut dari output program, tanpa mengubah satu baris pun `Account.java` atau `Bank.java`:
      - **(Open/Closed + Liskov Substitution)** baris `A004 monthly fee: 0.0` muncul di antara baris `processMonthEnd()` yang lain, dan `A004 - Budi - balance: 2000000.0` diikuti `Account type: Business` muncul di `printAllAccounts()`, persis seperti `SavingsAccount`/`CheckingAccount` diproses sebelumnya.
-     - **(Interface Segregation)** TIDAK ADA baris `A004 interest applied` yang muncul, sebab `BusinessAccount` tidak meng-implement `InterestBearing`.
+     - **(Interface Segregation)** tidak ada baris `A004 interest applied` yang muncul, sebab `BusinessAccount` tidak meng-implement `InterestBearing`.
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
      - (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java`/`Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa.
      - (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa `BusinessAccount` otomatis diperlakukan benar (tidak dikenai bunga) tanpa `Bank.java` perlu tahu apa pun tentang keberadaannya.
-     - (c) Suatu saat nanti (topik Persistensi dengan JDBC dan Mekanisme Autentikasi), `InMemoryAccountRepository` akan diganti `JdbcAccountRepository` yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
+     - (c) Suatu saat nanti, `InMemoryAccountRepository` akan diganti kelas lain yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
 
 ## E. Kriteria Penilaian
 

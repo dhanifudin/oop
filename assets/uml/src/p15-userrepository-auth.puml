@@ -9,7 +9,7 @@ class LoginFrame {
   - loginButtonActionPerformed(evt) : void
 }
 
-interface UserRepository {
+interface UserRepository <<interface>> {
   + findByUsername(username : String) : User
 }
 
