@@ -17,7 +17,8 @@ After completing this jobsheet, students will be able to:
 ## B. Preparation and Prerequisites
 
 - **Tools**: JDK 17 or newer, NetBeans (the editor used throughout this practicum).
-- **Project**: this jobsheet continues the `bank-mini` project from the Abstract Classes and Interfaces topic. That project already contains the abstract `Account` with `monthlyFee()`, plus the interface `InterestBearing` implemented by `SavingsAccount`. The independent assignment of this jobsheet uses the interface `Auditable` from the Meeting 9 independent assignment; complete that assignment first if you have not yet.
+- **Project**: this jobsheet continues the `bank-mini` project from the Abstract Classes and Interfaces topic. That project already contains the abstract `Account` with `monthlyFee()`, plus the interface `InterestBearing` implemented by `SavingsAccount`.
+- **Assignment prerequisite**: the independent assignment of this jobsheet uses the interface `Auditable` from the Meeting 9 independent assignment. Complete that assignment first if you have not yet.
 
 > **Without NetBeans?** This jobsheet can still be followed using a plain text editor:
 > ```bash
@@ -30,7 +31,7 @@ After completing this jobsheet, students will be able to:
 
 ### Step 1: withdraw() Throws InsufficientBalanceException
 
-> **Concept Brief: Exception.** Picture a fire alarm: when there is a problem, the alarm sounds and activity stops until someone deals with it. An exception works like that. A method that finds a problem throws (`throw`) an exception object, then stops at once. The calling code puts that call inside a `try` block, and prepares a backup plan in a `catch` block. An exception of your own is simply a class that `extends Exception`.
+> **Concept Brief: Exception.** Picture a fire alarm: when there is a problem, the alarm sounds and activity stops until someone deals with it. An exception works like that. A method that finds a problem throws (`throw`) an exception object, then stops at once. The word `throws` on the method line tells the caller that the method can fail. The calling code puts that call inside a `try` block, and prepares a backup plan in a `catch` block. An exception of your own is simply a class that `extends Exception`.
 
 **Goal of this step:** make a failed withdrawal impossible to pass by silently.
 
@@ -48,7 +49,7 @@ How to read the diagram: `InsufficientBalanceException` is a subclass of `Except
 
 ![Account.java, withdraw throwing InsufficientBalanceException](../assets/code/pertemuan-10/p10-01-account.png){width=65%}
 
-3. Update `Main.java`. Wrap each call to `withdraw()` in `try`/`catch`:
+3. Replace the entire contents of `Main.java` with the code below. The output from Meeting 9 is no longer used in this step, and every call to `withdraw()` is now inside `try`/`catch`:
 
 ![Main.java testing a withdraw that throws an exception](../assets/code/pertemuan-10/p10-01-main.png){width=70%}
 
@@ -67,7 +68,7 @@ Withdrawal succeeded, new balance: 70000.0
 
 > ✅ **Checkpoint:** the program's output matches the block above.
 
-> ⚠️ **If it fails:** if the error `unreported exception InsufficientBalanceException; must be caught or declared to be thrown` appears, check whether every call to `withdraw()` in `Main.java` is inside a `try`/`catch` block.
+> ⚠️ **If it fails:** if the error `unreported exception InsufficientBalanceException; must be caught or declared to be thrown` appears, check whether every call to `withdraw()` in `Main.java` is inside a `try`/`catch` block. This error appears because `withdraw()` is now marked `throws`, so its callers must handle it.
 
 ### Step 2: processMonthEnd(), Polymorphism and instanceof
 

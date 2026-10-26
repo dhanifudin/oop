@@ -12,12 +12,13 @@
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 1. Membuat exception sendiri, lalu memakai `throw`, `try`, dan `catch` untuk menangani kegagalan tanpa menghentikan program.
-2. Menulis method yang memproses objek dari berbagai subclass lewat satu perulangan (polimorfisme), termasuk memeriksa kemampuan objek dengan `instanceof`.
+2. Menulis method yang memproses objek dari berbagai subclass lewat satu looping (polimorfisme), termasuk memeriksa kemampuan objek dengan `instanceof`.
 
 ## B. Persiapan dan Prasyarat
 
 - **Alat**: JDK 17 atau lebih baru, NetBeans (editor yang digunakan sepanjang praktikum ini).
-- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface. Proyek itu sudah berisi `Account` abstrak dengan `monthlyFee()`, serta interface `InterestBearing` yang diterapkan `SavingsAccount`. Tugas mandiri jobsheet ini memakai interface `Auditable` dari tugas mandiri Pertemuan 9; kerjakan tugas itu lebih dulu bila belum.
+- **Proyek**: jobsheet ini melanjutkan proyek `bank-mini` dari topik Kelas Abstrak dan Interface. Proyek itu sudah berisi `Account` abstrak dengan `monthlyFee()`, serta interface `InterestBearing` yang diterapkan `SavingsAccount`.
+- **Prasyarat tugas**: tugas mandiri jobsheet ini memakai interface `Auditable` dari tugas mandiri Pertemuan 9. Kerjakan tugas itu lebih dulu bila belum.
 
 > **Tanpa NetBeans?** Jobsheet ini tetap dapat diikuti menggunakan editor teks biasa:
 > ```bash
@@ -30,7 +31,7 @@ Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
 ### Langkah 1: withdraw() Melempar InsufficientBalanceException
 
-> **Konsep Singkat: Exception.** Bayangkan alarm kebakaran: saat ada masalah, alarm berbunyi dan kegiatan berhenti sampai ada yang menanganinya. Exception bekerja seperti itu. Method yang menemukan masalah melempar (`throw`) sebuah objek exception, lalu berhenti saat itu juga. Kode pemanggil menaruh pemanggilan itu di dalam blok `try`, dan menyiapkan rencana cadangan di blok `catch`. Exception buatan sendiri cukup berupa kelas yang `extends Exception`.
+> **Konsep Singkat: Exception.** Bayangkan alarm kebakaran: saat ada masalah, alarm berbunyi dan kegiatan berhenti sampai ada yang menanganinya. Exception bekerja seperti itu. Method yang menemukan masalah melempar (`throw`) sebuah objek exception, lalu berhenti saat itu juga. Kata `throws` pada baris method memberi tahu pemanggil bahwa method itu bisa gagal. Pemanggil menaruh pemanggilan itu di dalam blok `try`, dan menyiapkan rencana cadangan di blok `catch`. Exception buatan sendiri cukup berupa kelas yang `extends Exception`.
 
 **Tujuan langkah ini:** membuat penarikan yang gagal tidak bisa lagi lewat diam-diam.
 
@@ -48,7 +49,7 @@ Cara membaca diagram: `InsufficientBalanceException` adalah subclass dari `Excep
 
 ![Account.java, withdraw melempar InsufficientBalanceException](../assets/code/pertemuan-10/p10-01-account.png){width=65%}
 
-3. Perbarui `Main.java`. Bungkus tiap pemanggilan `withdraw()` dengan `try`/`catch`:
+3. Ganti seluruh isi `Main.java` dengan kode berikut. Output Pertemuan 9 tidak dipakai lagi di langkah ini, dan setiap pemanggilan `withdraw()` kini berada di dalam `try`/`catch`:
 
 ![Main.java menguji withdraw yang melempar exception](../assets/code/pertemuan-10/p10-01-main.png){width=70%}
 
@@ -67,7 +68,7 @@ Withdrawal succeeded, new balance: 70000.0
 
 > ✅ **Checkpoint:** output program sama dengan blok di atas.
 
-> ⚠️ **Jika gagal:** apabila muncul error `unreported exception InsufficientBalanceException; must be caught or declared to be thrown`, periksa apakah setiap pemanggilan `withdraw()` di `Main.java` sudah berada di dalam blok `try`/`catch`.
+> ⚠️ **Jika gagal:** apabila muncul error `unreported exception InsufficientBalanceException; must be caught or declared to be thrown`, periksa apakah setiap pemanggilan `withdraw()` di `Main.java` sudah berada di dalam blok `try`/`catch`. Error ini muncul karena `withdraw()` kini ditandai `throws`, sehingga pemanggilnya wajib menanganinya.
 
 ### Langkah 2: processMonthEnd(), Polimorfisme dan instanceof
 
@@ -75,7 +76,7 @@ Withdrawal succeeded, new balance: 70000.0
 
 ![Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/uml/p10-polymorphic-dispatch.png){width=68%}
 
-**Tujuan langkah ini:** memproses semua rekening di akhir bulan lewat satu perulangan, tanpa cabang `if` untuk tiap jenis rekening.
+**Tujuan langkah ini:** memproses semua rekening di akhir bulan lewat satu looping, tanpa cabang `if` untuk tiap jenis rekening.
 
 Semua rekening punya biaya bulanan (`monthlyFee()`). Hanya rekening yang `InterestBearing` yang menerima bunga:
 
@@ -115,7 +116,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 2.
 - **Tugas mandiri:**
-  1. Bank memerlukan laporan audit untuk rekening yang `Auditable` (interface dari topik Kelas Abstrak dan Interface). Tambahkan `Bank.printAuditLog()`: satu perulangan atas semua rekening, yang mencetak `auditLog()` hanya untuk rekening yang `Auditable`. Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
+  1. Bank memerlukan laporan audit untuk rekening yang `Auditable` (interface dari topik Kelas Abstrak dan Interface). Tambahkan `Bank.printAuditLog()`: satu looping atas semua rekening, yang mencetak `auditLog()` hanya untuk rekening yang `Auditable`. Diagram berikut hanya sketsa method yang perlu ditambahkan, BUKAN kode jadi, isinya diserahkan sepenuhnya padamu:
 
      ![Sketsa Bank.printAuditLog(), memeriksa Auditable lewat instanceof](../assets/uml/p10-tugas-auditlog.png){width=55%}
 

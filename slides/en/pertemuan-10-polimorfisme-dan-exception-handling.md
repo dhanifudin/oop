@@ -150,7 +150,7 @@ for (Shape s : shapes) {
 }
 ```
 
-Every time a new kind of shape appears, another `if` branch must be added. Code like this can be scattered across many places.
+Every time a new kind of shape appears, another `if` branch must be added. Code like this easily spreads to many places. One forgotten branch becomes a bug.
 
 ---
 
@@ -196,8 +196,8 @@ for (Shape s : shapes) {
 
 ## Trace It Step by Step
 
-1. First pass: `s` holds a `Circle` object. Java runs `Circle`'s `area()`: 3.14 x 2 x 2.
-2. Second pass: `s` holds a `Square` object. Java runs `Square`'s `area()`: 4 x 4.
+1. First loop pass: `s` holds a `Circle` object. Java runs `Circle`'s `area()`: 3.14 x 2 x 2.
+2. Second loop pass: `s` holds a `Square` object. Java runs `Square`'s `area()`: 4 x 4.
 
 ```
 12.56
@@ -222,11 +222,11 @@ You have already learned all three in the Inheritance, Overriding, and Abstract 
 
 ## Checking an Object's Kind: `instanceof`
 
-Sometimes code needs to know the object's kind, for example to call a method only `Circle` has. It is like a clerk checking a membership card before giving a special service.
+Sometimes code needs to know the object's kind, like a clerk checking a membership card before giving a special service. The variable `s` is of type `Shape`, so it must first be converted to `Circle` (downcasting) before `getRadius()`, a method only `Circle` has, can be called.
 
 ```java
 if (s instanceof Circle) {
-    Circle c = (Circle) s;   // downcasting
+    Circle c = (Circle) s;   // convert to Circle
     System.out.println(c.getRadius());
 }
 ```
@@ -243,7 +243,7 @@ for (Shape s : shapes) {
 }
 ```
 
-This form is called pattern matching. Its output is `radius: 2.0`, only for the element that really is a `Circle`.
+This form is called pattern matching. The `Circle` element is printed (`radius: 2.0`), and the `Square` element is skipped.
 
 ---
 
@@ -268,6 +268,8 @@ for (Shape s : shapes) {
 }
 ```
 
+Then, what is printed if the body of the loop is replaced with `if (s instanceof Circle c) { System.out.println(c.getRadius()); }`?
+
 ---
 
 ## Exercise Answer
@@ -278,6 +280,8 @@ for (Shape s : shapes) {
 ```
 
 The first element is a `Square`, so 5 x 5. The second element is a `Circle`, so 3.14 x 1 x 1. The output order follows the order of the objects in the array.
+
+With `instanceof Circle c`, only `1.0` is printed. The `Square` fails the check, so it is skipped.
 
 ---
 
@@ -492,7 +496,9 @@ public void setScore(int score) throws InvalidScoreException {
 }
 ```
 
-The word `throws` in the signature tells the caller that this method can fail.
+<div class="tip-box">
+<code>throw</code> is the action of throwing inside a method. <code>throws</code> is the announcement on the method line that the method can fail.
+</div>
 
 ---
 
@@ -518,10 +524,13 @@ Output: `Failed: Score must be 0-100: 150`
 ## Exceptions That Must Be Handled
 
 <div class="term-box">
-An exception that <code>extends Exception</code> must be handled. The caller has two choices: wrap the call in <code>try</code>/<code>catch</code>, or pass it on by writing <code>throws</code> on its own method.
+A custom exception that <code>extends Exception</code> must be handled. The caller has two choices:
 </div>
 
-If neither is done, the compiler rejects the code.
+1. Wrap the call in `try`/`catch`.
+2. Pass it on by writing `throws` on its own method.
+
+If neither is done, the compiler rejects the code. Built-in exceptions such as `ArrayIndexOutOfBoundsException` are not enforced by the compiler.
 
 ---
 
@@ -596,7 +605,7 @@ Number 1 uses polymorphism. Number 2 uses `instanceof`. Number 3 uses an excepti
 
 ```java
 for (LibraryItem item : items) {      // items holds Book "Dune" and Dvd "Inception"
-    System.out.println(item.title + ": " + item.lateFeePerDay());
+    System.out.println(item.getTitle() + ": " + item.lateFeePerDay());
     if (item instanceof Playable p) { p.play(); }
 }
 ```
@@ -684,7 +693,7 @@ Playing Inception
 |---|---|---|
 | Problem it solves | an `if` branch for each kind of object | failures kept silent |
 | Keywords | `@Override`, `instanceof` | `try`, `catch`, `throw`, `throws` |
-| What decides | the actual object | the method that finds the problem |
+| Who decides the result | the object being held | the method that throws |
 | Today's examples | `s.area()`, `item.lateFeePerDay()` | `setScore()`, `checkOut()` |
 
 Both let a program grow larger without changing old code.
@@ -705,7 +714,7 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 ## Assignment: The Library Collection
 
-The library adds a rule: a member (`Member`) may borrow at most 3 items.
+The library already has `LibraryItem`, `Book`, and `Dvd`, with a `checkOut()` that throws `ItemNotAvailableException`. Now there is a new rule: a member (`Member`) may borrow at most 3 items.
 
 1. Create an exception `LoanLimitExceededException`. Write its class declaration.
 2. Write the signature of a method `borrow(LibraryItem item)` in `Member` that can throw that exception.

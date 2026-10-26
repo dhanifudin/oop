@@ -150,7 +150,7 @@ for (Shape s : shapes) {
 }
 ```
 
-Setiap ada jenis bentuk baru, cabang `if` harus ditambah. Kode seperti ini bisa tersebar di banyak tempat.
+Setiap ada jenis bentuk baru, cabang `if` harus ditambah. Kode seperti ini mudah menyebar ke banyak tempat. Satu cabang yang terlupa menjadi bug.
 
 ---
 
@@ -196,8 +196,8 @@ for (Shape s : shapes) {
 
 ## Telusuri Langkah demi Langkah
 
-1. Putaran pertama: `s` memegang objek `Circle`. Java menjalankan `area()` milik `Circle`: 3.14 x 2 x 2.
-2. Putaran kedua: `s` memegang objek `Square`. Java menjalankan `area()` milik `Square`: 4 x 4.
+1. Looping pertama: `s` memegang objek `Circle`. Java menjalankan `area()` milik `Circle`: 3.14 x 2 x 2.
+2. Looping kedua: `s` memegang objek `Square`. Java menjalankan `area()` milik `Square`: 4 x 4.
 
 ```
 12.56
@@ -222,11 +222,11 @@ Ketiga bahan ini sudah kamu pelajari pada topik Inheritance, Overriding, serta K
 
 ## Memeriksa Jenis Objek: `instanceof`
 
-Kadang kode perlu tahu jenis objeknya, misalnya untuk memanggil method yang hanya dimiliki `Circle`. Ibarat petugas yang memeriksa kartu anggota sebelum memberi layanan khusus.
+Kadang kode perlu tahu jenis objeknya, seperti petugas yang memeriksa kartu anggota sebelum memberi layanan khusus. Variabel `s` bertipe `Shape`, jadi harus diubah dulu ke `Circle` (downcasting) supaya `getRadius()`, method yang hanya dimiliki `Circle`, bisa dipanggil.
 
 ```java
 if (s instanceof Circle) {
-    Circle c = (Circle) s;   // downcasting
+    Circle c = (Circle) s;   // ubah ke Circle
     System.out.println(c.getRadius());
 }
 ```
@@ -243,7 +243,7 @@ for (Shape s : shapes) {
 }
 ```
 
-Bentuk ini disebut pattern matching. Output-nya `radius: 2.0`, hanya untuk elemen yang benar-benar `Circle`.
+Bentuk ini disebut pattern matching. Elemen `Circle` dicetak (`radius: 2.0`), elemen `Square` dilewati.
 
 ---
 
@@ -268,6 +268,8 @@ for (Shape s : shapes) {
 }
 ```
 
+Lalu, apa yang tercetak bila isi looping diganti `if (s instanceof Circle c) { System.out.println(c.getRadius()); }`?
+
 ---
 
 ## Jawaban Latihan
@@ -278,6 +280,8 @@ for (Shape s : shapes) {
 ```
 
 Elemen pertama adalah `Square`, jadi 5 x 5. Elemen kedua adalah `Circle`, jadi 3.14 x 1 x 1. Urutan output mengikuti urutan objek di dalam array.
+
+Dengan `instanceof Circle c`, hanya `1.0` yang tercetak. `Square` tidak lolos pemeriksaan, jadi dilewati.
 
 ---
 
@@ -492,7 +496,9 @@ public void setScore(int score) throws InvalidScoreException {
 }
 ```
 
-Kata `throws` pada signature memberi tahu pemanggil bahwa method ini bisa gagal.
+<div class="tip-box">
+<code>throw</code> adalah aksi melempar di dalam method. <code>throws</code> adalah pengumuman di baris method bahwa method itu bisa gagal.
+</div>
 
 ---
 
@@ -518,10 +524,13 @@ Output: `Failed: Score must be 0-100: 150`
 ## Exception yang Wajib Ditangani
 
 <div class="term-box">
-Exception yang <code>extends Exception</code> wajib ditangani. Pemanggil punya dua pilihan: membungkus pemanggilan dengan <code>try</code>/<code>catch</code>, atau meneruskannya dengan menulis <code>throws</code> pada method-nya sendiri.
+Exception buatan sendiri yang <code>extends Exception</code> wajib ditangani. Pemanggil punya dua pilihan:
 </div>
 
-Bila keduanya tidak dilakukan, compiler menolak kode itu.
+1. Bungkus pemanggilan dengan `try`/`catch`.
+2. Teruskan dengan menulis `throws` pada method-nya sendiri.
+
+Bila keduanya tidak dilakukan, compiler menolak kode itu. Exception bawaan seperti `ArrayIndexOutOfBoundsException` tidak dipaksa compiler.
 
 ---
 
@@ -596,7 +605,7 @@ Nomor 1 memakai polimorfisme. Nomor 2 memakai `instanceof`. Nomor 3 memakai exce
 
 ```java
 for (LibraryItem item : items) {      // items berisi Book "Dune" dan Dvd "Inception"
-    System.out.println(item.title + ": " + item.lateFeePerDay());
+    System.out.println(item.getTitle() + ": " + item.lateFeePerDay());
     if (item instanceof Playable p) { p.play(); }
 }
 ```
@@ -647,13 +656,13 @@ Pemanggilan pertama berhasil. Pemanggilan kedua melempar exception, jadi `"borro
 <b>Salah:</b> menulis <code>if (item instanceof Dvd)</code> untuk memutuskan kapan memanggil <code>play()</code>.
 </div>
 
-**Benar:** periksa `instanceof Playable`. Bila nanti ada `AudioBook` yang juga `Playable`, koleksi itu langsung ikut diputar tanpa mengubah kode perulangan.
+**Benar:** periksa `instanceof Playable`. Bila nanti ada `AudioBook` yang juga `Playable`, koleksi itu langsung ikut diputar tanpa mengubah kode looping.
 
 ---
 
 ## Latihan
 
-1. `items` berisi `Magazine` "Tempo" (denda 500) dan `Dvd` "Inception" (denda 5000). Tebak output perulangan pada slide "Telusuri: Denda dan Pemutaran".
+1. `items` berisi `Magazine` "Tempo" (denda 500) dan `Dvd` "Inception" (denda 5000). Tebak output looping pada slide "Telusuri: Denda dan Pemutaran".
 2. Apakah `dune.checkOut();` tanpa `try`/`catch` bisa dikompilasi? Ya atau tidak?
 
 ---
@@ -672,7 +681,7 @@ Playing Inception
 
 ## Rangkuman Bagian 4
 
-- Satu perulangan mencetak denda semua koleksi, tanpa cabang `if` per jenis.
+- Satu looping mencetak denda semua koleksi, tanpa cabang `if` per jenis.
 - `instanceof Playable` memeriksa kemampuan, bukan nama kelas.
 - `checkOut()` melempar exception, sehingga peminjaman ganda tidak bisa lewat diam-diam.
 
@@ -684,7 +693,7 @@ Playing Inception
 |---|---|---|
 | Masalah yang diselesaikan | cabang `if` untuk tiap jenis objek | kegagalan yang didiamkan |
 | Kata kunci | `@Override`, `instanceof` | `try`, `catch`, `throw`, `throws` |
-| Yang menentukan | objek yang sebenarnya | method yang menemukan masalah |
+| Siapa yang menentukan hasil | objek yang dipegang | method yang melempar |
 | Contoh hari ini | `s.area()`, `item.lateFeePerDay()` | `setScore()`, `checkOut()` |
 
 Keduanya membuat program bisa bertambah besar tanpa mengubah kode lama.
@@ -705,7 +714,7 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ## Tugas: Koleksi Perpustakaan
 
-Perpustakaan menambah aturan: seorang anggota (`Member`) hanya boleh meminjam paling banyak 3 koleksi.
+Perpustakaan sudah punya `LibraryItem`, `Book`, dan `Dvd`, dengan `checkOut()` yang melempar `ItemNotAvailableException`. Kini ada aturan baru: seorang anggota (`Member`) hanya boleh meminjam paling banyak 3 koleksi.
 
 1. Buat exception `LoanLimitExceededException`. Tuliskan deklarasi kelasnya.
 2. Tuliskan signature method `borrow(LibraryItem item)` di `Member` yang bisa melempar exception itu.
@@ -718,6 +727,6 @@ Perpustakaan menambah aturan: seorang anggota (`Member`) hanya boleh meminjam pa
 
 Pakai kembali hierarki kelas dari tugas pertemuan sebelumnya (aplikasi pilihanmu sendiri).
 
-1. Tulis satu perulangan yang memanggil method yang sama pada beberapa jenis objek, tanpa cabang `if`. Tuliskan output yang kamu harapkan.
+1. Tulis satu looping yang memanggil method yang sama pada beberapa jenis objek, tanpa cabang `if`. Tuliskan output yang kamu harapkan.
 2. Pilih satu method yang bisa gagal. Buat exception sendiri untuknya, lalu tuliskan `try`/`catch` pemanggilnya.
 3. Perbarui diagram kelasmu di kertas.

@@ -15,6 +15,7 @@ abstract class LibraryItem {
   # title : String
   - available : boolean
   --
+  + getTitle() : String
   + checkOut() : void
   + {abstract} lateFeePerDay() : int
 }
