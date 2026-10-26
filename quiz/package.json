@@ -5,6 +5,7 @@
   "description": "Classroom quiz (projector, teacher-driven) covering Pertemuan 1-4 of Pemrograman Berbasis Objek",
   "scripts": {
     "build": "node scripts/build-questions.js",
+    "key": "node scripts/build-answer-key.js",
     "start": "npm run build && node scripts/server.js",
     "dev": "npm run start"
   },

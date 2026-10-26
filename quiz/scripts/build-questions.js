@@ -26,7 +26,9 @@ function splitBlocks(raw) {
     .filter((block) => block.length > 0);
 }
 
-function parseFile(filePath) {
+// Parses and validates every block of one question file, returning the raw
+// frontmatter and Markdown body (shared with scripts/build-answer-key.js).
+function readBlocks(filePath) {
   const raw = fs.readFileSync(filePath, "utf8");
   const blocks = splitBlocks(raw);
   const fileName = path.basename(filePath);
@@ -57,6 +59,12 @@ function parseFile(filePath) {
       throw new Error(`${where}: invalid or missing "points" (${data.points})`);
     }
 
+    return { data, content };
+  });
+}
+
+function parseFile(filePath) {
+  return readBlocks(filePath).map(({ data, content }) => {
     return {
       id: String(data.id),
       meeting: Number(data.meeting),
@@ -72,7 +80,7 @@ function parseFile(filePath) {
   });
 }
 
-function main() {
+function listQuestionFiles() {
   const files = fs
     .readdirSync(QUESTIONS_DIR)
     .filter((f) => f.endsWith(".md"))
@@ -81,15 +89,20 @@ function main() {
   if (files.length === 0) {
     throw new Error(`No .md files found in ${QUESTIONS_DIR}`);
   }
+  return files.map((f) => path.join(QUESTIONS_DIR, f));
+}
+
+function main() {
+  const files = listQuestionFiles();
 
   const all = [];
   const seenIds = new Set();
 
   for (const file of files) {
-    const questions = parseFile(path.join(QUESTIONS_DIR, file));
+    const questions = parseFile(file);
     for (const q of questions) {
       if (seenIds.has(q.id)) {
-        throw new Error(`Duplicate question id "${q.id}" (in ${file})`);
+        throw new Error(`Duplicate question id "${q.id}" (in ${path.basename(file)})`);
       }
       seenIds.add(q.id);
       all.push(q);
@@ -106,4 +119,8 @@ function main() {
   console.log("Per meeting:", byMeeting);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { readBlocks, listQuestionFiles };
