@@ -93,7 +93,12 @@ tepat setelah DIP (tempat `InMemoryRepository` pertama kali butuh daftar
 yang bisa bertambah), atas permintaan eksplisit pengguna ("focus on
 solid"). Keempat Bagian dek ini dengan demikian SRP+OCP, LSP+ISP,
 DIP+Collections, studi kasus. Jobsheet tetap memakai `LinkedHashMap`
-untuk refactor `Bank`.
+untuk refactor `Bank`. Slide "Diskusi" penutup dek ini diganti TIGA slide
+"Tugas" (satu per blok SOLID: SRP+OCP, LSP+ISP, DIP+Collections, dua
+skenario per slide), atas permintaan eksplisit pengguna ("update the last
+slide Diskusi into assignment, breakdown into separate question topic",
+lalu "make it compact"); dek ini 51 slide, dengan Kesalahan Umum hanya
+untuk OCP, LSP, dan studi kasus.
 
 **Pengecualian sengaja di Pertemuan 6**: sama seperti Pertemuan 11, dek ini
 TIDAK punya Bagian "Menerapkan ke Bank Mini", atas permintaan eksplisit
