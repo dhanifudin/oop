@@ -87,7 +87,13 @@ bekerja bersama, bukan penerapan ke Bank Mini. Jobsheet praktikum
 Pertemuan 11 TETAP Bank-Mini-only seperti biasa, hanya slide konsepnya
 yang murni generik. Ini pengecualian khusus untuk dek ini saja, bukan
 pola baku: jangan hapus Bagian Bank Mini dek lain kecuali ada permintaan
-eksplisit yang sama.
+eksplisit yang sama. Collections (`ArrayList`/`Map`) juga sengaja BUKAN Bagian
+tersendiri di dek ini: hanya empat slide pengantar di akhir Bagian 3,
+tepat setelah DIP (tempat `InMemoryRepository` pertama kali butuh daftar
+yang bisa bertambah), atas permintaan eksplisit pengguna ("focus on
+solid"). Keempat Bagian dek ini dengan demikian SRP+OCP, LSP+ISP,
+DIP+Collections, studi kasus. Jobsheet tetap memakai `LinkedHashMap`
+untuk refactor `Bank`.
 
 **Pengecualian sengaja di Pertemuan 6**: sama seperti Pertemuan 11, dek ini
 TIDAK punya Bagian "Menerapkan ke Bank Mini", atas permintaan eksplisit

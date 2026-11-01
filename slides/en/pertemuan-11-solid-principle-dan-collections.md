@@ -104,29 +104,28 @@ style: |
 
 Meeting 11: **SOLID Principles and Collections**
 
-Five principles of good class design, and ready-made data structures
+Five principles of good class design
 
 ---
 
 ## What You Will Learn
 
-- How to store data whose amount keeps changing (`ArrayList`)
-- How to find data directly by a key (`Map`)
-- The five SOLID principles that keep classes easy to understand, extend, and test
-- How to recognize a class that breaks one of those principles
-- Applying all five principles in one order-processing system
+- The five SOLID principles, so classes stay easy to understand, extend, and test
+- How to spot a class that breaks one of those principles
+- How to store data whose amount keeps changing (`ArrayList` and `Map`)
+- All five principles applied in one order-processing system
 
 <div class="tip-box">
-Hands-on practice for today's material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 11.
+The programming exercises for today's material are in the Object-Oriented Programming Practicum jobsheet (RTI253008), Meeting 11.
 </div>
 
 ---
 
 ## Today's Session Map
 
-- **Session 1 (50')**: Collections, `ArrayList` and `Map`
-- **Session 2 (50')**: SOLID part 1, Single Responsibility, Open/Closed, Liskov Substitution
-- **Session 3 (50')**: SOLID part 2, Interface Segregation, Dependency Inversion
+- **Session 1 (50')**: Single Responsibility and Open/Closed
+- **Session 2 (50')**: Liskov Substitution and Interface Segregation
+- **Session 3 (50')**: Dependency Inversion, then `ArrayList` and `Map`
 - **Session 4 (50')**: Case study, an order-processing system
 
 ---
@@ -134,144 +133,9 @@ Hands-on practice for today's material is available in the Practicum: Object-Ori
 <!-- _class: divider -->
 
 # Part 1
-## Collections
+## SOLID: Single Responsibility and Open/Closed
 
 Session 1 of 4
-
----
-
-## The Problem: Arrays Are Rigid
-
-```java
-Employee[] employees = new Employee[2];   // size locked at 2
-employees[0] = new Employee("E001", "Nadia");
-employees[1] = new Employee("E002", "Sari");
-employees[2] = new Employee("E003", "Rian");   // error at run time
-```
-
-An array only holds as many elements as the size set at the start. The third element causes an `ArrayIndexOutOfBoundsException`. Assume `Employee` has a constructor `(id, name)` plus `getId()` and `getName()`.
-
----
-
-## The Problem: Searching Is One by One
-
-```java
-for (Employee e : employees) {
-    if (e.getId().equals("E002")) { System.out.println(e.getName()); }
-}
-```
-
-To find one employee, the program checks elements from the start until it finds a match. The more data there is, the longer the search takes.
-
----
-
-## Why Does This Matter?
-
-Imagine an online shop with millions of customer records in an array. Finding one customer can mean checking millions of elements. Meanwhile, the array's size limit is sooner or later exceeded.
-
-<div class="term-box">
-That is why real applications use the Java Collections Framework. Its size adjusts automatically, and searching by key can be direct.
-</div>
-
----
-
-## `ArrayList` and `Map`
-
-An `ArrayList` is like a queue that may grow longer. A `Map` is like a phone book: look up a name, and get the number right away.
-
-![h:270 A fixed-size array searched one by one, compared with a Map searched directly by key](../assets/illustrations/collections-motivation.svg)
-
-<div class="term-box">
-An <b>ArrayList</b> is a list whose size adjusts automatically. A <b>Map</b> stores key and value pairs, then finds a value directly through its key.
-</div>
-
----
-
-## Code Example: `ArrayList`
-
-```java
-List<Employee> employees = new ArrayList<>();
-employees.add(new Employee("E001", "Nadia"));
-employees.add(new Employee("E002", "Sari"));
-System.out.println(employees.get(1).getName());
-```
-
-1. `<Employee>` means this list only holds `Employee` objects.
-2. The two `add(...)` calls add elements at index 0 and 1.
-3. `get(1)` takes index 1, which is the second element. Output: `Sari`
-
----
-
-## Code Example: `Map`
-
-```java
-Map<String, Employee> employees = new HashMap<>();
-employees.put("E001", new Employee("E001", "Nadia"));
-employees.put("E002", new Employee("E002", "Sari"));
-Employee e = employees.get("E002");
-System.out.println(e.getName());
-```
-
-1. `<String, Employee>`: the key is a `String`, the value is an `Employee`.
-2. `put(...)` stores one pair of key and value.
-3. `get("E002")` fetches the object directly, without checking `"E001"`. Output: `Sari`
-
-<div class="tip-box">
-<code>HashMap</code> does not guarantee element order. When insertion order matters, use <code>LinkedHashMap</code>; the jobsheet uses it.
-</div>
-
----
-
-## Common Mistake: A Manual Loop on a `Map`
-
-<div class="warn-box">
-<b>Wrong:</b> searching a <code>Map</code> with a manual loop, even though <code>employees</code> is already a <code>Map</code>.
-</div>
-
-```java
-for (Employee e : employees.values()) {
-    if (e.getId().equals("E003")) { return e; }
-}
-```
-
-**Correct:** simply `employees.get("E003")`. The result is `null` if the key does not exist. A manual loop throws away the main advantage of a `Map`.
-
----
-
-## Exercise
-
-Choose `ArrayList` or `Map` for each application:
-
-1. A list of orders that is only printed in order, from start to end.
-2. Employee data that is often looked up by employee ID number.
-3. A glossary: the user types a word, then the program shows its meaning.
-
----
-
-## Exercise Answer
-
-1. **`ArrayList`.** The data is only read in order, with no need to search by key.
-2. **`Map`.** The ID number becomes the key, so the lookup is direct.
-3. **`Map`.** The word becomes the key, and the meaning becomes the value.
-
----
-
-## Part 1 Summary
-
-- An array has a fixed size and is searched one by one.
-- An `ArrayList` adjusts its size automatically. A `Map` searches directly by key.
-- A manual loop on a `Map` throws away its advantage.
-
-Next: Part 2 covers three of the five SOLID principles, how to design classes that stay easy to extend.
-
----
-
-<!-- _class: divider -->
-
-# Part 2
-## SOLID: Single Responsibility, Open/Closed, Liskov Substitution
-
-Session 2 of 4
 
 ---
 
@@ -292,17 +156,17 @@ In a restaurant, the cook, the cashier, and the waiter each have their own job. 
 ![h:270 One class with three responsibilities, split into three classes with one responsibility each](../assets/illustrations/srp-split.svg)
 
 <div class="term-box">
-A class should have one responsibility, which means one reason to change.
+A class should have one responsibility, which means one reason to change. <b>One class, one job.</b>
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine a `Report` class that calculates totals, formats the display, and sends email all at once. The team changing the display format can accidentally break the calculation lines, because everything sits in one file.
+Imagine a `Report` class that calculates totals, formats the display, and sends email all at once. The team changing the display format can accidentally break the calculation lines. Everything sits in one file.
 
 <div class="term-box">
-A class with one responsibility is safer to change. Changing how email is sent does not touch the calculation logic.
+A class with one job is safer to change. Replacing how email is sent does not touch the calculation.
 </div>
 
 ---
@@ -315,30 +179,40 @@ class ReportFormatter { String format(Report r) { /* ... */ return ""; } }
 class ReportMailer    { void send(Report r) { /* ... */ } }
 ```
 
-1. Calculating the total lives in `TotalCalculator`.
+1. Calculating totals lives in `TotalCalculator`.
 2. Formatting the display lives in `ReportFormatter`.
 3. Sending email lives in `ReportMailer`. Each class has only one reason to change.
 
 ---
 
+## Common Mistake: The Do-Everything Class
+
+<div class="warn-box">
+<b>Wrong:</b> <code>class UserManager</code> holds <code>validate()</code>, <code>saveToDatabase()</code>, and <code>sendEmail()</code> all at once. One class does three jobs.
+</div>
+
+**Correct:** three small classes, `UserValidator`, `UserStore`, and `EmailSender`. Each class has one job. Replacing how email is sent no longer touches the validation code.
+
+---
+
 ## Open/Closed Principle (OCP)
 
-A wall socket accepts any appliance. A new appliance is simply plugged in, and the house wiring is not torn open.
+A power socket accepts any appliance. A new appliance just plugs in, and the house wiring is not torn open.
 
 ![h:270 PaymentMethod.pay() with an if/else per type, compared with a new GoPay subclass added without changing old code](../assets/illustrations/ocp-extend-not-modify.svg)
 
 <div class="term-box">
-<b>Open/Closed Principle</b>: a class is open for extension, closed for modification. New features are added through new classes, not by changing old code.
+<b>Open/Closed Principle</b>: a class is open for extension, closed for modification. New features are added through new classes. <b>New class, not old code changed.</b>
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine an online shop's payment system with one big method containing an `if`/`else` for every payment type. Adding GoPay means inserting a new branch into that method. Put it in slightly the wrong place, and the credit card branch that already worked breaks too.
+Imagine an online shop's payment system with one big method full of `if`/`else` branches, one per payment type. Adding GoPay means inserting a new branch into that method. One slip, and the credit card branch that already worked breaks too.
 
 <div class="term-box">
-The more payment types, the bigger that method and the bigger the risk. With OCP, a new feature does not change old code that is already tested.
+The more payment types, the bigger that method and the bigger the risk. With a new class, the old, tested code is never touched.
 </div>
 
 ---
@@ -360,6 +234,59 @@ class GoPay extends PaymentMethod {
 
 ---
 
+## Common Mistake: Adding an `if` Branch for Every New Type
+
+<div class="warn-box">
+<b>Wrong:</b> every new discount type adds one more branch to <code>calculateDiscount()</code>.
+</div>
+
+```java
+if (type.equals("REGULAR")) { return amount * 5 / 100; }
+else if (type.equals("WHOLESALE")) { return amount * 20 / 100; }
+else if (type.equals("STUDENT")) { return amount * 10 / 100; }   // yet another branch
+```
+
+**Correct:** one `DiscountPolicy` interface with a `calculate(amount)` method. Each discount type becomes its own class, for example `StudentDiscountPolicy`. A new type never touches the old method.
+
+---
+
+## Exercise
+
+Which principle is broken: Single Responsibility or Open/Closed?
+
+1. `UserManager` validates input, saves to the database, and sends email.
+2. A new payment type requires adding an `if` branch in the method `pay()`.
+3. `InvoicePrinter` prints the invoice and also calculates its tax.
+
+---
+
+## Exercise Answer
+
+1. **Single Responsibility.** Three jobs are mixed into one class.
+2. **Open/Closed.** The old method must change for every new payment type.
+3. **Single Responsibility.** Printing and calculating tax are two jobs. A change in tax rules would touch the printing code.
+
+---
+
+## Part 1 Summary
+
+- Single Responsibility: one class, one job.
+- Open/Closed: new class, not old code changed.
+- Both keep a small change small. Only one class is touched.
+
+Next: Part 2 covers two principles about subclasses and interfaces, Liskov Substitution and Interface Segregation.
+
+---
+
+<!-- _class: divider -->
+
+# Part 2
+## SOLID: Liskov Substitution and Interface Segregation
+
+Session 2 of 4
+
+---
+
 ## Liskov Substitution Principle (LSP)
 
 You order a motorbike taxi, and any motorbike may arrive. The replacement must still be able to take you there.
@@ -367,14 +294,14 @@ You order a motorbike taxi, and any motorbike may arrive. The replacement must s
 ![h:270 List<Bird> calls fly() on each element, Sparrow and Duck succeed, Penguin throws an exception](../assets/illustrations/lsp-substitution.svg)
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: a subclass must be able to replace its superclass anywhere without making the program wrong. <code>Sparrow</code> and <code>Duck</code> in the picture satisfy it, <code>Penguin</code> does not.
+<b>Liskov Substitution Principle</b>: a subclass must be able to replace its superclass anywhere without making the program wrong. <code>Sparrow</code> and <code>Duck</code> in the picture satisfy it, <code>Penguin</code> does not. <b>The replacement must still work.</b>
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Code that calls a method through the superclass type trusts that type's contract. If one subclass quietly breaks the contract, the program fails far from the problem subclass. The cause is hard to trace.
+Code that calls a method through the superclass type trusts the superclass's promise. If one subclass quietly breaks that promise, the program fails far away from that subclass. The cause is hard to trace.
 
 <div class="term-box">
 The compiler does not reject this kind of error. It only appears when the program runs, perhaps in front of a user.
@@ -382,7 +309,7 @@ The compiler does not reject this kind of error. It only appears when the progra
 
 ---
 
-## Common Mistake: A Subclass Rejects the Contract
+## Common Mistake: A Subclass Breaks the Promise
 
 <div class="warn-box">
 <b>Wrong:</b> <code>Penguin extends Bird</code> overrides <code>fly()</code> to throw an <code>UnsupportedOperationException</code>, because penguins cannot fly.
@@ -394,7 +321,7 @@ for (Bird b : birds) {
 }
 ```
 
-**Correct:** `Penguin` has no `fly()` at all. The ability to fly moves into a `Flyable` interface implemented only by `Sparrow` and `Duck` (next slide). The reason: the code above assumes every `Bird` can `fly()`, so `Penguin` cannot replace `Bird`.
+**Correct:** `Penguin` has no `fly()` at all. The ability to fly moves into a `Flyable` interface (next slide). The reason: the code above assumes every `Bird` can `fly()`. `Penguin` cannot replace `Bird`.
 
 ---
 
@@ -414,43 +341,6 @@ The caller now checks the ability: `if (b instanceof Flyable f) f.fly();`. The f
 
 ---
 
-## Exercise
-
-Which principle is broken: Single Responsibility, Open/Closed, or Liskov Substitution?
-
-1. `UserManager` validates input, saves to the database, and sends email.
-2. A new discount type requires adding an `if` branch in the method `calculateDiscount()`.
-3. `Penguin extends Bird`, but its `fly()` throws an exception.
-
----
-
-## Exercise Answer
-
-1. **Single Responsibility.** Three responsibilities are mixed in one class.
-2. **Open/Closed.** The old method must change for every new discount type.
-3. **Liskov Substitution.** `Penguin` rejects the `Bird` contract, so it cannot replace `Bird`.
-
----
-
-## Part 2 Summary
-
-- Single Responsibility: one class, one reason to change.
-- Open/Closed: open for extension, closed for modification.
-- Liskov Substitution: a subclass must be able to replace its superclass without making the program wrong.
-
-Next: Part 3 covers the two remaining principles, Interface Segregation and Dependency Inversion.
-
----
-
-<!-- _class: divider -->
-
-# Part 3
-## SOLID: Interface Segregation, Dependency Inversion
-
-Session 3 of 4
-
----
-
 ## Interface Segregation Principle (ISP)
 
 A TV remote that only needs to turn the TV on and off does not need 50 channel buttons.
@@ -458,7 +348,7 @@ A TV remote that only needs to turn the TV on and off does not need 50 channel b
 ![h:230 Chargeable implemented by Phone and ElectricCar, two separate hierarchies](../assets/uml/p09-chargeable.png)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: an interface should be small and focused, so classes are not forced to fill in methods that do not apply to them. An example is <code>Chargeable</code> above: one method <code>charge()</code>, implemented by <code>Phone</code> and <code>ElectricCar</code>, two unrelated classes.
+<b>Interface Segregation Principle</b>: an interface should be small and focused, so classes are not forced to fill in methods that do not apply to them. An example is <code>Chargeable</code> above: one method <code>charge()</code>, implemented by <code>Phone</code> and <code>ElectricCar</code>, two unrelated classes. <b>Small interface, one ability.</b>
 </div>
 
 ---
@@ -491,21 +381,58 @@ class ElectricCar implements Chargeable { /* only charge() */ }
 
 ---
 
+## Exercise
+
+Which principle is broken: Liskov Substitution or Interface Segregation?
+
+1. `Penguin extends Bird`, but its `fly()` throws an exception.
+2. `interface Printer` has `print()`, `scan()`, and `fax()`. `SimplePrinter implements Printer`, even though it can only `print()`.
+3. `ReadOnlyList extends ArrayList`, but its `add()` throws an exception.
+
+---
+
+## Exercise Answer
+
+1. **Liskov Substitution.** `Penguin` breaks the promise of `Bird`, so it cannot replace it.
+2. **Interface Segregation.** `SimplePrinter` is forced to fill in `scan()` and `fax()`. Split it into small interfaces.
+3. **Liskov Substitution.** Code holding an `ArrayList` assumes `add()` always works. `ReadOnlyList` breaks that.
+
+---
+
+## Part 2 Summary
+
+- Liskov Substitution: the replacement must still work.
+- Interface Segregation: small interface, one ability.
+- A fat interface forces fake methods. Fake methods break Liskov.
+
+Next: Part 3 covers the last principle, Dependency Inversion, then two data structures for storing many objects.
+
+---
+
+<!-- _class: divider -->
+
+# Part 3
+## SOLID: Dependency Inversion, and Collections
+
+Session 3 of 4
+
+---
+
 ## Dependency Inversion Principle (DIP)
 
-A cashier only knows the card machine, not the bank that issued the card. A card from any bank can be used.
+A cashier only knows the card machine, not the issuing bank. A card from any bank can be used.
 
 ![h:270 OrderProcessor depending directly on MySqlDatabase, compared with depending on the Repository interface implemented by MySqlDatabase and MockRepository](../assets/illustrations/dip-invert-dependency.svg)
 
 <div class="term-box">
-<b>Dependency Inversion Principle</b>: the class that controls the flow (a high-level class) depends on an interface, not on a concrete class.
+<b>Dependency Inversion Principle</b>: the class that runs the flow, for example <code>OrderProcessor</code>, depends on an interface, not on a real class such as <code>MySqlDatabase</code>. <b>Depend on the interface, not the real class.</b>
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine an `OrderProcessor` that uses the class `MySqlDatabase` directly. Moving to another database, or testing with a fake database, becomes hard because `OrderProcessor` is tied to MySQL.
+Imagine an `OrderProcessor` that uses the `MySqlDatabase` class directly. Moving to another database becomes hard. Testing with a fake database is hard too. `OrderProcessor` is tied to MySQL.
 
 <div class="term-box">
 With a <code>Repository</code> interface, storage can change (MySQL, memory, or a fake for testing) without changing <code>OrderProcessor</code>.
@@ -530,37 +457,100 @@ class OrderProcessor {
 
 ---
 
-## Common Mistake: Creating the Concrete Implementation Yourself
+## Common Mistake: Creating the Real Class Yourself
 
 <div class="warn-box">
-<b>Wrong:</b> <code>class OrderProcessor { private MySqlDatabase db = new MySqlDatabase(); }</code>. This class creates its own concrete object.
+<b>Wrong:</b> <code>class OrderProcessor { private MySqlDatabase db = new MySqlDatabase(); }</code>. The class creates its own real object.
 </div>
 
-**Correct:** `OrderProcessor` receives a `Repository` (an interface) through its constructor. The code that creates `OrderProcessor` decides which implementation is used.
+**Correct:** `OrderProcessor` receives a `Repository` (interface) through its constructor. The code that creates `OrderProcessor` decides which implementation is used.
+
+---
+
+## The Problem: Arrays Are Rigid
+
+`InMemoryRepository` must store many `Order` objects. A plain array has two problems.
+
+```java
+Order[] orders = new Order[2];                      // size locked at 2
+orders[0] = new Order("Laptop", 5000000);
+orders[1] = new Order("Mouse", 150000);
+orders[2] = new Order("Cable", 50000);              // error at run time
+```
+
+1. The size is fixed at the start. The third element causes an `ArrayIndexOutOfBoundsException`.
+2. Finding one element means checking from the start, one by one.
+
+---
+
+## `ArrayList` and `Map`
+
+| | Array | `ArrayList` | `Map` |
+|---|---|---|---|
+| Size | fixed when created | grows automatically | grows automatically |
+| How to fetch | by index | by index, `get(1)` | by key, `get("WHOLESALE")` |
+| Best for | a known count | an ordered list | direct lookup by key |
+
+<div class="term-box">
+<b>ArrayList</b> is a list whose size adjusts automatically. <b>Map</b> stores pairs of key and value, then finds a value directly by its key. <code>HashMap</code> does not guarantee order; <code>LinkedHashMap</code> keeps insertion order.
+</div>
+
+---
+
+## Code Example: `InMemoryRepository` Uses an `ArrayList`
+
+```java
+class InMemoryRepository implements Repository {
+    private List<Order> orders = new ArrayList<>();   // a list that can grow
+
+    public void save(Order order, int total) {
+        orders.add(order);                            // no size limit
+    }
+}
+```
+
+1. `List<Order>` means this list only holds `Order` objects.
+2. `add(...)` appends at the end. No need to know the capacity first.
+3. `OrderProcessor` only knows `Repository`. It does not know there is an `ArrayList` inside.
+
+---
+
+## Code Example: A `Map` to Pick a Policy
+
+```java
+Map<String, DiscountPolicy> policies = new HashMap<>();
+policies.put("REGULAR", new RegularDiscountPolicy());
+policies.put("WHOLESALE", new WholesaleDiscountPolicy());
+DiscountPolicy policy = policies.get("WHOLESALE");   // direct, no loop
+```
+
+1. `<String, DiscountPolicy>`: the key is the customer type, the value is a policy (from Part 1).
+2. `put(...)` stores one pair of key and value.
+3. `get("WHOLESALE")` fetches `WholesaleDiscountPolicy` directly, without checking `"REGULAR"`. If the key is missing, the result is `null`.
 
 ---
 
 ## Exercise
 
-Which principle is broken: Interface Segregation or Dependency Inversion?
-
-1. `interface Printer` has `print()`, `scan()`, and `fax()`. `SimplePrinter implements Printer`, even though it can only `print()`.
-2. `OrderProcessor` contains `private MySqlDatabase db = new MySqlDatabase();`. What one change fixes it?
+1. `OrderProcessor` contains `private MySqlDatabase db = new MySqlDatabase();`. Which principle is broken?
+2. Pick `ArrayList` or `Map`: a list of orders that is only printed in order from first to last.
+3. Pick `ArrayList` or `Map`: customer data that is often looked up by customer number.
 
 ---
 
 ## Exercise Answer
 
-1. **Interface Segregation.** `SimplePrinter` is forced to fill in `scan()` and `fax()`. Split it into small interfaces.
-2. **Dependency Inversion.** Create an interface `Repository`, then let `OrderProcessor` receive it through its constructor. Storage becomes easy to swap and easy to test with a fake.
+1. **Dependency Inversion.** Create a `Repository` interface, then let `OrderProcessor` receive it through its constructor.
+2. **`ArrayList`.** The data is only read in order, no lookup by key is needed.
+3. **`Map`.** The customer number becomes the key, so the lookup is direct.
 
 ---
 
 ## Part 3 Summary
 
-- Interface Segregation: small, focused interfaces.
-- Dependency Inversion: depend on an interface, not a concrete class.
-- Creating a concrete object with `new` inside a class breaks Dependency Inversion, even when the interface exists.
+- Dependency Inversion: depend on the interface, not the real class.
+- Creating a real object with `new` inside the class still breaks it, even when the interface exists.
+- `ArrayList` for a list that grows. `Map` for direct lookup by key.
 
 Next: Part 4 brings all five principles together in one case study.
 
@@ -621,7 +611,7 @@ Only `PhysicalOrder` can be shipped.
 
 ![h:270 OrderProcessor delegating to DiscountCalculator, Repository, and ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
 
-`OrderProcessor` does not calculate discounts, does not save data, and does not print anything. Those three jobs are handed to `DiscountCalculator`, `Repository`, and `ReceiptPrinter`. Changing how receipts are printed cannot break the discount calculation.
+`OrderProcessor` does not compute the discount, does not store data, and does not print anything. Those three jobs go to `DiscountCalculator`, `Repository`, and `ReceiptPrinter`. Changing how receipts are printed cannot break the discount calculation.
 
 ---
 
@@ -636,7 +626,7 @@ public void processOrder(Customer customer, Order order) {
 }
 ```
 
-This method only calls three other classes in order: calculate the discount, save, print the receipt.
+This method only calls three other classes in turn: compute the discount, save, print the receipt.
 
 ---
 
@@ -644,7 +634,7 @@ This method only calls three other classes in order: calculate the discount, sav
 
 ![h:270 DiscountPolicy implemented by RegularDiscount and WholesaleDiscount, Repository implemented by InMemoryRepository and FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
 
-Both use the same pattern: one interface, many small implementations. A new discount type is simply a new class (Open/Closed). `OrderProcessor` only knows the `Repository` interface, so storage can be swapped freely (Dependency Inversion).
+Both use the same pattern: one interface, many small implementations. A new discount type is just a new class (Open/Closed). `OrderProcessor` only knows the `Repository` interface, so storage can be swapped freely (Dependency Inversion).
 
 ---
 
@@ -658,7 +648,7 @@ public class WholesaleDiscountPolicy implements DiscountPolicy {
 }
 ```
 
-Adding this class does not change a single line of `DiscountCalculator` or `OrderProcessor`. `DiscountCalculator` keeps the policies in a `Map<String, DiscountPolicy>` keyed by customer type, the same `Map` from Part 1.
+Adding this class does not change a single line of `DiscountCalculator` or `OrderProcessor`. `DiscountCalculator` keeps the policies in a `Map<String, DiscountPolicy>` keyed by customer type, exactly the `Map` example from Part 3.
 
 ---
 
@@ -668,7 +658,7 @@ Adding this class does not change a single line of `DiscountCalculator` or `Orde
 <b>Wrong:</b> <code>class DigitalOrder extends Order implements Shippable { public String ship() { return "N/A"; } }</code>, to be "consistent" with <code>PhysicalOrder</code>.
 </div>
 
-**Correct:** `class DigitalOrder extends Order { }` without `Shippable`. The reason: the wrong version breaks Interface Segregation, because `DigitalOrder` is forced to fill in an irrelevant method, and breaks Liskov, because `"N/A"` is a fake contract.
+**Correct:** `class DigitalOrder extends Order { }` without `Shippable`. The reason: the wrong version breaks Interface Segregation, because `DigitalOrder` is forced to fill in an irrelevant method, and breaks Liskov, because `"N/A"` is a fake promise.
 
 ---
 
@@ -676,8 +666,8 @@ Adding this class does not change a single line of `DiscountCalculator` or `Orde
 
 The shop wants to add `StudentDiscountPolicy` (a 10% discount for students).
 
-1. How many new classes must be added?
-2. Must `DiscountCalculator` or `OrderProcessor` be changed?
+1. How many new classes need to be added?
+2. Does `DiscountCalculator` or `OrderProcessor` need to change?
 3. Which SOLID principle makes that possible?
 
 ---
@@ -692,7 +682,7 @@ The shop wants to add `StudentDiscountPolicy` (a 10% discount for students).
 
 ## Part 4 Summary
 
-- A small `Shippable` applies Interface Segregation and keeps Liskov Substitution.
+- The small `Shippable` applies Interface Segregation and preserves Liskov Substitution.
 - `OrderProcessor` hands discounts, storage, and printing to other classes (Single Responsibility).
 - `DiscountPolicy` applies Open/Closed. `Repository` applies Dependency Inversion.
 
@@ -700,8 +690,8 @@ The shop wants to add `StudentDiscountPolicy` (a 10% discount for students).
 
 ## Meeting 11 Summary
 
-- `ArrayList` and `Map` replace arrays for data that changes or is often looked up by key.
-- SOLID is five class-design principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+- SOLID is five principles of class design: one class one job; new class, not old code changed; the replacement must still work; small interface; depend on the interface.
+- `ArrayList` and `Map` replace arrays for data that grows or is looked up by key.
 - The order-processing system shows all five principles working together in one design.
 
 ---
@@ -710,11 +700,11 @@ The shop wants to add `StudentDiscountPolicy` (a 10% discount for students).
 
 # References
 
-Deitel, *Java How to Program*, the Collections chapter; Martin, *Agile Software Development* (SOLID Principles)
+Deitel, *Java How to Program*, Collections chapter; Martin, *Agile Software Development* (SOLID Principles)
 
 Oracle Java Tutorials: "The Collections Framework"
 
-Hands-on practice for this material is available in the Practicum: Object-Oriented Programming (RTI253008) jobsheet, Meeting 11
+The programming exercises for this material are in the Object-Oriented Programming Practicum jobsheet (RTI253008), Meeting 11
 
 ---
 
@@ -722,5 +712,5 @@ Hands-on practice for this material is available in the Practicum: Object-Orient
 
 `OrderProcessor` receives a `Repository` through its constructor, so storage can move from `InMemoryRepository` to `FileRepository`. Imagine `OrderProcessor` had used `InMemoryRepository` directly from the start.
 
-1. What code would have to change when storage moves to a file?
-2. In how many places might that change appear?
+1. Which code would have to change when storage moves to a file?
+2. In how many places could that change appear?

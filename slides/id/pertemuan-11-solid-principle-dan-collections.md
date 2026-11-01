@@ -104,16 +104,15 @@ style: |
 
 Pertemuan 11: **SOLID Principle dan Collections**
 
-Lima prinsip desain kelas yang baik, dan struktur data siap pakai
+Lima prinsip desain kelas yang baik
 
 ---
 
 ## Yang Akan Kamu Pelajari
 
-- Cara menyimpan data yang jumlahnya berubah-ubah (`ArrayList`)
-- Cara mencari data langsung lewat kunci (`Map`)
 - Lima prinsip SOLID agar kelas mudah dipahami, diperluas, dan diuji
 - Cara mengenali kelas yang melanggar salah satu prinsip itu
+- Cara menyimpan data yang jumlahnya berubah-ubah (`ArrayList` dan `Map`)
 - Penerapan kelima prinsip dalam satu sistem pemrosesan pesanan
 
 <div class="tip-box">
@@ -124,9 +123,9 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 
 ## Peta Sesi Hari Ini
 
-- **Sesi 1 (50')**: Collections, `ArrayList` dan `Map`
-- **Sesi 2 (50')**: SOLID bagian 1, Single Responsibility, Open/Closed, Liskov Substitution
-- **Sesi 3 (50')**: SOLID bagian 2, Interface Segregation, Dependency Inversion
+- **Sesi 1 (50')**: Single Responsibility dan Open/Closed
+- **Sesi 2 (50')**: Liskov Substitution dan Interface Segregation
+- **Sesi 3 (50')**: Dependency Inversion, lalu `ArrayList` dan `Map`
 - **Sesi 4 (50')**: Studi kasus, sistem pemrosesan pesanan
 
 ---
@@ -134,144 +133,9 @@ Latihan pemrograman untuk materi hari ini tersedia di jobsheet Praktikum Pemrogr
 <!-- _class: divider -->
 
 # Bagian 1
-## Collections
+## SOLID: Single Responsibility dan Open/Closed
 
 Sesi 1 dari 4
-
----
-
-## Masalah: Array Itu Kaku
-
-```java
-Employee[] employees = new Employee[2];   // ukuran dikunci: 2
-employees[0] = new Employee("E001", "Nadia");
-employees[1] = new Employee("E002", "Sari");
-employees[2] = new Employee("E003", "Rian");   // error saat dijalankan
-```
-
-Array hanya muat sebanyak ukuran yang ditentukan di awal. Elemen ketiga menghasilkan `ArrayIndexOutOfBoundsException`. Anggap `Employee` punya constructor `(id, name)` serta `getId()` dan `getName()`.
-
----
-
-## Masalah: Mencari Harus Satu per Satu
-
-```java
-for (Employee e : employees) {
-    if (e.getId().equals("E002")) { System.out.println(e.getName()); }
-}
-```
-
-Untuk mencari satu karyawan, program memeriksa elemen dari awal sampai ketemu. Makin banyak data, makin lama pencariannya.
-
----
-
-## Mengapa Ini Penting?
-
-Bayangkan toko daring dengan jutaan data pelanggan di dalam array. Mencari satu pelanggan bisa berarti memeriksa jutaan elemen. Sementara itu, batas ukuran array cepat atau lambat terlampaui.
-
-<div class="term-box">
-Karena itu aplikasi nyata memakai Java Collections Framework. Ukurannya menyesuaikan otomatis, dan pencarian lewat kunci bisa langsung.
-</div>
-
----
-
-## `ArrayList` dan `Map`
-
-`ArrayList` seperti daftar antrean yang boleh bertambah panjang. `Map` seperti buku telepon: cari nama, langsung dapat nomornya.
-
-![h:270 Array berukuran tetap dengan pencarian satu per satu, dibandingkan Map dengan pencarian langsung lewat kunci](../assets/illustrations/collections-motivation.svg)
-
-<div class="term-box">
-<b>ArrayList</b> adalah daftar yang ukurannya menyesuaikan otomatis. <b>Map</b> menyimpan pasangan kunci dan nilai, lalu mencari nilai langsung lewat kuncinya.
-</div>
-
----
-
-## Contoh Kode: `ArrayList`
-
-```java
-List<Employee> employees = new ArrayList<>();
-employees.add(new Employee("E001", "Nadia"));
-employees.add(new Employee("E002", "Sari"));
-System.out.println(employees.get(1).getName());
-```
-
-1. `<Employee>` berarti daftar ini hanya berisi `Employee`.
-2. Dua `add(...)` menambah elemen di indeks 0 dan 1.
-3. `get(1)` mengambil indeks 1, yaitu elemen kedua. Output: `Sari`
-
----
-
-## Contoh Kode: `Map`
-
-```java
-Map<String, Employee> employees = new HashMap<>();
-employees.put("E001", new Employee("E001", "Nadia"));
-employees.put("E002", new Employee("E002", "Sari"));
-Employee e = employees.get("E002");
-System.out.println(e.getName());
-```
-
-1. `<String, Employee>`: kuncinya `String`, nilainya `Employee`.
-2. `put(...)` menyimpan satu pasangan kunci dan nilai.
-3. `get("E002")` langsung mengambil objeknya, tanpa memeriksa `"E001"`. Output: `Sari`
-
-<div class="tip-box">
-<code>HashMap</code> tidak menjamin urutan elemen. Bila urutan penambahan penting, pakai <code>LinkedHashMap</code>; jobsheet memakainya.
-</div>
-
----
-
-## Kesalahan Umum: Looping Manual di `Map`
-
-<div class="warn-box">
-<b>Salah:</b> mencari di <code>Map</code> dengan looping manual, padahal <code>employees</code> sudah berupa <code>Map</code>.
-</div>
-
-```java
-for (Employee e : employees.values()) {
-    if (e.getId().equals("E003")) { return e; }
-}
-```
-
-**Benar:** cukup `employees.get("E003")`. Hasilnya `null` bila kuncinya tidak ada. Looping manual membuang keunggulan utama `Map`.
-
----
-
-## Latihan
-
-Pilih `ArrayList` atau `Map` untuk tiap aplikasi:
-
-1. Daftar pesanan yang hanya dicetak berurutan dari awal sampai akhir.
-2. Data karyawan yang sering dicari lewat NIP.
-3. Kamus istilah: pengguna mengetik sebuah kata, lalu program menampilkan artinya.
-
----
-
-## Jawaban Latihan
-
-1. **`ArrayList`.** Data hanya dibaca berurutan, tidak perlu pencarian lewat kunci.
-2. **`Map`.** NIP menjadi kunci, sehingga pencariannya langsung.
-3. **`Map`.** Kata menjadi kunci, artinya menjadi nilai.
-
----
-
-## Rangkuman Bagian 1
-
-- Array berukuran tetap dan pencariannya satu per satu.
-- `ArrayList` menyesuaikan ukuran otomatis. `Map` mencari langsung lewat kunci.
-- Looping manual di `Map` menghilangkan keunggulannya.
-
-Selanjutnya: Bagian 2 membahas tiga dari lima prinsip SOLID, cara merancang kelas yang tetap mudah diperluas.
-
----
-
-<!-- _class: divider -->
-
-# Bagian 2
-## SOLID: Single Responsibility, Open/Closed, Liskov Substitution
-
-Sesi 2 dari 4
 
 ---
 
@@ -292,17 +156,17 @@ Di restoran, koki, kasir, dan pelayan punya tugas masing-masing. Kesalahan di da
 ![h:270 Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/illustrations/srp-split.svg)
 
 <div class="term-box">
-Satu kelas sebaiknya punya satu tanggung jawab, yaitu satu alasan untuk berubah.
+Satu kelas sebaiknya punya satu tanggung jawab, yaitu satu alasan untuk berubah. <b>Satu kelas, satu tugas.</b>
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan kelas `Report` yang menghitung total, memformat tampilan, dan mengirim email sekaligus. Tim yang mengubah format tampilan bisa tanpa sengaja merusak baris perhitungan, karena semuanya ada di satu file.
+Bayangkan kelas `Report` yang menghitung total, memformat tampilan, dan mengirim email sekaligus. Tim yang mengubah format tampilan bisa tanpa sengaja merusak baris perhitungan. Semuanya ada di satu file.
 
 <div class="term-box">
-Kelas dengan satu tanggung jawab lebih aman diubah. Mengganti cara kirim email tidak menyentuh logika perhitungan.
+Kelas dengan satu tugas lebih aman diubah. Mengganti cara kirim email tidak menyentuh perhitungan.
 </div>
 
 ---
@@ -321,6 +185,16 @@ class ReportMailer    { void send(Report r) { /* ... */ } }
 
 ---
 
+## Kesalahan Umum: Kelas Serba Bisa
+
+<div class="warn-box">
+<b>Salah:</b> <code>class UserManager</code> berisi <code>validate()</code>, <code>saveToDatabase()</code>, dan <code>sendEmail()</code> sekaligus. Satu kelas mengerjakan tiga tugas.
+</div>
+
+**Benar:** tiga kelas kecil, `UserValidator`, `UserStore`, dan `EmailSender`. Tiap kelas satu tugas. Mengganti cara kirim email kini tidak menyentuh kode validasi.
+
+---
+
 ## Open/Closed Principle (OCP)
 
 Stop kontak menerima alat apa pun. Alat baru tinggal dicolokkan, instalasi rumah tidak dibongkar.
@@ -328,7 +202,7 @@ Stop kontak menerima alat apa pun. Alat baru tinggal dicolokkan, instalasi rumah
 ![h:270 PaymentMethod.pay() dengan if/else per tipe, dibandingkan subclass baru GoPay yang ditambahkan tanpa mengubah kode lama](../assets/illustrations/ocp-extend-not-modify.svg)
 
 <div class="term-box">
-<b>Open/Closed Principle</b>: kelas terbuka untuk diperluas, tertutup untuk diubah. Fitur baru ditambah lewat kelas baru, bukan dengan mengubah kode lama.
+<b>Open/Closed Principle</b>: kelas terbuka untuk diperluas, tertutup untuk diubah. Fitur baru ditambah lewat kelas baru. <b>Kelas baru, bukan ubah kode lama.</b>
 </div>
 
 ---
@@ -338,7 +212,7 @@ Stop kontak menerima alat apa pun. Alat baru tinggal dicolokkan, instalasi rumah
 Bayangkan sistem pembayaran toko daring dengan satu method besar berisi `if`/`else` untuk tiap jenis pembayaran. Menambah GoPay berarti menyisipkan cabang baru ke method itu. Salah tempat sedikit, cabang kartu kredit yang sudah benar ikut rusak.
 
 <div class="term-box">
-Makin banyak jenis pembayaran, makin besar method itu dan makin besar risikonya. Dengan OCP, fitur baru tidak mengubah kode lama yang sudah teruji.
+Makin banyak jenis pembayaran, makin besar method itu dan makin besar risikonya. Dengan kelas baru, kode lama yang sudah teruji tidak disentuh.
 </div>
 
 ---
@@ -360,6 +234,59 @@ class GoPay extends PaymentMethod {
 
 ---
 
+## Kesalahan Umum: Menambah Cabang `if` untuk Tiap Jenis Baru
+
+<div class="warn-box">
+<b>Salah:</b> tiap jenis diskon baru menambah satu cabang di <code>calculateDiscount()</code>.
+</div>
+
+```java
+if (type.equals("REGULAR")) { return amount * 5 / 100; }
+else if (type.equals("WHOLESALE")) { return amount * 20 / 100; }
+else if (type.equals("STUDENT")) { return amount * 10 / 100; }   // cabang baru lagi
+```
+
+**Benar:** satu interface `DiscountPolicy` dengan method `calculate(amount)`. Tiap jenis diskon menjadi kelas sendiri, misalnya `StudentDiscountPolicy`. Jenis baru tidak menyentuh method lama.
+
+---
+
+## Latihan
+
+Prinsip mana yang dilanggar: Single Responsibility atau Open/Closed?
+
+1. `UserManager` memvalidasi input, menyimpan ke database, dan mengirim email.
+2. Jenis pembayaran baru mengharuskan menambah cabang `if` di method `pay()`.
+3. `InvoicePrinter` mencetak faktur sekaligus menghitung pajaknya.
+
+---
+
+## Jawaban Latihan
+
+1. **Single Responsibility.** Tiga tugas tercampur dalam satu kelas.
+2. **Open/Closed.** Method lama harus diubah tiap ada jenis pembayaran baru.
+3. **Single Responsibility.** Mencetak dan menghitung pajak adalah dua tugas. Aturan pajak yang berubah akan menyentuh kode cetak.
+
+---
+
+## Rangkuman Bagian 1
+
+- Single Responsibility: satu kelas, satu tugas.
+- Open/Closed: kelas baru, bukan ubah kode lama.
+- Keduanya membuat perubahan kecil tetap kecil. Hanya satu kelas yang disentuh.
+
+Selanjutnya: Bagian 2 membahas dua prinsip tentang subclass dan interface, Liskov Substitution dan Interface Segregation.
+
+---
+
+<!-- _class: divider -->
+
+# Bagian 2
+## SOLID: Liskov Substitution dan Interface Segregation
+
+Sesi 2 dari 4
+
+---
+
 ## Liskov Substitution Principle (LSP)
 
 Kamu memesan ojek, dan yang datang motor mana pun. Penggantinya harus tetap bisa mengantarmu.
@@ -367,14 +294,14 @@ Kamu memesan ojek, dan yang datang motor mana pun. Penggantinya harus tetap bisa
 ![h:270 List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa membuat program salah. <code>Sparrow</code> dan <code>Duck</code> di gambar memenuhinya, <code>Penguin</code> tidak.
+<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa membuat program salah. <code>Sparrow</code> dan <code>Duck</code> di gambar memenuhinya, <code>Penguin</code> tidak. <b>Pengganti harus tetap bisa.</b>
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Kode yang memanggil method lewat tipe superclass percaya pada kontrak tipe itu. Bila satu subclass diam-diam melanggar kontrak, program gagal di tempat yang jauh dari subclass bermasalah. Penyebabnya sulit dilacak.
+Kode yang memanggil method lewat tipe superclass percaya pada janji superclass itu. Bila satu subclass diam-diam mengingkari janji, program gagal di tempat yang jauh dari subclass itu. Penyebabnya sulit dilacak.
 
 <div class="term-box">
 Error seperti ini tidak ditolak compiler. Ia baru muncul saat program berjalan, mungkin di tangan pengguna.
@@ -382,7 +309,7 @@ Error seperti ini tidak ditolak compiler. Ia baru muncul saat program berjalan, 
 
 ---
 
-## Kesalahan Umum: Subclass Menolak Kontrak
+## Kesalahan Umum: Subclass Mengingkari Janji
 
 <div class="warn-box">
 <b>Salah:</b> <code>Penguin extends Bird</code> meng-override <code>fly()</code> untuk melempar <code>UnsupportedOperationException</code>, karena penguin tidak bisa terbang.
@@ -394,7 +321,7 @@ for (Bird b : birds) {
 }
 ```
 
-**Benar:** `Penguin` tidak punya `fly()` sama sekali. Kemampuan terbang dipindah ke interface `Flyable` yang hanya diisi `Sparrow` dan `Duck` (slide berikut). Alasannya: kode di atas mengira semua `Bird` bisa `fly()`, jadi `Penguin` tidak bisa menggantikan `Bird`.
+**Benar:** `Penguin` tidak punya `fly()` sama sekali. Kemampuan terbang dipindah ke interface `Flyable` (slide berikut). Alasannya: kode di atas mengira semua `Bird` bisa `fly()`. `Penguin` tidak bisa menggantikan `Bird`.
 
 ---
 
@@ -414,43 +341,6 @@ Pemanggil kini memeriksa kemampuannya: `if (b instanceof Flyable f) f.fly();`. B
 
 ---
 
-## Latihan
-
-Prinsip mana yang dilanggar: Single Responsibility, Open/Closed, atau Liskov Substitution?
-
-1. `UserManager` memvalidasi input, menyimpan ke database, dan mengirim email.
-2. Jenis diskon baru mengharuskan menambah cabang `if` di method `calculateDiscount()`.
-3. `Penguin extends Bird`, tetapi `fly()`-nya melempar exception.
-
----
-
-## Jawaban Latihan
-
-1. **Single Responsibility.** Tiga tanggung jawab tercampur dalam satu kelas.
-2. **Open/Closed.** Method lama harus diubah tiap ada jenis diskon baru.
-3. **Liskov Substitution.** `Penguin` menolak kontrak `Bird`, sehingga tidak bisa menggantikannya.
-
----
-
-## Rangkuman Bagian 2
-
-- Single Responsibility: satu kelas, satu alasan untuk berubah.
-- Open/Closed: terbuka untuk diperluas, tertutup untuk diubah.
-- Liskov Substitution: subclass harus bisa menggantikan superclass-nya tanpa membuat program salah.
-
-Selanjutnya: Bagian 3 membahas dua prinsip yang tersisa, Interface Segregation dan Dependency Inversion.
-
----
-
-<!-- _class: divider -->
-
-# Bagian 3
-## SOLID: Interface Segregation, Dependency Inversion
-
-Sesi 3 dari 4
-
----
-
 ## Interface Segregation Principle (ISP)
 
 Remote TV yang hanya perlu menyalakan dan mematikan tidak butuh 50 tombol channel.
@@ -458,7 +348,7 @@ Remote TV yang hanya perlu menyalakan dan mematikan tidak butuh 50 tombol channe
 ![h:230 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, sehingga kelas tidak dipaksa mengisi method yang tidak relevan. Contohnya <code>Chargeable</code> di atas: satu method <code>charge()</code>, diisi <code>Phone</code> dan <code>ElectricCar</code> yang tidak berkerabat.
+<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, sehingga kelas tidak dipaksa mengisi method yang tidak relevan. Contohnya <code>Chargeable</code> di atas: satu method <code>charge()</code>, diisi <code>Phone</code> dan <code>ElectricCar</code> yang tidak berkerabat. <b>Interface kecil, satu kemampuan.</b>
 </div>
 
 ---
@@ -491,6 +381,43 @@ class ElectricCar implements Chargeable { /* hanya charge() */ }
 
 ---
 
+## Latihan
+
+Prinsip mana yang dilanggar: Liskov Substitution atau Interface Segregation?
+
+1. `Penguin extends Bird`, tetapi `fly()`-nya melempar exception.
+2. `interface Printer` punya `print()`, `scan()`, dan `fax()`. `SimplePrinter implements Printer`, padahal hanya bisa `print()`.
+3. `ReadOnlyList extends ArrayList`, tetapi `add()`-nya melempar exception.
+
+---
+
+## Jawaban Latihan
+
+1. **Liskov Substitution.** `Penguin` mengingkari janji `Bird`, jadi tidak bisa menggantikannya.
+2. **Interface Segregation.** `SimplePrinter` dipaksa mengisi `scan()` dan `fax()`. Pecah menjadi interface kecil.
+3. **Liskov Substitution.** Kode yang memegang `ArrayList` mengira `add()` selalu bisa. `ReadOnlyList` mengingkarinya.
+
+---
+
+## Rangkuman Bagian 2
+
+- Liskov Substitution: pengganti harus tetap bisa.
+- Interface Segregation: interface kecil, satu kemampuan.
+- Interface yang gemuk memaksa method palsu. Method palsu melanggar Liskov.
+
+Selanjutnya: Bagian 3 membahas prinsip terakhir, Dependency Inversion, lalu dua struktur data untuk menyimpan banyak objek.
+
+---
+
+<!-- _class: divider -->
+
+# Bagian 3
+## SOLID: Dependency Inversion, dan Collections
+
+Sesi 3 dari 4
+
+---
+
 ## Dependency Inversion Principle (DIP)
 
 Kasir hanya mengenal mesin kartu, bukan bank penerbitnya. Kartu dari bank mana pun bisa dipakai.
@@ -498,14 +425,14 @@ Kasir hanya mengenal mesin kartu, bukan bank penerbitnya. Kartu dari bank mana p
 ![h:270 OrderProcessor bergantung langsung pada MySqlDatabase, dibandingkan bergantung pada interface Repository yang diimplementasikan MySqlDatabase dan MockRepository](../assets/illustrations/dip-invert-dependency.svg)
 
 <div class="term-box">
-<b>Dependency Inversion Principle</b>: kelas yang mengatur alur (kelas tingkat tinggi) bergantung pada interface, bukan pada kelas konkret.
+<b>Dependency Inversion Principle</b>: kelas yang mengatur alur, misalnya <code>OrderProcessor</code>, bergantung pada interface, bukan pada kelas sungguhan seperti <code>MySqlDatabase</code>. <b>Bergantung pada interface, bukan kelas sungguhan.</b>
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan `OrderProcessor` yang langsung memakai kelas `MySqlDatabase`. Pindah ke database lain, atau menguji dengan database tiruan, menjadi sulit karena `OrderProcessor` terikat ke MySQL.
+Bayangkan `OrderProcessor` yang langsung memakai kelas `MySqlDatabase`. Pindah ke database lain menjadi sulit. Menguji dengan database tiruan juga sulit. `OrderProcessor` terikat ke MySQL.
 
 <div class="term-box">
 Dengan interface <code>Repository</code>, penyimpanan bisa berganti (MySQL, memori, atau tiruan untuk pengujian) tanpa mengubah <code>OrderProcessor</code>.
@@ -530,37 +457,100 @@ class OrderProcessor {
 
 ---
 
-## Kesalahan Umum: Membuat Sendiri Implementasi Konkret
+## Kesalahan Umum: Membuat Sendiri Kelas Sungguhan
 
 <div class="warn-box">
-<b>Salah:</b> <code>class OrderProcessor { private MySqlDatabase db = new MySqlDatabase(); }</code>. Kelas ini membuat sendiri objek konkretnya.
+<b>Salah:</b> <code>class OrderProcessor { private MySqlDatabase db = new MySqlDatabase(); }</code>. Kelas ini membuat sendiri objek sungguhannya.
 </div>
 
 **Benar:** `OrderProcessor` menerima `Repository` (interface) lewat constructor. Kode yang membuat `OrderProcessor` yang memutuskan implementasi mana yang dipakai.
 
 ---
 
+## Masalah: Array Itu Kaku
+
+`InMemoryRepository` harus menyimpan banyak `Order`. Array biasa punya dua masalah.
+
+```java
+Order[] orders = new Order[2];                      // ukuran dikunci: 2
+orders[0] = new Order("Laptop", 5000000);
+orders[1] = new Order("Mouse", 150000);
+orders[2] = new Order("Cable", 50000);              // error saat dijalankan
+```
+
+1. Ukuran ditentukan di awal. Elemen ketiga menghasilkan `ArrayIndexOutOfBoundsException`.
+2. Mencari satu elemen harus memeriksa dari awal, satu per satu.
+
+---
+
+## `ArrayList` dan `Map`
+
+| | Array | `ArrayList` | `Map` |
+|---|---|---|---|
+| Ukuran | tetap sejak dibuat | bertambah otomatis | bertambah otomatis |
+| Cara ambil | lewat indeks | lewat indeks, `get(1)` | lewat kunci, `get("WHOLESALE")` |
+| Cocok untuk | jumlah pasti | daftar berurutan | cari langsung lewat kunci |
+
+<div class="term-box">
+<b>ArrayList</b> adalah daftar yang ukurannya menyesuaikan otomatis. <b>Map</b> menyimpan pasangan kunci dan nilai, lalu mencari nilai langsung lewat kuncinya. <code>HashMap</code> tidak menjamin urutan; <code>LinkedHashMap</code> menjaga urutan penambahan.
+</div>
+
+---
+
+## Contoh Kode: `InMemoryRepository` Memakai `ArrayList`
+
+```java
+class InMemoryRepository implements Repository {
+    private List<Order> orders = new ArrayList<>();   // daftar yang bisa bertambah
+
+    public void save(Order order, int total) {
+        orders.add(order);                            // tidak ada batas ukuran
+    }
+}
+```
+
+1. `List<Order>` berarti daftar ini hanya berisi `Order`.
+2. `add(...)` menambah di belakang. Tidak perlu tahu kapasitas lebih dulu.
+3. `OrderProcessor` hanya mengenal `Repository`. Ia tidak tahu ada `ArrayList` di dalamnya.
+
+---
+
+## Contoh Kode: `Map` untuk Memilih Policy
+
+```java
+Map<String, DiscountPolicy> policies = new HashMap<>();
+policies.put("REGULAR", new RegularDiscountPolicy());
+policies.put("WHOLESALE", new WholesaleDiscountPolicy());
+DiscountPolicy policy = policies.get("WHOLESALE");   // langsung, tanpa looping
+```
+
+1. `<String, DiscountPolicy>`: kuncinya jenis pelanggan, nilainya policy (dari Bagian 1).
+2. `put(...)` menyimpan satu pasangan kunci dan nilai.
+3. `get("WHOLESALE")` langsung mengambil `WholesaleDiscountPolicy`, tanpa memeriksa `"REGULAR"`. Bila kuncinya tidak ada, hasilnya `null`.
+
+---
+
 ## Latihan
 
-Prinsip mana yang dilanggar: Interface Segregation atau Dependency Inversion?
-
-1. `interface Printer` punya `print()`, `scan()`, dan `fax()`. `SimplePrinter implements Printer`, padahal hanya bisa `print()`.
-2. `OrderProcessor` berisi `private MySqlDatabase db = new MySqlDatabase();`. Satu perubahan apa yang memperbaikinya?
+1. `OrderProcessor` berisi `private MySqlDatabase db = new MySqlDatabase();`. Prinsip mana yang dilanggar?
+2. Pilih `ArrayList` atau `Map`: daftar pesanan yang hanya dicetak berurutan dari awal sampai akhir.
+3. Pilih `ArrayList` atau `Map`: data pelanggan yang sering dicari lewat nomor pelanggan.
 
 ---
 
 ## Jawaban Latihan
 
-1. **Interface Segregation.** `SimplePrinter` dipaksa mengisi `scan()` dan `fax()`. Pecah menjadi interface kecil.
-2. **Dependency Inversion.** Buat interface `Repository`, lalu `OrderProcessor` menerimanya lewat constructor. Penyimpanan jadi mudah diganti dan mudah diuji dengan tiruan.
+1. **Dependency Inversion.** Buat interface `Repository`, lalu `OrderProcessor` menerimanya lewat constructor.
+2. **`ArrayList`.** Data hanya dibaca berurutan, tidak perlu pencarian lewat kunci.
+3. **`Map`.** Nomor pelanggan menjadi kunci, sehingga pencariannya langsung.
 
 ---
 
 ## Rangkuman Bagian 3
 
-- Interface Segregation: interface kecil dan fokus.
-- Dependency Inversion: bergantung pada interface, bukan kelas konkret.
-- Membuat objek konkret dengan `new` di dalam kelas melanggar Dependency Inversion, walau interface-nya sudah ada.
+- Dependency Inversion: bergantung pada interface, bukan kelas sungguhan.
+- Membuat objek sungguhan dengan `new` di dalam kelas tetap melanggarnya, walau interface-nya ada.
+- `ArrayList` untuk daftar yang bertambah. `Map` untuk mencari langsung lewat kunci.
 
 Selanjutnya: Bagian 4 menyatukan kelima prinsip dalam satu studi kasus.
 
@@ -658,7 +648,7 @@ public class WholesaleDiscountPolicy implements DiscountPolicy {
 }
 ```
 
-Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `OrderProcessor`. `DiscountCalculator` menyimpan policy dalam `Map<String, DiscountPolicy>` dengan jenis pelanggan sebagai kunci, `Map` yang sama dari Bagian 1.
+Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `OrderProcessor`. `DiscountCalculator` menyimpan policy dalam `Map<String, DiscountPolicy>` dengan jenis pelanggan sebagai kunci, persis contoh `Map` di Bagian 3.
 
 ---
 
@@ -668,7 +658,7 @@ Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `Orde
 <b>Salah:</b> <code>class DigitalOrder extends Order implements Shippable { public String ship() { return "N/A"; } }</code>, supaya "konsisten" dengan <code>PhysicalOrder</code>.
 </div>
 
-**Benar:** `class DigitalOrder extends Order { }` tanpa `Shippable`. Alasannya: versi salah melanggar Interface Segregation, karena `DigitalOrder` dipaksa mengisi method yang tidak relevan, dan melanggar Liskov, karena `"N/A"` adalah kontrak palsu.
+**Benar:** `class DigitalOrder extends Order { }` tanpa `Shippable`. Alasannya: versi salah melanggar Interface Segregation, karena `DigitalOrder` dipaksa mengisi method yang tidak relevan, dan melanggar Liskov, karena `"N/A"` adalah janji palsu.
 
 ---
 
@@ -700,8 +690,8 @@ Toko ingin menambah `StudentDiscountPolicy` (potongan 10% untuk mahasiswa).
 
 ## Rangkuman Pertemuan 11
 
-- `ArrayList` dan `Map` menggantikan array untuk data yang berubah-ubah atau sering dicari lewat kunci.
-- SOLID adalah lima prinsip desain kelas: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.
+- SOLID adalah lima prinsip desain kelas: satu kelas satu tugas; kelas baru bukan ubah kode lama; pengganti harus tetap bisa; interface kecil; bergantung pada interface.
+- `ArrayList` dan `Map` menggantikan array untuk data yang bertambah atau dicari lewat kunci.
 - Sistem pemrosesan pesanan menunjukkan kelima prinsip bekerja bersama dalam satu desain.
 
 ---
