@@ -11,11 +11,11 @@
 
 Setelah menyelesaikan jobsheet ini, mahasiswa mampu:
 
-1. Mengganti array biasa dengan `ArrayList`/`Map` dari Java Collections Framework, dan menjelaskan keuntungannya dibandingkan array.
+1. Mengganti array biasa dengan `ArrayList` dan `Map` dari Java Collections Framework, dan menjelaskan keuntungannya dibandingkan array.
 2. Menerapkan Single Responsibility Principle dengan memisahkan tanggung jawab pencatatan transaksi ke kelas tersendiri.
 3. Menerapkan Dependency Inversion Principle dengan membuat kelas bergantung pada interface, bukan pada implementasi konkret.
-4. Menelusuri dan membuktikan Open/Closed Principle, Liskov Substitution Principle, dan Interface Segregation Principle lewat kode `Account`/`Bank` yang sudah dibangun sejak topik Inheritance hingga Polimorfisme.
-5. Menambahkan subclass `Account` baru tanpa mengubah kode `Account`/`Bank` yang sudah ada, sebagai bukti langsung kelima prinsip SOLID bekerja bersama.
+4. Menelusuri dan membuktikan Open/Closed Principle, Liskov Substitution Principle, dan Interface Segregation Principle lewat kode `Account` dan `Bank` yang sudah dibangun sejak topik Inheritance hingga Polimorfisme.
+5. Menambahkan subclass `Account` baru tanpa mengubah kode `Account` dan `Bank` yang sudah ada, sebagai bukti langsung kelima prinsip SOLID bekerja bersama.
 
 ## B. Persiapan dan Prasyarat
 
@@ -47,6 +47,8 @@ Sejauh ini, `Bank` menyimpan rekening di `Account[] accounts` berukuran tetap, d
 
 ![Bank.java memakai LinkedHashMap menggantikan Account array](../assets/code/pertemuan-11/p11-01-bank.png){width=85%}
 
+Gambar di atas hanya menampilkan bagian awal `Bank.java`. Ubah juga looping di `printMonthlyFees()` dan `processMonthEnd()` menjadi `for (Account acc : accounts.values())`, lalu hapus `accounts[i]` dan `count` yang tersisa.
+
 2. Perbarui `Main.java`. Konstruktor `Bank` tidak lagi memerlukan kapasitas:
 
 ![Main.java membuat Bank tanpa parameter kapasitas](../assets/code/pertemuan-11/p11-01-main.png){width=70%}
@@ -65,13 +67,13 @@ A003 monthly fee: 0.0
 
 **Mengapa demikian?**
 
-- Output sama dengan Pertemuan 10, sebab yang berubah hanya cara penyimpanan, bukan perilaku `Bank`.
+- Output sama dengan topik Polimorfisme dan Exception Handling, sebab yang berubah hanya cara penyimpanan, bukan perilaku `Bank`.
 - `LinkedHashMap` menjaga urutan penambahan, sehingga A001, A002, dan A003 tetap berurutan.
 - `accounts.values()` mengembalikan semua rekening. `findAccount()` memakai `accounts.get(...)`, yang langsung mencari lewat nomor rekening.
 
 > ✅ **Checkpoint:** output program sama dengan blok di atas.
 
-> ⚠️ **Jika gagal:** apabila muncul error `for-each not applicable to expression type`, periksa apakah looping `for` memakai `accounts.values()`, bukan `accounts` secara langsung. `Map` tidak bisa dilooping langsung seperti array.
+> ⚠️ **Jika gagal:** apabila muncul error `for-each not applicable to expression type`, periksa apakah looping `for` memakai `accounts.values()`, bukan `accounts` secara langsung. `Map` tidak bisa dilooping langsung seperti array. Apabila muncul error `array required, but Map<String,Account> found`, berarti masih ada method (misalnya `processMonthEnd()`) yang memakai `accounts[i]` dan `count`; ganti loopingnya dengan `for (Account acc : accounts.values())`.
 
 ### Langkah 2: Transaction, Single Responsibility Principle
 
@@ -147,13 +149,15 @@ A003 DEPOSIT 1400.0
 
 ![InMemoryAccountRepository.java](../assets/code/pertemuan-11/p11-03-inmemoryaccountrepository.png){width=65%}
 
-![Bank bergantung pada interface AccountRepository, diimplementasikan InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=75%}
+![Bank bergantung pada interface AccountRepository, diimplementasikan InMemoryAccountRepository](../assets/uml/p11-accountrepository.png){width=55%}
 
 Cara membaca diagram: label `«interface»` menandai `AccountRepository` sebagai interface. Panah bergaris putus-putus berarti `InMemoryAccountRepository` mengimplementasikannya. `Bank` hanya mengenal interface itu.
 
 3. Buka `Bank.java`. `Bank` kini bergantung pada `AccountRepository`, bukan pada `Map`. Semua method memakai `repository.findAll()` dan `repository.findByNumber(...)`:
 
 ![Bank.java bergantung pada AccountRepository](../assets/code/pertemuan-11/p11-03-bank.png){width=85%}
+
+Ubah juga looping di `printMonthlyFees()` dan `processMonthEnd()` menjadi `for (Account acc : repository.findAll())`. `printHistory()` tidak perlu diubah, sebab ia sudah memakai `findAccount()`.
 
 4. Perbarui `Main.java`:
 
@@ -197,9 +201,9 @@ A003 DEPOSIT 1400.0
 
 **4a. Open/Closed.** `SavingsAccount.canWithdraw()` (menahan saldo minimum) dan `CheckingAccount.canWithdraw()` (mengizinkan overdraft) meng-override method yang sama dengan aturan berbeda. `Account` dan `Bank` tidak pernah tahu aturan keduanya:
 
-![SavingsAccount.java meng-override canWithdraw untuk menahan saldo minimum](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=65%}
+![SavingsAccount.java meng-override canWithdraw untuk menahan saldo minimum](../assets/code/pertemuan-11/p11-04-savingsaccount.png){width=85%}
 
-![CheckingAccount.java meng-override canWithdraw untuk overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=65%}
+![CheckingAccount.java meng-override canWithdraw untuk overdraft](../assets/code/pertemuan-11/p11-04-checkingaccount.png){width=85%}
 
 1. Buka `Account.java` dan `Bank.java`. Gunakan fitur Cari (Ctrl+F, atau Find pada NetBeans) untuk mencari kata `SavingsAccount` dan `CheckingAccount` di kedua berkas.
 
@@ -207,7 +211,7 @@ A003 DEPOSIT 1400.0
 
 **4b. Liskov Substitution.** `Bank.processMonthEnd()` memanggil `acc.monthlyFee()` lewat tipe `Account`. Method itu dipercaya selalu terpenuhi oleh subclass mana pun:
 
-![Bank.java dengan method processMonthEnd, iterasi polimorfik lewat repository](../assets/code/pertemuan-11/p11-04-bank.png){width=68%}
+![Bank.java dengan method processMonthEnd, iterasi polimorfik lewat repository](../assets/code/pertemuan-11/p11-04-bank.png){width=100%}
 
 2. Lihat kembali output Langkah 3. Baris `monthly fee` berbeda untuk tiap jenis rekening.
 
@@ -235,7 +239,7 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
 
 - Screenshot output program setelah Langkah 3, dan setelah Tugas mandiri.
 - **Tugas mandiri:**
-  1. **BusinessAccount: membuktikan OCP, LSP, dan ISP lewat kode baru.** Tambahkan `BusinessAccount extends Account` (rekening bisnis, saldo minimum Rp 1.000.000, tidak berbunga). Diagram berikut hanya sketsa method yang perlu di-override, BUKAN kode jadi, implementasi `canWithdraw()`/`monthlyFee()`/`printInfo()` (persis pola `SavingsAccount`/`CheckingAccount` yang sudah ditelusuri di Langkah 4) diserahkan sepenuhnya padamu:
+  1. **BusinessAccount: membuktikan OCP, LSP, dan ISP lewat kode baru.** Tambahkan `BusinessAccount extends Account` (rekening bisnis, saldo minimum Rp 1.000.000, tidak berbunga). Diagram berikut hanya sketsa method yang perlu di-override, bukan kode jadi. Implementasi `canWithdraw()`, `monthlyFee()`, dan `printInfo()` diserahkan sepenuhnya padamu; ikuti pola `SavingsAccount` dan `CheckingAccount` yang sudah ditelusuri di Langkah 4:
 
      ![Sketsa BusinessAccount, method yang perlu di-override tanpa implementasi](../assets/uml/p11-tugas-businessaccount.png){width=60%}
 
@@ -244,10 +248,10 @@ Kumpulkan hal berikut sesuai format yang diminta Dosen:
      ![Main.java menambahkan BusinessAccount, memanggil processMonthEnd dan printAllAccounts](../assets/code/pertemuan-11/p11-tugas-main.png){width=70%}
 
      Buktikan dua hal berikut dari output program, tanpa mengubah satu baris pun `Account.java` atau `Bank.java`:
-     - **(Open/Closed + Liskov Substitution)** baris `A004 monthly fee: 0.0` muncul di antara baris `processMonthEnd()` yang lain, dan `A004 - Budi - balance: 2000000.0` diikuti `Account type: Business` muncul di `printAllAccounts()`, persis seperti `SavingsAccount`/`CheckingAccount` diproses sebelumnya.
+     - **(Open/Closed + Liskov Substitution)** baris `A004 monthly fee: 0.0` muncul di antara baris `processMonthEnd()` yang lain, dan `A004 - Budi - balance: 2000000.0` diikuti `Account type: Business` muncul di `printAllAccounts()`, persis seperti `SavingsAccount` dan `CheckingAccount` diproses sebelumnya.
      - **(Interface Segregation)** tidak ada baris `A004 interest applied` yang muncul, sebab `BusinessAccount` tidak meng-implement `InterestBearing`.
   2. Jawab secara singkat (2-3 kalimat untuk masing-masing pertanyaan):
-     - (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java`/`Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa.
+     - (a) sebutkan prinsip SOLID mana yang dibuktikan oleh fakta bahwa `Account.java` dan `Bank.java` tidak berubah sama sekali setelah `BusinessAccount` ditambahkan, dan jelaskan mengapa.
      - (b) `processMonthEnd()` memakai `instanceof InterestBearing`, bukan `instanceof SavingsAccount`. Jelaskan mengapa `BusinessAccount` otomatis diperlakukan benar (tidak dikenai bunga) tanpa `Bank.java` perlu tahu apa pun tentang keberadaannya.
      - (c) Suatu saat nanti, `InMemoryAccountRepository` akan diganti kelas lain yang menyimpan data ke database. Jelaskan mengapa `Bank.java` tidak perlu diubah satu baris pun untuk pergantian itu, dan prinsip SOLID mana yang membuat ini mungkin.
 
