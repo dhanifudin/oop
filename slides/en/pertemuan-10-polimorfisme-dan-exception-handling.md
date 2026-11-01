@@ -84,6 +84,18 @@ style: |
     max-width: 100%;
     max-height: 460px;
   }
+  .cols.wide > div:first-child {
+    flex: 2;
+  }
+  .cols.wide > div:last-child {
+    flex: 1;
+  }
+  .cols.wide img {
+    max-height: 480px;
+  }
+  .cols.wide .term-box {
+    margin: 0;
+  }
   .footnote {
     font-size: 0.55em;
     color: #64748b;
@@ -176,9 +188,18 @@ With polymorphism, the calling code simply writes <code>product.shippingCost()</
 
 ## One Call, Two Results
 
-![h:300 One call to area() resolved differently while the program runs](../assets/illustrations/polymorphic-dispatch.svg)
+<div class="cols wide">
+<div>
+
+![One call to area() resolved differently while the program runs](../assets/illustrations/polymorphic-dispatch.svg)
+
+</div>
+<div>
 
 The call `s.area()` is written only once. For a `Circle`, Java runs the circle formula. For a `Square`, Java runs the square formula.
+
+</div>
+</div>
 
 ---
 
@@ -457,9 +478,18 @@ A clerk who finds a wrong form does not quietly fix it. They raise a hand and re
 
 ## The Journey of an Exception
 
-![h:300 An exception halts the method that throws it and is passed upward until it is caught](../assets/illustrations/exception-throw-catch.svg)
+<div class="cols wide">
+<div>
+
+![An exception halts the method that throws it and is passed upward until it is caught](../assets/illustrations/exception-throw-catch.svg)
+
+</div>
+<div>
 
 The exception is thrown inside `setScore(150)`, then travels up to the calling code until a `catch` block catches it.
+
+</div>
+</div>
 
 ---
 
@@ -479,9 +509,18 @@ Just `extends Exception` and one constructor. The class name already explains th
 
 ## Exceptions in a Class Diagram
 
-![h:260 Exception, InvalidScoreException, and the Grade that throws it](../assets/uml/p10-invalidscore-exception.png)
+<div class="cols wide">
+<div>
+
+![Exception, InvalidScoreException, and the Grade that throws it](../assets/uml/p10-invalidscore-exception.png)
+
+</div>
+<div>
 
 `InvalidScoreException` is a subclass of `Exception`. The dashed arrow labeled "throws" means `Grade` can throw that exception.
+
+</div>
+</div>
 
 ---
 
@@ -595,9 +634,18 @@ Number 1 uses polymorphism. Number 2 uses `instanceof`. Number 3 uses an excepti
 
 ## Class Diagram: The Collection and Its Exception
 
-![h:300 Abstract LibraryItem with checkOut throwing ItemNotAvailableException, Book, Dvd, and Playable](../assets/uml/p10-libraryitem-exception.png)
+<div class="cols wide">
+<div>
+
+![Abstract LibraryItem with checkOut throwing ItemNotAvailableException, Book, Dvd, and Playable](../assets/uml/p10-libraryitem-exception.png)
+
+</div>
+<div>
 
 `ItemNotAvailableException` is a subclass of `Exception`. The "throws" arrow shows that `checkOut()` in `LibraryItem` can throw it.
+
+</div>
+</div>
 
 ---
 

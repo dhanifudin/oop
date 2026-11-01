@@ -84,6 +84,18 @@ style: |
     max-width: 100%;
     max-height: 460px;
   }
+  .cols.wide > div:first-child {
+    flex: 2;
+  }
+  .cols.wide > div:last-child {
+    flex: 1;
+  }
+  .cols.wide img {
+    max-height: 480px;
+  }
+  .cols.wide .term-box {
+    margin: 0;
+  }
   .footnote {
     font-size: 0.55em;
     color: #64748b;
@@ -176,9 +188,18 @@ Dengan polimorfisme, kode pemanggil cukup menulis <code>product.shippingCost()</
 
 ## Satu Pemanggilan, Dua Hasil
 
-![h:300 Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/illustrations/polymorphic-dispatch.svg)
+<div class="cols wide">
+<div>
+
+![Satu titik pemanggilan area() yang diselesaikan secara berbeda-beda saat program berjalan](../assets/illustrations/polymorphic-dispatch.svg)
+
+</div>
+<div>
 
 Pemanggilan `s.area()` hanya ditulis satu kali. Untuk `Circle`, Java menjalankan rumus lingkaran. Untuk `Square`, Java menjalankan rumus persegi.
+
+</div>
+</div>
 
 ---
 
@@ -457,9 +478,18 @@ Seorang petugas yang menemukan formulir salah tidak memperbaikinya diam-diam. Ia
 
 ## Perjalanan Sebuah Exception
 
-![h:300 Sebuah exception menghentikan method yang melemparnya dan diteruskan ke atas hingga tertangkap](../assets/illustrations/exception-throw-catch.svg)
+<div class="cols wide">
+<div>
+
+![Sebuah exception menghentikan method yang melemparnya dan diteruskan ke atas hingga tertangkap](../assets/illustrations/exception-throw-catch.svg)
+
+</div>
+<div>
 
 Exception dilempar di dalam `setScore(150)`, lalu naik ke kode pemanggil sampai ada blok `catch` yang menangkapnya.
+
+</div>
+</div>
 
 ---
 
@@ -479,9 +509,18 @@ Cukup `extends Exception` dan satu constructor. Nama kelasnya sudah menjelaskan 
 
 ## Exception pada Diagram Kelas
 
-![h:260 Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png)
+<div class="cols wide">
+<div>
+
+![Exception, InvalidScoreException, dan Grade yang melemparnya](../assets/uml/p10-invalidscore-exception.png)
+
+</div>
+<div>
 
 `InvalidScoreException` adalah subclass dari `Exception`. Panah putus-putus berlabel "throws" berarti `Grade` bisa melempar exception itu.
+
+</div>
+</div>
 
 ---
 
@@ -595,9 +634,18 @@ Nomor 1 memakai polimorfisme. Nomor 2 memakai `instanceof`. Nomor 3 memakai exce
 
 ## Diagram Kelas: Koleksi dan Exception-nya
 
-![h:300 LibraryItem abstrak dengan checkOut yang melempar ItemNotAvailableException, Book, Dvd, dan Playable](../assets/uml/p10-libraryitem-exception.png)
+<div class="cols wide">
+<div>
+
+![LibraryItem abstrak dengan checkOut yang melempar ItemNotAvailableException, Book, Dvd, dan Playable](../assets/uml/p10-libraryitem-exception.png)
+
+</div>
+<div>
 
 `ItemNotAvailableException` adalah subclass dari `Exception`. Panah "throws" menunjukkan `checkOut()` di `LibraryItem` bisa melemparnya.
+
+</div>
+</div>
 
 ---
 

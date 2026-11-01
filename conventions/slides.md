@@ -168,7 +168,10 @@ dan `AccountNotFoundException`) hanya ada di jobsheet. Sengaja tidak
 dibahas: `finally`, multi-catch, perbedaan checked/unchecked secara formal
 (cukup "exception yang `extends Exception` wajib ditangani"). Angka contoh
 di slide sudah dicek lewat Java sungguhan: lingkaran memakai radius 2
-(12.56) karena radius 3 mencetak 28.259999999999998.
+(12.56) karena radius 3 mencetak 28.259999999999998. Keempat slide bergambar dek
+ini memakai layout `.cols.wide` (gambar kiri 2/3, teks kanan 1/3), sama
+seperti Pertemuan 11, atas permintaan pengguna ("apply the same
+side-by-side layout to pertemuan 10").
 
 ## Bahaya tersembunyi di kelas `divider`
 
