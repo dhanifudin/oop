@@ -149,7 +149,7 @@ employees[1] = new Employee("E002", "Sari");
 employees[2] = new Employee("E003", "Rian");   // error saat dijalankan
 ```
 
-Array hanya muat sebanyak ukuran yang ditentukan di awal. Elemen ketiga menghasilkan `ArrayIndexOutOfBoundsException`.
+Array hanya muat sebanyak ukuran yang ditentukan di awal. Elemen ketiga menghasilkan `ArrayIndexOutOfBoundsException`. Anggap `Employee` punya constructor `(id, name)` serta `getId()` dan `getName()`.
 
 ---
 
@@ -215,6 +215,10 @@ System.out.println(e.getName());
 1. `<String, Employee>`: kuncinya `String`, nilainya `Employee`.
 2. `put(...)` menyimpan satu pasangan kunci dan nilai.
 3. `get("E002")` langsung mengambil objeknya, tanpa memeriksa `"E001"`. Output: `Sari`
+
+<div class="tip-box">
+<code>HashMap</code> tidak menjamin urutan elemen. Bila urutan penambahan penting, pakai <code>LinkedHashMap</code>; jobsheet memakainya.
+</div>
 
 ---
 
@@ -347,12 +351,12 @@ if (type.equals("CREDIT_CARD")) { chargeCard(amount); }
 else if (type.equals("BANK_TRANSFER")) { transferBank(amount); }
 
 // Sesudah: cukup kelas baru
-class GoPayMethod extends PaymentMethod {
+class GoPay extends PaymentMethod {
     void pay(double amount) { /* logika GoPay */ }
 }
 ```
 
-`PaymentMethod`, `CreditCardMethod`, dan `BankTransferMethod` sudah ada. Menambah `GoPayMethod` tidak mengubah satu baris pun kode mereka.
+`PaymentMethod`, `CreditCard`, dan `BankTransfer` sudah ada. Menambah `GoPay` tidak mengubah satu baris pun kode mereka.
 
 ---
 
@@ -363,7 +367,7 @@ Kamu memesan ojek, dan yang datang motor mana pun. Penggantinya harus tetap bisa
 ![h:270 List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa membuat program salah. <code>Sedan</code> dan <code>Truck</code> dari Pertemuan 6 dan 7 sudah memenuhinya.
+<b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya di mana pun tanpa membuat program salah. <code>Sparrow</code> dan <code>Duck</code> di gambar memenuhinya, <code>Penguin</code> tidak.
 </div>
 
 ---
@@ -390,7 +394,7 @@ for (Bird b : birds) {
 }
 ```
 
-**Benar:** kode di atas mengira semua `Bird` bisa `fly()`. Begitu `birds` berisi `Penguin`, `b.fly()` gagal. `Penguin` tidak bisa menggantikan `Bird`, jadi Liskov dilanggar.
+**Benar:** `Penguin` tidak punya `fly()` sama sekali. Kemampuan terbang dipindah ke interface `Flyable` yang hanya diisi `Sparrow` dan `Duck` (slide berikut). Alasannya: kode di atas mengira semua `Bird` bisa `fly()`, jadi `Penguin` tidak bisa menggantikan `Bird`.
 
 ---
 
@@ -406,7 +410,7 @@ class Sparrow extends Bird implements Flyable { ... }
 class Penguin extends Bird { /* tidak implements Flyable */ }
 ```
 
-Pemanggil kini memeriksa kemampuannya: `if (b instanceof Flyable f) f.fly();`. Pola interface kecil ini muncul lagi di Bagian 4 (`Shippable`).
+Pemanggil kini memeriksa kemampuannya: `if (b instanceof Flyable f) f.fly();`. Bentuk `instanceof Flyable f` memeriksa tipe sekaligus memberi variabel `f` bertipe `Flyable`, tanpa cast. Pola interface kecil ini muncul lagi di Bagian 4 (`Shippable`).
 
 ---
 
@@ -454,17 +458,17 @@ Remote TV yang hanya perlu menyalakan dan mematikan tidak butuh 50 tombol channe
 ![h:230 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, sehingga kelas tidak dipaksa mengisi method yang tidak relevan. Contohnya <code>Chargeable</code> di Pertemuan 9.
+<b>Interface Segregation Principle</b>: interface sebaiknya kecil dan fokus, sehingga kelas tidak dipaksa mengisi method yang tidak relevan. Contohnya <code>Chargeable</code> di atas: satu method <code>charge()</code>, diisi <code>Phone</code> dan <code>ElectricCar</code> yang tidak berkerabat.
 </div>
 
 ---
 
 ## Mengapa Ini Penting?
 
-Bayangkan `charge()` dan `dial()` digabung dalam satu interface besar, `Device`. `ElectricCar` ikut wajib menulis `dial()`, padahal mobil listrik tidak bisa menelepon. Pilihannya dua dan keduanya buruk: dibiarkan kosong, atau melempar exception.
+Bayangkan `charge()` dan `call()` digabung dalam satu interface besar, `Device`. `ElectricCar` ikut wajib menulis `call()`, padahal mobil listrik tidak bisa menelepon. Pilihannya dua dan keduanya buruk: dibiarkan kosong, atau melempar exception.
 
 <div class="term-box">
-Kode yang memegang <code>Device</code> mengira <code>dial()</code> berfungsi. Pada <code>ElectricCar</code>, method itu tidak berbuat apa-apa atau menghentikan program. Interface yang gemuk ikut melanggar Liskov.
+Kode yang memegang <code>Device</code> mengira <code>call()</code> berfungsi. Pada <code>ElectricCar</code>, method itu tidak berbuat apa-apa atau menghentikan program. Interface yang gemuk ikut melanggar Liskov.
 </div>
 
 ---
@@ -473,15 +477,15 @@ Kode yang memegang <code>Device</code> mengira <code>dial()</code> berfungsi. Pa
 
 ```java
 // Sebelum: satu interface gemuk
-interface Device { void charge(); void dial(); }
+interface Device { void charge(); void call(); }
 
 // Sesudah: dua interface kecil
 interface Chargeable { void charge(); }
-interface Dialable { void dial(); }
+interface Caller { void call(); }
 class ElectricCar implements Chargeable { /* hanya charge() */ }
 ```
 
-1. Sebelum: `ElectricCar` terpaksa menulis `dial()` yang tidak masuk akal.
+1. Sebelum: `ElectricCar` terpaksa menulis `call()` yang tidak masuk akal.
 2. Sesudah: dua interface kecil, satu kemampuan masing-masing.
 3. `ElectricCar` hanya `implements Chargeable`.
 
@@ -575,6 +579,14 @@ Sesi 4 dari 4
 
 Sebuah toko daring punya pesanan fisik (perlu dikirim) dan pesanan digital (tidak perlu dikirim). Diskonnya berbeda tiap jenis pelanggan, dan penyimpanannya suatu hari mungkin pindah dari memori ke berkas.
 
+Pemainnya:
+
+- `Order`, dengan subclass `PhysicalOrder` dan `DigitalOrder`
+- `Customer`, punya jenis pelanggan (reguler, grosir)
+- `OrderProcessor`, koordinator alur pesanan
+- `DiscountCalculator` dan `DiscountPolicy`, menghitung diskon
+- `Repository`, menyimpan pesanan; `ReceiptPrinter`, mencetak struk
+
 Sistem kecil ini cukup untuk menunjukkan kelima prinsip bekerja bersama.
 
 ---
@@ -592,7 +604,7 @@ Sistem kecil ini cukup untuk menunjukkan kelima prinsip bekerja bersama.
 ```java
 public class PhysicalOrder extends Order implements Shippable {
     public String ship() {
-        return "Shipping \"" + getDescription() + "\"...";
+        return "Shipping " + describe() + "...";
     }
 }
 
@@ -646,7 +658,7 @@ public class WholesaleDiscountPolicy implements DiscountPolicy {
 }
 ```
 
-Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `OrderProcessor`.
+Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `OrderProcessor`. `DiscountCalculator` menyimpan policy dalam `Map<String, DiscountPolicy>` dengan jenis pelanggan sebagai kunci, `Map` yang sama dari Bagian 1.
 
 ---
 
@@ -656,7 +668,7 @@ Menambah kelas ini tidak mengubah satu baris pun `DiscountCalculator` atau `Orde
 <b>Salah:</b> <code>class DigitalOrder extends Order implements Shippable { public String ship() { return "N/A"; } }</code>, supaya "konsisten" dengan <code>PhysicalOrder</code>.
 </div>
 
-**Benar:** ini melanggar Interface Segregation, karena `DigitalOrder` dipaksa mengisi method yang tidak relevan. Ini juga melanggar Liskov, karena `"N/A"` adalah kontrak palsu. Kelas yang tidak punya kemampuan itu sebaiknya tidak mengimplementasikan interface-nya.
+**Benar:** `class DigitalOrder extends Order { }` tanpa `Shippable`. Alasannya: versi salah melanggar Interface Segregation, karena `DigitalOrder` dipaksa mengisi method yang tidak relevan, dan melanggar Liskov, karena `"N/A"` adalah kontrak palsu.
 
 ---
 

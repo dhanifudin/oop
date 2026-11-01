@@ -149,7 +149,7 @@ employees[1] = new Employee("E002", "Sari");
 employees[2] = new Employee("E003", "Rian");   // error at run time
 ```
 
-An array only holds as many elements as the size set at the start. The third element causes an `ArrayIndexOutOfBoundsException`.
+An array only holds as many elements as the size set at the start. The third element causes an `ArrayIndexOutOfBoundsException`. Assume `Employee` has a constructor `(id, name)` plus `getId()` and `getName()`.
 
 ---
 
@@ -215,6 +215,10 @@ System.out.println(e.getName());
 1. `<String, Employee>`: the key is a `String`, the value is an `Employee`.
 2. `put(...)` stores one pair of key and value.
 3. `get("E002")` fetches the object directly, without checking `"E001"`. Output: `Sari`
+
+<div class="tip-box">
+<code>HashMap</code> does not guarantee element order. When insertion order matters, use <code>LinkedHashMap</code>; the jobsheet uses it.
+</div>
 
 ---
 
@@ -347,12 +351,12 @@ if (type.equals("CREDIT_CARD")) { chargeCard(amount); }
 else if (type.equals("BANK_TRANSFER")) { transferBank(amount); }
 
 // After: just a new class
-class GoPayMethod extends PaymentMethod {
+class GoPay extends PaymentMethod {
     void pay(double amount) { /* GoPay logic */ }
 }
 ```
 
-`PaymentMethod`, `CreditCardMethod`, and `BankTransferMethod` already exist. Adding `GoPayMethod` does not change a single line of their code.
+`PaymentMethod`, `CreditCard`, and `BankTransfer` already exist. Adding `GoPay` does not change a single line of their code.
 
 ---
 
@@ -363,7 +367,7 @@ You order a motorbike taxi, and any motorbike may arrive. The replacement must s
 ![h:270 List<Bird> calls fly() on each element, Sparrow and Duck succeed, Penguin throws an exception](../assets/illustrations/lsp-substitution.svg)
 
 <div class="term-box">
-<b>Liskov Substitution Principle</b>: a subclass must be able to replace its superclass anywhere without making the program wrong. <code>Sedan</code> and <code>Truck</code> from Meetings 6 and 7 already satisfy it.
+<b>Liskov Substitution Principle</b>: a subclass must be able to replace its superclass anywhere without making the program wrong. <code>Sparrow</code> and <code>Duck</code> in the picture satisfy it, <code>Penguin</code> does not.
 </div>
 
 ---
@@ -390,7 +394,7 @@ for (Bird b : birds) {
 }
 ```
 
-**Correct:** the code above assumes every `Bird` can `fly()`. As soon as `birds` holds a `Penguin`, `b.fly()` fails. `Penguin` cannot replace `Bird`, so Liskov is broken.
+**Correct:** `Penguin` has no `fly()` at all. The ability to fly moves into a `Flyable` interface implemented only by `Sparrow` and `Duck` (next slide). The reason: the code above assumes every `Bird` can `fly()`, so `Penguin` cannot replace `Bird`.
 
 ---
 
@@ -406,7 +410,7 @@ class Sparrow extends Bird implements Flyable { ... }
 class Penguin extends Bird { /* does not implement Flyable */ }
 ```
 
-The caller now checks the ability: `if (b instanceof Flyable f) f.fly();`. This small-interface pattern returns in Part 4 (`Shippable`).
+The caller now checks the ability: `if (b instanceof Flyable f) f.fly();`. The form `instanceof Flyable f` checks the type and also gives a variable `f` of type `Flyable`, without a cast. This small-interface pattern returns in Part 4 (`Shippable`).
 
 ---
 
@@ -454,17 +458,17 @@ A TV remote that only needs to turn the TV on and off does not need 50 channel b
 ![h:230 Chargeable implemented by Phone and ElectricCar, two separate hierarchies](../assets/uml/p09-chargeable.png)
 
 <div class="term-box">
-<b>Interface Segregation Principle</b>: an interface should be small and focused, so classes are not forced to fill in methods that do not apply to them. An example is <code>Chargeable</code> from Meeting 9.
+<b>Interface Segregation Principle</b>: an interface should be small and focused, so classes are not forced to fill in methods that do not apply to them. An example is <code>Chargeable</code> above: one method <code>charge()</code>, implemented by <code>Phone</code> and <code>ElectricCar</code>, two unrelated classes.
 </div>
 
 ---
 
 ## Why Does This Matter?
 
-Imagine `charge()` and `dial()` merged into one big interface, `Device`. `ElectricCar` must also write `dial()`, even though an electric car cannot make calls. There are two choices and both are bad: leave it empty, or throw an exception.
+Imagine `charge()` and `call()` merged into one big interface, `Device`. `ElectricCar` must also write `call()`, even though an electric car cannot make calls. There are two choices and both are bad: leave it empty, or throw an exception.
 
 <div class="term-box">
-Code holding a <code>Device</code> assumes <code>dial()</code> works. On <code>ElectricCar</code>, that method does nothing or stops the program. A fat interface also breaks Liskov.
+Code holding a <code>Device</code> assumes <code>call()</code> works. On <code>ElectricCar</code>, that method does nothing or stops the program. A fat interface also breaks Liskov.
 </div>
 
 ---
@@ -473,15 +477,15 @@ Code holding a <code>Device</code> assumes <code>dial()</code> works. On <code>E
 
 ```java
 // Before: one fat interface
-interface Device { void charge(); void dial(); }
+interface Device { void charge(); void call(); }
 
 // After: two small interfaces
 interface Chargeable { void charge(); }
-interface Dialable { void dial(); }
+interface Caller { void call(); }
 class ElectricCar implements Chargeable { /* only charge() */ }
 ```
 
-1. Before: `ElectricCar` is forced to write a `dial()` that makes no sense.
+1. Before: `ElectricCar` is forced to write a `call()` that makes no sense.
 2. After: two small interfaces, one ability each.
 3. `ElectricCar` only `implements Chargeable`.
 
@@ -575,6 +579,14 @@ Session 4 of 4
 
 An online shop has physical orders (which must be shipped) and digital orders (which need no shipping). Discounts differ by customer type, and storage may one day move from memory to a file.
 
+The players:
+
+- `Order`, with subclasses `PhysicalOrder` and `DigitalOrder`
+- `Customer`, which has a customer type (regular, wholesale)
+- `OrderProcessor`, the coordinator of the order flow
+- `DiscountCalculator` and `DiscountPolicy`, which compute the discount
+- `Repository`, which saves orders; `ReceiptPrinter`, which prints the receipt
+
 This small system is enough to show all five principles working together.
 
 ---
@@ -592,7 +604,7 @@ This small system is enough to show all five principles working together.
 ```java
 public class PhysicalOrder extends Order implements Shippable {
     public String ship() {
-        return "Shipping \"" + getDescription() + "\"...";
+        return "Shipping " + describe() + "...";
     }
 }
 
@@ -646,7 +658,7 @@ public class WholesaleDiscountPolicy implements DiscountPolicy {
 }
 ```
 
-Adding this class does not change a single line of `DiscountCalculator` or `OrderProcessor`.
+Adding this class does not change a single line of `DiscountCalculator` or `OrderProcessor`. `DiscountCalculator` keeps the policies in a `Map<String, DiscountPolicy>` keyed by customer type, the same `Map` from Part 1.
 
 ---
 
@@ -656,7 +668,7 @@ Adding this class does not change a single line of `DiscountCalculator` or `Orde
 <b>Wrong:</b> <code>class DigitalOrder extends Order implements Shippable { public String ship() { return "N/A"; } }</code>, to be "consistent" with <code>PhysicalOrder</code>.
 </div>
 
-**Correct:** this breaks Interface Segregation, because `DigitalOrder` is forced to fill in an irrelevant method. It also breaks Liskov, because `"N/A"` is a fake contract. A class without that ability should not implement the interface.
+**Correct:** `class DigitalOrder extends Order { }` without `Shippable`. The reason: the wrong version breaks Interface Segregation, because `DigitalOrder` is forced to fill in an irrelevant method, and breaks Liskov, because `"N/A"` is a fake contract.
 
 ---
 
