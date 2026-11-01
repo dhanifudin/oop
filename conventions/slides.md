@@ -98,7 +98,10 @@ untuk refactor `Bank`. Slide "Diskusi" penutup dek ini diganti TIGA slide
 skenario per slide), atas permintaan eksplisit pengguna ("update the last
 slide Diskusi into assignment, breakdown into separate question topic",
 lalu "make it compact"); dek ini 51 slide, dengan Kesalahan Umum hanya
-untuk OCP, LSP, dan studi kasus.
+untuk OCP, LSP, dan studi kasus. Kedelapan slide bergambar dek ini memakai
+layout `.cols.wide` (gambar kiri 2/3 lebar, analogi + term-box kanan 1/3),
+karena layout tumpuk (gambar di antara analogi dan term-box) memaksa SVG
+lebar 900x460 dibatasi `h:270` dan terlihat kecil di proyektor.
 
 **Pengecualian sengaja di Pertemuan 6**: sama seperti Pertemuan 11, dek ini
 TIDAK punya Bagian "Menerapkan ke Bank Mini", atas permintaan eksplisit

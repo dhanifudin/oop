@@ -84,6 +84,18 @@ style: |
     max-width: 100%;
     max-height: 460px;
   }
+  .cols.wide > div:first-child {
+    flex: 2;
+  }
+  .cols.wide > div:last-child {
+    flex: 1;
+  }
+  .cols.wide img {
+    max-height: 480px;
+  }
+  .cols.wide .term-box {
+    margin: 0;
+  }
   .footnote {
     font-size: 0.55em;
     color: #64748b;
@@ -151,12 +163,21 @@ Beberapa sudah kamu pakai tanpa sadar. Hari ini kita beri nama resminya.
 
 ## Single Responsibility Principle (SRP)
 
-Di restoran, koki, kasir, dan pelayan punya tugas masing-masing. Salah di dapur tidak mengacaukan pembayaran.
+<div class="cols wide">
+<div>
 
-![h:270 Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/illustrations/srp-split.svg)
+![Satu kelas dengan tiga tanggung jawab, dipisah menjadi tiga kelas masing-masing satu tanggung jawab](../assets/illustrations/srp-split.svg)
+
+</div>
+<div>
+
+Di restoran, koki, kasir, dan pelayan punya tugas masing-masing. Salah di dapur tidak mengacaukan pembayaran.
 
 <div class="term-box">
 Satu kelas punya satu tanggung jawab, yaitu satu alasan untuk berubah. <b>Satu kelas, satu tugas.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -187,12 +208,21 @@ class ReportMailer    { void send(Report r) { /* ... */ } }
 
 ## Open/Closed Principle (OCP)
 
-Stop kontak menerima alat apa pun. Alat baru tinggal dicolokkan, instalasi rumah tidak dibongkar.
+<div class="cols wide">
+<div>
 
-![h:270 PaymentMethod.pay() dengan if/else per tipe, dibandingkan subclass baru GoPay yang ditambahkan tanpa mengubah kode lama](../assets/illustrations/ocp-extend-not-modify.svg)
+![PaymentMethod.pay() dengan if/else per tipe, dibandingkan subclass baru GoPay yang ditambahkan tanpa mengubah kode lama](../assets/illustrations/ocp-extend-not-modify.svg)
+
+</div>
+<div>
+
+Stop kontak menerima alat apa pun. Alat baru tinggal dicolokkan, instalasi rumah tidak dibongkar.
 
 <div class="term-box">
 <b>Open/Closed Principle</b>: terbuka untuk diperluas, tertutup untuk diubah. <b>Kelas baru, bukan ubah kode lama.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -279,12 +309,21 @@ Sesi 2 dari 4
 
 ## Liskov Substitution Principle (LSP)
 
-Kamu memesan ojek, dan yang datang motor mana pun. Penggantinya harus tetap bisa mengantarmu.
+<div class="cols wide">
+<div>
 
-![h:270 List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
+![List<Bird> memanggil fly() untuk tiap elemen, Sparrow dan Duck berhasil, Penguin melempar exception](../assets/illustrations/lsp-substitution.svg)
+
+</div>
+<div>
+
+Kamu memesan ojek, dan yang datang motor mana pun. Penggantinya harus tetap bisa mengantarmu.
 
 <div class="term-box">
 <b>Liskov Substitution Principle</b>: subclass harus bisa menggantikan superclass-nya tanpa membuat program salah. <code>Sparrow</code> dan <code>Duck</code> bisa, <code>Penguin</code> tidak. <b>Pengganti harus tetap bisa.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -333,12 +372,21 @@ Pemanggil memeriksa dulu: `if (b instanceof Flyable f) f.fly();`. Bentuk ini mem
 
 ## Interface Segregation Principle (ISP)
 
-Remote TV yang hanya perlu menyalakan dan mematikan tidak butuh 50 tombol channel.
+<div class="cols wide">
+<div>
 
-![h:230 Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
+![Chargeable diimplementasikan Phone dan ElectricCar, dua hierarki yang terpisah](../assets/uml/p09-chargeable.png)
+
+</div>
+<div>
+
+Remote TV yang hanya perlu menyalakan dan mematikan tidak butuh 50 tombol channel.
 
 <div class="term-box">
 <b>Interface Segregation Principle</b>: interface kecil dan fokus, supaya kelas tidak dipaksa mengisi method yang tidak relevan. <code>Chargeable</code> di atas: satu method, dua kelas yang tidak berkerabat. <b>Interface kecil, satu kemampuan.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -410,12 +458,21 @@ Sesi 3 dari 4
 
 ## Dependency Inversion Principle (DIP)
 
-Kasir hanya mengenal mesin kartu, bukan bank penerbitnya. Kartu bank mana pun bisa dipakai.
+<div class="cols wide">
+<div>
 
-![h:270 OrderProcessor bergantung langsung pada MySqlDatabase, dibandingkan bergantung pada interface Repository yang diimplementasikan MySqlDatabase dan MockRepository](../assets/illustrations/dip-invert-dependency.svg)
+![OrderProcessor bergantung langsung pada MySqlDatabase, dibandingkan bergantung pada interface Repository yang diimplementasikan MySqlDatabase dan MockRepository](../assets/illustrations/dip-invert-dependency.svg)
+
+</div>
+<div>
+
+Kasir hanya mengenal mesin kartu, bukan bank penerbitnya. Kartu bank mana pun bisa dipakai.
 
 <div class="term-box">
 <b>Dependency Inversion Principle</b>: kelas yang mengatur alur (<code>OrderProcessor</code>) bergantung pada interface, bukan pada kelas sungguhan (<code>MySqlDatabase</code>). <b>Bergantung pada interface, bukan kelas sungguhan.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -529,17 +586,35 @@ Toko daring punya pesanan fisik (dikirim) dan digital (tidak dikirim). Diskon be
 
 ## `Shippable`: LSP dan ISP Sekaligus
 
-![h:230 Order, PhysicalOrder yang mengimplementasikan Shippable, dan DigitalOrder yang sengaja tidak](../assets/uml/p11-order-shippable.png)
+<div class="cols wide">
+<div>
+
+![Order, PhysicalOrder yang mengimplementasikan Shippable, dan DigitalOrder yang sengaja tidak](../assets/uml/p11-order-shippable.png)
+
+</div>
+<div>
 
 `Shippable` hanya punya `ship()` (Interface Segregation). `PhysicalOrder implements Shippable`; `DigitalOrder` sengaja tidak, sebab pesanan digital tidak pernah dikirim. Tidak ada `ship()` palsu (Liskov Substitution).
+
+</div>
+</div>
 
 ---
 
 ## `OrderProcessor`: Single Responsibility
 
-![h:270 OrderProcessor mendelegasikan ke DiscountCalculator, Repository, dan ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
+<div class="cols wide">
+<div>
+
+![OrderProcessor mendelegasikan ke DiscountCalculator, Repository, dan ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
+
+</div>
+<div>
 
 `OrderProcessor` tidak menghitung, tidak menyimpan, tidak mencetak. Tiga tugas itu diserahkan ke `DiscountCalculator`, `Repository`, dan `ReceiptPrinter`.
+
+</div>
+</div>
 
 ---
 
@@ -560,9 +635,18 @@ Hitung diskon, simpan, cetak struk. Masing-masing oleh kelas lain.
 
 ## `DiscountPolicy` dan `Repository`: OCP dan DIP
 
-![h:270 DiscountPolicy diimplementasikan RegularDiscount dan WholesaleDiscount, Repository diimplementasikan InMemoryRepository dan FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
+<div class="cols wide">
+<div>
+
+![DiscountPolicy diimplementasikan RegularDiscount dan WholesaleDiscount, Repository diimplementasikan InMemoryRepository dan FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
+
+</div>
+<div>
 
 Pola yang sama: satu interface, banyak implementasi kecil. Jenis diskon baru cukup kelas baru (Open/Closed). `OrderProcessor` hanya mengenal `Repository`, jadi penyimpanan bebas ditukar (Dependency Inversion).
+
+</div>
+</div>
 
 ---
 

@@ -84,6 +84,18 @@ style: |
     max-width: 100%;
     max-height: 460px;
   }
+  .cols.wide > div:first-child {
+    flex: 2;
+  }
+  .cols.wide > div:last-child {
+    flex: 1;
+  }
+  .cols.wide img {
+    max-height: 480px;
+  }
+  .cols.wide .term-box {
+    margin: 0;
+  }
   .footnote {
     font-size: 0.55em;
     color: #64748b;
@@ -151,12 +163,21 @@ You have already used some without realizing it. Today we give them their offici
 
 ## Single Responsibility Principle (SRP)
 
-In a restaurant, the cook, the cashier, and the waiter each have their own job. A mistake in the kitchen does not mess up the payments.
+<div class="cols wide">
+<div>
 
-![h:270 One class with three responsibilities, split into three classes with one responsibility each](../assets/illustrations/srp-split.svg)
+![One class with three responsibilities, split into three classes with one responsibility each](../assets/illustrations/srp-split.svg)
+
+</div>
+<div>
+
+In a restaurant, the cook, the cashier, and the waiter each have their own job. A mistake in the kitchen does not mess up the payments.
 
 <div class="term-box">
 A class has one responsibility, which means one reason to change. <b>One class, one job.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -187,12 +208,21 @@ class ReportMailer    { void send(Report r) { /* ... */ } }
 
 ## Open/Closed Principle (OCP)
 
-A power socket accepts any appliance. A new appliance just plugs in, and the house wiring is not torn open.
+<div class="cols wide">
+<div>
 
-![h:270 PaymentMethod.pay() with an if/else per type, compared with a new GoPay subclass added without changing old code](../assets/illustrations/ocp-extend-not-modify.svg)
+![PaymentMethod.pay() with an if/else per type, compared with a new GoPay subclass added without changing old code](../assets/illustrations/ocp-extend-not-modify.svg)
+
+</div>
+<div>
+
+A power socket accepts any appliance. A new appliance just plugs in, and the house wiring is not torn open.
 
 <div class="term-box">
 <b>Open/Closed Principle</b>: open for extension, closed for modification. <b>New class, not old code changed.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -279,12 +309,21 @@ Session 2 of 4
 
 ## Liskov Substitution Principle (LSP)
 
-You order a motorbike taxi, and any motorbike may arrive. The replacement must still be able to take you there.
+<div class="cols wide">
+<div>
 
-![h:270 List<Bird> calls fly() on each element, Sparrow and Duck succeed, Penguin throws an exception](../assets/illustrations/lsp-substitution.svg)
+![List<Bird> calls fly() on each element, Sparrow and Duck succeed, Penguin throws an exception](../assets/illustrations/lsp-substitution.svg)
+
+</div>
+<div>
+
+You order a motorbike taxi, and any motorbike may arrive. The replacement must still be able to take you there.
 
 <div class="term-box">
 <b>Liskov Substitution Principle</b>: a subclass must be able to replace its superclass without making the program wrong. <code>Sparrow</code> and <code>Duck</code> can, <code>Penguin</code> cannot. <b>The replacement must still work.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -333,12 +372,21 @@ The caller checks first: `if (b instanceof Flyable f) f.fly();`. This form gives
 
 ## Interface Segregation Principle (ISP)
 
-A TV remote that only needs to turn the TV on and off does not need 50 channel buttons.
+<div class="cols wide">
+<div>
 
-![h:230 Chargeable implemented by Phone and ElectricCar, two separate hierarchies](../assets/uml/p09-chargeable.png)
+![Chargeable implemented by Phone and ElectricCar, two separate hierarchies](../assets/uml/p09-chargeable.png)
+
+</div>
+<div>
+
+A TV remote that only needs to turn the TV on and off does not need 50 channel buttons.
 
 <div class="term-box">
 <b>Interface Segregation Principle</b>: small, focused interfaces, so classes are not forced to fill in methods that do not apply. <code>Chargeable</code> above: one method, two unrelated classes. <b>Small interface, one ability.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -410,12 +458,21 @@ Session 3 of 4
 
 ## Dependency Inversion Principle (DIP)
 
-A cashier only knows the card machine, not the issuing bank. A card from any bank can be used.
+<div class="cols wide">
+<div>
 
-![h:270 OrderProcessor depending directly on MySqlDatabase, compared with depending on the Repository interface implemented by MySqlDatabase and MockRepository](../assets/illustrations/dip-invert-dependency.svg)
+![OrderProcessor depending directly on MySqlDatabase, compared with depending on the Repository interface implemented by MySqlDatabase and MockRepository](../assets/illustrations/dip-invert-dependency.svg)
+
+</div>
+<div>
+
+A cashier only knows the card machine, not the issuing bank. A card from any bank can be used.
 
 <div class="term-box">
 <b>Dependency Inversion Principle</b>: the class that runs the flow (<code>OrderProcessor</code>) depends on an interface, not on a real class (<code>MySqlDatabase</code>). <b>Depend on the interface, not the real class.</b>
+</div>
+
+</div>
 </div>
 
 ---
@@ -529,17 +586,35 @@ An online shop has physical orders (shipped) and digital orders (not shipped). D
 
 ## `Shippable`: LSP and ISP at Once
 
-![h:230 Order, PhysicalOrder implementing Shippable, and DigitalOrder deliberately not implementing it](../assets/uml/p11-order-shippable.png)
+<div class="cols wide">
+<div>
+
+![Order, PhysicalOrder implementing Shippable, and DigitalOrder deliberately not implementing it](../assets/uml/p11-order-shippable.png)
+
+</div>
+<div>
 
 `Shippable` only has `ship()` (Interface Segregation). `PhysicalOrder implements Shippable`; `DigitalOrder` deliberately does not, since a digital order is never shipped. No fake `ship()` (Liskov Substitution).
+
+</div>
+</div>
 
 ---
 
 ## `OrderProcessor`: Single Responsibility
 
-![h:270 OrderProcessor delegating to DiscountCalculator, Repository, and ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
+<div class="cols wide">
+<div>
+
+![OrderProcessor delegating to DiscountCalculator, Repository, and ReceiptPrinter](../assets/illustrations/orderprocessor-srp.svg)
+
+</div>
+<div>
 
 `OrderProcessor` does not compute, does not store, does not print. Those three jobs go to `DiscountCalculator`, `Repository`, and `ReceiptPrinter`.
+
+</div>
+</div>
 
 ---
 
@@ -560,9 +635,18 @@ Compute the discount, save, print the receipt. Each by another class.
 
 ## `DiscountPolicy` and `Repository`: OCP and DIP
 
-![h:270 DiscountPolicy implemented by RegularDiscount and WholesaleDiscount, Repository implemented by InMemoryRepository and FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
+<div class="cols wide">
+<div>
+
+![DiscountPolicy implemented by RegularDiscount and WholesaleDiscount, Repository implemented by InMemoryRepository and FileRepository](../assets/illustrations/ocp-dip-pluggable.svg)
+
+</div>
+<div>
 
 The same pattern: one interface, many small implementations. A new discount type is just a new class (Open/Closed). `OrderProcessor` only knows `Repository`, so storage can be swapped freely (Dependency Inversion).
+
+</div>
+</div>
 
 ---
 
