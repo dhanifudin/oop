@@ -720,41 +720,117 @@ Latihan pemrograman untuk materi ini tersedia di jobsheet Praktikum Pemrograman 
 
 ---
 
-## Tugas 1: Single Responsibility dan Open/Closed
+## Tugas 1: Single Responsibility
 
-**SRP.** `OrderService` memvalidasi pesanan, menghitung ongkos kirim, menyimpan ke berkas, dan mengirim email.
+Kode saat ini: satu kelas mengerjakan empat tugas.
 
-1. Tuliskan empat kelas pengganti, satu tugas tiap kelas, beserta satu method utamanya.
-2. Aturan ongkos kirim berubah. Kelas mana yang tersentuh sesudah dipisah?
+```java
+class OrderService {
+    boolean validate(Order order) { /* ... */ return true; }
+    int shippingCost(Order order) { /* ... */ return 0; }
+    void saveToFile(Order order) { /* ... */ }
+    void sendConfirmationEmail(Order order) { /* ... */ }
+}
+```
 
-**OCP.** `ShippingCalculator.cost(order)` berisi `if` untuk `"JNE"`, `"POS"`, `"GOJEK"`. Akan ditambah `"SICEPAT"`.
-
-3. Tuliskan `interface ShippingMethod { int cost(Order order); }` dan kelas `SicepatShipping`.
-4. Tuliskan baris di `main` yang memilih `SicepatShipping` tanpa mengubah `ShippingCalculator`.
-
----
-
-## Tugas 2: Liskov Substitution dan Interface Segregation
-
-**LSP.** `Square extends Rectangle`, dan `setWidth(w)`-nya ikut mengubah tinggi.
-
-1. `Rectangle r = new Square(); r.setWidth(4); r.setHeight(5);` lalu cetak `r.area()`. Berapa yang diharapkan, berapa yang tercetak?
-2. Perbaiki: keduanya `implements Shape { double area(); }`. Gambarkan diagramnya di kertas.
-
-**ISP.** `interface Worker` punya `work()`, `eat()`, `sleep()`. Robot tidak makan dan tidak tidur.
-
-3. Pecah `Worker` menjadi interface kecil. Tuliskan deklarasi tiap interface.
-4. Tuliskan baris `implements` untuk `RobotWorker` dan `HumanWorker`.
+1. Pecah menjadi empat kelas, satu tugas tiap kelas. Tuliskan nama kelas dan method utamanya.
+2. Aturan ongkos kirim berubah. Kelas mana yang diubah sesudah dipisah?
 
 ---
 
-## Tugas 3: Dependency Inversion dan Collections
+## Tugas 2: Open/Closed
 
-**DIP.** `NotificationService` berisi `private EmailSender sender = new EmailSender();`. Toko ingin mengirim lewat WhatsApp juga.
+Kode saat ini: tiap kurir baru menambah cabang `if`. Toko akan menambah `"SICEPAT"`.
 
-1. Tuliskan `interface MessageSender { void send(String to, String text); }`.
-2. Tuliskan ulang `NotificationService` agar menerima `MessageSender` lewat constructor.
+```java
+class ShippingCalculator {
+    int cost(Order order, String courier) {
+        if (courier.equals("JNE")) { return 20000; }
+        else if (courier.equals("POS")) { return 15000; }
+        else if (courier.equals("GOJEK")) { return 25000; }   // cabang baru lagi
+        return 0;
+    }
+}
+```
 
-**Collections.** `NotificationService` mencatat semua pesan terkirim dan mencarinya lewat nomor penerima.
+1. Tuliskan `interface ShippingMethod { int cost(Order order); }` dan kelas `SicepatShipping`.
+2. Tuliskan ulang `ShippingCalculator` agar menerima `ShippingMethod`, plus baris di `main` yang memilih `SicepatShipping`.
 
-3. Pilih `ArrayList` atau `Map`, lalu tuliskan deklarasi field-nya.
+---
+
+## Tugas 3: Liskov Substitution
+
+Kode saat ini: `Rectangle` punya `setWidth`, `setHeight`, dan `area()` = lebar x tinggi.
+
+```java
+class Square extends Rectangle {
+    void setWidth(int w)  { width = w; height = w; }    // ikut mengubah tinggi
+    void setHeight(int h) { width = h; height = h; }
+}
+
+Rectangle r = new Square();
+r.setWidth(4); r.setHeight(5);
+System.out.println(r.area());
+```
+
+1. Berapa yang diharapkan pemanggil, berapa yang tercetak?
+2. Ubah: `Square` tidak lagi `extends Rectangle`. Keduanya `implements Shape { int area(); }`. Tuliskan kedua kelas, gambar diagramnya di kertas.
+
+---
+
+## Tugas 4: Interface Segregation
+
+Kode saat ini: `RobotWorker` dipaksa mengisi method yang tidak masuk akal baginya.
+
+```java
+interface Worker { void work(); void eat(); void sleep(); }
+
+class RobotWorker implements Worker {
+    public void work()  { /* ... */ }
+    // robot tidak makan dan tidak tidur:
+    public void eat()   { throw new UnsupportedOperationException(); }
+    public void sleep() { throw new UnsupportedOperationException(); }
+}
+```
+
+1. Pecah `Worker` menjadi interface kecil. Tuliskan deklarasinya.
+2. Tuliskan ulang baris `implements` untuk `RobotWorker` dan `HumanWorker`, lalu hapus method yang tidak perlu.
+
+---
+
+## Tugas 5: Dependency Inversion
+
+Kode saat ini: terikat ke email. Toko ingin mengirim lewat WhatsApp juga.
+
+```java
+class NotificationService {
+    private EmailSender sender = new EmailSender();   // kelas sungguhan dibuat sendiri
+
+    void notifyCustomer(String to, String text) {
+        sender.sendEmail(to, text);
+    }
+}
+```
+
+1. Tuliskan `interface MessageSender { void send(String to, String text); }`, lalu `EmailSender` dan `WhatsAppSender` yang mengimplementasikannya.
+2. Tuliskan ulang `NotificationService` agar menerima `MessageSender` lewat constructor, plus baris di `main` yang memilih WhatsApp.
+
+---
+
+## Tugas 6: Collections
+
+Kode saat ini: riwayat pesan disimpan di array berukuran 10.
+
+```java
+class NotificationService {
+    private String[] sent = new String[10];
+    private int count = 0;
+
+    void log(String to, String text) {
+        sent[count++] = to + ": " + text;   // pesan ke-11 gagal
+    }
+}
+```
+
+1. Ganti array dengan koleksi yang bertambah otomatis. Tuliskan deklarasi field dan `log(...)` yang baru.
+2. Riwayat harus bisa dicari lewat nomor penerima. Pilih `ArrayList` atau `Map`, tuliskan deklarasi field dan satu baris pencariannya.

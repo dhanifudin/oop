@@ -93,12 +93,14 @@ tepat setelah DIP (tempat `InMemoryRepository` pertama kali butuh daftar
 yang bisa bertambah), atas permintaan eksplisit pengguna ("focus on
 solid"). Keempat Bagian dek ini dengan demikian SRP+OCP, LSP+ISP,
 DIP+Collections, studi kasus. Jobsheet tetap memakai `LinkedHashMap`
-untuk refactor `Bank`. Slide "Diskusi" penutup dek ini diganti TIGA slide
-"Tugas" (satu per blok SOLID: SRP+OCP, LSP+ISP, DIP+Collections, dua
-skenario per slide), atas permintaan eksplisit pengguna ("update the last
-slide Diskusi into assignment, breakdown into separate question topic",
-lalu "make it compact"); dek ini 51 slide, dengan Kesalahan Umum hanya
-untuk OCP, LSP, dan studi kasus. Kedelapan slide bergambar dek ini memakai
+untuk refactor `Bank`. Slide "Diskusi" penutup dek ini diganti ENAM slide
+"Tugas" (satu per prinsip SOLID plus Collections), tiap slide menampilkan
+kode saat ini (6-8 baris, komentar menandai baris bermasalah) lalu dua
+pertanyaan tambah/ubah, atas permintaan eksplisit pengguna ("update the
+last slide Diskusi into assignment, breakdown into separate question
+topic", lalu "the current assignment missing the current implementation");
+dek ini 54 slide, dengan Kesalahan Umum hanya untuk OCP, LSP, dan studi
+kasus. Kedelapan slide bergambar dek ini memakai
 layout `.cols.wide` (gambar kiri 2/3 lebar, analogi + term-box kanan 1/3),
 karena layout tumpuk (gambar di antara analogi dan term-box) memaksa SVG
 lebar 900x460 dibatasi `h:270` dan terlihat kecil di proyektor.

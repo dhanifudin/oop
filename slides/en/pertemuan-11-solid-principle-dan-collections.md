@@ -720,41 +720,117 @@ The programming exercises for this material are in the Object-Oriented Programmi
 
 ---
 
-## Assignment 1: Single Responsibility and Open/Closed
+## Assignment 1: Single Responsibility
 
-**SRP.** `OrderService` validates orders, calculates shipping cost, saves to a file, and sends email.
+Current code: one class does four jobs.
 
-1. Write four replacement classes, one job each, with one main method apiece.
-2. The shipping-cost rule changes. Which class is touched after the split?
+```java
+class OrderService {
+    boolean validate(Order order) { /* ... */ return true; }
+    int shippingCost(Order order) { /* ... */ return 0; }
+    void saveToFile(Order order) { /* ... */ }
+    void sendConfirmationEmail(Order order) { /* ... */ }
+}
+```
 
-**OCP.** `ShippingCalculator.cost(order)` holds an `if` for `"JNE"`, `"POS"`, `"GOJEK"`. `"SICEPAT"` will be added.
-
-3. Write `interface ShippingMethod { int cost(Order order); }` and the class `SicepatShipping`.
-4. Write the line in `main` that picks `SicepatShipping` without changing `ShippingCalculator`.
-
----
-
-## Assignment 2: Liskov Substitution and Interface Segregation
-
-**LSP.** `Square extends Rectangle`, and its `setWidth(w)` also changes the height.
-
-1. `Rectangle r = new Square(); r.setWidth(4); r.setHeight(5);` then print `r.area()`. What is expected, what is printed?
-2. Fix it: both `implements Shape { double area(); }`. Draw the diagram on paper.
-
-**ISP.** `interface Worker` has `work()`, `eat()`, `sleep()`. A robot neither eats nor sleeps.
-
-3. Split `Worker` into small interfaces. Write each interface declaration.
-4. Write the `implements` lines for `RobotWorker` and `HumanWorker`.
+1. Split it into four classes, one job each. Write each class name and its main method.
+2. The shipping-cost rule changes. Which class is modified after the split?
 
 ---
 
-## Assignment 3: Dependency Inversion and Collections
+## Assignment 2: Open/Closed
 
-**DIP.** `NotificationService` holds `private EmailSender sender = new EmailSender();`. The shop wants to send through WhatsApp as well.
+Current code: every new courier adds an `if` branch. The shop will add `"SICEPAT"`.
 
-1. Write `interface MessageSender { void send(String to, String text); }`.
-2. Rewrite `NotificationService` so it receives a `MessageSender` through its constructor.
+```java
+class ShippingCalculator {
+    int cost(Order order, String courier) {
+        if (courier.equals("JNE")) { return 20000; }
+        else if (courier.equals("POS")) { return 15000; }
+        else if (courier.equals("GOJEK")) { return 25000; }   // yet another branch
+        return 0;
+    }
+}
+```
 
-**Collections.** `NotificationService` records every sent message and finds them by recipient number.
+1. Write `interface ShippingMethod { int cost(Order order); }` and the class `SicepatShipping`.
+2. Rewrite `ShippingCalculator` so it receives a `ShippingMethod`, plus the line in `main` that picks `SicepatShipping`.
 
-3. Pick `ArrayList` or `Map`, then write the field declaration.
+---
+
+## Assignment 3: Liskov Substitution
+
+Current code: `Rectangle` has `setWidth`, `setHeight`, and `area()` = width x height.
+
+```java
+class Square extends Rectangle {
+    void setWidth(int w)  { width = w; height = w; }    // also changes the height
+    void setHeight(int h) { width = h; height = h; }
+}
+
+Rectangle r = new Square();
+r.setWidth(4); r.setHeight(5);
+System.out.println(r.area());
+```
+
+1. What does the caller expect, and what is printed?
+2. Change it: `Square` no longer `extends Rectangle`. Both `implements Shape { int area(); }`. Write both classes, draw the diagram on paper.
+
+---
+
+## Assignment 4: Interface Segregation
+
+Current code: `RobotWorker` is forced to fill in methods that make no sense for it.
+
+```java
+interface Worker { void work(); void eat(); void sleep(); }
+
+class RobotWorker implements Worker {
+    public void work()  { /* ... */ }
+    // a robot neither eats nor sleeps:
+    public void eat()   { throw new UnsupportedOperationException(); }
+    public void sleep() { throw new UnsupportedOperationException(); }
+}
+```
+
+1. Split `Worker` into small interfaces. Write their declarations.
+2. Rewrite the `implements` lines for `RobotWorker` and `HumanWorker`, then remove the methods that are not needed.
+
+---
+
+## Assignment 5: Dependency Inversion
+
+Current code: tied to email. The shop wants to send through WhatsApp as well.
+
+```java
+class NotificationService {
+    private EmailSender sender = new EmailSender();   // creates the real class itself
+
+    void notifyCustomer(String to, String text) {
+        sender.sendEmail(to, text);
+    }
+}
+```
+
+1. Write `interface MessageSender { void send(String to, String text); }`, then `EmailSender` and `WhatsAppSender` implementing it.
+2. Rewrite `NotificationService` so it receives a `MessageSender` through its constructor, plus the line in `main` that picks WhatsApp.
+
+---
+
+## Assignment 6: Collections
+
+Current code: the message history is kept in an array of size 10.
+
+```java
+class NotificationService {
+    private String[] sent = new String[10];
+    private int count = 0;
+
+    void log(String to, String text) {
+        sent[count++] = to + ": " + text;   // the 11th message fails
+    }
+}
+```
+
+1. Replace the array with a collection that grows automatically. Write the new field declaration and `log(...)`.
+2. The history must be searchable by recipient number. Pick `ArrayList` or `Map`, write the field declaration and one lookup line.
